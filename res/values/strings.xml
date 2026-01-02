@@ -2,16 +2,16 @@
 <resources>
     <string name="_empty_"/>
 
-    <string name="a_and_b">%1$s and %2$s</string>
+    <string name="fragment_a_and_b">%1$s and %2$s</string>
 
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="all_books_added_or_updated_since">All books added or updated since:</string>
+    <string name="option_all_books_added_or_updated_since">All books added or updated since:</string>
     <!-- Explanatory note for export data since last backup -->
-    <string name="all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
+    <string name="option_all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
     <!-- Description of the 'import all books' option -->
-    <string name="all_books_blurb">All books in the archive will be imported, updating existing books and adding new ones.</string>
+    <string name="description_all_books_blurb">All books in the archive will be imported, updating existing books and adding new ones.</string>
 
-    <string name="and_others">et. al.</string>
+    <string name="fragment_and_others">et. al.</string>
 
     <string name="anthology_confirm">Please confirm that these anthology titles are (mostly) correct</string>
     <string name="anthology_save">Save</string>
@@ -36,7 +36,7 @@
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Backing up…</string>
 
-    <string name="backup_failed">Backup Failed</string>
+    <string name="alert_backup_failed">Backup Failed</string>
     <string name="backup_request">Would you like to backup your database?</string>
     <string name="backup_success">Backup Success</string>
     <string name="backup_title">Backup?</string>
@@ -47,9 +47,9 @@
     <string name="book_catalogue_startup">BookCatalogue Startup</string>
     <!-- Introduction for 'advanced export' option -->
     <!-- Text for button -->
-    <string name="book_details">Book details</string>
+    <string name="label_book_details">Book details</string>
     <!-- Brief description -->
-    <string name="book_details_blurb">The details of the books themselves</string>
+    <string name="description_book_details_blurb">The details of the books themselves</string>
     <string name="book_details_readonly_by">by</string>
     <string name="book_details_readonly_loaned_to">On Loan to %1$s</string>
     <string name="book_details_readonly_pages">%1$s pages</string>
@@ -77,7 +77,7 @@
 
     <string name="bytes">%.0f bytes</string>
 
-    <string name="cancelled">Cancelled</string>
+    <string name="alert_cancelled">Cancelled</string>
     <string name="cancelled_info">Cancelled - %s</string>
 
     <string name="cancelling">Cancelling</string>
@@ -119,9 +119,9 @@
     <string name="cover_corrupt">Cover is corrupt</string>
     <string name="cover_detail">Cover Detail</string>
     <!-- Text for button -->
-    <string name="cover_images">Cover images</string>
+    <string name="label_cover_images">Cover images</string>
     <!-- Brief description -->
-    <string name="cover_images_blurb">Cover images for all selected books. Will make the export much larger.</string>
+    <string name="description_cover_images_blurb">Cover images for all selected books. Will make the export much larger.</string>
     <string name="cover_options_cc_ellipsis">Cover Options…</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
@@ -190,13 +190,13 @@
 										via their web site. Once that is done, you can retry sending the book.</string>
 
     <!-- Explanatory note for 'advanced export' option -->
-    <string name="export_advanced_blurb">Select what will be exported to the archive.</string>
+    <string name="description_export_advanced_blurb">Select what will be exported to the archive.</string>
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="export_advanced_date_blurb">Optionally specify a date to use in selecting books and/or covers to export:</string>
+    <string name="description_export_advanced_date_blurb">Optionally specify a date to use in selecting books and/or covers to export:</string>
     <!-- Explanatory note for 'export all' option -->
-    <string name="export_all_blurb">All books, covers, settings and custom styles will be exported to the archive.</string>
+    <string name="description_export_all_blurb">All books, covers, settings and custom styles will be exported to the archive.</string>
     <!--  Explanatory text for 'export' dialogue -->
-    <string name="export_books_blurb">The books in your catalogue will be exported. Select on one of two options to start the export, or press \'back\' to cancel:</string>
+    <string name="description_export_books_blurb">The books in your catalogue will be exported. Select on one of two options to start the export, or press \'back\' to cancel:</string>
     <string name="export_failed_sdcard">Export failed - could not write to the shared storage</string>
     <string name="export_starting_ellipsis">Export starting…</string>
 
@@ -272,7 +272,7 @@
 
     <string name="if_day_is_specified_month_and_year_must_be">If day is specified, then both month and year must also be specified.</string>
     <string name="if_month_is_specified_year_must_be">If month is specified, then year must also be specified.</string>
-    <string name="if_the_problem_persists">If the problem persists, contact support via Help on the main menu.</string>
+    <string name="alert_if_the_problem_persists">If the problem persists, contact support via Help on the main menu.</string>
 
     <string name="image_not_found">Image Not Found</string>
 
@@ -281,17 +281,17 @@
     <!-- End: Added/Updated in 5.0.9 -->
     <!-- Begin: Added/Updated in 5.1.0 -->
     <!--  Explanatory text for 'import' dialogue -->
-    <string name="import_books_blurb">The books in this archive will be imported. Select on one of two options to start the import, or press \'back\' to cancel:</string>
-    <string name="import_complete">Import Complete</string>
+    <string name="description_import_books_blurb">The books in this archive will be imported. Select on one of two options to start the import, or press \'back\' to cancel:</string>
+    <string name="description_import_complete">Import Complete</string>
     <string name="import_data">Import Books</string>
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Import failed.</string>
-    <string name="import_failed_is_location_correct">ERROR: Import of data failed. Please contact support.</string>
+    <string name="alert_import_failed_is_location_correct">ERROR: Import of data failed. Please contact support.</string>
 
     <!-- Showed in progress dialog when an import starts -->
     <string name="importing_ellipsis">Importing…</string>
 
-    <string name="info_no_bookshelves">You have not created any bookshelves yet. Please add some using the add icon at the top of this screen.</string>
+    <string name="description_no_bookshelves">You have not created any bookshelves yet. Please add some using the add icon at the top of this screen.</string>
 
     <string name="install_scan_title">Install Barcode Scanner</string>
 
@@ -494,9 +494,9 @@
     <string name="name_can_not_be_blank">Name can not be blank</string>
 
     <!-- Menu text for the 'import/export new & changed' option -->
-    <string name="new_and_changed_books">New and updated books</string>
+    <string name="option_new_and_changed_books">New and updated books</string>
     <!-- Description of the 'import new & changed' option -->
-    <string name="new_and_changed_books_blurb">Only import books that are new, or which have been updated more recently in the archive. This is useful when synchronizing two devices.</string>
+    <string name="description_new_and_changed_books_blurb">Only import books that are new, or which have been updated more recently in the archive. This is useful when synchronizing two devices.</string>
     <string name="new_in_42"><![CDATA[
     <p><b>New in 4.2</b>\n\n
 			* Date-Picker that supports dates down to 0AD as well as partial dates\n\n
@@ -709,7 +709,7 @@
     <string name="occurred_at">occurred at %1$s</string>
 
     <!-- Descriptive text associated with import options not available with older archives -->
-    <string name="old_archive_blurb">This option is not supported for older archive versions.</string>
+    <string name="alert_old_archive_blurb">This option is not supported for older archive versions.</string>
     <string name="old_file_import_cancelled">Import of old files cancelled.</string>
     <string name="old_file_import_complete">Import of old files complete.</string>
     <string name="old_file_import_stats">%1$d of %2$d files were processed. %3$s\n\nThe old files have been left in place and can be moved
@@ -719,7 +719,7 @@
     <string name="old_file_import_status_not_book">%1$d were not copied because they were cover image files
         for non-existent books</string>
     <string name="old_file_import_status_of_those">Of those files, %s.</string>
-    <string name="old_files_message">
+    <string name="alert_old_files_message">
         PLEASE READ THIS MESSAGE CAREFULLY
         \n\nGoogle has required that this and all future versions of Book Catalogue must store their files in more standard directories.
         \n\nThey also no longer allow us to access the old directories.
@@ -814,7 +814,7 @@
     <string name="please_check_sd_readable">Please check that the storage is accessible.</string>
     <!-- SEVERAL UPDATED MESSAGES: changed 'sd card' tp storage. -->
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_writable">Please check that the storage is writable, and has sufficient space.</string>
+    <string name="alert_please_check_sd_writable">Please check that the storage is writable, and has sufficient space.</string>
 
     <string name="populate_anthology_titles">Automatically Populate Titles (EXPERIMENTAL)</string>
 
@@ -853,7 +853,7 @@
     <string name="preference_use_external_image_cropper">Use external image cropper (experimental)</string>
 
     <!-- Brief description -->
-    <string name="preferences_blurb">Preferences and user-defined list styles</string>
+    <string name="description_preferences_blurb">Preferences and user-defined list styles</string>
 
     <string name="preferred_styles">Preferred styles</string>
 
@@ -893,12 +893,12 @@
     <string name="select_min_1_field">Select at least one field to update</string>
     <string name="select_style">Select Style</string>
 
-    <string name="selected_archive_contains">It contains %1$s.</string>
-    <string name="selected_archive_info">The selected archive is %1$s in size and was created on %2$s.</string>
+    <string name="para_selected_archive_contains">It contains %1$s.</string>
+    <string name="para_selected_archive_info">The selected archive is %1$s in size and was created on %2$s.</string>
     <string name="selected_dir_wrong_name">The selected directory is not called \'%1$s\' and does not seem to contain a directory of that name. Are you sure that this is the correct location?</string>
     <!-- this is used in the 'archive_complete_details' string (elsewhere in this file)
     to replace the directory name, so that now it says "in the selected directory" -->
-    <string name="selected_thing">selected</string>
+    <string name="fragment_selected_thing">selected</string>
 
     <string name="send_book_to_goodreads">Send book %1$s to goodreads</string>
     <string name="send_books_to_goodreads">Send books to goodreads</string>

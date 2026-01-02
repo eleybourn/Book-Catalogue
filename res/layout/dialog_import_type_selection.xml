@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    style="@style/layout_dialog">
+
+    <LinearLayout
+        android:id="@+id/top_buttons"
+        style="@style/layout_main">
+
+        <TextView
+            android:id="@+id/import_books_blurb"
+            style="@style/layout_paragraph"
+            android:text="@string/description_import_books_blurb" />
+
+        <RelativeLayout
+            android:id="@+id/all_books_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="12dp">
+
+            <RadioButton
+                android:id="@+id/field_all_books_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/all_books"
+                style="@style/layout_paragraph"
+                android:paddingVertical="0dp"
+                android:layout_alignBaseline="@id/field_all_books_radio"
+                android:layout_alignBottom="@id/field_all_books_radio"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/field_all_books_radio"
+                android:text="@string/option_all_books" />
+
+            <TextView
+                style="@style/book_text_small"
+                android:layout_below="@+id/all_books"
+                android:layout_alignStart="@id/all_books"
+                android:layout_alignEnd="@id/all_books"
+                android:text="@string/description_all_books_blurb" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/new_and_changed_books_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="12dp">
+
+            <RadioButton
+                android:id="@+id/field_new_and_changed_books_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/new_and_changed_books"
+                style="@style/layout_paragraph"
+                android:paddingVertical="0dp"
+                android:layout_alignBaseline="@id/field_new_and_changed_books_radio"
+                android:layout_alignBottom="@id/field_new_and_changed_books_radio"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/field_new_and_changed_books_radio"
+                android:text="@string/option_new_and_changed_books" />
+
+            <TextView
+                android:id="@+id/new_and_changed_books_blurb"
+                style="@style/book_text_small"
+                android:layout_below="@+id/new_and_changed_books"
+                android:layout_alignStart="@+id/new_and_changed_books"
+                android:layout_alignEnd="@+id/new_and_changed_books"
+                android:text="@string/description_new_and_changed_books_blurb" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</ScrollView>

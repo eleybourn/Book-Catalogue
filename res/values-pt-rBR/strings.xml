@@ -23,7 +23,7 @@
     <string name="label_search">Procurar</string>
     <string name="button_cancel">Cancelar</string>
     <string name="button_confirm_save">Salvar livro</string>
-    <string name="info_no_bookshelves">Você ainda não criou nenhuma estante. Use o botão na parte inferior da tela para adicionar estantes.</string>
+    <string name="description_no_bookshelves">Você ainda não criou nenhuma estante. Use o botão na parte inferior da tela para adicionar estantes.</string>
     <string name="menu_insert_bs">Criar Estante</string>
     <string name="confirm_add_bs">Adicionar Estante</string>
     <string name="title_manage_bookshelves">Gerenciar Estantes</string>
@@ -39,7 +39,7 @@
     <string name="label_series_num">Nº</string>
     <string name="import_data">Importar livros</string>
     <string name="import_alert">Cuidado. A importação de dados pode substituir registros já existentes com novas informações se os campos uuid e id forem conflitantes. Isto normalmente não é um problema, se você modificou manualmente o arquivo exportado. Se você criou um novo livro no arquivo, ou está importando livros de outra pessoa, certifique-se de que o campo uuid esteja presente ou o campo id esteja vazio.</string>
-    <string name="import_failed_is_location_correct">ERRO: Não foi possível importar dados do cartão de memória. Certifique-se de que o arquivo esteja no local correto.</string>
+    <string name="alert_import_failed_is_location_correct">ERRO: Não foi possível importar dados do cartão de memória. Certifique-se de que o arquivo esteja no local correto.</string>
     <string name="install_scan_title">Instalar leitor de código de barras</string>
     <string name="label_version_number">Número da versão:</string>
     <string name="para_donate">Se você gostaria de contribuir para o desenvolvimento deste aplicativo, por favor faça uma doação através da minha Lista de Desejos da Amazon ou através do botão Paypal, abaixo. Não posso publicar aplicativos &quot;pagos&quot;, estando na Austrália. :-) </string>
@@ -129,7 +129,7 @@
     <string name="vldt_failed">Validation failed for \'%s\'</string>
     <string name="vldt_read_start_after_end">The date reading started is after the end date</string>
     <string name="backup_success">Backup Success</string>
-    <string name="backup_failed">Backup Failed</string>
+    <string name="alert_backup_failed">Backup Failed</string>
     <string name="file_must_contain_column">File must contain column named %s</string>
     <string name="file_must_contain_any_column">File must contain a column with one of the following names: %s</string>
     <string name="column_is_blank">Column %1$s is blank at row %2$s</string>
@@ -141,7 +141,7 @@
     <string name="cover_corrupt">Cover is corrupt</string>
     <string name="cover_detail">Cover Detail</string>
     <string name="label_set_authors">Set Authors&#8230;</string>
-    <string name="and_others">et. al.</string>
+    <string name="fragment_and_others">et. al.</string>
     <string name="set_series">Set Series&#8230;</string>
     <string name="author_already_in_list">Author is already in the list</string>
     <string name="author_is_blank">Author field is blank</string>
@@ -229,7 +229,7 @@
     <string name="no_matching_book_found">No matching book found</string>
     <string name="no_isbn_stored_for_book">No ISBN stored for book</string>
     <string name="select_an_action">Select an action</string>
-    <string name="if_the_problem_persists">If the problem persists, contact support via Help on the main menu.</string>
+    <string name="alert_if_the_problem_persists">If the problem persists, contact support via Help on the main menu.</string>
     <string name="x_of_y">%1$d of %2$d</string>
     <string name="send_book_to_goodreads">Send book %1$s to goodreads</string>
 
@@ -437,8 +437,8 @@
     <string name="preference_auto_rotate_camera_images">Automatically rotate images captured by camera</string>
     <string name="hint_autorotate_camera_images">If you find yourself always rotating camera images in the same direction, try changing the application settings to specify a rotation to apply automatically.</string>
     <string name="preference_default_crop_frame_is_whole_image">Default crop frame is whole image</string>
-    <string name="cancelled">Cancelled</string>
-    <string name="import_complete">Import Complete</string>
+    <string name="alert_cancelled">Cancelled</string>
+    <string name="description_import_complete">Import Complete</string>
     <string name="searching_ellipsis">Searching&#8230;</string>
     <string name="status_adding_book_ellipsis">Adding book&#8230;</string>
     <string name="preference_global_opening_book_mode">Open book in read-only mode</string>
@@ -553,7 +553,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="label_import_from_archive">Import from Archive</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="a_and_b">%1$s e %2$s</string>
+    <string name="fragment_a_and_b">%1$s e %2$s</string>
     <string name="para_archive_complete_details">A %3$s file called %2$s was created in the \"%1$s\" directory on your
     SD card.\n\nYou should manually copy it elsewhere to protect the data in case your device is damaged, lost, or stolen.</string>
 
@@ -611,7 +611,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Import failed.</string>
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_writable">Please check that the SD Card is writable, and has sufficient space.</string>
+    <string name="alert_please_check_sd_writable">Please check that the SD Card is writable, and has sufficient space.</string>
     <!-- Displayed when any write operation to the sd card fails -->
     <string name="please_check_sd_readable">Please check that the SD Card is accessible.</string>
 
@@ -703,20 +703,20 @@ and you can edit the book via the options menu using the menu button or overflow
     <!-- Begin: Added/Updated in 5.1.0 -->
     
     <!--  Explanatory text for 'import' dialogue -->
-    <string name="import_books_blurb">The books in this archive will be imported. Select on one of two options to start the import, or press \'back\' to cancel:</string>
+    <string name="description_import_books_blurb">The books in this archive will be imported. Select on one of two options to start the import, or press \'back\' to cancel:</string>
     <!-- Description of the 'import all books' option -->
-    <string name="all_books_blurb">All books in the archive will be imported, updating existing books and adding new ones.</string>
+    <string name="description_all_books_blurb">All books in the archive will be imported, updating existing books and adding new ones.</string>
     <!-- Menu text for the 'import/export new & changed' option -->
-    <string name="new_and_changed_books">New and updated books</string>
+    <string name="option_new_and_changed_books">New and updated books</string>
     <!-- Description of the 'import new & changed' option -->
-    <string name="new_and_changed_books_blurb">Only import books that are new, or which have been updated more recently in the archive. This is useful when synchronizing two devices.</string>
+    <string name="description_new_and_changed_books_blurb">Only import books that are new, or which have been updated more recently in the archive. This is useful when synchronizing two devices.</string>
     <!-- Descriptive text associated with import options not available with older archives -->
-    <string name="old_archive_blurb">This option is not supported for older archive versions.</string>
+    <string name="alert_old_archive_blurb">This option is not supported for older archive versions.</string>
     <!-- Part of the progress message displayed when importing books -->
     <string name="n_created_m_updated">%1$s created, %2$s updated</string>
 
     <!--  Explanatory text for 'export' dialogue -->
-    <string name="export_books_blurb">The books in your catalogue will be exported. Select on one of two options to start the export, or press \'back\' to cancel:</string>
+    <string name="description_export_books_blurb">The books in your catalogue will be exported. Select on one of two options to start the export, or press \'back\' to cancel:</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
@@ -725,29 +725,29 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="covers_progress_increment">%1$s covers processed (%2$s missing, %3$s skipped)</string>
     
     <!-- Explanatory note for 'export all' option -->
-    <string name="export_all_blurb">All books, covers, settings and custom styles will be exported to the archive.</string>
+    <string name="description_export_all_blurb">All books, covers, settings and custom styles will be exported to the archive.</string>
     <!-- Explanatory note for 'advanced export' option -->
-    <string name="export_advanced_blurb">Select what will be exported to the archive.</string>
+    <string name="description_export_advanced_blurb">Select what will be exported to the archive.</string>
     <!-- Introduction for 'advanced export' option -->
 
     <!-- Text for button -->
-    <string name="book_details">Book details</string>
+    <string name="label_book_details">Book details</string>
     <!-- Brief descriptionn -->
-    <string name="book_details_blurb">The details of the books themselves</string>
+    <string name="description_book_details_blurb">The details of the books themselves</string>
     <!-- Text for button -->
-    <string name="cover_images">Cover images</string>
+    <string name="label_cover_images">Cover images</string>
     <!-- Brief descriptionn -->
-    <string name="cover_images_blurb">Cover images for all selected books. Will make the export much larger.</string>
+    <string name="description_cover_images_blurb">Cover images for all selected books. Will make the export much larger.</string>
     <!-- Brief descriptionn -->
-    <string name="preferences_blurb">Preferences and user-defined list styles</string>
+    <string name="description_preferences_blurb">Preferences and user-defined list styles</string>
     
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="export_advanced_date_blurb">Optionally specify a date to use in selecting books and/or covers to export:</string>
+    <string name="description_export_advanced_date_blurb">Optionally specify a date to use in selecting books and/or covers to export:</string>
     
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="all_books_added_or_updated_since">All books added or updated since:</string>
+    <string name="option_all_books_added_or_updated_since">All books added or updated since:</string>
     <!-- Explanatory note for export data since last backup -->
-    <string name="all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
+    <string name="option_all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
 
     <!-- Short text for 'n books' -->
     <plurals

@@ -20,7 +20,7 @@
     <string name="label_search">Hledat</string>
 <string name="button_cancel">Zrušit</string>
 <string name="button_confirm_save">Uložit knihu</string>
-<string name="info_no_bookshelves">Zatím nemáte vytvořenou žádnou knihovnu. Pro její vytvoření použijte menu ve spodní části obrazovky.</string>
+<string name="description_no_bookshelves">Zatím nemáte vytvořenou žádnou knihovnu. Pro její vytvoření použijte menu ve spodní části obrazovky.</string>
 <string name="menu_insert_bs">Vytvořit knihovnu</string>
 <string name="confirm_add_bs">Přidat knihovnu</string>
 <string name="title_manage_bookshelves">Spravovat knihovny</string>
@@ -36,7 +36,7 @@
 <string name="label_series_num">#</string>
     <string name="import_data">Importovat knihy</string>
 <string name="import_alert">Pozor: Importovaná data mohou upravit existující záznamy knih - k takové situaci dojde v případě, že není vyplněno uuid, a id v importovaném souboru je totožné s již existujícím id. Doporučujeme proto zkontrolovat - a případně upravit - toto pole v exportovaném souboru. Pokud byl vytvořen nový záznam, nebo jsou importovány další knihy, tak se ujistěte, že je vyplněno uuid, nebo že pole id je prázdné.</string>
-    <string name="import_failed_is_location_correct">ERROR: Import dat (z SD karty) selhal. Je soubor na správném místě?</string>
+    <string name="alert_import_failed_is_location_correct">ERROR: Import dat (z SD karty) selhal. Je soubor na správném místě?</string>
     <string name="install_scan_title">Instalovat čtečku čárových kódů</string>
 <string name="label_version_number">Číslo verze:</string>
 <string name="para_donate">Pokud chcete podpořit vývoj této aplikace, učiňte tak prosím prostřednictvím mého Amazon Wishlistu nebo přes paypal tlačítko níže. Vzhledem k tomu, že jsem z Austrálie, tak nemohu nabízet &quot;placenou&quot; verzi. :-) </string>
@@ -125,7 +125,7 @@
 <string name="vldt_failed">Selhala validace pro \'%s\'</string>
     <string name="vldt_read_start_after_end">Datum začátku čtení musí předcházet datu ukončení čtení.</string>
 <string name="backup_success">Zálohování úspěšně dokončeno</string>
-<string name="backup_failed">Zálohování selhalo</string>
+<string name="alert_backup_failed">Zálohování selhalo</string>
 <string name="file_must_contain_column">Soubor musí obsahovat sloupec jménem %s</string>
 <string name="file_must_contain_any_column">Soubor musí obsahovat sloupec s jedním z následujících jmen: %s</string>
 <string name="column_is_blank">Sloupec %1$s je prázdný na řádku %2$s</string>
@@ -137,7 +137,7 @@
     <string name="cover_corrupt">Obálka je poškozena</string>
 <string name="cover_detail">Detail obálky</string>
     <string name="label_set_authors">Zadat autory&#8230;</string>
-<string name="and_others">a další</string>
+<string name="fragment_and_others">a další</string>
 <string name="set_series">Zadat série&#8230;</string>
 <string name="author_already_in_list">Autor je již v seznamu</string>
 <string name="author_is_blank">Pole pro autora je prázdné</string>
@@ -222,7 +222,7 @@
 <string name="no_matching_book_found">Nebyla nalezena odpovídající kniha</string>
 <string name="no_isbn_stored_for_book">Kniha nemá uložen ISBN</string>
 <string name="select_an_action">Zvolte akci</string>
-    <string name="if_the_problem_persists">Pokud problémy přetrvají, kontaktujte správce.</string>
+    <string name="alert_if_the_problem_persists">Pokud problémy přetrvají, kontaktujte správce.</string>
     <string name="x_of_y">%1$d z %2$d</string>
 <string name="send_book_to_goodreads">Poslat knihu %1$s do Goodreads</string>
 <string name="label_erase_cover_cache">Vymazat vyrovnávací paměť pro obálky</string>

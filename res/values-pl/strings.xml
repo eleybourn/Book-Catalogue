@@ -20,7 +20,7 @@
     <string name="label_search">Szukaj</string>
 <string name="button_cancel">Anuluj</string>
 <string name="button_confirm_save">Zapisz książkę</string>
-<string name="info_no_bookshelves">Nie utworzyłeś jeszcze żadnej półki. Dodaj jakąś przy pomocy menu na dole ekranu.</string>
+<string name="description_no_bookshelves">Nie utworzyłeś jeszcze żadnej półki. Dodaj jakąś przy pomocy menu na dole ekranu.</string>
 <string name="menu_insert_bs">Utwórz półkę</string>
 <string name="confirm_add_bs">Dodaj półkę</string>
 <string name="title_manage_bookshelves">Zarządzaj półkami</string>
@@ -34,10 +34,10 @@
 <string name="label_search_by">Szukaj autora lub tytułu</string>
 <string name="book_not_found">Zeskanowana książka nie została odnaleziona. Spóbuj ponownie z kodem, który może znajdować się w środku okładki lub wprowadź dane ręcznie.</string>
 <string name="label_series_num">tom#</string>
-    <string name="a_and_b">%1$s i %2$s</string>
+    <string name="fragment_a_and_b">%1$s i %2$s</string>
     <string name="import_data">Importuj książki</string>
 <string name="import_alert">Uwaga! Zaimportowane dane mogą nadpisać istniejące, jeśli pokryje się identyfikator (pole _id). Jest to zwykle oczekiwane zachowanie, gdy edytowałeś wyeksportowany wcześniej plik. Jeśli dodajesz nową książkę, pozostaw pole _id puste.</string>
-    <string name="import_failed_is_location_correct">Błąd!: Import z karty SD nie powiódł się. Upewnij się, czy plik export.csv jest w prawidłowym miejscu.</string>
+    <string name="alert_import_failed_is_location_correct">Błąd!: Import z karty SD nie powiódł się. Upewnij się, czy plik export.csv jest w prawidłowym miejscu.</string>
     <string name="install_scan_title">Zainstaluj Barcode Scanner</string>
 <string name="label_version_number">Wersja programu:</string>
 <string name="para_donate">Jeśli chciałbyś wesprzeć rozwój programu, zrób to poprzez mój Amazon Wishlist lub PayPal. Będąc obywatelem Australii nie mam póki co możliwości opublikowania &quot;płatnej&quot; wersji. :-) </string>
@@ -126,7 +126,7 @@
 <string name="vldt_failed">Walidacja pola nie powiodła się dla \'%s\'</string>
     <string name="vldt_read_start_after_end">Data rozpoczęcia czytania późniejsza od daty zakończenia</string>
 <string name="backup_success">Kopia zapasowa wykonana</string>
-<string name="backup_failed">Kopia zapasowa nie powiodła się</string>
+<string name="alert_backup_failed">Kopia zapasowa nie powiodła się</string>
 <string name="file_must_contain_column">Plik musi zawierać pole %s</string>
 <string name="file_must_contain_any_column">Plik musi zawierać jedno z pól: %s</string>
 <string name="column_is_blank">Pole %1$s jest puste w linii %2$s</string>
@@ -138,7 +138,7 @@
     <string name="cover_corrupt">Okładka jest uszkodzona</string>
 <string name="cover_detail">Szczegóły okładki</string>
     <string name="label_set_authors">Przypisz autorów...</string>
-<string name="and_others">i inni</string>
+<string name="fragment_and_others">i inni</string>
 <string name="set_series">Ustaw serię (tom)...</string>
 <string name="author_already_in_list">Autor jest już na liście</string>
 <string name="author_is_blank">Pole autor jest puste</string>

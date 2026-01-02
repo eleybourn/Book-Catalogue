@@ -106,7 +106,7 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 			mArchiveHasValidDates = false;
 		}
 
-        View v = requireActivity().getLayoutInflater().inflate(R.layout.import_type_selection, null);
+        View v = requireActivity().getLayoutInflater().inflate(R.layout.dialog_import_type_selection, null);
 		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setIcon(R.drawable.ic_archive).setView(v).setTitle(R.string.label_import_from_archive).create();
 		//alertDialog.setIcon(R.drawable.ic_menu_help);
 		alertDialog.setCanceledOnTouchOutside(false);
@@ -121,20 +121,20 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 				String covers = r.getQuantityString(R.plurals.n_covers,
 													info.getCoverCount(),
 													info.getCoverCount());
-				s = r.getString(R.string.a_and_b, books, covers);
+				s = r.getString(R.string.fragment_a_and_b, books, covers);
 			} else {
 				s = books;
 			}
 			String size = Utils.formatFileSize(mDocFile.length());
 			String date = DateFormat.getDateTimeInstance().format(info.getCreateDate());
-			String s_info = r.getString(R.string.selected_archive_info, size, date);
-			s = s_info +"\n\n" + r.getString(R.string.selected_archive_contains, s);
+			String s_info = r.getString(R.string.para_selected_archive_info, size, date);
+			s = s_info +"\n\n" + r.getString(R.string.para_selected_archive_contains, s);
 		} else {
 			String size = Utils.formatFileSize(mDocFile.length());
 			String date = DateFormat.getDateTimeInstance().format(mDocFile.lastModified());
-			s = r.getString(R.string.selected_archive_info, size, date);
+			s = r.getString(R.string.para_selected_archive_info, size, date);
 		}
-		s = s + "\n\n" + r.getString(R.string.import_books_blurb);
+		s = s + "\n\n" + r.getString(R.string.description_import_books_blurb);
 		mainText.setText(s);
 
 		setOnClickListener(v, R.id.all_books_row);
@@ -142,7 +142,7 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 			setOnClickListener(v, R.id.new_and_changed_books_row);
 		} else {
 			TextView blurb = v.findViewById(R.id.new_and_changed_books_blurb);
-			blurb.setText(R.string.old_archive_blurb);
+			blurb.setText(R.string.alert_old_archive_blurb);
 		}
 
         return alertDialog;
@@ -150,7 +150,7 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 
     private void handleClick(View v) {
     	if (!mArchiveHasValidDates && v.getId() == R.id.new_and_changed_books_row) {
-    		Toast.makeText(getActivity(), R.string.old_archive_blurb, Toast.LENGTH_LONG).show();
+    		Toast.makeText(getActivity(), R.string.alert_old_archive_blurb, Toast.LENGTH_LONG).show();
     		return;
     	}
 

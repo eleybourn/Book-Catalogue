@@ -113,14 +113,14 @@ public class BackupExportManager
         BookCatalogueActivity activity = (BookCatalogueActivity) fragment.requireActivity();
         String msg;
         if (fragment.isCancelled()) {
-            msg = activity.getString(R.string.cancelled);
+            msg = activity.getString(R.string.alert_cancelled);
         } else if (!fragment.getSuccess()) {
-            msg = activity.getString(R.string.backup_failed)
-                    + " " + activity.getString(R.string.please_check_sd_writable)
-                    + "\n\n" + activity.getString(R.string.if_the_problem_persists);
+            msg = activity.getString(R.string.alert_backup_failed)
+                    + " " + activity.getString(R.string.alert_please_check_sd_writable)
+                    + "\n\n" + activity.getString(R.string.alert_if_the_problem_persists);
         } else {
             msg = activity.getString(R.string.para_archive_complete_details,
-                    activity.getString(R.string.selected_thing),
+                    activity.getString(R.string.fragment_selected_thing),
                     mBackupFile.getName(),
                     Utils.formatFileSize(mBackupFile.length()));
         }

@@ -190,7 +190,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                     String extra = "";
                     if (mResult.duplicates > 0) {
                         if (mResult.not_in_db > 0) {
-                            extra = c.getString(R.string.a_and_b, msg_dup, msg_not_book);
+                            extra = c.getString(R.string.fragment_a_and_b, msg_dup, msg_not_book);
                         } else {
                             extra = msg_dup;
                         }
@@ -349,10 +349,8 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
         if (!(this instanceof StartupActivity) && StartupActivity.isFileMoveRequired()) {
             // To avoid re-display on recreate of activity
             StartupActivity.setFileMoveRequired(false);
-            // No point trying to list files; they may not be accessible and if this is an upgrade, they DO exist
-            //ArrayList<File> list = StorageUtils.getExistingOldPaths();
             String msg = this.getString(
-                    R.string.old_files_message,
+                    R.string.alert_old_files_message,
                     getString(R.string.button_ok),
                     getString(R.string.button_cancel),
                     getString(R.string.title_settings),

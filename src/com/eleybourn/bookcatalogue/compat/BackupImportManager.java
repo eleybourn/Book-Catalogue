@@ -8,7 +8,6 @@ import com.eleybourn.bookcatalogue.backup.BackupManager;
 import com.eleybourn.bookcatalogue.backup.BackupManager.BackupListener;
 import com.eleybourn.bookcatalogue.backup.Importer;
 import com.eleybourn.bookcatalogue.backup.tar.TarBackupContainer;
-import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.ExportSettings;
 import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment.OnImportTypeSelectionDialogResultListener;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
@@ -18,17 +17,14 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.Fragmen
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocument;
 import androidx.documentfile.provider.DocumentFile;
-import androidx.fragment.app.FragmentManager;
 
 public class BackupImportManager
 		implements OnImportTypeSelectionDialogResultListener,
 				   BackupListener
 {
 	ActivityResultLauncher<String[]> mBackupImportPickerLauncher;
-	private DocumentFile mBackupFile = null;
-	private final ExportSettings mSettings = null;
 
-	public BackupImportManager(BookCatalogueActivity activity) {
+    public BackupImportManager(BookCatalogueActivity activity) {
 		register(activity);
 	}
 
@@ -38,9 +34,8 @@ public class BackupImportManager
 			throw new RuntimeException(this.getClass()
 										   .getSimpleName() + " must implement OnImportTypeSelectionDialogResultListener");
 		}
-		final FragmentManager fm = activity.getSupportFragmentManager();
 
-		mBackupImportPickerLauncher = activity.registerForActivityResult(
+        mBackupImportPickerLauncher = activity.registerForActivityResult(
 				new OpenDocument(),
 				result -> {
 					if (result != null) {
@@ -55,7 +50,6 @@ public class BackupImportManager
 								start();
 								return;
 							}
-							mBackupFile = f;
 							ImportTypeSelectionDialogFragment frag = ImportTypeSelectionDialogFragment.newInstance(ID.DIALOG_OPEN_IMPORT_TYPE, f);
 							frag.show(activity.getSupportFragmentManager(), null);
 						}
@@ -87,14 +81,14 @@ public class BackupImportManager
 		BookCatalogueActivity activity = (BookCatalogueActivity) fragment.requireActivity();
 		String msg;
 		if (fragment.isCancelled()) {
-			msg = activity.getString(R.string.cancelled);
+			msg = activity.getString(R.string.alert_cancelled);
 		} else if (!fragment.getSuccess()) {
 			msg = activity.getString(R.string.import_failed)
 					+ " " + activity.getString(R.string.please_check_sd_readable)
-					+ "\n\n" + activity.getString(R.string.if_the_problem_persists);
+					+ "\n\n" + activity.getString(R.string.alert_if_the_problem_persists);
 
 		} else {
-			msg = activity.getString(R.string.import_complete);
+			msg = activity.getString(R.string.description_import_complete);
 		}
 		MessageDialogFragment frag = MessageDialogFragment.newInstance(
 				ID.MSG_ID_BACKUP_IMPORT_COMPLETE,

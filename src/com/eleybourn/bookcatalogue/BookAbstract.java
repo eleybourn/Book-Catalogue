@@ -203,7 +203,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
                 int column_index = (cursor != null) ? cursor.getColumnIndex(MediaStore.Images.Media.DATA) : -1;
                 if (cursor == null || column_index < 0 || !cursor.moveToFirst()) {
                     Logger.logError(new RuntimeException("Add from gallery failed (col = " + column_index + "), name = " + MediaStore.Images.Media.DATA));
-                    String s = getResources().getString(R.string.no_image_found) + ". " + getResources().getString(R.string.if_the_problem_persists);
+                    String s = getResources().getString(R.string.no_image_found) + ". " + getResources().getString(R.string.alert_if_the_problem_persists);
                     Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
                 } else {
                     String selectedImagePath = cursor.getString(column_index);
@@ -239,7 +239,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     }
 
     private void showCopyErrorToast() {
-        String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.if_the_problem_persists);
+        String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.alert_if_the_problem_persists);
         Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
     }
 
@@ -582,7 +582,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
             }
             newText = list.get(0).getDisplayName();
             if (list.size() > 1)
-                newText += " " + getResources().getString(R.string.and_others);
+                newText += " " + getResources().getString(R.string.fragment_and_others);
         }
         mFields.getField(R.id.field_series).setValue(newText);
     }

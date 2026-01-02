@@ -21,7 +21,7 @@
     <string name="label_search">Ara</string>
     <string name="button_cancel">Vazgeç</string>
     <string name="button_confirm_save">Kitabı kaydet</string>
-    <string name="info_no_bookshelves">Henüz hiçbir kitaplık oluşturmadınız. Ekranın alt kısmındaki bölümü kullanarak yeni kitaplık oluşturun.</string>
+    <string name="description_no_bookshelves">Henüz hiçbir kitaplık oluşturmadınız. Ekranın alt kısmındaki bölümü kullanarak yeni kitaplık oluşturun.</string>
     <string name="menu_insert_bs">Kitaplık oluştur</string>
     <string name="confirm_add_bs">Kitaplık ekle</string>
     <string name="title_manage_bookshelves">Kitaplıkları yönet</string>
@@ -37,7 +37,7 @@
     <string name="label_series_num">#</string>
     <string name="import_data">Kitapları içe aktar</string>
     <string name="import_alert">Uyarı: Bilgileri içe aktarırken eğer içe aktardığınız dosyaların ID numarası var olan bir kitabın ID\'si ile aynı ise, varolan kitap verilerinin üstüne yazılmasına neden olabilir. Eğer dışa aktarılmış bir dosyada bir giriyi değiştirdiyseniz bu sorun değildir; ancak yeni bir kitap girişi oluşturuyorsanız ID bölümünün boş olduğundan emin olun.</string>
-    <string name="import_failed_is_location_correct">Hata: SD karttan içe aktarma başarısız oldu. Dosyalar yerli yerinde mi acaba?</string>
+    <string name="alert_import_failed_is_location_correct">Hata: SD karttan içe aktarma başarısız oldu. Dosyalar yerli yerinde mi acaba?</string>
     <string name="install_scan_title">Barkod Tarayıcıyı yükleyin</string>
     <string name="label_version_number">Sürüm numarası</string>
     <string name="para_donate">Eğer uygulamanın geliştirilmesini desteklemek isterseniz aşağıdaki Amazon Wishlist veya Paypal düğmelerini kullanarak bağışta bulunabilirsiniz. Kişi Avustralya\'da olunca &quot;ücretli&quot; bir sürüm yayınlayamıyor haliyle. :-) </string>
@@ -125,7 +125,7 @@
     <string name="vldt_failed">\'%s\' için doğrulama başarısız</string>
     <string name="vldt_read_start_after_end">Okunmaya başlama süresi bitiş süresinden sonra</string>
     <string name="backup_success">Yedekleme başarılı!</string>
-    <string name="backup_failed">Yedekleme başarısız!</string>
+    <string name="alert_backup_failed">Yedekleme başarısız!</string>
     <string name="file_must_contain_column">Dosya adı %s adında bir sütun içermeli</string>
     <string name="file_must_contain_any_column">Dosya, %s adlarından birini kullanan bir sütun içermeli</string>
     <string name="column_is_blank">Sütun %1$s %2$s numaralı satırda boş</string>
@@ -140,7 +140,7 @@
     <string name="cover_corrupt">Kapak hasarlı</string>
     <string name="cover_detail">Kapak ayrıntısı</string>
     <string name="label_set_authors">Yazar ekle&#8230;</string>
-    <string name="and_others">ve diğerleri</string>
+    <string name="fragment_and_others">ve diğerleri</string>
     <string name="set_series">Seri ekle&#8230;</string>
     <string name="author_already_in_list">Yazar zaten ekli</string>
     <string name="author_is_blank">Yazar alanı boş</string>
@@ -239,7 +239,7 @@
     <string name="no_matching_book_found">Eşleşen kitap bulunamadı</string>
     <string name="no_isbn_stored_for_book">Bu kitap için bir ISBN depolanmamış</string>
     <string name="select_an_action">Bir eylem seçin</string>
-    <string name="if_the_problem_persists">Eğer sorun sürerse lütfen ana seçkedeki Yardım bölümünden destek ile iletişime geçin.</string>
+    <string name="alert_if_the_problem_persists">Eğer sorun sürerse lütfen ana seçkedeki Yardım bölümünden destek ile iletişime geçin.</string>
     <string name="x_of_y">%1$d (Toplam %2$d)</string>
     <string name="send_book_to_goodreads">Bu kitabı Goodreads\'e gönder: %1$s</string>
 
@@ -460,8 +460,8 @@
     <string name="preference_auto_rotate_camera_images">Kamera resimlerini özdevinimli olarak döndür</string>
     <string name="hint_autorotate_camera_images">Eğer kendinizi sürekli kamera resimlerini aynı doğrultuda döndürüyor buluyorsanız uygulama ayarlarını sürekli bir yöne görselleri kendiliğinden döndürecek biçimde ayarlayabilirsiniz.</string>
     <string name="preference_default_crop_frame_is_whole_image">Öntanımlı kırpma alanı bütün görseldir</string>
-    <string name="cancelled">İptal edildi</string>
-    <string name="import_complete">İçe aktarma başarılı</string>
+    <string name="alert_cancelled">İptal edildi</string>
+    <string name="description_import_complete">İçe aktarma başarılı</string>
     <string name="searching_ellipsis">Aranıyor&#8230;</string>
     <string name="status_adding_book_ellipsis">Kitap ekle&#8230;</string>
     <string name="preference_global_opening_book_mode">Kitabı salt okunur aç</string>
@@ -575,7 +575,7 @@
     <string name="label_import_from_archive">Arşivden içe aktar</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="a_and_b">%1$s ve %2$s</string>
+    <string name="fragment_a_and_b">%1$s ve %2$s</string>
     <string name="para_archive_complete_details">%2$s adında bir %3$s dosyası SD kartınızın \"%1$s\" dizininde oluşturuldu.\n\nBu dosyayı el ile başka bir yere yedeklemeniz aygıtınızın hasar görmesi, kaybolması veya çalınması durumunda verilerinizin korunması için tavsiye edilir.</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
@@ -632,7 +632,7 @@
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">İçe aktarma başarısız.</string>
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_writable">SD kartın üstüne yazılabilir ve yeterli boş alanı olduğundan emin olun.</string>
+    <string name="alert_please_check_sd_writable">SD kartın üstüne yazılabilir ve yeterli boş alanı olduğundan emin olun.</string>
     <!-- Displayed when any write operation to the sd card fails -->
     <string name="please_check_sd_readable">SD kartın erişilebilir olduğundan emin olun.</string>
 
@@ -711,20 +711,20 @@
     <!-- Begin: Added/Updated in [Next Version] -->
     
     <!--  Explanatory text for 'import' dialogue -->
-    <string name="import_books_blurb">Arşivdeki kitaplar içe aktarılacaktır. Aktarmaya başlamak için iki seçenekten birini seçin, iptal etmek için ise \'geri\' düğmesine basın:</string>
+    <string name="description_import_books_blurb">Arşivdeki kitaplar içe aktarılacaktır. Aktarmaya başlamak için iki seçenekten birini seçin, iptal etmek için ise \'geri\' düğmesine basın:</string>
     <!-- Description of the 'import all books' option -->
-    <string name="all_books_blurb">Arşivdeki tüm kitaplar içe aktarılacak; var olan kitaplar güncellenip yeni olanlar eklenecektir.</string>
+    <string name="description_all_books_blurb">Arşivdeki tüm kitaplar içe aktarılacak; var olan kitaplar güncellenip yeni olanlar eklenecektir.</string>
     <!-- Menu text for the 'import/export new & changed' option -->
-    <string name="new_and_changed_books">Yeni ve güncellenmiş kitaplar</string>
+    <string name="option_new_and_changed_books">Yeni ve güncellenmiş kitaplar</string>
     <!-- Description of the 'import new & changed' option -->
-    <string name="new_and_changed_books_blurb">Yalnızca yeni olan veya son zamanlarda arşivde güncellenmiş kitapları içe aktar. Bu seçenek özellikle örneğin iki aygıtı eşlerken yararlıdır.</string>
+    <string name="description_new_and_changed_books_blurb">Yalnızca yeni olan veya son zamanlarda arşivde güncellenmiş kitapları içe aktar. Bu seçenek özellikle örneğin iki aygıtı eşlerken yararlıdır.</string>
     <!-- Descriptive text associated with import options not available with older archives -->
-    <string name="old_archive_blurb">Bu seçenek eski arşiv sürümleri için geçerli değildir.</string>
+    <string name="alert_old_archive_blurb">Bu seçenek eski arşiv sürümleri için geçerli değildir.</string>
     <!-- Part of the progress message displayed when importing books -->
     <string name="n_created_m_updated">%1$s oluşturuldu, %2$s güncellendi</string>
 
     <!--  Explanatory text for 'export' dialogue -->
-    <string name="export_books_blurb">Kataloğunuzdaki kitaplar dışa aktarılacaktır. Aktarmaya başlamak için iki seçenekten birini seçin, iptal etmek için ise için \'geri\' düğmesine basın:</string>
+    <string name="description_export_books_blurb">Kataloğunuzdaki kitaplar dışa aktarılacaktır. Aktarmaya başlamak için iki seçenekten birini seçin, iptal etmek için ise için \'geri\' düğmesine basın:</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
@@ -732,26 +732,26 @@
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_increment">%1$s kapak işlendi (%2$s bulunamadı, %3$s atlandı)</string>
     <!-- Explanatory note for 'export all' option -->
-    <string name="export_all_blurb">Tüm kitaplar, kapaklar, ayarlar ve kişiselleştirilmiş biçemler arşive aktarılacaktır.</string>
+    <string name="description_export_all_blurb">Tüm kitaplar, kapaklar, ayarlar ve kişiselleştirilmiş biçemler arşive aktarılacaktır.</string>
     <!-- Explanatory note for 'advanced export' option -->
-    <string name="export_advanced_blurb">Arşive nelerin aktarılacağını seçin.</string>
+    <string name="description_export_advanced_blurb">Arşive nelerin aktarılacağını seçin.</string>
     <!-- Introduction for 'advanced export' option -->
     <!-- Text for button -->
-    <string name="book_details">Kitap ayrıntıları</string>
+    <string name="label_book_details">Kitap ayrıntıları</string>
     <!-- Brief descriptionn -->
-    <string name="book_details_blurb">Kitapların ayrıntılarını gösterir</string>
+    <string name="description_book_details_blurb">Kitapların ayrıntılarını gösterir</string>
     <!-- Text for button -->
-    <string name="cover_images">Kapak görselleri</string>
+    <string name="label_cover_images">Kapak görselleri</string>
     <!-- Brief descriptionn -->
-    <string name="cover_images_blurb">Seçilen kitaplar için kapak resimlerini gösterir. Dışarı aktarım boyutunu arttıracaktır.</string>
+    <string name="description_cover_images_blurb">Seçilen kitaplar için kapak resimlerini gösterir. Dışarı aktarım boyutunu arttıracaktır.</string>
     <!-- Brief descriptionn -->
-    <string name="preferences_blurb">Yeğlenenler ve kullanıcı tanımlı dizelge biçemleri</string>
+    <string name="description_preferences_blurb">Yeğlenenler ve kullanıcı tanımlı dizelge biçemleri</string>
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="export_advanced_date_blurb">Seçeneğe bağlı olarak, dışarı aktarılacak kitaplarda ve/veya kapak görsellerinde kullanılacak bir günay seçin:</string>
+    <string name="description_export_advanced_date_blurb">Seçeneğe bağlı olarak, dışarı aktarılacak kitaplarda ve/veya kapak görsellerinde kullanılacak bir günay seçin:</string>
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="all_books_added_or_updated_since">Şu günaydan bu yana eklenen veya güncellenen kitaplar:</string>
+    <string name="option_all_books_added_or_updated_since">Şu günaydan bu yana eklenen veya güncellenen kitaplar:</string>
     <!-- Explanatory note for export data since last backup -->
-    <string name="all_books_added_or_updated_since_last_full_backup">Son tüm yedeklemeden bu yana eklenen veya güncellenen kitaplar</string>
+    <string name="option_all_books_added_or_updated_since_last_full_backup">Son tüm yedeklemeden bu yana eklenen veya güncellenen kitaplar</string>
    <!-- Short text for 'n books' -->
    <plurals
    name="n_books">

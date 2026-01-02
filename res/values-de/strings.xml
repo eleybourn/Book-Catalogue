@@ -20,7 +20,7 @@
     <string name="label_search">Suche</string>
 <string name="button_cancel">Abbrechen</string>
 <string name="button_confirm_save">Buch speichern</string>
-<string name="info_no_bookshelves">Es wurde noch kein Bücherregal erstellt. Bitte fügen Sie Bücherregale über das Menü am unteren Bildschirmrand hinzu.</string>
+<string name="description_no_bookshelves">Es wurde noch kein Bücherregal erstellt. Bitte fügen Sie Bücherregale über das Menü am unteren Bildschirmrand hinzu.</string>
 <string name="menu_insert_bs">Bücherregal erstellen</string>
 <string name="confirm_add_bs">Bücherregal hinzufügen</string>
 <string name="title_manage_bookshelves">Bücherregale verwalten</string>
@@ -127,7 +127,7 @@
 <string name="vldt_failed">Die Überprüfung für \'%s\' ist fehlgeschlagen</string>
     <string name="vldt_read_start_after_end">Das Datum Lesen beendet ist vor dem Datum mit Lesen begonnen</string>
 <string name="backup_success">Sicherungskopie erfolgreich erstellt</string>
-<string name="backup_failed">Sicherungskopie erstellen fehlgeschlagen</string>
+<string name="alert_backup_failed">Sicherungskopie erstellen fehlgeschlagen</string>
 <string name="file_must_contain_column">Die Datei muss eine Spalte mit dem Namen %s enthalten</string>
 <string name="file_must_contain_any_column">Die Datei muss eine Spalte mit den folgenden Namen enthalten: %s</string>
 <string name="column_is_blank">Die Spalte %1$s ist in Zeile %2$s leer</string>
@@ -139,7 +139,7 @@
     <string name="cover_corrupt">Das Cover ist unbrauchbar</string>
 <string name="cover_detail">Coverdetails</string>
     <string name="label_set_authors">Autor angeben…</string>
-<string name="and_others">et. al.</string>
+<string name="fragment_and_others">et. al.</string>
 <string name="set_series">Serie angeben…</string>
 <string name="author_already_in_list">Der Autor befindet sich bereits in der Liste</string>
 <string name="author_is_blank">Das Feld des Autors ist leer</string>
@@ -227,7 +227,7 @@
 <string name="no_matching_book_found">Kein passendes Buch gefunden</string>
 <string name="no_isbn_stored_for_book">Zu diesem Buch ist keine ISBN gespeichert</string>
 <string name="select_an_action">Eine Aktion wählen</string>
-    <string name="if_the_problem_persists">Wenn das Problem weiterhin besteht, kontaktieren Sie den Support über das Menü "Hilfe"</string>
+    <string name="alert_if_the_problem_persists">Wenn das Problem weiterhin besteht, kontaktieren Sie den Support über das Menü "Hilfe"</string>
     <string name="x_of_y">%1$d von %2$d</string>
 <string name="send_book_to_goodreads">Buch %1$s an Goodreads senden</string>
 
@@ -428,8 +428,8 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="preference_auto_rotate_camera_images">Bilder von der Kamera automatisch rotieren</string>
 <string name="hint_autorotate_camera_images">Wenn Sie Bilder von der Kamera immer in die selbe Richtung drehen müssen, versuchen Sie, die automatische Drehrichtung in den Einstellungen festzulegen.</string>
 <string name="preference_default_crop_frame_is_whole_image">Standardbeschnitt besteht aus dem gesamten Bild</string>
-<string name="cancelled">Abgebrochen</string>
-<string name="import_complete">Import vollständig</string>
+<string name="alert_cancelled">Abgebrochen</string>
+<string name="description_import_complete">Import vollständig</string>
     <string name="searching_ellipsis">Suche&#8230;</string>
 
 <string name="status_adding_book_ellipsis">Buch hinzufügen&#8230;</string>
@@ -522,7 +522,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     <string name="label_backup_to_archive">Sichern ins Archiv</string>
 <string name="label_import_from_archive">Import vom Archiv</string>
 <!--  Hint displayed when aCatalogue Backup is done -->
-    <string name="a_and_b">%1$s und %2$s</string>
+    <string name="fragment_a_and_b">%1$s und %2$s</string>
     <string name="para_archive_complete_details">Eine %3$s-Datei namens %2$s wurde im Verzeichnis \"%1$s\" auf Ihrer SD-Karte erzeugt.
     \n\nSie sollten diese Datei händisch an einen sicheren Ort kopieren, um Ihre Daten vor Beschädigung, Verlust oder Diebstahl zu schützen.</string>
 
@@ -662,20 +662,20 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     <!-- Begin: Added/Updated in 5.1.0 -->
 
     <!--  Explanatory text for 'import' dialogue -->
-    <string name="import_books_blurb">Die Bücher aus diesem Archiv werden importiert. Tippen Sie auf eine der beiden Optionen, um den Import zu starten, oder auf \'Zurück\', um abzubrechen:</string>
+    <string name="description_import_books_blurb">Die Bücher aus diesem Archiv werden importiert. Tippen Sie auf eine der beiden Optionen, um den Import zu starten, oder auf \'Zurück\', um abzubrechen:</string>
     <!-- Description of the 'import all books' option -->
-    <string name="all_books_blurb">Alle Bücher aus diesem Archiv werden importiert. Vorhandene Bücher werden aktualisiert und neue Bücher hinzugefügt.</string>
+    <string name="description_all_books_blurb">Alle Bücher aus diesem Archiv werden importiert. Vorhandene Bücher werden aktualisiert und neue Bücher hinzugefügt.</string>
     <!-- Menu text for the 'import/export new & changed' option -->
-    <string name="new_and_changed_books">Neue und aktualisierte Bücher</string>
+    <string name="option_new_and_changed_books">Neue und aktualisierte Bücher</string>
     <!-- Description of the 'import new & changed' option -->
-    <string name="new_and_changed_books_blurb">Nur neue oder aktuellere Bücher im Archiv. Das ist nützlich, um zwei Geräte zu synchronisieren.</string>
+    <string name="description_new_and_changed_books_blurb">Nur neue oder aktuellere Bücher im Archiv. Das ist nützlich, um zwei Geräte zu synchronisieren.</string>
     <!-- Descriptive text associated with import options not available with older archives -->
-    <string name="old_archive_blurb">Diese Option wird für ältere Archivversionen nicht unterstützt.</string>
+    <string name="alert_old_archive_blurb">Diese Option wird für ältere Archivversionen nicht unterstützt.</string>
     <!-- Part of the progress message displayed when importing books -->
     <string name="n_created_m_updated">%1$s erzeugt, %2$s aktualisiert</string>
 
     <!--  Explanatory text for 'export' dialogue -->
-    <string name="export_books_blurb">Die Bücher aus Ihrem Katalog werden exportiert. Tippen Sie auf eine der beiden Optionen, um den Export zu starten, oder auf \'Zurück\', um abzubrechen:</string>
+    <string name="description_export_books_blurb">Die Bücher aus Ihrem Katalog werden exportiert. Tippen Sie auf eine der beiden Optionen, um den Export zu starten, oder auf \'Zurück\', um abzubrechen:</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
@@ -684,29 +684,29 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     <string name="covers_progress_increment">%1$s Cover bearbeitet (%2$s fehlen, %3$s übersprungen)</string>
 
     <!-- Explanatory note for 'export all' option -->
-    <string name="export_all_blurb">Alle Bücher, Cover, Einstellungen und benutzerdefinierten Stile werden in das Archiv exportiert.</string>
+    <string name="description_export_all_blurb">Alle Bücher, Cover, Einstellungen und benutzerdefinierten Stile werden in das Archiv exportiert.</string>
     <!-- Explanatory note for 'advanced export' option -->
-    <string name="export_advanced_blurb">Wählen Sie, was in das Archiv exportiert wird.</string>
+    <string name="description_export_advanced_blurb">Wählen Sie, was in das Archiv exportiert wird.</string>
     <!-- Introduction for 'advanced export' option -->
 
     <!-- Text for button -->
-    <string name="book_details">Buchdetails</string>
+    <string name="label_book_details">Buchdetails</string>
     <!-- Brief descriptionn -->
-    <string name="book_details_blurb">Die Details der Bücher</string>
+    <string name="description_book_details_blurb">Die Details der Bücher</string>
     <!-- Text for button -->
-    <string name="cover_images">Cover-Bilder</string>
+    <string name="label_cover_images">Cover-Bilder</string>
     <!-- Brief descriptionn -->
-    <string name="cover_images_blurb">Cover-Bilder für alle ausgewählten Bücher. Der Export wird dadurch viel grösser.</string>
+    <string name="description_cover_images_blurb">Cover-Bilder für alle ausgewählten Bücher. Der Export wird dadurch viel grösser.</string>
     <!-- Brief descriptionn -->
-    <string name="preferences_blurb">Einstellungen und benutzerdefinierte Stile</string>
+    <string name="description_preferences_blurb">Einstellungen und benutzerdefinierte Stile</string>
 
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="export_advanced_date_blurb">Geben Sie wahlweise ein Datum an, um Bücher und Cover auszuwählen:</string>
+    <string name="description_export_advanced_date_blurb">Geben Sie wahlweise ein Datum an, um Bücher und Cover auszuwählen:</string>
 
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="all_books_added_or_updated_since">Alle neuen und aktualisierten Bücher seit:</string>
+    <string name="option_all_books_added_or_updated_since">Alle neuen und aktualisierten Bücher seit:</string>
     <!-- Explanatory note for export data since last backup -->
-    <string name="all_books_added_or_updated_since_last_full_backup">Alle neuen und aktualisierten Bücher seit der letzten vollständigen Sicherung</string>
+    <string name="option_all_books_added_or_updated_since_last_full_backup">Alle neuen und aktualisierten Bücher seit der letzten vollständigen Sicherung</string>
 
     <!-- Short text for 'n books' -->
     <plurals
@@ -904,11 +904,11 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
         <!-- SEVERAL UPDATED MESSAGES: changed 'sd card' tp storage. -->
 
         <!-- Displayed when any write operation to the sd card fails -->
-        <string name="please_check_sd_writable">Ihr Datenspeicher ist nicht beschreibbar oder hat zu wenig Platz.</string>
+        <string name="alert_please_check_sd_writable">Ihr Datenspeicher ist nicht beschreibbar oder hat zu wenig Platz.</string>
         <!-- Displayed when any write operation to the sd card fails -->
         <string name="please_check_sd_readable">Ihr Datenspeicher ist nicht verfügbar.</string>
 
-    <string name="import_failed_is_location_correct">FEHLER: Der Import ist fehlgeschlagen. Bitte kontaktieren Sie den Support.</string>
+    <string name="alert_import_failed_is_location_correct">FEHLER: Der Import ist fehlgeschlagen. Bitte kontaktieren Sie den Support.</string>
         <string name="backup_request">Möchten Sie Ihre Datenbank sichern?</string>
         <string name="export_failed_sdcard">Der Export ist fehlgeschlagen. Auf den Datenspeicher kann nicht geschrieben werden</string>
         <string name="para_cleanup_files">Die temporären Dateien belegen %s Speicherplatz. Logs und andere Daten werden bei jeder App-Aktualisierung, Sicherungskopie und bei Abstürzen gespeichert. Drücken Sie den Button, um diese Dateien zu löschen. Bei Abstürzen oder anderen Fehlern drücken Sie vorher gerne auf \'Sende Informationen\'.</string>

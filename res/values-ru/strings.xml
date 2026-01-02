@@ -21,7 +21,7 @@
     <string name="label_search">Поиск</string>
     <string name="button_cancel">Отмена</string>
     <string name="button_confirm_save">Сохранить книгу</string>
-    <string name="info_no_bookshelves">Вы не создали ни одной полки. Пожалуйста, добавьте полку, используя меню в нижней части этого экрана.</string>
+    <string name="description_no_bookshelves">Вы не создали ни одной полки. Пожалуйста, добавьте полку, используя меню в нижней части этого экрана.</string>
     <string name="menu_insert_bs">Создать полку</string>
     <string name="confirm_add_bs">Добавить полку</string>
     <string name="title_manage_bookshelves">Полки</string>
@@ -126,7 +126,7 @@
     <string name="vldt_failed">Проверка не удалась для \'%s\'</string>
     <string name="vldt_read_start_after_end">Дата начала чтения позже даты завершения</string>
     <string name="backup_success">Резервное копирование успешно</string>
-    <string name="backup_failed">Резервное копирование не удалось</string>
+    <string name="alert_backup_failed">Резервное копирование не удалось</string>
     <string name="file_must_contain_column">В файле должен быть столбец с названием %s</string>
     <string name="file_must_contain_any_column">Файл должен содержать столбец с одним из следующих имён: %s</string>
     <string name="column_is_blank">Столбец %1$s в строке %2$s пуст</string>
@@ -139,7 +139,7 @@
     <string name="cover_corrupt">Обложка испорчена</string>
     <string name="cover_detail">Детальная информация об обложке</string>
     <string name="label_set_authors">Установка авторов&#8230;</string>
-    <string name="and_others">и др.</string>
+    <string name="fragment_and_others">и др.</string>
     <string name="set_series">Установка серии&#8230;</string>
     <string name="author_already_in_list">Автор уже есть в списке</string>
     <string name="author_is_blank">Не заполнено поле Автор</string>
@@ -228,7 +228,7 @@
     <string name="no_matching_book_found">Нет совпавших книг</string>
     <string name="no_isbn_stored_for_book">Нет ISBN хранящегося для книги</string>
     <string name="select_an_action">Выберете дествие</string>
-    <string name="if_the_problem_persists">Если проблема осталась, свяжитесь с поддержкой через меню Помощь главного меню.</string>
+    <string name="alert_if_the_problem_persists">Если проблема осталась, свяжитесь с поддержкой через меню Помощь главного меню.</string>
     <string name="x_of_y">%1$d из %2$d</string>
     <string name="send_book_to_goodreads">Отправить книгу %1$s на Goodreads</string>
 
@@ -446,8 +446,8 @@
     <string name="preference_auto_rotate_camera_images">Автоматически поворачивать фото, полученное камерой</string>
     <string name="hint_autorotate_camera_images">Если вы заметили, что всегда поворачиваете камеру в одном направлении, попробуйте установить в настройках опцию автоматического поворота.</string>
     <string name="preference_default_crop_frame_is_whole_image">Рамка по умолчанию: всё изображение</string>
-    <string name="cancelled">Отменено</string>
-    <string name="import_complete">Импорт завершен</string>
+    <string name="alert_cancelled">Отменено</string>
+    <string name="description_import_complete">Импорт завершен</string>
     <string name="searching_ellipsis">Поиск&#8230;</string>
     <string name="status_adding_book_ellipsis">Добавление книги&#8230;</string>
     <string name="preference_global_opening_book_mode">Просмотр книги в режиме чтения</string>
@@ -546,7 +546,7 @@
 	<string name="label_loan">Долг</string>
     <string name="label_backup_to_archive">Бэкап в архив</string>
     <string name="label_import_from_archive">Импорт из архива</string>
-    <string name="a_and_b">%1$s и %2$s</string>
+    <string name="fragment_a_and_b">%1$s и %2$s</string>
     <string name="para_archive_complete_details">Файл %3$s с именем %2$s был создан в папке \"%1$s\" на вашей SD карте.
     \n\nВам следует вручную скопировать его, чтобы защитить данные в случае утери или повреждения телефона.</string>
     <string name="covers_progress">%1$s обложек обработано (%2$s пропущено)</string>
@@ -560,7 +560,7 @@
     <string name="option_show_first_level_and_book_count">Показывать первыми заголовок и номер книг</string>
     <string name="option_show_all_summary_details">Показать все детали</string>
     <string name="import_failed">Импорт не удался.</string>
-    <string name="please_check_sd_writable">Пожалуйста, проверьте что на SD карте достаточно места и возможна запись.</string>
+    <string name="alert_please_check_sd_writable">Пожалуйста, проверьте что на SD карте достаточно места и возможна запись.</string>
     <string name="please_check_sd_readable">Пожалуйста, проверьте что SD карта доступна.</string>
     
     <string name="new_in_502">
@@ -617,32 +617,32 @@
 		]]>
     </string>
 
-    <string name="import_books_blurb">Книги этого архива будут импортированы. Выберите один из вариантов, чтобы начать импорт, или \'НАЗАД\' для отмены:</string>
-    <string name="all_books_blurb">Все книги архива будут импортированы, обновив существующие и добавив новые.</string>
-    <string name="new_and_changed_books">Новые и обновленные книги</string>
-    <string name="new_and_changed_books_blurb">Импортировать только новые книги или только те, что обновлены более поздно. Это удобно, когда синхронизируются несклоько устройств.</string>
-    <string name="old_archive_blurb">Эта опция не поддерживается для архивов более ранних версий.</string>
+    <string name="description_import_books_blurb">Книги этого архива будут импортированы. Выберите один из вариантов, чтобы начать импорт, или \'НАЗАД\' для отмены:</string>
+    <string name="description_all_books_blurb">Все книги архива будут импортированы, обновив существующие и добавив новые.</string>
+    <string name="option_new_and_changed_books">Новые и обновленные книги</string>
+    <string name="description_new_and_changed_books_blurb">Импортировать только новые книги или только те, что обновлены более поздно. Это удобно, когда синхронизируются несклоько устройств.</string>
+    <string name="alert_old_archive_blurb">Эта опция не поддерживается для архивов более ранних версий.</string>
     <string name="n_created_m_updated">%1$s создано, %2$s обновлено</string>
-    <string name="export_books_blurb">Книги этого архива будут экспортированы. Выберите один из вариантов, чтобы начать экспорт, или \'НАЗАД\' для отмены:</string>
+    <string name="description_export_books_blurb">Книги этого архива будут экспортированы. Выберите один из вариантов, чтобы начать экспорт, или \'НАЗАД\' для отмены:</string>
     <string name="covers_progress_increment">%1$s обложек обработано (%2$s не хватает, %3$s пропущено)</string>
     
     <!-- This was deleted in a previous version due to duplicate name; it has since been renamed. In the short term, I just display the simplet message -->
     <!-- The original message was: "ERROR: Import of data (from SDCard) failed. Is the file in the correct place?" -->
-    <string name="import_failed_is_location_correct">Импорт не удался.</string>
+    <string name="alert_import_failed_is_location_correct">Импорт не удался.</string>
     
-    <string name="export_all_blurb">Все книги, обложки, настройки и пользовательские стили будут экспортированы в архив.</string>
-    <string name="export_advanced_blurb">Выберите, что будет экспортировано в архив.</string>
+    <string name="description_export_all_blurb">Все книги, обложки, настройки и пользовательские стили будут экспортированы в архив.</string>
+    <string name="description_export_advanced_blurb">Выберите, что будет экспортировано в архив.</string>
 
-    <string name="book_details">Детальное инфо</string>
-    <string name="book_details_blurb">Подробная информация о самой книге</string>
-    <string name="cover_images">Обложки</string>
-    <string name="cover_images_blurb">Обложки для всех выбранных книг. Это сделает экспорт значительно больше.</string>
-    <string name="preferences_blurb">Настройки и пользовательские стили</string>
+    <string name="label_book_details">Детальное инфо</string>
+    <string name="description_book_details_blurb">Подробная информация о самой книге</string>
+    <string name="label_cover_images">Обложки</string>
+    <string name="description_cover_images_blurb">Обложки для всех выбранных книг. Это сделает экспорт значительно больше.</string>
+    <string name="description_preferences_blurb">Настройки и пользовательские стили</string>
     
-    <string name="export_advanced_date_blurb">Опционально укажите дату при выборе книг и/или обложек для экспорта:</string>
+    <string name="description_export_advanced_date_blurb">Опционально укажите дату при выборе книг и/или обложек для экспорта:</string>
     
-    <string name="all_books_added_or_updated_since">Все добавленные или обновленные книги с:</string>
-    <string name="all_books_added_or_updated_since_last_full_backup">Все добавленные или обновленные книги с последнего бэкапа</string>
+    <string name="option_all_books_added_or_updated_since">Все добавленные или обновленные книги с:</string>
+    <string name="option_all_books_added_or_updated_since_last_full_backup">Все добавленные или обновленные книги с последнего бэкапа</string>
 
     <plurals
         name="n_books">

@@ -119,7 +119,7 @@
     <string name="label_search">Recherche</string>
     <string name="button_cancel">Annuler</string>
     <string name="button_confirm_save">Sauvegarder le livre</string>
-    <string name="info_no_bookshelves">Vous n\'avez pas encore créé de bibliothèque. Veuillez en ajouter une par le menu en bas de cet écran.</string>
+    <string name="description_no_bookshelves">Vous n\'avez pas encore créé de bibliothèque. Veuillez en ajouter une par le menu en bas de cet écran.</string>
     <string name="menu_insert_bs">Créer une bibliothèque</string>
     <string name="confirm_add_bs">Ajouter une bibliothèque</string>
     <string name="title_manage_bookshelves">Gérer les bibliothèques</string>
@@ -134,7 +134,7 @@
     <string name="book_not_found">Le livre n\'a pas été trouvé. Il est parfois possible de trouver le code barre à l\'intérieur de la première page de couverture. Sinon merci d\'entrer les détails manuellement.</string>
     <string name="import_data">Importer les livres</string>
     <string name="import_alert">Attention ! L\'import de données peut provoquer la mise à jour de livres avec de nouvelles informations si les identifiants importés sont identiques à ceux existants. Cela est généralement correct si vous n\'avez modifié qu\'un champ dans un fichier exporté. Si vous avez intégralement créé un livre, assurez vous que le champ identifiant est vide.</string>
-    <string name="import_failed_is_location_correct">Erreur: l\'import depuis la carte SD a échoué. Le fichier se trouve-t-il au bon endroit ?</string>
+    <string name="alert_import_failed_is_location_correct">Erreur: l\'import depuis la carte SD a échoué. Le fichier se trouve-t-il au bon endroit ?</string>
     <string name="install_scan_title">Installer le scanner de code barre</string>
     <string name="label_version_number">Numéro de version :</string>
     <string name="para_donate">Si vous souhaitez supporter le développement de cette application, les donations sont possibles par Amazon Wishlist ou par le bouton Paypal ci-dessous. Je suis en Australie, ce qui rend impossible la publication d\'une version payante. :-)</string>
@@ -217,7 +217,7 @@
     <string name="vldt_failed">La validation a échoué pour \'%s\'</string>
     <string name="vldt_read_start_after_end">La date de début de lecture est après la date de fin</string>
     <string name="backup_success">Sauvegarde réussie</string>
-    <string name="backup_failed">Sauvegarde échouée</string>
+    <string name="alert_backup_failed">Sauvegarde échouée</string>
     <string name="file_must_contain_column">Le fichier doit contenir une colonne nommée %s</string>
     <string name="file_must_contain_any_column">Le fichier doit contenir au moins une des colonnes suivantes : %s</string>
     <string name="column_is_blank">La colonne %1$s est vide à la ligne %2$s</string>
@@ -229,7 +229,7 @@
     <string name="cover_corrupt">Couverture corrompue</string>
     <string name="cover_detail">Détails de la couverture</string>
     <string name="label_set_authors">Définir les auteurs&#8230;</string>
-    <string name="and_others">et cie.</string>
+    <string name="fragment_and_others">et cie.</string>
     <string name="set_series">Définir la série&#8230;</string>
     <string name="author_already_in_list">L\'auteur est déjà dans la liste</string>
     <string name="author_is_blank">Le champ « auteur » est vide</string>
@@ -319,7 +319,7 @@
     <string name="no_matching_book_found">Aucun livre correspondant n\'a été trouvé</string>
     <string name="no_isbn_stored_for_book">Aucun ISBN enregistré pour ce livre</string>
     <string name="select_an_action">Choisissez une action</string>
-    <string name="if_the_problem_persists">Si le problème persiste, contactez le support via l\'aide du menu principal.</string>
+    <string name="alert_if_the_problem_persists">Si le problème persiste, contactez le support via l\'aide du menu principal.</string>
     <string name="x_of_y">%1$d de %2$d</string>
     <string name="send_book_to_goodreads">Envoyer le livre %1$s à Goodreads</string>
     <string name="label_erase_cover_cache">Effacer le cache des couvertures</string>
@@ -520,8 +520,8 @@
     <string name="preference_auto_rotate_camera_images">Rotation automatique des photos</string>
     <string name="hint_autorotate_camera_images">Si vous devez systematiquement tourner vos photos dans le même sens, envisagez d\'autoriser la rotation automatique en changeant vos paramètres.</string>
     <string name="preference_default_crop_frame_is_whole_image">Le cadre par défaut de l\'image à recadrer sera l\'image complète</string>
-    <string name="cancelled">Annulé</string>
-    <string name="import_complete">Import terminé</string>
+    <string name="alert_cancelled">Annulé</string>
+    <string name="description_import_complete">Import terminé</string>
     <string name="searching_ellipsis">Recherche en cours&#8230;</string>
     <string name="status_adding_book_ellipsis">Ajout du livre&#8230;</string>
 
@@ -555,7 +555,7 @@
     <!-- Admin option to import -->
     <string name="label_import_from_archive">Restauration des données</string>
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="a_and_b">%1$s et %2$s</string>
+    <string name="fragment_a_and_b">%1$s et %2$s</string>
     <string name="para_archive_complete_details">Le fichier %2$s (%3$s) a été créé dans le répertoire « %1$s »
 		de votre carte carte SD.\n\nVous devriez le copier sur un autre média comme sauvegarde en cas de perte, vol ou destruction de votre équipement</string>
     <!-- Displayed in progress dialog when exporting covers -->
@@ -585,7 +585,7 @@
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Restauration échouée</string>
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_writable">Veuillez vérifier que votre carte SD est en mode \'ecriture\' et dispose d\'un espace suffisant</string>
+    <string name="alert_please_check_sd_writable">Veuillez vérifier que votre carte SD est en mode \'ecriture\' et dispose d\'un espace suffisant</string>
     <!-- Displayed when any write operation to the sd card fails -->
     <string name="please_check_sd_readable">Veuillez vérifier que votre carte SD est bien accessible.</string>
 
@@ -685,20 +685,20 @@
     <!-- Begin: Added/Updated in 5.1.0 -->
 
     <!--  Explanatory text for 'import' dialogue -->
-    <string name="import_books_blurb">Les livres de cette sauvegarde vont être importés. Choisissez une des deux options au début de l\'import, ou cliquez sur « retour » pour annuler:</string>
+    <string name="description_import_books_blurb">Les livres de cette sauvegarde vont être importés. Choisissez une des deux options au début de l\'import, ou cliquez sur « retour » pour annuler:</string>
     <!-- Description of the 'import all books' option -->
-    <string name="all_books_blurb">Tous les livres de la sauvegardes seront importés en mettant à jour ceux existant et en ajoutant les nouveaux.</string>
+    <string name="description_all_books_blurb">Tous les livres de la sauvegardes seront importés en mettant à jour ceux existant et en ajoutant les nouveaux.</string>
     <!-- Menu text for the 'import/export new & changed' option -->
-    <string name="new_and_changed_books">Nouveaux livres et livres mis à jour</string>
+    <string name="option_new_and_changed_books">Nouveaux livres et livres mis à jour</string>
     <!-- Description of the 'import new & changed' option -->
-    <string name="new_and_changed_books_blurb">Seuls les livres récemment ajoutés ou mis à jour dans la sauvegarde seront mis à jour. Cette option est utile lors de la synchronisation de deux appareils.</string>
+    <string name="description_new_and_changed_books_blurb">Seuls les livres récemment ajoutés ou mis à jour dans la sauvegarde seront mis à jour. Cette option est utile lors de la synchronisation de deux appareils.</string>
     <!-- Descriptive text associated with import options not available with older archives -->
-    <string name="old_archive_blurb">Cette option n\'est pas supportée par les anciennes sauvegardes.</string>
+    <string name="alert_old_archive_blurb">Cette option n\'est pas supportée par les anciennes sauvegardes.</string>
     <!-- Part of the progress message displayed when importing books -->
     <string name="n_created_m_updated">%1$s ajoutés, %2$s mis à jour</string>
 
     <!--  Explanatory text for 'export' dialogue -->
-    <string name="export_books_blurb">Les livres de votre catalogue seront exportés. Choisissez une des deux options pour exporter vos livres ou cliquez sur « retour » pour annuler :</string>
+    <string name="description_export_books_blurb">Les livres de votre catalogue seront exportés. Choisissez une des deux options pour exporter vos livres ou cliquez sur « retour » pour annuler :</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
@@ -707,29 +707,29 @@
     <string name="covers_progress_increment">%1$s couvertures enregistrées (%2$s manquantes, %3$s ignorées)</string>
 
     <!-- Explanatory note for 'export all' option -->
-    <string name="export_all_blurb">Tous les livres, couvertures, préférence et styles de liste personnels du catalogue seront enregistrés dans la sauvegarde.</string>
+    <string name="description_export_all_blurb">Tous les livres, couvertures, préférence et styles de liste personnels du catalogue seront enregistrés dans la sauvegarde.</string>
     <!-- Explanatory note for 'advanced export' option -->
-    <string name="export_advanced_blurb">Selection de ce qui doit être enregistré dans la sauvegarde.</string>
+    <string name="description_export_advanced_blurb">Selection de ce qui doit être enregistré dans la sauvegarde.</string>
     <!-- Introduction for 'advanced export' option -->
 
     <!-- Text for button -->
-    <string name="book_details">Details des livres</string>
+    <string name="label_book_details">Details des livres</string>
     <!-- Brief descriptionn -->
-    <string name="book_details_blurb">Le livre et tous ses détails</string>
+    <string name="description_book_details_blurb">Le livre et tous ses détails</string>
     <!-- Text for button -->
-    <string name="cover_images">Images de couverture</string>
+    <string name="label_cover_images">Images de couverture</string>
     <!-- Brief descriptionn -->
-    <string name="cover_images_blurb">Couvertures de tous les livres sauvegardés. La taille de la sauvegarde sera plus importante.</string>
+    <string name="description_cover_images_blurb">Couvertures de tous les livres sauvegardés. La taille de la sauvegarde sera plus importante.</string>
     <!-- Brief descriptionn -->
-    <string name="preferences_blurb">Paramètres et préférences (style de liste personnel)</string>
+    <string name="description_preferences_blurb">Paramètres et préférences (style de liste personnel)</string>
 
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="export_advanced_date_blurb">Definissez la date à prendre en compte pour l\'archivage des livres (optionnel):</string>
+    <string name="description_export_advanced_date_blurb">Definissez la date à prendre en compte pour l\'archivage des livres (optionnel):</string>
 
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="all_books_added_or_updated_since">Tous les livres ajoutés ou mis à jour depuis le :</string>
+    <string name="option_all_books_added_or_updated_since">Tous les livres ajoutés ou mis à jour depuis le :</string>
     <!-- Explanatory note for export data since last backup -->
-    <string name="all_books_added_or_updated_since_last_full_backup">Tous les livres ajoutés ou mis à jour depuis la dernière sauvegarde complète</string>
+    <string name="option_all_books_added_or_updated_since_last_full_backup">Tous les livres ajoutés ou mis à jour depuis la dernière sauvegarde complète</string>
 
     <!-- Short text for 'n books' -->
     <plurals

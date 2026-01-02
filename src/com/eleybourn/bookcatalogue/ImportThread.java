@@ -15,8 +15,6 @@ import androidx.documentfile.provider.DocumentFile;
  * @author Philip Warner
  */
 public class ImportThread extends ManagedTask {
-	public static String UTF8 = "utf8";
-
 	private final DocumentFile mFile;
 	private CatalogueDBAdapter mDbHelper;
 	//private LocalCoverFinder mCoverFinder;
@@ -79,12 +77,12 @@ public class ImportThread extends ManagedTask {
 			in = BookCatalogueApp.context.getContentResolver().openInputStream(mFile.getUri());
 			importer.importBooks(in, mImportListener, Importer.IMPORT_ALL);
 			if (isCancelled()) {
-				doToast(getString(R.string.cancelled));
+				doToast(getString(R.string.alert_cancelled));
 			} else {
-				doToast(getString(R.string.import_complete));
+				doToast(getString(R.string.description_import_complete));
 			}
 		} catch (IOException e) {
-			doToast(BookCatalogueApp.getResourceString(R.string.import_failed_is_location_correct));
+			doToast(BookCatalogueApp.getResourceString(R.string.alert_import_failed_is_location_correct));
 			Logger.logError(e);
 		} finally {
 			if (in != null)

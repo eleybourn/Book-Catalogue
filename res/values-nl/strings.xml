@@ -22,7 +22,7 @@
     <string name="label_search">Zoeken</string>
     <string name="button_cancel">Annuleren</string>
     <string name="button_confirm_save">Boek opslaan</string>
-    <string name="info_no_bookshelves">U heef nog geen boekenplank aangemaakt. Voeg er een toe via het menu onderaan dit scherm.</string>
+    <string name="description_no_bookshelves">U heef nog geen boekenplank aangemaakt. Voeg er een toe via het menu onderaan dit scherm.</string>
     <string name="menu_insert_bs">Boekenplank maken</string>
     <string name="confirm_add_bs">Toevoegen Boekenplank</string>
     <string name="title_manage_bookshelves">Beheer boekenplanken</string>
@@ -38,7 +38,7 @@
     <string name="label_series_num">#</string>
     <string name="import_data">Boeken Importeren</string>
     <string name="import_alert">Waarschuwing. Het importeren van gegevens kan bestaande boekgegevens onbedoeld bijwerken met nieuwe informatie als de UUID-kolom niet aanwezig is en de id in het import-bestand dezelfde is als het bestaande id. Dit is meestal geen bezwaar als u een veld in een exportbestand heeft veranderd. Als u een nieuwe boek item heeft gemaakt, of iemand anders zijn boeken importeert, zorg dan dat het UUID veld aanwezig is of dat het id veld leeg is.</string>
-    <string name="import_failed_is_location_correct">FOUT: Import van gegevens (van SD kaart) mislukt. Staat het bestand op de juiste plaats?</string>
+    <string name="alert_import_failed_is_location_correct">FOUT: Import van gegevens (van SD kaart) mislukt. Staat het bestand op de juiste plaats?</string>
     <string name="install_scan_title">Streepjescode Scanner Installeren</string>
     <string name="label_version_number">Versienummer:</string>
     <string name="para_donate">Als u de ontwikkeling van deze applicatie wilt ondersteunen, kunt u een bijdrage doen via mijn Amazon Wishlist of de Paypal knop hieronder. Omdat ik in Australië ben kan ik geen betaalde &quot;betaalde&quot; versie publiceren. :-) </string>
@@ -128,7 +128,7 @@
     <string name="vldt_failed">Validatie mislukt voor \'%s\'</string>
     <string name="vldt_read_start_after_end">De begindatum voor lezen moet vóór de einddatum liggen</string>
     <string name="backup_success">Back-up gelukt</string>
-    <string name="backup_failed">Back-up mislukt</string>
+    <string name="alert_backup_failed">Back-up mislukt</string>
     <string name="file_must_contain_column">Bestandsnaam moet een kolomnaam %s bevatten</string>
     <string name="file_must_contain_any_column">Bestandsnaam moet een kolom met de volgende namen bevatten: %s</string>
     <string name="column_is_blank">Kolom %1$s is leeg op rij %2$s</string>
@@ -140,7 +140,7 @@
     <string name="cover_corrupt">Omslagafbeelding is niet geldig</string>
     <string name="cover_detail">Omslagafbeelding detail</string>
     <string name="label_set_authors">Invullen auteurs&#8230;</string>
-    <string name="and_others">et. al.</string>
+    <string name="fragment_and_others">et. al.</string>
     <string name="set_series">Invullen Serie&#8230;</string>
     <string name="author_already_in_list">Auteur staat al in de lijst</string>
     <string name="author_is_blank">Auteurveld is leeg</string>
@@ -230,7 +230,7 @@
     <string name="no_matching_book_found">Geen overeenkomstig boek gevonden</string>
     <string name="no_isbn_stored_for_book">Geen ISBN opgeslagen voor boek</string>
     <string name="select_an_action">Selecteer een actie</string>
-    <string name="if_the_problem_persists">Als het probleem aanhoud, maak dan contact met ondersteuning via Help in het hoofdmenu.</string>
+    <string name="alert_if_the_problem_persists">Als het probleem aanhoud, maak dan contact met ondersteuning via Help in het hoofdmenu.</string>
     <string name="x_of_y">%1$d van %2$d</string>
     <string name="send_book_to_goodreads">Zend boek %1$s naar goodreads</string>
     <string name="label_erase_cover_cache">Wis boekomslag cache</string>
@@ -433,8 +433,8 @@
     <string name="preference_auto_rotate_camera_images">met camera-opnames automatisch draaien</string>
     <string name="hint_autorotate_camera_images">Als u altijd uw camera-opnames dezelfde kant opdraait kunt u proberen de applicatie-instellingen te veranderen zodat dit automatisch gebeurt.</string>
     <string name="preference_default_crop_frame_is_whole_image">Standaard kader voor bijsnijden is hele afbeelding</string>
-    <string name="cancelled">Geannuleerd</string>
-    <string name="import_complete">Import Compleet</string>
+    <string name="alert_cancelled">Geannuleerd</string>
+    <string name="description_import_complete">Import Compleet</string>
     <string name="searching_ellipsis">Aan \'t zoeken&#8230;</string>
     <string name="status_adding_book_ellipsis">Boeken aan \'t toevoegen&#8230;</string>
     <string name="preference_global_opening_book_mode">Open boek in alleen-lezen modus</string>
@@ -548,7 +548,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="label_import_from_archive">Importeren vanuit archief</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="a_and_b">%1$s and %2$s</string>
+    <string name="fragment_a_and_b">%1$s and %2$s</string>
     <string name="para_archive_complete_details">Een %3$s bestand met de naam %2$s is aangemaakt in de \"%1$s\" map op uw
         SD kaart.  U wordt aangeraden dit bestand naar een ander plek te kopiëren om de gegevens veilig te stellen in geval uw apparaat wordt gestolen, beschadigd of kwijt raakt.</string>
 
@@ -606,7 +606,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Import mislukt.</string>
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_writable">Controleer aub of de SD Kaart beschrijfbaar is en voldoende vrije ruimte heeft.</string>
+    <string name="alert_please_check_sd_writable">Controleer aub of de SD Kaart beschrijfbaar is en voldoende vrije ruimte heeft.</string>
     <!-- Displayed when any write operation to the sd card fails -->
     <string name="please_check_sd_readable">Controleer aub of de SD Kaart toegankelijk is.</string>
 
@@ -698,20 +698,20 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <!-- Begin: Added/Updated in 5.1.0 -->
     
     <!--  Explanatory text for 'import' dialogue -->
-    <string name="import_books_blurb">De boeken in dit archief zullen worden geïmporteerd. Tik op één van de twee opties om de import te starten of druk op \'terug\' om te annuleren:</string>
+    <string name="description_import_books_blurb">De boeken in dit archief zullen worden geïmporteerd. Tik op één van de twee opties om de import te starten of druk op \'terug\' om te annuleren:</string>
     <!-- Description of the 'import all books' option -->
-    <string name="all_books_blurb">Alle boeken in het archief zullen worden geïmporteerd en zo de bestaande boeken bijwerken en nieuwe toevoegen.</string>
+    <string name="description_all_books_blurb">Alle boeken in het archief zullen worden geïmporteerd en zo de bestaande boeken bijwerken en nieuwe toevoegen.</string>
     <!-- Menu text for the 'import/export new & changed' option -->
-    <string name="new_and_changed_books">Nieuwe en bijgewerkte boeken</string>
+    <string name="option_new_and_changed_books">Nieuwe en bijgewerkte boeken</string>
     <!-- Description of the 'import new & changed' option -->
-    <string name="new_and_changed_books_blurb">Alleen nieuwe boeken importeren of boeken die onlangs zijn bijgewerkt in het archief. Dit is handig bij het synchroniseren van twee apparaten.</string>
+    <string name="description_new_and_changed_books_blurb">Alleen nieuwe boeken importeren of boeken die onlangs zijn bijgewerkt in het archief. Dit is handig bij het synchroniseren van twee apparaten.</string>
     <!-- Descriptive text associated with import options not available with older archives -->
-    <string name="old_archive_blurb">Deze optie wordt niet ondersteund voor oudere archief versies.</string>
+    <string name="alert_old_archive_blurb">Deze optie wordt niet ondersteund voor oudere archief versies.</string>
     <!-- Part of the progress message displayed when importing books -->
     <string name="n_created_m_updated">%1$s toegevoegd, %2$s bijgewerkt</string>
 
     <!--  Explanatory text for 'export' dialogue -->
-    <string name="export_books_blurb">De boeken in de catalogus zullen worden geëxporteerd. Tik op één van de twee opties om de export te starten of druk op \'terug\' om te annuleren:</string>
+    <string name="description_export_books_blurb">De boeken in de catalogus zullen worden geëxporteerd. Tik op één van de twee opties om de export te starten of druk op \'terug\' om te annuleren:</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
@@ -720,29 +720,29 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="covers_progress_increment">%1$s boekomslagen verwerkt (%2$s missend, %3$s overgeslagen)</string>
     
     <!-- Explanatory note for 'export all' option -->
-    <string name="export_all_blurb">Alle boeken, omslagafbeeldingen, instellingen en aangepaste stijlen zullen worden geëxporteerd naar het archief.</string>
+    <string name="description_export_all_blurb">Alle boeken, omslagafbeeldingen, instellingen en aangepaste stijlen zullen worden geëxporteerd naar het archief.</string>
     <!-- Explanatory note for 'advanced export' option -->
-    <string name="export_advanced_blurb">Selecteer wat geëxporteerd zal worden naar het archief.</string>
+    <string name="description_export_advanced_blurb">Selecteer wat geëxporteerd zal worden naar het archief.</string>
     <!-- Introduction for 'advanced export' option -->
 
     <!-- Text for button -->
-    <string name="book_details">Boek details</string>
+    <string name="label_book_details">Boek details</string>
     <!-- Brief description -->
-    <string name="book_details_blurb">De details van het boek zelf</string>
+    <string name="description_book_details_blurb">De details van het boek zelf</string>
     <!-- Text for button -->
-    <string name="cover_images">Omslagafbeeldingen</string>
+    <string name="label_cover_images">Omslagafbeeldingen</string>
     <!-- Brief description -->
-    <string name="cover_images_blurb">Omslagafbeeldingen voor alle geselecteerde boeken. Dit zal de export aanzienlijk groter maken.</string>
+    <string name="description_cover_images_blurb">Omslagafbeeldingen voor alle geselecteerde boeken. Dit zal de export aanzienlijk groter maken.</string>
     <!-- Brief description -->
-    <string name="preferences_blurb">Voorkeuren en aangepaste boekenlijst stijlen</string>
+    <string name="description_preferences_blurb">Voorkeuren en aangepaste boekenlijst stijlen</string>
     
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="export_advanced_date_blurb">Specificeer desgewenst een datum voor de selectie van boeken en/of omslagen om te exporteren:</string>
+    <string name="description_export_advanced_date_blurb">Specificeer desgewenst een datum voor de selectie van boeken en/of omslagen om te exporteren:</string>
     
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="all_books_added_or_updated_since">Alle boeken die zijn toegevoegd of bijgewerkt sinds:</string>
+    <string name="option_all_books_added_or_updated_since">Alle boeken die zijn toegevoegd of bijgewerkt sinds:</string>
     <!-- Explanatory note for export data since last backup -->
-    <string name="all_books_added_or_updated_since_last_full_backup">Alle boeken die zijn toegevoegd of bijgewerkt sinds de laatste volledige back-up</string>
+    <string name="option_all_books_added_or_updated_since_last_full_backup">Alle boeken die zijn toegevoegd of bijgewerkt sinds de laatste volledige back-up</string>
 
     <!-- Short text for 'n books' -->
     <plurals

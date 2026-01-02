@@ -21,7 +21,7 @@
     <string name="label_search">Buscar</string>
 	<string name="button_cancel">Cancelar</string>
 	<string name="button_confirm_save">Guardar libro</string>
-	<string name="info_no_bookshelves">Todavía no has creado ninguna biblioteca. Cree una utilizando el menú al pie de esta pantalla.</string>
+	<string name="description_no_bookshelves">Todavía no has creado ninguna biblioteca. Cree una utilizando el menú al pie de esta pantalla.</string>
 	<string name="menu_insert_bs">Crear biblioteca</string>
 	<string name="confirm_add_bs">Añadir biblioteca</string>
 	<string name="title_manage_bookshelves">Gestionar bibliotecas</string>
@@ -37,7 +37,7 @@
 	<string name="label_series_num">#</string>
     <string name="import_data">Importar libros</string>
 	<string name="import_alert">¡Atención! La importación de datos puede actualizar los datos de libros existentes con nueva información si el ID del fichero de importación existe ya en la base de datos. Esto puede ser aceptable si se modifica un campo de un fichero exportado. Si crea un registro para un nuevo libro, compruebe que el campo ID está en blanco.</string>
-    <string name="import_failed_is_location_correct">ERROR: La importación (desde la tarjeta SD) ha fallado. ¿Está el fichero en el lugar correcto?</string>
+    <string name="alert_import_failed_is_location_correct">ERROR: La importación (desde la tarjeta SD) ha fallado. ¿Está el fichero en el lugar correcto?</string>
     <string name="install_scan_title">Instalar Escáner de código de barras</string>
 	<string name="label_version_number">Versión</string>
 	<string name="para_donate">Si desea contribuir al desarrollo de esta aplicación puede realizar su aportación económica utilizando Amazon Wishlist o el botón de Paypal que figura más abajo. En Australia no se puede publicar una versión &quot;de pago&quot;. :-)</string>
@@ -127,7 +127,7 @@
 	<string name="vldt_failed">Falló la validación para \'%s\'</string>
     <string name="vldt_read_start_after_end">La fecha de inicio de lectura es posterior a la de finalización</string>
 	<string name="backup_success">Copia de seguridad correcta</string>
-	<string name="backup_failed">Copia de seguridad errónea</string>
+	<string name="alert_backup_failed">Copia de seguridad errónea</string>
 	<string name="file_must_contain_column">El fichero debe tener una columna con el nombre %s</string>
 	<string name="file_must_contain_any_column">El fichero debe tener una columna con uno de los nombres siguientes: %s</string>
 	<string name="column_is_blank">La columna %1$s tiene en blanco la fila %2$s</string>
@@ -140,7 +140,7 @@
     <string name="cover_corrupt">La imagen de portada está dañada</string>
 	<string name="cover_detail">Portada</string>
     <string name="label_set_authors">Definir autores&#8230;</string>
-	<string name="and_others">et. al.</string>
+	<string name="fragment_and_others">et. al.</string>
 	<string name="set_series">Definir serie&#8230;</string>
 	<string name="author_already_in_list">Ese autor ya está en la lista</string>
 	<string name="author_is_blank">El campo Autor está en blanco</string>
@@ -228,7 +228,7 @@
     <string name="no_matching_book_found">No se ha encontrado ningún libro</string>
     <string name="no_isbn_stored_for_book">No se ha guardado ISBN para el libro</string>
     <string name="select_an_action">Seleccione una opción</string>
-    <string name="if_the_problem_persists">Si el problema persiste, contacte con soporte utilizando la opción de Ayuda del menú principal.</string>
+    <string name="alert_if_the_problem_persists">Si el problema persiste, contacte con soporte utilizando la opción de Ayuda del menú principal.</string>
     <string name="x_of_y">%1$d de %2$d</string>
     <string name="send_book_to_goodreads">Enviar libro %1$s a goodreads</string>
 
@@ -435,8 +435,8 @@
     <string name="preference_auto_rotate_camera_images">Girar automáticamente las imágenes de la cámara</string>
     <string name="hint_autorotate_camera_images">Si siempre tiene que girar las imágenes de la cámara en el mismo sentido, intente cambiar la configuración para aplicar la rotación automática.</string>
     <string name="preference_default_crop_frame_is_whole_image">Por defecto, la imagen se guarda completa</string>
-    <string name="cancelled">Cancelado</string>
-    <string name="import_complete">Importación finalizada</string>
+    <string name="alert_cancelled">Cancelado</string>
+    <string name="description_import_complete">Importación finalizada</string>
     <string name="searching_ellipsis">Buscando&#8230;</string>
     <string name="status_adding_book_ellipsis">Añadiendo libro&#8230;</string>
     <string name="preference_global_opening_book_mode">Abrir libro en modo sólo lectura</string>
@@ -551,7 +551,7 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="label_import_from_archive">Importar de fichero</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="a_and_b">%1$s y %2$s</string>
+    <string name="fragment_a_and_b">%1$s y %2$s</string>
     <string name="para_archive_complete_details">Se ha creado un fichero de %3$s llamado %2$s en el directorio \"%1$s\" de su tarjeta SD.
     \n\nDebe copiarlo a otro lugar para proteger los datos en caso de que su dispositivo resulte dañado, se pierda o sea robado.</string>
 
@@ -609,7 +609,7 @@ y puede editar el libro utilizando el menú de opciones.
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">La importación falló.</string>
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_writable">Compruebe que se puede escribir en la tarjeta SD, y que tiene suficiente espacio.</string>
+    <string name="alert_please_check_sd_writable">Compruebe que se puede escribir en la tarjeta SD, y que tiene suficiente espacio.</string>
     <!-- Displayed when any write operation to the sd card fails -->
     <string name="please_check_sd_readable">Compruebe que se puede acceder a la tarjeta SD.</string>
 
@@ -701,20 +701,20 @@ y puede editar el libro utilizando el menú de opciones.
     <!-- Begin: Added/Updated in 5.1.0 -->
     
     <!--  Explanatory text for 'import' dialogue -->
-    <string name="import_books_blurb">Se importarán los libros de este fichero. Seleccione una de las dos opciones propuestas para empezar la importación, o pulse \'Atrás\' para cancelar:</string>
+    <string name="description_import_books_blurb">Se importarán los libros de este fichero. Seleccione una de las dos opciones propuestas para empezar la importación, o pulse \'Atrás\' para cancelar:</string>
     <!-- Description of the 'import all books' option -->
-    <string name="all_books_blurb">Importar todos los libros del fichero, actualizando los que existan y añadiendo los nuevos.</string>
+    <string name="description_all_books_blurb">Importar todos los libros del fichero, actualizando los que existan y añadiendo los nuevos.</string>
     <!-- Menu text for the 'import/export new & changed' option -->
-    <string name="new_and_changed_books">Libros nuevos y actualizados</string>
+    <string name="option_new_and_changed_books">Libros nuevos y actualizados</string>
     <!-- Description of the 'import new & changed' option -->
-    <string name="new_and_changed_books_blurb">Importar sólo los libros nuevos, o los que tienen fecha de actualización más reciente en el fichero. Esto es útil para sincronizar dispositivos.</string>
+    <string name="description_new_and_changed_books_blurb">Importar sólo los libros nuevos, o los que tienen fecha de actualización más reciente en el fichero. Esto es útil para sincronizar dispositivos.</string>
     <!-- Descriptive text associated with import options not available with older archives -->
-    <string name="old_archive_blurb">Esta opción no está soportada para versiones de archivo antiguas.</string>
+    <string name="alert_old_archive_blurb">Esta opción no está soportada para versiones de archivo antiguas.</string>
     <!-- Part of the progress message displayed when importing books -->
     <string name="n_created_m_updated">%1$s creados, %2$s actualizados</string>
 
     <!--  Explanatory text for 'export' dialogue -->
-    <string name="export_books_blurb">Se exportarán los libros de su catálogo. Seleccione una opción para iniciar la exportación, o pulse \'Atrás\' para cancelar:</string>
+    <string name="description_export_books_blurb">Se exportarán los libros de su catálogo. Seleccione una opción para iniciar la exportación, o pulse \'Atrás\' para cancelar:</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
@@ -723,29 +723,29 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="covers_progress_increment">%1$s portadas procesadas (%2$s no encontradas, %3$s saltadas)</string>
     
     <!-- Explanatory note for 'export all' option -->
-    <string name="export_all_blurb">Se exportarán al fichero todos los libros, portadas, configuraciones y estilos personalizados.</string>
+    <string name="description_export_all_blurb">Se exportarán al fichero todos los libros, portadas, configuraciones y estilos personalizados.</string>
     <!-- Explanatory note for 'advanced export' option -->
-    <string name="export_advanced_blurb">Seleccione lo que desea exportar al fichero.</string>
+    <string name="description_export_advanced_blurb">Seleccione lo que desea exportar al fichero.</string>
     <!-- Introduction for 'advanced export' option -->
 
     <!-- Text for button -->
-    <string name="book_details">Detalles de los libros</string>
+    <string name="label_book_details">Detalles de los libros</string>
     <!-- Brief descriptionn -->
-    <string name="book_details_blurb">Todos los datos de todos los libros</string>
+    <string name="description_book_details_blurb">Todos los datos de todos los libros</string>
     <!-- Text for button -->
-    <string name="cover_images">Portadas</string>
+    <string name="label_cover_images">Portadas</string>
     <!-- Brief descriptionn -->
-    <string name="cover_images_blurb">Portadas de todos los libros seleccionadas. La exportación requerirá mucho más tiempo.</string>
+    <string name="description_cover_images_blurb">Portadas de todos los libros seleccionadas. La exportación requerirá mucho más tiempo.</string>
     <!-- Brief descriptionn -->
-    <string name="preferences_blurb">Preferencias y estilos definidos por el usuario</string>
+    <string name="description_preferences_blurb">Preferencias y estilos definidos por el usuario</string>
     
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="export_advanced_date_blurb">Si lo desea, especifique una fecha para seleccionar los libros o portadas que se exportarán:</string>
+    <string name="description_export_advanced_date_blurb">Si lo desea, especifique una fecha para seleccionar los libros o portadas que se exportarán:</string>
     
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="all_books_added_or_updated_since">Todos los libros añadidos o actualizados desde:</string>
+    <string name="option_all_books_added_or_updated_since">Todos los libros añadidos o actualizados desde:</string>
     <!-- Explanatory note for export data since last backup -->
-    <string name="all_books_added_or_updated_since_last_full_backup">Todos los libros añadidos o actualizados desde la última copia de seguridad completa</string>
+    <string name="option_all_books_added_or_updated_since_last_full_backup">Todos los libros añadidos o actualizados desde la última copia de seguridad completa</string>
 
     <!-- Short text for 'n books' -->
     <plurals

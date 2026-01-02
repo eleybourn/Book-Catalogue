@@ -8,7 +8,7 @@
     <include layout="@layout/layout_background" />
 
     <!-- CONTENT -->
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:id="@+id/scrollView"
         style="@style/layout_scroll" >
 
@@ -102,5 +102,5 @@
             </LinearLayout>
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

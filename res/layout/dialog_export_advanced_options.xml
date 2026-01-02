@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    style="@style/layout_dialog">
+
+    <LinearLayout
+        android:id="@+id/top_buttons"
+        style="@style/layout_main">
+
+        <TextView
+            style="@style/layout_paragraph"
+            android:paddingBottom="6dp"
+            android:text="@string/description_export_advanced_blurb" />
+
+        <RelativeLayout
+            android:id="@+id/all_books_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="6dp">
+
+            <CheckBox
+                android:id="@+id/field_export_books"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:checked="true"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                tools:ignore="DuplicateSpeakableTextCheck" />
+
+            <TextView
+                android:id="@+id/book_details"
+                style="@style/layout_paragraph"
+                android:layout_alignBaseline="@id/field_export_books"
+                android:layout_alignBottom="@id/field_export_books"
+                android:layout_toEndOf="@id/field_export_books"
+                android:paddingVertical="0dp"
+                android:text="@string/label_book_details" />
+
+            <TextView
+                style="@style/book_text_small"
+                android:layout_below="@+id/book_details"
+                android:layout_alignStart="@id/book_details"
+                android:layout_alignEnd="@id/book_details"
+                android:text="@string/description_book_details_blurb" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/covers_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="6dp">
+
+            <CheckBox
+                android:id="@+id/field_export_covers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:checked="true"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/cover_images"
+                style="@style/layout_paragraph"
+                android:layout_alignBaseline="@id/field_export_covers"
+                android:layout_alignBottom="@id/field_export_covers"
+                android:layout_toEndOf="@id/field_export_covers"
+                android:paddingVertical="0dp"
+                android:text="@string/label_cover_images" />
+
+            <TextView
+                style="@style/book_text_small"
+                android:layout_below="@+id/cover_images"
+                android:layout_alignStart="@+id/cover_images"
+                android:layout_alignEnd="@+id/cover_images"
+                android:text="@string/description_cover_images_blurb" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="6dp">
+
+            <!-- Disabled to reduce complexity. Enable one day... -->
+            <CheckBox
+                android:id="@+id/field_export_preferences"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:checked="true"
+                android:enabled="false"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/preferences"
+                style="@style/layout_paragraph"
+                android:layout_alignBaseline="@id/field_export_preferences"
+                android:layout_alignBottom="@id/field_export_preferences"
+                android:layout_toEndOf="@id/field_export_preferences"
+                android:paddingVertical="0dp"
+                android:text="@string/label_preferences" />
+
+            <TextView
+                style="@style/book_text_small"
+                android:layout_below="@id/preferences"
+                android:layout_alignStart="@id/preferences"
+                android:layout_alignEnd="@id/preferences"
+                android:text="@string/description_preferences_blurb" />
+        </RelativeLayout>
+
+        <TextView
+            style="@style/layout_paragraph"
+            android:paddingVertical="6dp"
+            android:text="@string/description_export_advanced_date_blurb" />
+
+        <RadioGroup
+            android:id="@+id/field_export_since"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/field_export_since_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/option_all_books" />
+
+            <RadioButton
+                android:id="@+id/field_export_since_last"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/option_all_books_added_or_updated_since_last_full_backup" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/bottom_buttons"
+            style="@style/layout_action_row">
+
+            <Button
+                android:id="@+id/button_cancel"
+                style="@style/layout_button_action"
+                android:text="@string/button_cancel" />
+
+            <Button
+                android:id="@+id/button_ok"
+                style="@style/layout_button_action"
+                android:text="@string/button_ok" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

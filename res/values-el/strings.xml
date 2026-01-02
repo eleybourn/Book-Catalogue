@@ -22,7 +22,7 @@
     <string name="label_search">Αναζήτηση</string>
     <string name="button_cancel">Ακύρωση</string>
     <string name="button_confirm_save">Αποθήκευση</string>
-    <string name="info_no_bookshelves">Δεν έχετε δημιουργήσει ακόμα ράφια. Παρακαλούμε προσθέστε μερικά με το μενού στο κάτω μέρος της οθόνης.</string>
+    <string name="description_no_bookshelves">Δεν έχετε δημιουργήσει ακόμα ράφια. Παρακαλούμε προσθέστε μερικά με το μενού στο κάτω μέρος της οθόνης.</string>
     <string name="menu_insert_bs">Δημιουργία Ραφιού</string>
     <string name="confirm_add_bs">Προσθήκη Ραφιού</string>
     <string name="title_manage_bookshelves">Διαχείρηση Ραφιών</string>
@@ -38,7 +38,7 @@
     <string name="label_series_num">#</string>
     <string name="import_data">Εισαγωγή Βιβλιων</string>
     <string name="import_alert">Προσοχή. Η εισαγωγή δεδομένων μπορεί να ενημερώσει υπάρχοντα βιβλία με νέες πληροφορίες εαν η στήλη uuid δεν είναι παρούσα και το id στο αρχείο εισαγωγής είναι το ίδιο με κάποιο υπάρχον id. Αυτό είναι εντάξει εαν έχει αλλαχτεί κάποιο πεδίο σε ένα εξαγμένο αρχείο. Εαν δημιουργήσατε μια νεα βιβλιογραφική εγγραφή ή εαν εισάγετε τα βιβλία κάποιου άλλου, σιγουρευτείτε ότι το πεδίο uuid είναι παρόν ή το πεδίο id είναι κενό.</string>
-    <string name="import_failed_is_location_correct">ΣΦΑΛΜΑ: Εισαγωγή δεδομένων (από SDCard) απέτυχε. Βρίσκεται το αρχείο στη σωστή τοποθεσία;</string>
+    <string name="alert_import_failed_is_location_correct">ΣΦΑΛΜΑ: Εισαγωγή δεδομένων (από SDCard) απέτυχε. Βρίσκεται το αρχείο στη σωστή τοποθεσία;</string>
     <string name="install_scan_title">Εγκατάσταση σαρωτή barcode</string>
     <string name="label_version_number">Αριθμός έκδοσης:</string>
     <string name="para_donate">Εαν θέλετε να στηρίξετε την αναπτυξη της εφαρμογής, παρακαλούμε δωρήστε μέ το my Amazon Wishlist ή το paypal κουμπί παρακάτω. Το να βρίσκεσαι στην Αυστραλία σημαίνει ότι δεν μπορεί να εκδοθεί &quot;πληρωμένη&quot; έκδοση. :-) </string>
@@ -128,7 +128,7 @@
     <string name="vldt_failed">Η επικύρωση απέτυχε για \'%s\'</string>
     <string name="vldt_read_start_after_end">Η ημερομηνία έναρξης ανάγνωσης είναι μετά την ημερομηνία λήξης</string>
     <string name="backup_success">Αντίγραφο δημιουργήθηκε επιτυχώς</string>
-    <string name="backup_failed">Αντίγραφο απέτυχε</string>
+    <string name="alert_backup_failed">Αντίγραφο απέτυχε</string>
     <string name="file_must_contain_column">Το αρχείο πρέπει να περιέχει στήλη με όνομα %s</string>
     <string name="file_must_contain_any_column">Το αρχείο πρέπει να περιέχει στήλη με ένα από τα ακόλουθα όνοματα: %s</string>
     <string name="column_is_blank">Η στήλη %1$s είναι κενή στη σειρά %2$s</string>
@@ -140,7 +140,7 @@
     <string name="cover_corrupt">Το εξώφυλλο είναι κατεστραμμένο</string>
     <string name="cover_detail">Λεπτομέρειες εξωφύλλου</string>
     <string name="label_set_authors">Ορισμός συγγραφέων&#8230;</string>
-    <string name="and_others">κτλ.</string>
+    <string name="fragment_and_others">κτλ.</string>
     <string name="set_series">Ορισμός σειρών&#8230;</string>
     <string name="author_already_in_list">Ο συγγραφέας βρίσκεται ήδη στη λίστα</string>
     <string name="author_is_blank">Το πεδίο συγγραφέας είναι κενό</string>
@@ -228,7 +228,7 @@
     <string name="no_matching_book_found">Δεν βρέθηκε βιβλίο που να ταιριάζει</string>
     <string name="no_isbn_stored_for_book">Δεν υπάρχει αποθηκευμένο ISBN για το βιβλίο</string>
     <string name="select_an_action">Επιλέξτε μια ενέργεια</string>
-    <string name="if_the_problem_persists">Εαν το πρόβλημα συνεχίζεται, επικοινωνήστε με την υποστήρηξη μέσω της Βοήθειας στο κέντρικό μενού.</string>
+    <string name="alert_if_the_problem_persists">Εαν το πρόβλημα συνεχίζεται, επικοινωνήστε με την υποστήρηξη μέσω της Βοήθειας στο κέντρικό μενού.</string>
     <string name="x_of_y">%1$d από %2$d</string>
     <string name="send_book_to_goodreads">Αποστολή βιβλίου %1$s στο goodreads</string>
 
@@ -436,8 +436,8 @@
     <string name="preference_auto_rotate_camera_images">Αυτόματη περιστροφή εικόνων από κάμερα</string>
     <string name="hint_autorotate_camera_images">Αν παρατηρείτε ότι περιστρέφετε τις εικόνες από κάμερα πάντα στην ίδια κατεύθυνση, μπορείτε να αλλάξετε τις επιλογές ορίζοντας μια περιστροφή που να εφαρμόζεται αυτόματα.</string>
     <string name="preference_default_crop_frame_is_whole_image">Η προεπιλεγμένη περικοπή πλαισίου είναι ολόκληρη η εικόνα</string>
-    <string name="cancelled">Ακυρώθηκε</string>
-    <string name="import_complete">Εισαγωγή Ολοκληρώθηκε</string>
+    <string name="alert_cancelled">Ακυρώθηκε</string>
+    <string name="description_import_complete">Εισαγωγή Ολοκληρώθηκε</string>
     <string name="searching_ellipsis">Γίνεται αναζήτηση&#8230;</string>
     <string name="status_adding_book_ellipsis">Γίνεται πρόσθεση βιβλίου&#8230;</string>
     <string name="preference_global_opening_book_mode">Άνοιγμα βιβλίου μόνο για ανάγνωση</string>
@@ -552,7 +552,7 @@
     <string name="label_import_from_archive">Εισαγωγή από Αρχείο</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="a_and_b">%1$s και %2$s</string>
+    <string name="fragment_a_and_b">%1$s και %2$s</string>
     <string name="para_archive_complete_details">;Ένα αρχείο %3$s με το όνομα %2$s δημιουργήθηκε στον κατάλογο \"%1$s\" στην
     κάρτα SD.\n\nΜπορείτε το αντιγράψετε κάπου αλλού για να προστατέψετε τα δεδομένα σε περίπτωση που η συσκευή σας πάθει ζημιά, χαθεί, ή κλαπεί.</string>
 
@@ -610,7 +610,7 @@
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Αποτυχία Εισαγωγής.</string>
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_writable">Ελέγξτε αν μπορεί να γίνει εγγραφή στην κάρτα SD και αν έχει αρκετό χώρο.</string>
+    <string name="alert_please_check_sd_writable">Ελέγξτε αν μπορεί να γίνει εγγραφή στην κάρτα SD και αν έχει αρκετό χώρο.</string>
     <!-- Displayed when any write operation to the sd card fails -->
     <string name="please_check_sd_readable">Ελέγξτε αν υπάρχει πρόσβαση στην κάρτα SD.</string>
 
@@ -702,20 +702,20 @@
     <!-- Begin: Added/Updated in 5.1.0 -->
 
     <!--  Explanatory text for 'import' dialogue -->
-    <string name="import_books_blurb">Τα βιβλία σε αυτό το Αρχείο θα εισαχθούν. Επιλέξτε μία από τις δύο επιλογές για να αρχίσει η εισαγωγή, ή πατήστε \'Πίσω\' για να ακυρωθεί:</string>
+    <string name="description_import_books_blurb">Τα βιβλία σε αυτό το Αρχείο θα εισαχθούν. Επιλέξτε μία από τις δύο επιλογές για να αρχίσει η εισαγωγή, ή πατήστε \'Πίσω\' για να ακυρωθεί:</string>
     <!-- Description of the 'import all books' option -->
-    <string name="all_books_blurb">Όλα τα βιβλία από το Αρχείο θα εισαχθούν, ενημερώνοντας παλιά βιβλία και προσθέτοντας καινούρια.</string>
+    <string name="description_all_books_blurb">Όλα τα βιβλία από το Αρχείο θα εισαχθούν, ενημερώνοντας παλιά βιβλία και προσθέτοντας καινούρια.</string>
     <!-- Menu text for the 'import/export new & changed' option -->
-    <string name="new_and_changed_books">Καινούρια και ενημερωμένα βιβλία</string>
+    <string name="option_new_and_changed_books">Καινούρια και ενημερωμένα βιβλία</string>
     <!-- Description of the 'import new & changed' option -->
-    <string name="new_and_changed_books_blurb">Εισαγωγή μόνο βιβλίων που είναι καινούρια, ή που έχουν ενημερωθεί πιο πρόσφατα στο Αρχείο. Χρήσιμο όταν συγχρονίζετε δύο συσκευές.</string>
+    <string name="description_new_and_changed_books_blurb">Εισαγωγή μόνο βιβλίων που είναι καινούρια, ή που έχουν ενημερωθεί πιο πρόσφατα στο Αρχείο. Χρήσιμο όταν συγχρονίζετε δύο συσκευές.</string>
     <!-- Descriptive text associated with import options not available with older archives -->
-    <string name="old_archive_blurb">Αυτή η επιλογή δεν υποστηρίζεται από Αρχεία παλαιότερης έκδοσης.</string>
+    <string name="alert_old_archive_blurb">Αυτή η επιλογή δεν υποστηρίζεται από Αρχεία παλαιότερης έκδοσης.</string>
     <!-- Part of the progress message displayed when importing books -->
     <string name="n_created_m_updated">%1$s δημιουργήθηκαν, %2$s ενημερώθηκαν</string>
 
     <!--  Explanatory text for 'export' dialogue -->
-    <string name="export_books_blurb">Τα βιβλία στον κατάλογό σας θα εξαχθούν. Επιλέξτε μία από τις δύο επιλογές για να αρχίσει η εξαγωγή, ή πατήστε \'Πίσω\' για να ακυρωθεί:</string>
+    <string name="description_export_books_blurb">Τα βιβλία στον κατάλογό σας θα εξαχθούν. Επιλέξτε μία από τις δύο επιλογές για να αρχίσει η εξαγωγή, ή πατήστε \'Πίσω\' για να ακυρωθεί:</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
@@ -724,29 +724,29 @@
     <string name="covers_progress_increment">%1$s εξώφυλλα επεξεργάστηκαν (%2$s λείπουν, %3$s παρελείφθησαν)</string>
 
     <!-- Explanatory note for 'export all' option -->
-    <string name="export_all_blurb">Όλα τα βιβλία, εξώφυλλα, ρυθμίσεις και προσαρμοσμένα στυλ θα εξαχθούν στο Αρχείο.</string>
+    <string name="description_export_all_blurb">Όλα τα βιβλία, εξώφυλλα, ρυθμίσεις και προσαρμοσμένα στυλ θα εξαχθούν στο Αρχείο.</string>
     <!-- Explanatory note for 'advanced export' option -->
-    <string name="export_advanced_blurb">Επιλέξτε τι θα εξαχθεί στο Αρχείο.</string>
+    <string name="description_export_advanced_blurb">Επιλέξτε τι θα εξαχθεί στο Αρχείο.</string>
     <!-- Introduction for 'advanced export' option -->
 
     <!-- Text for button -->
-    <string name="book_details">Λεπτομέρειες βιβλίου</string>
+    <string name="label_book_details">Λεπτομέρειες βιβλίου</string>
     <!-- Brief descriptionn -->
-    <string name="book_details_blurb">Λεπτομέρειες για τα βιβλία</string>
+    <string name="description_book_details_blurb">Λεπτομέρειες για τα βιβλία</string>
     <!-- Text for button -->
-    <string name="cover_images">Εικόνες εξωφύλλων</string>
+    <string name="label_cover_images">Εικόνες εξωφύλλων</string>
     <!-- Brief descriptionn -->
-    <string name="cover_images_blurb">Εικόνες εξωφύλλων για όλα τα επιλεγμένα βιβλία. Θα κάνει την εξαγωγή πολύ μεγαλύτερη.</string>
+    <string name="description_cover_images_blurb">Εικόνες εξωφύλλων για όλα τα επιλεγμένα βιβλία. Θα κάνει την εξαγωγή πολύ μεγαλύτερη.</string>
     <!-- Brief descriptionn -->
-    <string name="preferences_blurb">Προτιμήσεις και στυλ για λίστες καθορισμένες από το χρήστη</string>
+    <string name="description_preferences_blurb">Προτιμήσεις και στυλ για λίστες καθορισμένες από το χρήστη</string>
 
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="export_advanced_date_blurb">Προαιρετικά καθορίστε μια ημερομηνία να χρησιμοποιηθεί στην επιλογή βιβλίων ή/και εξωφύλλων για εξαγωγή:</string>
+    <string name="description_export_advanced_date_blurb">Προαιρετικά καθορίστε μια ημερομηνία να χρησιμοποιηθεί στην επιλογή βιβλίων ή/και εξωφύλλων για εξαγωγή:</string>
 
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="all_books_added_or_updated_since">Όλα τα βιβλία που προστέθηκαν ή ενημερώθηκαν από:</string>
+    <string name="option_all_books_added_or_updated_since">Όλα τα βιβλία που προστέθηκαν ή ενημερώθηκαν από:</string>
     <!-- Explanatory note for export data since last backup -->
-    <string name="all_books_added_or_updated_since_last_full_backup">Όλα τα βιβλία που προστέθηκαν ή ενημερώθηκαν από το τελευταίο πλήρες αντίγραφο ασφαλείας</string>
+    <string name="option_all_books_added_or_updated_since_last_full_backup">Όλα τα βιβλία που προστέθηκαν ή ενημερώθηκαν από το τελευταίο πλήρες αντίγραφο ασφαλείας</string>
 
     <!-- Short text for 'n books' -->
     <plurals

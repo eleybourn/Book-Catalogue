@@ -86,7 +86,7 @@ public class MainAbout extends BookCatalogueActivity {
 			contributorsStr.append(contributorsList[i]);
 		}
 		// Add the last name so we have "a, b, c and e", then construct and set the full blurb.
-		final String fullList = getString(R.string.a_and_b, contributorsStr.toString(), contributorsList[lastName]);
+		final String fullList = getString(R.string.fragment_a_and_b, contributorsStr.toString(), contributorsList[lastName]);
 		final String thanksStr = getString(R.string.para_translators, fullList);
 		thanks.setText(thanksStr);
 	}

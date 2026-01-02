@@ -302,7 +302,7 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
                 style.setName(style.getDisplayName());
             } catch (Exception e) {
                 Logger.logError(e);
-                Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
                 return;
             }
         }

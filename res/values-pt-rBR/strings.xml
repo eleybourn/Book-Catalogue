@@ -37,8 +37,8 @@
     <string name="label_search_by">Pesquisar Autor ou Título</string>
     <string name="book_not_found">O livro não foi encontrado. Às vezes o código de barras correto fica na contracapa. Você ainda pode informar manualmente</string>
     <string name="label_series_num">Nº</string>
-    <string name="import_data">Importar livros</string>
-    <string name="import_alert">Cuidado. A importação de dados pode substituir registros já existentes com novas informações se os campos uuid e id forem conflitantes. Isto normalmente não é um problema, se você modificou manualmente o arquivo exportado. Se você criou um novo livro no arquivo, ou está importando livros de outra pessoa, certifique-se de que o campo uuid esteja presente ou o campo id esteja vazio.</string>
+    <string name="label_import_books">Importar livros</string>
+    <string name="alert_import">Cuidado. A importação de dados pode substituir registros já existentes com novas informações se os campos uuid e id forem conflitantes. Isto normalmente não é um problema, se você modificou manualmente o arquivo exportado. Se você criou um novo livro no arquivo, ou está importando livros de outra pessoa, certifique-se de que o campo uuid esteja presente ou o campo id esteja vazio.</string>
     <string name="alert_import_failed_is_location_correct">ERRO: Não foi possível importar dados do cartão de memória. Certifique-se de que o arquivo esteja no local correto.</string>
     <string name="install_scan_title">Instalar leitor de código de barras</string>
     <string name="label_version_number">Número da versão:</string>
@@ -128,7 +128,7 @@
     <string name="vldt_blank_required">Empty value required for \'%s\'</string>
     <string name="vldt_failed">Validation failed for \'%s\'</string>
     <string name="vldt_read_start_after_end">The date reading started is after the end date</string>
-    <string name="backup_success">Backup Success</string>
+    <string name="alert_backup_success">Backup Success</string>
     <string name="alert_backup_failed">Backup Failed</string>
     <string name="file_must_contain_column">File must contain column named %s</string>
     <string name="file_must_contain_any_column">File must contain a column with one of the following names: %s</string>
@@ -147,7 +147,7 @@
     <string name="author_is_blank">Author field is blank</string>
     <string name="series_already_in_list">Series is already in the list</string>
     <string name="series_is_blank">Series field is blank</string>
-    <string name="export_failed_sdcard">Export failed - could not write to SD card</string>
+    <string name="alert_export_failed_sdcard">Export failed - could not write to SD card</string>
     <string name="skip_title">Skip - %s</string>
     <string name="num_books_searched">%s Books Searched</string>
     <string name="cancelled_info">Cancelled - %s</string>
@@ -202,7 +202,7 @@
     <string name="cannot_edit_system">You cannot edit the system values</string>
     <string name="no_connection">No Internet connection is available.</string>
     <string name="menu_share_this">Share</string>
-    <string name="email_export">Would you like to send this export as an email somewhere?</string>
+    <string name="label_email_export">Would you like to send this export as an email somewhere?</string>
     <string name="menu_crop_thumb">Crop Thumbnail</string>
     <string name="task_errors">Task Errors</string>
     <string name="retry">Retry</string>
@@ -338,7 +338,7 @@
     <string name="label_edit">Edit</string>
     <string name="groupings">Groupings</string>
     <string name="label_preferences">Preferences</string>
-    <string name="unexpected_error">An unexpected error has occurred, please send the details to support using the \'Help\' option from the main menu</string>
+    <string name="alert_unexpected_error">An unexpected error has occurred, please send the details to support using the \'Help\' option from the main menu</string>
     <string name="delete_style">Delete style</string>
     <string name="edit_style">Edit style</string>
     <string name="clone_style">Clone style</string>
@@ -362,7 +362,7 @@
     								Clicking on a task will allow you to see the events associated with that task as well as delete the task (and related events).</string>
     <string name="hint_background_task_events">From here you can see the events associated with a background task. 
     								Clicking on a event will allow you to perform a variety of actions appropriate for that event.</string>
-    <string name="hints_have_been_reset">Hints have been reset</string>
+    <string name="alert_hints_have_been_reset">Hints have been reset</string>
     <string name="hint_startup_screen">This is the standard BookCatalogue startup screen. If you prefer, you can startup directly in \'My Books\'; the preferred startup screen can be changed in preferences.</string>
     <string name="upgrading_ellipsis">Upgrading&#8230;</string>
     <string name="explain_goodreads_no_isbn">The selected book does not have an ISBN; it is not possible to automatically synchronize it with goodreads. 
@@ -388,7 +388,7 @@
     <string name="label_in">In</string>
     <string name="label_size">Size</string>
     <string name="label_updated">Updated</string>
-    <string name="problem_starting_import_arg">There was a problem starting the import: %1$s</string>
+    <string name="alert_problem_starting_import_arg">There was a problem starting the import: %1$s</string>
     <string name="hint_library_style_menu">This menu allows you to select the style of the list.
     								\n\nYou can also customize this menu, as well as create your own list styles, by clicking \'Customize\' at the end of the list.</string>
     <string name="menu_edit_format">Edit Format&#8230;</string>

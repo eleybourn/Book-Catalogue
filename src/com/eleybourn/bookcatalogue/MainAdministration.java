@@ -180,23 +180,19 @@ public class MainAdministration extends ActivityWithTasks
             backup.setOnClickListener(v -> launchBackupExport());
         }
 
+        {
+            /* Restore Catalogue Link */
+            View restore = findViewById(R.id.restoreCatalogueLabel);
+            // Make line flash when clicked.
+            restore.setBackgroundResource(android.R.drawable.list_selector_background);
+            restore.setOnClickListener(v -> launchBackupImport());
+        }
+
         /* Export Link */
         View export = findViewById(R.id.exportLabel);
         // Make line flash when clicked.
         export.setBackgroundResource(android.R.drawable.list_selector_background);
         export.setOnClickListener(v -> launchCsvExportPicker());
-
-        /* TaskList Link */
-        View backgroundEvents = findViewById(R.id.backgroundEventsLabel);
-        // Make line flash when clicked.
-        backgroundEvents.setBackgroundResource(android.R.drawable.list_selector_background);
-        backgroundEvents.setOnClickListener(v -> showEvents());
-
-        /* TaskList Link */
-        View backgroundTasks = findViewById(R.id.backgroundTasksLabel);
-        // Make line flash when clicked.
-        backgroundTasks.setBackgroundResource(android.R.drawable.list_selector_background);
-        backgroundTasks.setOnClickListener(v -> showBackgroundTasks());
 
         /* Import Link */
         View imports = findViewById(R.id.importLabel);
@@ -205,9 +201,9 @@ public class MainAdministration extends ActivityWithTasks
         imports.setOnClickListener(
                 v -> {
                     // Verify - this can be a dangerous operation
-                    AlertDialog alertDialog = new AlertDialog.Builder(MainAdministration.this).setMessage(R.string.import_alert).create();
-                    alertDialog.setTitle(R.string.import_data);
-                    alertDialog.setIcon(R.drawable.ic_menu_info);
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainAdministration.this).setMessage(R.string.alert_import).create();
+                    alertDialog.setTitle(R.string.label_import_books);
+                    alertDialog.setIcon(R.drawable.ic_menu_upload);
                     alertDialog.setButton(
                             AlertDialog.BUTTON_POSITIVE,
                             MainAdministration.this.getResources().getString(R.string.button_ok),
@@ -220,6 +216,20 @@ public class MainAdministration extends ActivityWithTasks
                             });
                     alertDialog.show();
                 });
+
+
+
+        /* TaskList Link */
+        View backgroundEvents = findViewById(R.id.backgroundEventsLabel);
+        // Make line flash when clicked.
+        backgroundEvents.setBackgroundResource(android.R.drawable.list_selector_background);
+        backgroundEvents.setOnClickListener(v -> showEvents());
+
+        /* TaskList Link */
+        View backgroundTasks = findViewById(R.id.backgroundTasksLabel);
+        // Make line flash when clicked.
+        backgroundTasks.setBackgroundResource(android.R.drawable.list_selector_background);
+        backgroundTasks.setOnClickListener(v -> showBackgroundTasks());
 
         {
             /* Update Fields Link */
@@ -237,12 +247,11 @@ public class MainAdministration extends ActivityWithTasks
             backup.setBackgroundResource(android.R.drawable.list_selector_background);
             backup.setOnClickListener(v -> {
                 if (mDbHelper.backupDbFile() != null) {
-                    Toast.makeText(MainAdministration.this, R.string.backup_success, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainAdministration.this, R.string.alert_backup_success, Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(MainAdministration.this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainAdministration.this, R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
                 }
             });
-
         }
 
         {
@@ -260,7 +269,7 @@ public class MainAdministration extends ActivityWithTasks
             hints.setBackgroundResource(android.R.drawable.list_selector_background);
             hints.setOnClickListener(v -> {
                 HintManager.resetHints();
-                Toast.makeText(MainAdministration.this, R.string.hints_have_been_reset, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainAdministration.this, R.string.alert_hints_have_been_reset, Toast.LENGTH_LONG).show();
             });
         }
 
@@ -277,13 +286,6 @@ public class MainAdministration extends ActivityWithTasks
                     utils.close();
                 }
             });
-        }
-        {
-            /* Restore Catalogue Link */
-            View restore = findViewById(R.id.restoreCatalogueLabel);
-            // Make line flash when clicked.
-            restore.setBackgroundResource(android.R.drawable.list_selector_background);
-            restore.setOnClickListener(v -> launchBackupImport());
         }
 
     }
@@ -321,7 +323,7 @@ public class MainAdministration extends ActivityWithTasks
             thread = new ImportThread(getTaskManager(), f);
         } catch (IOException e) {
             Logger.logError(e);
-            Toast.makeText(this, getString(R.string.problem_starting_import_arg, e.getMessage()), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.alert_problem_starting_import_arg, e.getMessage()), Toast.LENGTH_LONG).show();
             return;
         }
         thread.start();
@@ -359,7 +361,7 @@ public class MainAdministration extends ActivityWithTasks
             return;
         }
         AlertDialog alertDialog = new AlertDialog.Builder(MainAdministration.this).create();
-        alertDialog.setTitle(R.string.email_export);
+        alertDialog.setTitle(R.string.label_email_export);
         alertDialog.setIcon(R.drawable.ic_menu_send);
         alertDialog.setButton(
                 DialogInterface.BUTTON_NEGATIVE,
@@ -368,10 +370,8 @@ public class MainAdministration extends ActivityWithTasks
                     // setup the mail message
                     final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                     emailIntent.setType("plain/text");
-                    //emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
                     String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.label_export_to_csv);
                     emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-                    //emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, context.getString(R.string.debug_body));
                     //has to be an ArrayList
                     ArrayList<Uri> uris = new ArrayList<>();
                     // Find all files of interest to send
@@ -382,7 +382,7 @@ public class MainAdministration extends ActivityWithTasks
                         startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                     } catch (NullPointerException e) {
                         Logger.logError(e);
-                        Toast.makeText(MainAdministration.this, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainAdministration.this, R.string.alert_export_failed_sdcard, Toast.LENGTH_LONG).show();
                     }
 
                     dialog.dismiss();

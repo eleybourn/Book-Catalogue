@@ -278,7 +278,7 @@ public class StorageUtils {
 
 			} catch (NullPointerException e) {
 				Logger.logError(e);
-				Toast.makeText(context, R.string.export_failed_sdcard, Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.alert_export_failed_sdcard, Toast.LENGTH_LONG).show();
 			}
 		}
 	}

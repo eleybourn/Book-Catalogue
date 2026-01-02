@@ -36,8 +36,8 @@
     <string name="label_search_by">Αναζήτηση συγγραφέα ή τίτλου</string>
     <string name="book_not_found">Το βιβλίο που σαρώθηκε δεν βρέθηκε. Κάποιες φορές το σωστό barcode βρίσκεται στο εσωτερικό του εξωφύλλου. Αλλιώς εισάγετε τις λεπτομέρειες χειροκίνητα.</string>
     <string name="label_series_num">#</string>
-    <string name="import_data">Εισαγωγή Βιβλιων</string>
-    <string name="import_alert">Προσοχή. Η εισαγωγή δεδομένων μπορεί να ενημερώσει υπάρχοντα βιβλία με νέες πληροφορίες εαν η στήλη uuid δεν είναι παρούσα και το id στο αρχείο εισαγωγής είναι το ίδιο με κάποιο υπάρχον id. Αυτό είναι εντάξει εαν έχει αλλαχτεί κάποιο πεδίο σε ένα εξαγμένο αρχείο. Εαν δημιουργήσατε μια νεα βιβλιογραφική εγγραφή ή εαν εισάγετε τα βιβλία κάποιου άλλου, σιγουρευτείτε ότι το πεδίο uuid είναι παρόν ή το πεδίο id είναι κενό.</string>
+    <string name="label_import_books">Εισαγωγή Βιβλιων</string>
+    <string name="alert_import">Προσοχή. Η εισαγωγή δεδομένων μπορεί να ενημερώσει υπάρχοντα βιβλία με νέες πληροφορίες εαν η στήλη uuid δεν είναι παρούσα και το id στο αρχείο εισαγωγής είναι το ίδιο με κάποιο υπάρχον id. Αυτό είναι εντάξει εαν έχει αλλαχτεί κάποιο πεδίο σε ένα εξαγμένο αρχείο. Εαν δημιουργήσατε μια νεα βιβλιογραφική εγγραφή ή εαν εισάγετε τα βιβλία κάποιου άλλου, σιγουρευτείτε ότι το πεδίο uuid είναι παρόν ή το πεδίο id είναι κενό.</string>
     <string name="alert_import_failed_is_location_correct">ΣΦΑΛΜΑ: Εισαγωγή δεδομένων (από SDCard) απέτυχε. Βρίσκεται το αρχείο στη σωστή τοποθεσία;</string>
     <string name="install_scan_title">Εγκατάσταση σαρωτή barcode</string>
     <string name="label_version_number">Αριθμός έκδοσης:</string>
@@ -127,7 +127,7 @@
     <string name="vldt_blank_required">Απαιτείται κενή τιμή για \'%s\'</string>
     <string name="vldt_failed">Η επικύρωση απέτυχε για \'%s\'</string>
     <string name="vldt_read_start_after_end">Η ημερομηνία έναρξης ανάγνωσης είναι μετά την ημερομηνία λήξης</string>
-    <string name="backup_success">Αντίγραφο δημιουργήθηκε επιτυχώς</string>
+    <string name="alert_backup_success">Αντίγραφο δημιουργήθηκε επιτυχώς</string>
     <string name="alert_backup_failed">Αντίγραφο απέτυχε</string>
     <string name="file_must_contain_column">Το αρχείο πρέπει να περιέχει στήλη με όνομα %s</string>
     <string name="file_must_contain_any_column">Το αρχείο πρέπει να περιέχει στήλη με ένα από τα ακόλουθα όνοματα: %s</string>
@@ -146,7 +146,7 @@
     <string name="author_is_blank">Το πεδίο συγγραφέας είναι κενό</string>
     <string name="series_already_in_list">Η σειρά βρίσκεται ήδη στη λίστα</string>
     <string name="series_is_blank">Το πεδίο σειρά είναι κενό</string>
-    <string name="export_failed_sdcard">Η εξαγωγή απέτυχε - Δεν μπόρεσε να γίνει εγγραφή στην SD card</string>
+    <string name="alert_export_failed_sdcard">Η εξαγωγή απέτυχε - Δεν μπόρεσε να γίνει εγγραφή στην SD card</string>
     <string name="skip_title">Παράβλεψη - %s</string>
     <string name="num_books_searched">%s Βιβλία αναζητήθηκαν</string>
     <string name="cancelled_info">Ακυρώθηκαν - %s</string>
@@ -201,7 +201,7 @@
     <string name="cannot_edit_system">Δεν μπορείτε να επεξεργαστείτε τις τιμές συστήματος.</string>
     <string name="no_connection">Δεν υπάρχει διαθέσιμη σύνδεση internet.</string>
     <string name="menu_share_this">Δημοσίευση</string>
-    <string name="email_export">Θα θέλατε να αποστείλετε σαν email αυτην την εξαγωγή;</string>
+    <string name="label_email_export">Θα θέλατε να αποστείλετε σαν email αυτην την εξαγωγή;</string>
     <string name="menu_crop_thumb">Περικοπή Μικρογραφίας</string>
     <string name="task_errors">Σφάλματα εργασιών</string>
     <string name="retry">Επανάληψη</string>
@@ -337,7 +337,7 @@
     <string name="label_edit">Επεξεργασία</string>
     <string name="groupings">Ομαδοποιήσεις</string>
     <string name="label_preferences">Επιλογές</string>
-    <string name="unexpected_error">Ένα απροσδόκητο σφάλμα συνέβη, παρακαλούμε στείλτε τις λεπτομέρειες στην υποστήριξη με χρήση της επιλογής \'Βοήθεια\' από το κεντρικό μενού.</string>
+    <string name="alert_unexpected_error">Ένα απροσδόκητο σφάλμα συνέβη, παρακαλούμε στείλτε τις λεπτομέρειες στην υποστήριξη με χρήση της επιλογής \'Βοήθεια\' από το κεντρικό μενού.</string>
     <string name="delete_style">Διαγραφή στυλ</string>
     <string name="edit_style">Επεξεργασία στυλ</string>
     <string name="clone_style">Αντιγραφή στυλ</string>
@@ -361,7 +361,7 @@
     								Πατώντας μια εργασία μπορείτε να δείτε τα events που έχουν σχέση με την εργασία καθώς και να τη διαγράψετε (και τα σχετικά συμβάντα).</string>
     <string name="hint_background_task_events">Από εδώ μπορείτε να δείτε τα events που έχουν σχέση με μια εργασία παρασκηνίου.
     								Πατώντας σε ένα συμβάν μπορείτε να εκτελέσετε δίαφορες ενέργειες κατάλληλες γι\'αυτό.</string>
-    <string name="hints_have_been_reset">Οι Συμβουλές έχουν επαναφερθεί</string>
+    <string name="alert_hints_have_been_reset">Οι Συμβουλές έχουν επαναφερθεί</string>
     <string name="hint_startup_screen">Αυτή είναι η αρχική οθόνη του BookCatalogue. Αν θέλετε, μπορείτε να ξεκινήσετε κατευθείαν στην οθόνη \'Τα βιβλία μου\'. Η αρχική οθόνη μπορεί να αλλαχθεί στις Προτιμήσεις.</string>
     <string name="upgrading_ellipsis">Γίνεται αναβάθμηση&#8230;</string>
     <string name="explain_goodreads_no_isbn">Το επιλεγμένο βιβλίο δεν έχει κωδικό ISBN - δε γίνεται να συγχρονιστεί αυτόματα με το goodreads.
@@ -387,7 +387,7 @@
     <string name="label_in">Μέσα</string>
     <string name="label_size">Μέγεθος</string>
     <string name="label_updated">Ενημερωμένο</string>
-    <string name="problem_starting_import_arg">Υπήρξε ένα πρόβλημα στην έναρξη της εισαγωγής: %1$s</string>
+    <string name="alert_problem_starting_import_arg">Υπήρξε ένα πρόβλημα στην έναρξη της εισαγωγής: %1$s</string>
     <string name="hint_library_style_menu">Σε αυτό το μενού μπορείτε να επιλέξετε το στυλ της λίστας.
     								\n\nΜπορείτε επίσης να προσαρμόσετε και αυτό το μενού, καθώς και να δημιουργήσετε το δικό σας στυλ για λίστες, πατώντας \'Προσαρμογή\' στο τέλος της λίστας.</string>
     <string name="menu_edit_format">Επεξεργασία Μορφής&#8230;</string>

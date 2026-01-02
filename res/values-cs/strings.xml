@@ -34,8 +34,8 @@
 <string name="label_search_by">Hledat autora nebo titul</string>
 <string name="book_not_found">Nepodařilo se nalézt hledanou knihu. Zkuste prosím zadat potřebné údaje manuálně.</string>
 <string name="label_series_num">#</string>
-    <string name="import_data">Importovat knihy</string>
-<string name="import_alert">Pozor: Importovaná data mohou upravit existující záznamy knih - k takové situaci dojde v případě, že není vyplněno uuid, a id v importovaném souboru je totožné s již existujícím id. Doporučujeme proto zkontrolovat - a případně upravit - toto pole v exportovaném souboru. Pokud byl vytvořen nový záznam, nebo jsou importovány další knihy, tak se ujistěte, že je vyplněno uuid, nebo že pole id je prázdné.</string>
+    <string name="label_import_books">Importovat knihy</string>
+<string name="alert_import">Pozor: Importovaná data mohou upravit existující záznamy knih - k takové situaci dojde v případě, že není vyplněno uuid, a id v importovaném souboru je totožné s již existujícím id. Doporučujeme proto zkontrolovat - a případně upravit - toto pole v exportovaném souboru. Pokud byl vytvořen nový záznam, nebo jsou importovány další knihy, tak se ujistěte, že je vyplněno uuid, nebo že pole id je prázdné.</string>
     <string name="alert_import_failed_is_location_correct">ERROR: Import dat (z SD karty) selhal. Je soubor na správném místě?</string>
     <string name="install_scan_title">Instalovat čtečku čárových kódů</string>
 <string name="label_version_number">Číslo verze:</string>
@@ -124,7 +124,7 @@
 <string name="vldt_blank_required">Prázdná hodnota vyžadována pro \'%s\'</string>
 <string name="vldt_failed">Selhala validace pro \'%s\'</string>
     <string name="vldt_read_start_after_end">Datum začátku čtení musí předcházet datu ukončení čtení.</string>
-<string name="backup_success">Zálohování úspěšně dokončeno</string>
+<string name="alert_backup_success">Zálohování úspěšně dokončeno</string>
 <string name="alert_backup_failed">Zálohování selhalo</string>
 <string name="file_must_contain_column">Soubor musí obsahovat sloupec jménem %s</string>
 <string name="file_must_contain_any_column">Soubor musí obsahovat sloupec s jedním z následujících jmen: %s</string>
@@ -143,7 +143,7 @@
 <string name="author_is_blank">Pole pro autora je prázdné</string>
 <string name="series_already_in_list">Série je již v seznamu</string>
 <string name="series_is_blank">Pole pro sérii je prázdné</string>
-<string name="export_failed_sdcard">Exportování selhalo - nelze zapisovat na SD kartu</string>
+<string name="alert_export_failed_sdcard">Exportování selhalo - nelze zapisovat na SD kartu</string>
     <string name="skip_title">Vynechat - %s</string>
 <string name="num_books_searched">%s knih nalezeno</string>
 <string name="cancelled_info">Zrušeno - %s</string>
@@ -198,7 +198,7 @@
 <string name="cannot_edit_system">Nemůžete upravovat systémové hodnoty</string>
     <string name="no_connection">Připojení k internetu není k dispozici.</string>
     <string name="menu_share_this">Sdílet</string>
-<string name="email_export">Přejete si odeslat tento export prostřednictvím mailu?</string>
+<string name="label_email_export">Přejete si odeslat tento export prostřednictvím mailu?</string>
 <string name="menu_crop_thumb">Oříznout náhled</string>
     <string name="task_errors">Chyby</string>
 <string name="retry">Opakovat</string>
@@ -326,7 +326,7 @@
 <string name="label_edit">Upravit</string>
 <string name="groupings">Seskupení</string>
     <string name="label_preferences">Nastavení</string>
-<string name="unexpected_error">Došlo k neočekávané chybě, prosím zašlete nám detaily o této chybě prostřednictvím \'Nápovědy\' v hlavním menu.</string>
+<string name="alert_unexpected_error">Došlo k neočekávané chybě, prosím zašlete nám detaily o této chybě prostřednictvím \'Nápovědy\' v hlavním menu.</string>
 <string name="delete_style">Smazat styl</string>
 <string name="edit_style">Upravit styl</string>
 <string name="clone_style">Klonovat styl</string>
@@ -350,7 +350,7 @@
     								Kliknutí na událost Vám umožní prohlédnout si události spojené s danou úlohou, nebo její odstranění (spolu se souvisejícími událostmi).</string>
 <string name="hint_background_task_events">Odtud můžete sledovat události spojené s úlohami na pozadí. 
     								Kliknutí na událost Vám umožní provést celou řadu akcí spojených s danou událostí.</string>
-<string name="hints_have_been_reset">Rady byly obnoveny</string>
+<string name="alert_hints_have_been_reset">Rady byly obnoveny</string>
     <string name="hint_startup_screen">Toto je standardní výchozí obrazovka aplikace BookCatalogue. Pokud si však přejete, může aplikace ihned po spuštění zobrazit sekci \'Moje knihy\'; případnou změnu spouštění aplikace můžete provést v sekci Nastavení.</string>
 <string name="upgrading_ellipsis">Aktualizování&#8230;</string>
 <string name="explain_goodreads_no_isbn">Zvolená kniha nemá zadaný ISBN kód; není proto možné ji automaticky synchronizovat s Goodreads. 
@@ -375,7 +375,7 @@
 <string name="label_in">V</string>
 <string name="label_size">Velikost</string>
 <string name="label_updated">Aktualizování</string>
-    <string name="problem_starting_import_arg">Vyskytl se problém při zahájení importu: %1$s</string>
+    <string name="alert_problem_starting_import_arg">Vyskytl se problém při zahájení importu: %1$s</string>
 <string name="hint_library_style_menu">Toto menu umožňuje zvolit si styl seznamu.
     								\n\nProstřednictvím tlačítka \'Přizpůsobit\' (na konci seznamu) máte možnost si toto menu přizpůsobit, nebo si vytvořit vlastní styl.</string>
 <string name="menu_edit_format">Upravit formát&#8230;</string>

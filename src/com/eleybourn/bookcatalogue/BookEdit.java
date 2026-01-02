@@ -904,7 +904,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         if (frag instanceof OnPartialDatePickerListener) {
             ((OnPartialDatePickerListener) frag).onPartialDatePickerSet(dialogId, dialog, year, month, day);
         } else {
-            Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
             Logger.logError(new RuntimeException("Received date dialog result with no fragment to handle it"));
         }
         // Make sure it's dismissed
@@ -922,7 +922,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         if (frag instanceof OnPartialDatePickerListener) {
             ((OnPartialDatePickerListener) frag).onPartialDatePickerCancel(dialogId, dialog);
         } else {
-            Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
             Logger.logError(new RuntimeException("Received date dialog cancellation with no fragment to handle it"));
         }
         // Make sure it's dismissed
@@ -941,7 +941,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         if (frag instanceof OnTextFieldEditorListener) {
             ((OnTextFieldEditorListener) frag).onTextFieldEditorSave(dialogId, dialog, newText);
         } else {
-            Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
             Logger.logError(new RuntimeException("Received onTextFieldEditorSave result with no fragment to handle it"));
         }
         // Make sure it's dismissed
@@ -959,7 +959,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         if (frag instanceof OnTextFieldEditorListener) {
             ((OnTextFieldEditorListener) frag).onTextFieldEditorCancel(dialogId, dialog);
         } else {
-            Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
             Logger.logError(new RuntimeException("Received onTextFieldEditorCancel result with no fragment to handle it"));
         }
         // Make sure it's dismissed
@@ -979,7 +979,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         if (frag instanceof OnBookshelfCheckChangeListener) {
             ((OnBookshelfCheckChangeListener) frag).onBookshelfCheckChanged(dialogId, dialog, checked, shelf, textList, encodedList);
         } else {
-            Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
             Logger.logError(new RuntimeException("Received onBookshelfCheckChanged result with no fragment to handle it"));
         }
     }

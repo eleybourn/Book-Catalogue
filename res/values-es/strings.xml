@@ -35,8 +35,8 @@
 	<string name="label_search_by">Buscar autor o título</string>
 	<string name="book_not_found">El libro escaneado no ha sido encontrado. El código de barras correcto se encuentra a veces en el interior de la portada. También puede introducir los datos de forma manual.</string>
 	<string name="label_series_num">#</string>
-    <string name="import_data">Importar libros</string>
-	<string name="import_alert">¡Atención! La importación de datos puede actualizar los datos de libros existentes con nueva información si el ID del fichero de importación existe ya en la base de datos. Esto puede ser aceptable si se modifica un campo de un fichero exportado. Si crea un registro para un nuevo libro, compruebe que el campo ID está en blanco.</string>
+    <string name="label_import_books">Importar libros</string>
+	<string name="alert_import">¡Atención! La importación de datos puede actualizar los datos de libros existentes con nueva información si el ID del fichero de importación existe ya en la base de datos. Esto puede ser aceptable si se modifica un campo de un fichero exportado. Si crea un registro para un nuevo libro, compruebe que el campo ID está en blanco.</string>
     <string name="alert_import_failed_is_location_correct">ERROR: La importación (desde la tarjeta SD) ha fallado. ¿Está el fichero en el lugar correcto?</string>
     <string name="install_scan_title">Instalar Escáner de código de barras</string>
 	<string name="label_version_number">Versión</string>
@@ -126,7 +126,7 @@
 	<string name="vldt_blank_required">\'%s\' debe estar en blanco</string>
 	<string name="vldt_failed">Falló la validación para \'%s\'</string>
     <string name="vldt_read_start_after_end">La fecha de inicio de lectura es posterior a la de finalización</string>
-	<string name="backup_success">Copia de seguridad correcta</string>
+	<string name="alert_backup_success">Copia de seguridad correcta</string>
 	<string name="alert_backup_failed">Copia de seguridad errónea</string>
 	<string name="file_must_contain_column">El fichero debe tener una columna con el nombre %s</string>
 	<string name="file_must_contain_any_column">El fichero debe tener una columna con uno de los nombres siguientes: %s</string>
@@ -146,7 +146,7 @@
 	<string name="author_is_blank">El campo Autor está en blanco</string>
 	<string name="series_already_in_list">Esa serie ya está en la lista</string>
 	<string name="series_is_blank">El campo Serie está en blanco</string>
-	<string name="export_failed_sdcard">La exportación falló: no se pudo escribir en la tarjeta SD</string>
+	<string name="alert_export_failed_sdcard">La exportación falló: no se pudo escribir en la tarjeta SD</string>
     <string name="skip_title">Excluir - %s</string>
 	<string name="num_books_searched">%s libros encontrados</string>
 	<string name="cancelled_info">Cancelado - %s</string>
@@ -201,7 +201,7 @@
     <string name="cannot_edit_system">No se pueden modificar los valores del sistema</string>
     <string name="no_connection">No hay conexión a internet.</string>
     <string name="menu_share_this">Compartir</string>
-    <string name="email_export">¿Desea enviar por correo electrónico el fichero exportado?</string>
+    <string name="label_email_export">¿Desea enviar por correo electrónico el fichero exportado?</string>
     <string name="menu_crop_thumb">Recortar miniatura</string>
     <string name="task_errors">Errores en tareas</string>
     <string name="retry">Reintentar</string>
@@ -337,7 +337,7 @@
     <string name="label_edit">Editar</string>
     <string name="groupings">Grupos</string>
     <string name="label_preferences">Preferencias</string>
-    <string name="unexpected_error">Se ha producido un error inesperado. Por favor, envíe los detalles a soporte utilizando la opción \'Help\' del menú principal</string>
+    <string name="alert_unexpected_error">Se ha producido un error inesperado. Por favor, envíe los detalles a soporte utilizando la opción \'Help\' del menú principal</string>
     <string name="delete_style">Eliminar Estilo</string>
     <string name="edit_style">Editar Estilo</string>
     <string name="clone_style">Duplicar Estilo</string>
@@ -361,7 +361,7 @@
     								Haciendo clic sobre una tarea podrá ver los eventos asociados, o borrar la tarea (y los eventos).</string>
     <string name="hint_background_task_events">Aquí puede ver los eventos asociados con una tarea en segundo plano. 
     								Haciendo clic sobre un evento podrá realizar distintas acciones según el tipo de evento.</string>
-    <string name="hints_have_been_reset">Sugerencias reseteadas</string>
+    <string name="alert_hints_have_been_reset">Sugerencias reseteadas</string>
     <string name="hint_startup_screen">Esta es la pantalla estándar de inicio de BookCatalogue. Si lo prefiere, puede iniciar la aplicación directamente en \'Mis Libros\'; la pantalla de inicio preferida puede cambiarse en preferencias.</string>
     <string name="upgrading_ellipsis">Actualizando&#8230;</string>
     <string name="explain_goodreads_no_isbn">El libro seleccionado no tiene ISBN; no se puede sincronizar de forma automática con goodreads. 
@@ -387,7 +387,7 @@
     <string name="label_in">en</string>
     <string name="label_size">Tamaño</string>
     <string name="label_updated">Actualizado</string>
-    <string name="problem_starting_import_arg">Ha habido un problema con la importación: %1$s</string>
+    <string name="alert_problem_starting_import_arg">Ha habido un problema con la importación: %1$s</string>
     <string name="hint_library_style_menu">Esta opción le permite seleccionar el estilo de los listados.
     								\n\nTambién puede modificar este menú, así como crear sus propios estilos de listado, seleccionando \'Configurar\' al final de la lista.</string>
     <string name="menu_edit_format">Editar Formato&#8230;</string>

@@ -35,8 +35,8 @@
     <string name="label_search_by">Yazar veya kitap adı ara</string>
     <string name="book_not_found">Aranan kitap bulunamadı. Bazen doğru barkodu kitap kapağının içinde bulabilirsiniz. Bulamazsanız, bilgileri elle giriniz.</string>
     <string name="label_series_num">#</string>
-    <string name="import_data">Kitapları içe aktar</string>
-    <string name="import_alert">Uyarı: Bilgileri içe aktarırken eğer içe aktardığınız dosyaların ID numarası var olan bir kitabın ID\'si ile aynı ise, varolan kitap verilerinin üstüne yazılmasına neden olabilir. Eğer dışa aktarılmış bir dosyada bir giriyi değiştirdiyseniz bu sorun değildir; ancak yeni bir kitap girişi oluşturuyorsanız ID bölümünün boş olduğundan emin olun.</string>
+    <string name="label_import_books">Kitapları içe aktar</string>
+    <string name="alert_import">Uyarı: Bilgileri içe aktarırken eğer içe aktardığınız dosyaların ID numarası var olan bir kitabın ID\'si ile aynı ise, varolan kitap verilerinin üstüne yazılmasına neden olabilir. Eğer dışa aktarılmış bir dosyada bir giriyi değiştirdiyseniz bu sorun değildir; ancak yeni bir kitap girişi oluşturuyorsanız ID bölümünün boş olduğundan emin olun.</string>
     <string name="alert_import_failed_is_location_correct">Hata: SD karttan içe aktarma başarısız oldu. Dosyalar yerli yerinde mi acaba?</string>
     <string name="install_scan_title">Barkod Tarayıcıyı yükleyin</string>
     <string name="label_version_number">Sürüm numarası</string>
@@ -124,7 +124,7 @@
     <string name="vldt_blank_required">\'%s\' için boş değer gerekli</string>
     <string name="vldt_failed">\'%s\' için doğrulama başarısız</string>
     <string name="vldt_read_start_after_end">Okunmaya başlama süresi bitiş süresinden sonra</string>
-    <string name="backup_success">Yedekleme başarılı!</string>
+    <string name="alert_backup_success">Yedekleme başarılı!</string>
     <string name="alert_backup_failed">Yedekleme başarısız!</string>
     <string name="file_must_contain_column">Dosya adı %s adında bir sütun içermeli</string>
     <string name="file_must_contain_any_column">Dosya, %s adlarından birini kullanan bir sütun içermeli</string>
@@ -146,7 +146,7 @@
     <string name="author_is_blank">Yazar alanı boş</string>
     <string name="series_already_in_list">Seri zaten ekli</string>
     <string name="series_is_blank">Seri alanı boş</string>
-    <string name="export_failed_sdcard">Dışa aktarma başarısız - SD karta yazılamadı</string>
+    <string name="alert_export_failed_sdcard">Dışa aktarma başarısız - SD karta yazılamadı</string>
     <string name="skip_title">Atla - %s</string>
     <string name="num_books_searched">%s kitap arandı</string>
     <string name="cancelled_info">İptal edildi - %s</string>
@@ -204,7 +204,7 @@
     <string name="cannot_edit_system">Sistem değerlerini düzenleyemezsiniz</string>
     <string name="no_connection">Ağ bağlantısı yok.</string>
     <string name="menu_share_this">Paylaş</string>
-    <string name="email_export">Dışarı aktarılan veriyi e-posta ile göndermemizi ister misiniz?</string>
+    <string name="label_email_export">Dışarı aktarılan veriyi e-posta ile göndermemizi ister misiniz?</string>
     <string name="menu_crop_thumb">Küçük resmi kırp</string>
     <string name="task_errors">Görev hataları</string>
     <string name="retry">Yeniden dene</string>
@@ -362,7 +362,7 @@
     <string name="label_edit">Düzenle</string>
     <string name="groupings">Öbeklemeler</string>
     <string name="label_preferences">Yeğlenenler</string>
-    <string name="unexpected_error">Beklenmeyen bir hata oluştu, lütfen olayla ilgili ayrıntıları ana seçkedeki \'Yardım\' seçeneğinden bize gönderin</string>
+    <string name="alert_unexpected_error">Beklenmeyen bir hata oluştu, lütfen olayla ilgili ayrıntıları ana seçkedeki \'Yardım\' seçeneğinden bize gönderin</string>
     <string name="delete_style">Biçemi sil</string>
     <string name="edit_style">Biçemi düzenle</string>
     <string name="clone_style">Biçemi çoğalt</string>
@@ -386,7 +386,7 @@
     								Bir göreve tıklamak o görevle ilişkili tüm olayları görmenizi ve/veya görevi silebilmenizi (ve ilişkili diğer olayları) sağlar.</string>
     <string name="hint_background_task_events">Buradan bir ardalan görevi ile ilişkili tüm olayları görebilirsiniz. 
     								Bir olaya tıklamak o olayla ilintili yapılabilecek eylemleri görüntülemenizi sağlar.</string>
-    <string name="hints_have_been_reset">İpuçları sıfırlandı</string>
+    <string name="alert_hints_have_been_reset">İpuçları sıfırlandı</string>
     <string name="hint_startup_screen">Bu ölçünlü BookCatalogue başlangıç ekranıdır. Eğer isterseniz doğrudan \'Kitaplarım\'; ekranından başlayabilirsiniz. Başlangıç ekranı yeğlenenlerden değiştirilebilir.</string>
     <string name="upgrading_ellipsis">Yükseltiliyor&#8230;</string>
     <string name="explain_goodreads_no_isbn">Seçili kitabın bir ISBN numarası yok, dolayısıyla Goodreads ile özdevinimli olarak eşitlenmesi olanaklı değil. 
@@ -412,7 +412,7 @@
     <string name="label_in">İçinde</string>
     <string name="label_size">Boyut</string>
     <string name="label_updated">Güncellenmiş</string>
-    <string name="problem_starting_import_arg">İçe aktarmaya başlarken bir hata oluştu: %1$s</string>
+    <string name="alert_problem_starting_import_arg">İçe aktarmaya başlarken bir hata oluştu: %1$s</string>
     <string name="hint_library_style_menu">Bu seçke size dizelge biçemini seçmenize olanak tanır.
     								\n\nEk olarak dizelgenin sonundaki \'Kişiselleştir\' düğmesini kullanarak bu seçkeyi kişiselleştirebilir ve hatta kendi dizelge biçemlerinizi oluşturabilirsiniz.</string>
     <string name="menu_edit_format">Biçimi düzenle&#8230;</string>

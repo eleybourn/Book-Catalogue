@@ -35,8 +35,8 @@
 <string name="book_not_found">Zeskanowana książka nie została odnaleziona. Spóbuj ponownie z kodem, który może znajdować się w środku okładki lub wprowadź dane ręcznie.</string>
 <string name="label_series_num">tom#</string>
     <string name="fragment_a_and_b">%1$s i %2$s</string>
-    <string name="import_data">Importuj książki</string>
-<string name="import_alert">Uwaga! Zaimportowane dane mogą nadpisać istniejące, jeśli pokryje się identyfikator (pole _id). Jest to zwykle oczekiwane zachowanie, gdy edytowałeś wyeksportowany wcześniej plik. Jeśli dodajesz nową książkę, pozostaw pole _id puste.</string>
+    <string name="label_import_books">Importuj książki</string>
+<string name="alert_import">Uwaga! Zaimportowane dane mogą nadpisać istniejące, jeśli pokryje się identyfikator (pole _id). Jest to zwykle oczekiwane zachowanie, gdy edytowałeś wyeksportowany wcześniej plik. Jeśli dodajesz nową książkę, pozostaw pole _id puste.</string>
     <string name="alert_import_failed_is_location_correct">Błąd!: Import z karty SD nie powiódł się. Upewnij się, czy plik export.csv jest w prawidłowym miejscu.</string>
     <string name="install_scan_title">Zainstaluj Barcode Scanner</string>
 <string name="label_version_number">Wersja programu:</string>
@@ -125,7 +125,7 @@
 <string name="vldt_blank_required">Oczekiwana wartość pusta dla \'%s\'</string>
 <string name="vldt_failed">Walidacja pola nie powiodła się dla \'%s\'</string>
     <string name="vldt_read_start_after_end">Data rozpoczęcia czytania późniejsza od daty zakończenia</string>
-<string name="backup_success">Kopia zapasowa wykonana</string>
+<string name="alert_backup_success">Kopia zapasowa wykonana</string>
 <string name="alert_backup_failed">Kopia zapasowa nie powiodła się</string>
 <string name="file_must_contain_column">Plik musi zawierać pole %s</string>
 <string name="file_must_contain_any_column">Plik musi zawierać jedno z pól: %s</string>
@@ -144,7 +144,7 @@
 <string name="author_is_blank">Pole autor jest puste</string>
 <string name="series_already_in_list">Seria (tom) jest na liście</string>
 <string name="series_is_blank">Pole serii(tomu) jest puste</string>
-<string name="export_failed_sdcard">Eksport nie powiódł się - nie mogę zapisać na karcie SD</string>
+<string name="alert_export_failed_sdcard">Eksport nie powiódł się - nie mogę zapisać na karcie SD</string>
     <string name="skip_title">Pomiń - %s</string>
 <string name="num_books_searched">%s książek przeszukano</string>
 <string name="cancelled_info">Przerwano - %s</string>

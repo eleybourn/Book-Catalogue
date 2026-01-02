@@ -35,8 +35,8 @@
 <string name="book_not_found">Das gescannte Buch wurde nicht gefunden. Manchmal befindet sich der korrekte Barcode auf der Rückseite des Covers. Geben Sie ansonsten die Daten manuell ein.</string>
 <string name="label_series_num">#</string>
     <!--<string name="export_complete">Der Export auf die SD-Karte ist abgeschlossen.</string>-->
-<string name="import_data">Bücher importieren</string>
-<string name="import_alert">Warnung. Der Import von Daten kann Informationen von bestehenden Büchern überschreiben, wenn die ID der Importdatei mit der bestehenden ID übereinstimmt. Normalerweise ist es kein Problem wenn ein Feld in der exportierten Datei geändert wurde. Bitte stellen Sie bei einem neuen Buch sicher, dass das ID-Feld leer ist.</string>
+<string name="label_import_books">Bücher importieren</string>
+<string name="alert_import">Warnung. Der Import von Daten kann Informationen von bestehenden Büchern überschreiben, wenn die ID der Importdatei mit der bestehenden ID übereinstimmt. Normalerweise ist es kein Problem wenn ein Feld in der exportierten Datei geändert wurde. Bitte stellen Sie bei einem neuen Buch sicher, dass das ID-Feld leer ist.</string>
 <!--<string name="export_failed">FEHLER: Der Export auf die SD-Karte ist fehlgeschlagen.</string>-->
 <!--<string name="import_failed_is_location_correct">FEHLER: Der Import von Daten von der SD-Karte ist fehlgeschlagen. Ist die Datei bereits vorhanden?</string>-->
     <string name="install_scan_title">Installiere Barcode Scanner</string>
@@ -126,7 +126,7 @@
 <string name="vldt_blank_required">\'%s\' muss leer sein</string>
 <string name="vldt_failed">Die Überprüfung für \'%s\' ist fehlgeschlagen</string>
     <string name="vldt_read_start_after_end">Das Datum Lesen beendet ist vor dem Datum mit Lesen begonnen</string>
-<string name="backup_success">Sicherungskopie erfolgreich erstellt</string>
+<string name="alert_backup_success">Sicherungskopie erfolgreich erstellt</string>
 <string name="alert_backup_failed">Sicherungskopie erstellen fehlgeschlagen</string>
 <string name="file_must_contain_column">Die Datei muss eine Spalte mit dem Namen %s enthalten</string>
 <string name="file_must_contain_any_column">Die Datei muss eine Spalte mit den folgenden Namen enthalten: %s</string>
@@ -200,7 +200,7 @@
 <string name="cannot_edit_system">Die Systemwerte können nicht geändert werden</string>
     <string name="no_connection">Internet Verbindung nicht verfügbar.</string>
     <string name="menu_share_this">Teilen</string>
-<string name="email_export">Möchten Sie diesen Export als E-Mail versenden?</string>
+<string name="label_email_export">Möchten Sie diesen Export als E-Mail versenden?</string>
 <string name="menu_crop_thumb">Cover-Bild zuschneiden</string>
     <string name="task_errors">Aufgabenfehler</string>
 <string name="retry">Wiederholen</string>
@@ -329,7 +329,7 @@
 <string name="label_edit">Bearbeiten</string>
 <string name="groupings">Gruppierung</string>
     <string name="label_preferences">Einstellungen</string>
-<string name="unexpected_error">Ein unerwarteter Fehler ist aufgetreten. Bitte senden Sie die Details an den Support über den  Eintrag \'Hilfe\' in Hauptmenü</string>
+<string name="alert_unexpected_error">Ein unerwarteter Fehler ist aufgetreten. Bitte senden Sie die Details an den Support über den  Eintrag \'Hilfe\' in Hauptmenü</string>
 <string name="delete_style">Stil löschen</string>
 <string name="edit_style">Stil bearbeiten</string>
 <string name="clone_style">Stil klonen</string>
@@ -353,7 +353,7 @@
 Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen Ereignisse sehen und die Aufgabe mit den verbundenen Ereignissen löschen.</string>
 <string name="hint_background_task_events">Sie können hier die mit einer Hintergrundaufgabe verbundenen Ereignisse sehen.
 Nach dem Klick auf ein Ereignis können Sie eine Vielzahl von Aktionen durchführen, die für dieses Ereignis passen.</string>
-<string name="hints_have_been_reset">Hinweise wurden zurückgesetzt</string>
+<string name="alert_hints_have_been_reset">Hinweise wurden zurückgesetzt</string>
     <string name="hint_startup_screen">Das ist der Standard-Startbildschirm von BookCatalogue. Sie könne auch direkt in \'Meinen Bücher\' starten; der bevorzugte Startbildschirm kann in den Einstellungen geändert werden.</string>
 <string name="upgrading_ellipsis">Upgrade läuft…</string>
 <string name="explain_goodreads_no_isbn">Das gewählte Buch hat keine ISBN; eine automatische Synchronisation mit Goodreads ist nicht möglich.
@@ -379,7 +379,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="label_in">in</string>
 <string name="label_size">Größe</string>
 <string name="label_updated">Geändert</string>
-    <string name="problem_starting_import_arg">Problem beim Start des Imports: %1$s</string>
+    <string name="alert_problem_starting_import_arg">Problem beim Start des Imports: %1$s</string>
 <string name="hint_library_style_menu">Hier können Sie den Stil der Liste wählen.
         \n\nSie können auch dieses Menü anpassen und Ihre eigenen Stile erzeugen. Klicken Sie dafür auf \'Anpassen\' am Ende der Liste.
         </string>
@@ -910,7 +910,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 
     <string name="alert_import_failed_is_location_correct">FEHLER: Der Import ist fehlgeschlagen. Bitte kontaktieren Sie den Support.</string>
         <string name="backup_request">Möchten Sie Ihre Datenbank sichern?</string>
-        <string name="export_failed_sdcard">Der Export ist fehlgeschlagen. Auf den Datenspeicher kann nicht geschrieben werden</string>
+        <string name="alert_export_failed_sdcard">Der Export ist fehlgeschlagen. Auf den Datenspeicher kann nicht geschrieben werden</string>
         <string name="para_cleanup_files">Die temporären Dateien belegen %s Speicherplatz. Logs und andere Daten werden bei jeder App-Aktualisierung, Sicherungskopie und bei Abstürzen gespeichert. Drücken Sie den Button, um diese Dateien zu löschen. Bei Abstürzen oder anderen Fehlern drücken Sie vorher gerne auf \'Sende Informationen\'.</string>
 
         <!-- End: Added/Updated in 6.0.0 -->

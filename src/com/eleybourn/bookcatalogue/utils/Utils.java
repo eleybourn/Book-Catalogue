@@ -1729,7 +1729,7 @@ public class Utils {
 		} catch(Exception ae) {
 			// An Amazon error should not crash the app
 			Logger.logError(ae, "Unable to call the Amazon API");
-			Toast.makeText(context, R.string.unexpected_error, Toast.LENGTH_LONG).show();
+			Toast.makeText(context, R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
 		}
     }
 	

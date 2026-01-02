@@ -36,8 +36,8 @@
     <string name="label_search_by">zoeken naar auteurs of titels</string>
     <string name="book_not_found">Het gescande boek is niet gevonden. U kunt de juiste streepjescode aan de achterkant van de omslag vinden. Vul anders de gegevens handmatig in.</string>
     <string name="label_series_num">#</string>
-    <string name="import_data">Boeken Importeren</string>
-    <string name="import_alert">Waarschuwing. Het importeren van gegevens kan bestaande boekgegevens onbedoeld bijwerken met nieuwe informatie als de UUID-kolom niet aanwezig is en de id in het import-bestand dezelfde is als het bestaande id. Dit is meestal geen bezwaar als u een veld in een exportbestand heeft veranderd. Als u een nieuwe boek item heeft gemaakt, of iemand anders zijn boeken importeert, zorg dan dat het UUID veld aanwezig is of dat het id veld leeg is.</string>
+    <string name="label_import_books">Boeken Importeren</string>
+    <string name="alert_import">Waarschuwing. Het importeren van gegevens kan bestaande boekgegevens onbedoeld bijwerken met nieuwe informatie als de UUID-kolom niet aanwezig is en de id in het import-bestand dezelfde is als het bestaande id. Dit is meestal geen bezwaar als u een veld in een exportbestand heeft veranderd. Als u een nieuwe boek item heeft gemaakt, of iemand anders zijn boeken importeert, zorg dan dat het UUID veld aanwezig is of dat het id veld leeg is.</string>
     <string name="alert_import_failed_is_location_correct">FOUT: Import van gegevens (van SD kaart) mislukt. Staat het bestand op de juiste plaats?</string>
     <string name="install_scan_title">Streepjescode Scanner Installeren</string>
     <string name="label_version_number">Versienummer:</string>
@@ -127,7 +127,7 @@
     <string name="vldt_blank_required">Waardeveld moet leeg zijn voor \'%s\'</string>
     <string name="vldt_failed">Validatie mislukt voor \'%s\'</string>
     <string name="vldt_read_start_after_end">De begindatum voor lezen moet vóór de einddatum liggen</string>
-    <string name="backup_success">Back-up gelukt</string>
+    <string name="alert_backup_success">Back-up gelukt</string>
     <string name="alert_backup_failed">Back-up mislukt</string>
     <string name="file_must_contain_column">Bestandsnaam moet een kolomnaam %s bevatten</string>
     <string name="file_must_contain_any_column">Bestandsnaam moet een kolom met de volgende namen bevatten: %s</string>
@@ -146,7 +146,7 @@
     <string name="author_is_blank">Auteurveld is leeg</string>
     <string name="series_already_in_list">Serie staat al in de lijst</string>
     <string name="series_is_blank">Serieveld is leeg</string>
-    <string name="export_failed_sdcard">Export mislukt - kon niet naar de SD kaart wegschrijven</string>
+    <string name="alert_export_failed_sdcard">Export mislukt - kon niet naar de SD kaart wegschrijven</string>
     <string name="skip_title">Overslaan van - %s</string>
     <string name="num_books_searched">%s Boeken gezocht</string>
     <string name="cancelled_info">Geannuleerd - %s</string>
@@ -203,7 +203,7 @@
     <string name="cannot_edit_system">U kunt de systeemwaarden niet bewerken</string>
     <string name="no_connection">Geen Internet verbinding beschikbaar.</string>
     <string name="menu_share_this">Delen</string>
-    <string name="email_export">Wilt u dit exportbestand als e-mail ergens heen sturen?</string>
+    <string name="label_email_export">Wilt u dit exportbestand als e-mail ergens heen sturen?</string>
     <string name="menu_crop_thumb">Miniatuur bijsnijden</string>
     <string name="task_errors">Taakfouten</string>
     <string name="retry">Opnieuw proberen</string>
@@ -336,7 +336,7 @@
     <string name="label_edit">Bewerken</string>
     <string name="groupings">Groeperingen</string>
     <string name="label_preferences">Voorkeuren</string>
-    <string name="unexpected_error">Er is een onverwachte fout opgetreden. Zend ons aub de details via de \'Help\' optie in het hoofdmenu</string>
+    <string name="alert_unexpected_error">Er is een onverwachte fout opgetreden. Zend ons aub de details via de \'Help\' optie in het hoofdmenu</string>
     <string name="delete_style">Stijl verwijderen</string>
     <string name="edit_style">Stijl bewerken</string>
     <string name="clone_style">Stijl klonen</string>
@@ -360,7 +360,7 @@
     								     Tikken op een taak laat u de bijbehorende gebeurtenissen zien en ook de taak laten verwijderen (samen met de gerelateerde gebeurtenissen).</string>
     <string name="hint_background_task_events">Vanaf hier kunt u de gebeurtenissen zien die zijn geassocieerd met op de achtergrond lopende taken. 
     								    Tikken op een gebeurtenis laat u een aantal acties uitvoeren die samenhangen met die gebeurtenis.</string>
-    <string name="hints_have_been_reset">Aanwijzingen zijn hersteld</string>
+    <string name="alert_hints_have_been_reset">Aanwijzingen zijn hersteld</string>
     <string name="hint_startup_screen">Dit is het standaard BookCatalogue opstartscherm. Als u dat wilt kunt u direct in \'Mijn Boeken\' opstarten. Het opstartscherm kan veranderd worden bij Voorkeuren.</string>
     <string name="upgrading_ellipsis">Upgrading&#8230;</string>
     <string name="explain_goodreads_no_isbn">Het geselecteerde boek heeft geen ISBN en kan niet automatisch worden gesynchroniseerd met goodreads. 
@@ -384,7 +384,7 @@
     <string name="label_in">In</string>
     <string name="label_size">Grootte</string>
     <string name="label_updated">Bijgewerkt</string>
-    <string name="problem_starting_import_arg">Het is een probleem bij het starten van de import van: %1$s</string>
+    <string name="alert_problem_starting_import_arg">Het is een probleem bij het starten van de import van: %1$s</string>
     <string name="hint_library_style_menu">Dit menu laat u de lijststijl selecteren.
     								\n\nU kunt het menu ook aanpassen of u eigen lijststijl maken door te tikken op \'Aanpassen\' onderaan de lijst.</string>
     <string name="menu_edit_format">Formaat bewerken&#8230;</string>

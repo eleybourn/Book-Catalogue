@@ -132,8 +132,8 @@
     <string name="label_search_for_books">Rechercher des livres</string>
     <string name="label_search_by">Rechercher un auteur ou un titre</string>
     <string name="book_not_found">Le livre n\'a pas été trouvé. Il est parfois possible de trouver le code barre à l\'intérieur de la première page de couverture. Sinon merci d\'entrer les détails manuellement.</string>
-    <string name="import_data">Importer les livres</string>
-    <string name="import_alert">Attention ! L\'import de données peut provoquer la mise à jour de livres avec de nouvelles informations si les identifiants importés sont identiques à ceux existants. Cela est généralement correct si vous n\'avez modifié qu\'un champ dans un fichier exporté. Si vous avez intégralement créé un livre, assurez vous que le champ identifiant est vide.</string>
+    <string name="label_import_books">Importer les livres</string>
+    <string name="alert_import">Attention ! L\'import de données peut provoquer la mise à jour de livres avec de nouvelles informations si les identifiants importés sont identiques à ceux existants. Cela est généralement correct si vous n\'avez modifié qu\'un champ dans un fichier exporté. Si vous avez intégralement créé un livre, assurez vous que le champ identifiant est vide.</string>
     <string name="alert_import_failed_is_location_correct">Erreur: l\'import depuis la carte SD a échoué. Le fichier se trouve-t-il au bon endroit ?</string>
     <string name="install_scan_title">Installer le scanner de code barre</string>
     <string name="label_version_number">Numéro de version :</string>
@@ -216,7 +216,7 @@
     <string name="vldt_blank_required">Le champ \'%s\' doit être vide</string>
     <string name="vldt_failed">La validation a échoué pour \'%s\'</string>
     <string name="vldt_read_start_after_end">La date de début de lecture est après la date de fin</string>
-    <string name="backup_success">Sauvegarde réussie</string>
+    <string name="alert_backup_success">Sauvegarde réussie</string>
     <string name="alert_backup_failed">Sauvegarde échouée</string>
     <string name="file_must_contain_column">Le fichier doit contenir une colonne nommée %s</string>
     <string name="file_must_contain_any_column">Le fichier doit contenir au moins une des colonnes suivantes : %s</string>
@@ -235,7 +235,7 @@
     <string name="author_is_blank">Le champ « auteur » est vide</string>
     <string name="series_already_in_list">La série est déjà dans la liste</string>
     <string name="series_is_blank">Le champ « série » est vide</string>
-    <string name="export_failed_sdcard">Export en échec : impossible d\'écrire sur la carte SD</string>
+    <string name="alert_export_failed_sdcard">Export en échec : impossible d\'écrire sur la carte SD</string>
     <string name="skip_title">Passer - %s</string>
     <string name="num_books_searched">%s livres recherchés</string>
     <string name="cancelled_info">Annulé - %s</string>
@@ -292,7 +292,7 @@
     <string name="cannot_edit_system">Vous ne pouvez pas modifier les valeurs du système</string>
     <string name="no_connection">Pas de connexion Internet disponible.</string>
     <string name="menu_share_this">Partager</string>
-    <string name="email_export">Souhaitez-vous envoyer cet export par courriel ?</string>
+    <string name="label_email_export">Souhaitez-vous envoyer cet export par courriel ?</string>
     <string name="task_errors">Erreurs de tâches</string>
     <string name="retry">Ré-essayer</string>
     <string name="retry_task">Ré-essayer</string>
@@ -420,7 +420,7 @@
     <string name="label_edit">Modifier</string>
     <string name="groupings">Groupes</string>
     <string name="label_preferences">Préférences</string>
-    <string name="unexpected_error">Une erreur inattendue s\'est produite. Merci d\'envoyer les détails au support par l\'option « aide » du menu principal.</string>
+    <string name="alert_unexpected_error">Une erreur inattendue s\'est produite. Merci d\'envoyer les détails au support par l\'option « aide » du menu principal.</string>
     <string name="delete_style">Supprimer le style</string>
     <string name="edit_style">Modifier le style</string>
     <string name="clone_style">Cloner le style</string>
@@ -445,7 +445,7 @@
 		En cliquant sur une tâche, vous pourrez voir les événements associés ainsi que supprimer la tâche.</string>
     <string name="hint_background_task_events">Vous pouvez voir ici les événements associés à une tâche d\'arrière plan.
 		Cliquer sur un événement vous permettra de réaliser un ensemble d\'actions appropriées pour cet événement.</string>
-    <string name="hints_have_been_reset">Les astuces ont été réinitialisées.</string>
+    <string name="alert_hints_have_been_reset">Les astuces ont été réinitialisées.</string>
     <string name="hint_startup_screen">« Voici l\'écran de démarrage par défaut de Book Catalogue. Si vous le souhaitez, vous pouvez démarrer directement dans « mes livres » ; l\'écran de démarrage préféré peut être modifié dans les préférences. »</string>
     <string name="upgrading_ellipsis">Mise à niveau&#8230;</string>
     <string name="explain_goodreads_no_isbn">Les livres sélectionnés n\'ont pas d\'ISBN ; il est impossible de les synchroniser avec Goodreads.
@@ -471,7 +471,7 @@
     <string name="label_in">Dans</string>
     <string name="label_size">Taille</string>
     <string name="label_updated">Mis à jour</string>
-    <string name="problem_starting_import_arg">Un problème a été rencontré lors de l\'export : %1$s</string>
+    <string name="alert_problem_starting_import_arg">Un problème a été rencontré lors de l\'export : %1$s</string>
     <string name="hint_library_style_menu">Ce menu vous permet de sélectionner le style de la liste.
 	 	\n\nVous pouvez également personnaliser ce menu, ainsi que créer vos propres styles de liste, en cliquant sur « personnaliser » à la fin de la liste.</string>
     <string name="menu_edit_format">Modifier le format&#8230;</string>

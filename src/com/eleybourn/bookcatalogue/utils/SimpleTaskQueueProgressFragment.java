@@ -34,8 +34,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -43,7 +41,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
@@ -259,7 +256,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
 			if (exception != null) {
 				Logger.logError(exception);
-				Toast.makeText(fragment.getActivity(), R.string.unexpected_error, Toast.LENGTH_LONG).show();
+				Toast.makeText(fragment.getActivity(), R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
 			}
 		}
 

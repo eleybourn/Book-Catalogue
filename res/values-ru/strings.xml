@@ -35,8 +35,8 @@
     <string name="label_search_by">Поиск автора или названия</string>
     <string name="book_not_found">Не найдена книга, соответствующая отсканированному штрих-коду. Возможно правильный штрих-код находится внутри книги. Иначе, пожалуйста, введите детализированную информацию о книге вручную.</string>
     <string name="label_series_num">№</string>
-    <string name="import_data">Импортировать книги</string>
-    <string name="import_alert">Предупреждение. Импорт данных может заменить существующие записи книг обновлённой информацией, в случае, если номер в файле совпадает с существующим номером. Обычно это то, что требуется, если вы обновляете поле в файле экспорта. Если вы добавляете запись новой книге, убедитесь, что поле id не заполнено.</string>
+    <string name="label_import_books">Импортировать книги</string>
+    <string name="alert_import">Предупреждение. Импорт данных может заменить существующие записи книг обновлённой информацией, в случае, если номер в файле совпадает с существующим номером. Обычно это то, что требуется, если вы обновляете поле в файле экспорта. Если вы добавляете запись новой книге, убедитесь, что поле id не заполнено.</string>
     <string name="install_scan_title">Установить сканер штрих-кодов</string>
     <string name="label_version_number">Номер версии:</string>
     <string name="para_donate">Если Вы хотите поддержать разработку этого приложения, пожалуйста сделайте пожертвование или через Amazon Wishlist или через PayPal кнопкой внизу. Я не могу опубликовать &quot;платную&quot; версию приложения в Австралии. :-) </string>
@@ -125,7 +125,7 @@
     <string name="vldt_blank_required">Требуется пустое значение: \'%s\'</string>
     <string name="vldt_failed">Проверка не удалась для \'%s\'</string>
     <string name="vldt_read_start_after_end">Дата начала чтения позже даты завершения</string>
-    <string name="backup_success">Резервное копирование успешно</string>
+    <string name="alert_backup_success">Резервное копирование успешно</string>
     <string name="alert_backup_failed">Резервное копирование не удалось</string>
     <string name="file_must_contain_column">В файле должен быть столбец с названием %s</string>
     <string name="file_must_contain_any_column">Файл должен содержать столбец с одним из следующих имён: %s</string>
@@ -145,7 +145,7 @@
     <string name="author_is_blank">Не заполнено поле Автор</string>
     <string name="series_already_in_list">Серия уже есть в списке</string>
     <string name="series_is_blank">Не заполнено поле Серия</string>
-    <string name="export_failed_sdcard">Экспорт не удался. Не могу записать на SD-карту</string>
+    <string name="alert_export_failed_sdcard">Экспорт не удался. Не могу записать на SD-карту</string>
     <string name="skip_title">Пропустить - %s</string>
     <string name="num_books_searched">%s книг искалось</string>
     <string name="cancelled_info">Отменено - %s</string>
@@ -202,7 +202,7 @@
     <string name="cannot_edit_system">Вы не можете редактировать системные параметры.</string>
     <string name="no_connection">Интернет соединение отсутствует.</string>
     <string name="menu_share_this">Поделиться</string>
-    <string name="email_export">Желаете ли Вы отправить этот экспорт по почте?</string>
+    <string name="label_email_export">Желаете ли Вы отправить этот экспорт по почте?</string>
     <string name="menu_crop_thumb">Обрезать эскиз</string>
     <string name="task_errors">Ошибки задач</string>
     <string name="retry">Повторить</string>
@@ -344,7 +344,7 @@
     <string name="label_edit">Редактировать</string>
     <string name="groupings">Группирование</string>
     <string name="label_preferences">Настройки</string>
-    <string name="unexpected_error">Случилась неожиданная ошибка, пожалуйста, отошлите детали в поддержку, используя меню \'Помощь\' из Главного меню</string>
+    <string name="alert_unexpected_error">Случилась неожиданная ошибка, пожалуйста, отошлите детали в поддержку, используя меню \'Помощь\' из Главного меню</string>
     <string name="delete_style">Удалить стиль</string>
     <string name="edit_style">Редактировать стиль</string>
     <string name="clone_style">Клонировать стиль</string>
@@ -370,7 +370,7 @@
         Клик по задаче позволяет увидеть как связанные с ней события, так и удалить её вместе с событиями.</string>
     <string name="hint_background_task_events">        Здесь Вы сможете увидеть события связанные с фоновыми задачами. 
         Клик по событию позволит осуществить множество действий, связанных с этим событием.</string>
-    <string name="hints_have_been_reset">Подсказки сброшены</string>
+    <string name="alert_hints_have_been_reset">Подсказки сброшены</string>
     <string name="hint_startup_screen">        Это стандартное стартовое окно BookCatalogue.
         Если хотите, Вы можете начинать прямо с \'Мои книги\'; начальное окно может быть изменено в настройках.</string>
     <string name="upgrading_ellipsis">Обновление&#8230;</string>
@@ -396,7 +396,7 @@
     <string name="label_in">В</string>
     <string name="label_size">Размер</string>
     <string name="label_updated">Обновлено</string>
-    <string name="problem_starting_import_arg">Возникла проблема при начале импорта: %1$s</string>
+    <string name="alert_problem_starting_import_arg">Возникла проблема при начале импорта: %1$s</string>
     <string name="hint_library_style_menu">        Это меню позволяет Вам выбрать стиль списка.
     	\n\nВы можете также настроить это меню и создать свои стили списков нажатием на \'Настроить\' в конце списка.</string>
     <string name="menu_edit_format">Редактировать формат&#8230;</string>

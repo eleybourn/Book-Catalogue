@@ -69,7 +69,8 @@
             <!-- Search card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardSearch"
-                style="@style/layout_card_md">
+                style="@style/layout_card_md"
+                android:visibility="gone">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -86,6 +87,30 @@
                         <TextView
                             style="@style/layout_card_subtitle"
                             android:text="@string/label_search_description" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Sync card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardSync"
+                style="@style/layout_card_md">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+                    <com.google.android.material.imageview.ShapeableImageView
+                        style="@style/layout_card_icon"
+                        android:src="@drawable/ic_menu_upload"
+                        android:contentDescription="@string/label_sync" />
+                    <LinearLayout style="@style/layout_card_content">
+                        <TextView
+                            style="@style/layout_card_title"
+                            android:text="@string/label_sync" />
+                        <TextView
+                            style="@style/layout_card_subtitle"
+                            android:text="@string/label_sync_description" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

@@ -43,6 +43,9 @@ dependencies {
     implementation libs.androidx.room.common.jvm
     implementation libs.firebase.firestore
     implementation libs.androidx.room.runtime
+    implementation libs.androidx.credentials
+    implementation libs.androidx.credentials.play.services.auth
+    implementation libs.googleid
     annotationProcessor libs.androidx.room.compiler
 }
 

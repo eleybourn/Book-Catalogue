@@ -409,6 +409,8 @@
     <string name="label_search_description">Find a book in your catalogue</string>
     <string name="label_search_for_books">Search for Books</string>
     <string name="label_search_internet">Search Internet</string>
+    <string name="label_sync">Online Backup</string>
+    <string name="label_sync_description">Never lose your book catalogue</string>
     <string name="label_select_bookshelves">Select Bookshelves</string>
     <string name="label_series">Series</string>
     <string name="label_series_num">#</string>

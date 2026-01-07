@@ -22,8 +22,19 @@ package com.eleybourn.bookcatalogue;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.credentials.Credential;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.CustomCredential;
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
@@ -33,6 +44,8 @@ import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Implement the 'Main Menu' for BookCatalogue. This is one of two possible start screens.
@@ -50,6 +63,11 @@ import java.util.ArrayList;
  */
 public class MainMenu extends BookCatalogueActivity implements OnMessageDialogResultListener {
 
+    private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
+
+    // 1. Declare Credential Manager
+    private CredentialManager mCredentialManager;
+
     @Override
     protected RequiredPermission[] getRequiredPermissions() {
         return new RequiredPermission[0];
@@ -62,6 +80,7 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
 
         // If we get here, we're meant to be in this activity.
         setContentView(R.layout.main_menu);
+        mCredentialManager = CredentialManager.create(this);
         setTitle(R.string.app_name);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
@@ -72,6 +91,7 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         setOnClickListener(R.id.cardLibrary, mBrowseHandler);
         setOnClickListener(R.id.cardAddBook, mAddBookHandler);
         setOnClickListener(R.id.cardSearch, mSearchHandler);
+        setOnClickListener(R.id.cardSync, mSyncHandler);
         setOnClickListener(R.id.cardSettings, mAdminHandler);
         setOnClickListener(R.id.cardHelp, mHelpHandler);
         setOnClickListener(R.id.cardAbout, mAboutHandler);
@@ -80,8 +100,6 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         } else {
             findViewById(R.id.cardDonate).setVisibility(View.GONE);
         }
-        // Goodreads will be shown/hidden in onResume()
-        //setOnClickListener(R.id.goodreads_label, mGoodreadsHandler);
 
         if (savedInstanceState == null) {
             HintManager.displayHint(this, R.string.hint_startup_screen, R.string.hint_startup_screen_heading, null);
@@ -98,6 +116,109 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         if (CatalogueDBAdapter.DEBUG_INSTANCES)
             CatalogueDBAdapter.dumpInstances();
 
+    }
+    /**
+     * Sync Menu Handler (UPDATED FOR CREDENTIAL MANAGER)
+     */
+    private final OnClickListener mSyncHandler = v -> {
+        // Build the Google ID Option
+        GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId("759470837643-hidcvea8cu63aml1n8ghhbl1fdep4lte.apps.googleusercontent.com")
+                .setAutoSelectEnabled(true)
+                .build();
+
+        GetCredentialRequest request = new GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build();
+
+        // Launch the flow asynchronously
+        mCredentialManager.getCredentialAsync(
+                this,
+                request,
+                null, // CancellationSignal
+                mExecutor, // Execute on background executor or Context.getMainExecutor(this)
+                new androidx.credentials.CredentialManagerCallback<>() {
+                    @Override
+                    public void onResult(GetCredentialResponse result) {
+                        handleSignInSuccess(result);
+                    }
+
+                    @Override
+                    public void onError(@NonNull androidx.credentials.exceptions.GetCredentialException e) {
+                        if (e instanceof androidx.credentials.exceptions.NoCredentialException) {
+                            // This specific error usually means:
+                            // 1. No Google Account on phone
+                            // 2. Or SHA-1 mismatch in Cloud Console
+                            Log.e("MainMenu", "No credentials available. Check SHA-1 in Console.", e);
+                            runOnUiThread(() -> Toast.makeText(MainMenu.this, "Configuration Error: Check Logcat for details", Toast.LENGTH_LONG).show());
+                        } else {
+                            Log.e("MainMenu", "Sign-in failed", e);
+                            runOnUiThread(() -> Toast.makeText(MainMenu.this, "Sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        }
+                    }
+                }
+        );
+    };
+
+    private void handleSignInSuccess(GetCredentialResponse result) {
+        // FIX: Capture as generic Credential first
+        Credential credential = result.getCredential();
+
+        // FIX: Check instanceof CustomCredential
+        if (credential instanceof CustomCredential) {
+            CustomCredential customCredential = (CustomCredential) credential;
+
+            try {
+                // Parse the Google ID Token
+                GoogleIdTokenCredential googleId = GoogleIdTokenCredential.createFrom(customCredential.getData());
+
+                // Get Email (ID field often contains email in this specific object, but safer to treat as ID)
+                String actualEmail = googleId.getId();
+
+                runOnUiThread(() -> {
+                    Toast.makeText(MainMenu.this, "Signed in as: " + actualEmail, Toast.LENGTH_SHORT).show();
+                    performCloudSync(actualEmail);
+                });
+            } catch (Exception e) {
+                Log.e("MainMenu", "Invalid credential data", e);
+                runOnUiThread(() -> Toast.makeText(MainMenu.this, "Invalid credential data", Toast.LENGTH_SHORT).show());
+            }
+        } else {
+            Log.e("MainMenu", "Unexpected credential type: " + credential.getClass().getName());
+        }
+    }
+
+    /**
+     * Executes the API Sync Logic in background
+     */
+    private void performCloudSync(String email) {
+        runOnUiThread(() -> Toast.makeText(this, "Starting Cloud Backup...", Toast.LENGTH_SHORT).show());
+
+        mExecutor.execute(() -> {
+            try {
+                // 1. Login to get API Token
+                String token = BookCatalogueSync.login(email, true);
+
+                // 2. Fetch books from DB & Upload
+                // (Existing logic...)
+                ArrayList<String> authors = new ArrayList<>();
+                authors.add("1, Doe, John");
+
+                BookCatalogueSync.uploadBook(
+                        token,
+                        12345,
+                        "My Great Book",
+                        authors,
+                        null
+                );
+
+                runOnUiThread(() -> Toast.makeText(MainMenu.this, "Backup Complete", Toast.LENGTH_LONG).show());
+
+            } catch (Exception e) {
+                runOnUiThread(() -> Toast.makeText(MainMenu.this, "Backup Failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            }
+        });
     }
 
     /**

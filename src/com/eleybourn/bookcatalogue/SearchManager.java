@@ -56,7 +56,7 @@ public class SearchManager implements TaskManagerListener {
 	/** Flag indicating a search source to use */
 	public static final int SEARCH_GOODREADS = 8;
 	/** Mask including all search sources */
-	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_BC | SEARCH_GOODREADS; // | SEARCH_LIBRARY_THING ;
+	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_BC; // | SEARCH_GOODREADS; // | SEARCH_LIBRARY_THING ;
 	
 	// ENHANCE: Allow user to change the default search data priority
 	// NOTE: BCDB search will return AMAZON, GOOGLE, BCDB and OPEN_LIBRARY
@@ -64,7 +64,7 @@ public class SearchManager implements TaskManagerListener {
 			{ DataSource.BCDB, DataSource.Google };
 	// ENHANCE: Allow user to change the default search data priority
 	private static final DataSource[] mDefaultReliabilityOrder = new DataSource[]
-			{DataSource.Amazon, DataSource.Google, DataSource.BCDB, DataSource.OpenLibrary, DataSource.Goodreads, DataSource.Other};
+			{DataSource.BCDB, DataSource.Google, DataSource.OpenLibrary, DataSource.Other};
 
 	/** Flags applicable to *current* search */
 	private int mSearchFlags;
@@ -173,7 +173,7 @@ public class SearchManager implements TaskManagerListener {
 	 */
 	private boolean startAmazon() {
 		if (!mCancelledFlg) {
-			startOne( new SearchAmazonThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail) );		
+			startOne( new SearchBCThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail) );
 			return true;
 		} else {
 			return false;
@@ -534,8 +534,8 @@ public class SearchManager implements TaskManagerListener {
                 return startAmazon();
             case SEARCH_LIBRARY_THING:
                 return startLibraryThing();
-            case SEARCH_GOODREADS:
-                return startGoodreads();
+            //case SEARCH_GOODREADS:
+            //    return startGoodreads();
             default:
                 throw new RuntimeException("Unexpected search source: " + source);
         }

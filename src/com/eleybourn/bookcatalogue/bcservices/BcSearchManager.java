@@ -23,7 +23,6 @@ package com.eleybourn.bookcatalogue.bcservices;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.BuildConfig;
 import com.eleybourn.bookcatalogue.SearchThread.BookSearchResults;
 import com.eleybourn.bookcatalogue.SearchThread.DataSource;
 import com.eleybourn.bookcatalogue.bcservices.BcService.Methods;
@@ -41,8 +40,8 @@ import java.util.HashMap;
  * <p>
  * The basic URLs are:
  * <p>
- * ISBN: https://homestead.test/api/search/isbn/<isbn>
- * Author/Title: https://homestead.test/api/search/details/<author>/<title>
+ * ISBN: /api/search/isbn/<isbn>
+ * Author/Title: /api/search/details/<author>/<title>
  * Covers via url_path in search results.
  *
  * @author Philip Warner
@@ -61,22 +60,11 @@ public class BcSearchManager {
 		BcSearchManager handler = new BcSearchManager();
 
 		// Prefer ISBN search
-		if (!isbn.equals("")) {
+		if (!isbn.isEmpty()) {
 			handler.searchByIsbn(isbn, fetchThumbnail, results);
 		} else {
 			handler.searchByAuthorTitle(author, title, fetchThumbnail, results);
 		}
-
-		//// Sanity-check (reinstate if search service changes substantially)
-		//for(BookSearchResults result: results) {
-		//	if (result.source == DataSource.Google) {
-		//		ArrayList<String> keys = new ArrayList<>(result.data.keySet());
-		//		Collections.sort(keys);
-		//		for(String k: keys) {
-		//			System.out.println("SANITY:GOOGLE-BCD    " + k + " => " + result.data.get(k).toString());
-		//		}
-		//	}
-		//}
 	}
 
 	/** URL for search by ISBN */
@@ -94,7 +82,7 @@ public class BcSearchManager {
 	private static final String SRC_GOOGLE = "Google";
 	private static final String SRC_GOOGLE_OLD = "GoogleOld";
 	private static final String SRC_AMAZON = "Amazon";
-	private static final String SRC_OPENLIB = "OpenLibrary";
+	private static final String SRC_OPEN_LIBRARY = "OpenLibrary";
 
 	private BcSearchManager() {
 	}
@@ -112,7 +100,7 @@ public class BcSearchManager {
 		// Base path for an ISBN search
 		String path = String.format(SEARCH_ISBN_URL, isbn);
 
-		if (isbn.equals(""))
+		if (isbn.isEmpty())
 			throw new IllegalArgumentException();
 
 		search(path, fetchThumbnail, results);
@@ -137,17 +125,17 @@ public class BcSearchManager {
 		author = Uri.encode(author.trim());
 		title = Uri.encode(title.trim());
 
-		if (author.length() == 0) {
+		if (author.isEmpty()) {
 			author = Uri.encode(" ");
 		}
-		if (title.length() == 0) {
+		if (title.isEmpty()) {
 			title = Uri.encode(" ");
 		}
 
 		// Base path for an ISBN search
 		String path = String.format(SEARCH_AUTHOR_TITLE_URL, author, title);
 
-		if (author.equals("") && title.equals(""))
+		if (author.isEmpty() && title.isEmpty())
 			throw new IllegalArgumentException();
 
 		search(path, fetchThumbnail, results);
@@ -200,22 +188,17 @@ public class BcSearchManager {
 						} else if (source.equalsIgnoreCase(SRC_GOOGLE_OLD)) {
 							src = DataSource.Google;
 							skip = true;
-						} else if (source.equalsIgnoreCase(SRC_OPENLIB)) {
+						} else if (source.equalsIgnoreCase(SRC_OPEN_LIBRARY)) {
 							src = DataSource.OpenLibrary;
 						} else {
 							src = DataSource.Other;
 						}
 
 						if (!skip) {
-							BookSearchResults srchRes = new BookSearchResults(src, new Bundle());
-							resultList.add(srchRes);
-							//Bundle bookData = srchRes.data;
-							//if (BuildConfig.DEBUG) {
-							//	bookData.putString("_DBGSRC_", "BC");
-							//}
-
+							BookSearchResults searchResults = new BookSearchResults(src, new Bundle());
+							resultList.add(searchResults);
 							JSONObject result = resultWrapper.getJSONObject(DATA);
-							BcService.jsonResultToBookData(result, srchRes, fetchThumbnail);
+							BcService.jsonResultToBookData(result, searchResults, fetchThumbnail);
 						}
 					}
 				}

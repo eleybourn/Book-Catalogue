@@ -96,9 +96,6 @@ public class BcService {
 		JSONObject json;
 		try {
 			json = new JSONObject(response);
-			//if (!json.get(API_STATUS).equals(API_OK)) {
-			//	throw new RuntimeException("API call failed: " + json.get(API_REASON));
-			//}
 		} catch (JSONException e) {
 			Logger.logError(e);
 			throw new RuntimeException("Unable to parse API result", e);
@@ -156,9 +153,9 @@ public class BcService {
 			for (Map.Entry<String, String> nv : params.entrySet()) {
 				if (args.length() > 0)
 					args.append('&');
-				args.append(URLEncoder.encode(nv.getKey(), StandardCharsets.UTF_8));
+				args.append(URLEncoder.encode(nv.getKey(), UTF8));
 				args.append('=');
-				args.append(URLEncoder.encode(nv.getValue(), StandardCharsets.UTF_8));
+				args.append(URLEncoder.encode(nv.getValue(), UTF8));
 			}
 		}
 
@@ -168,31 +165,37 @@ public class BcService {
 		}
 		url = new URL(urlString);
 
-		HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
-		// Tell the URLConnection to use a SocketFactory from our SSLContext
-		urlConnection.setRequestMethod(method == Methods.Post ? "POST" : "GET");
-		urlConnection.setRequestProperty("Accept-Language", UTF8);
-		// Set a tmeout
-		urlConnection.setConnectTimeout(API_TIMEOUT);
+        HttpsURLConnection urlConnection = getHttpsURLConnection(method, url, args);
 
-		//urlConnection.setRequestProperty("Authorization", "Basic " + getApiToken());
-
-		if (method == Methods.Post) {
-			urlConnection.setDoOutput(true);
-			urlConnection.setReadTimeout(API_TIMEOUT);
-			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
-			outputStreamWriter.write(args.toString());
-			outputStreamWriter.flush();
-		}
-
-		int responseCode = urlConnection.getResponseCode();
+        int responseCode = urlConnection.getResponseCode();
 		if (responseCode >= 300) {
 			throw new RuntimeException("Unexpected response from the server: " + responseCode);
 		}
 		return urlConnection.getInputStream();
 	}
 
-	/**
+    @NonNull
+    private static HttpsURLConnection getHttpsURLConnection(Methods method, URL url, StringBuilder args) throws IOException {
+        HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+        // Tell the URLConnection to use a SocketFactory from our SSLContext
+        urlConnection.setRequestMethod(method == Methods.Post ? "POST" : "GET");
+        urlConnection.setRequestProperty("Accept-Language", UTF8);
+        // Set a timeout
+        urlConnection.setConnectTimeout(API_TIMEOUT);
+
+        //urlConnection.setRequestProperty("Authorization", "Basic " + getApiToken());
+
+        if (method == Methods.Post) {
+            urlConnection.setDoOutput(true);
+            urlConnection.setReadTimeout(API_TIMEOUT);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
+            outputStreamWriter.write(args.toString());
+            outputStreamWriter.flush();
+        }
+        return urlConnection;
+    }
+
+    /**
 	 * Convert the standard API book data to a Bundle suitable for use in search results.
 	 *
 	 * @param result			The JSON data for the book
@@ -206,9 +209,9 @@ public class BcService {
 			throws JSONException
 	{
 		Bundle bookData = bookResults.data;
-		Iterator<String> keysIter = result.keys();
-		while (keysIter.hasNext()) {
-			String key = keysIter.next();
+		Iterator<String> keysIterator = result.keys();
+		while (keysIterator.hasNext()) {
+			String key = keysIterator.next();
 			String value = result.getString(key);
 			switch (key) {
 				case ISBN:
@@ -313,7 +316,7 @@ public class BcService {
 	 */
 	private static void addIfNotPresent(Bundle bookData, String key, String value) {
 		String s = bookData.getString(key);
-		if (s == null || s.length() == 0) {
+		if (s == null || s.isEmpty()) {
 			bookData.putString(key, value);
 		}
 	}
@@ -331,7 +334,7 @@ public class BcService {
 
 		// Save it with an _BC suffix
 		String filename = Utils.saveThumbnailFromUrl(url, sfx);
-		if (filename.length() > 0 && bookData != null) {
+		if (!filename.isEmpty() && bookData != null) {
 			Utils.appendOrAdd(bookData, "__thumbnail", filename);
 			return true;
 		} else {

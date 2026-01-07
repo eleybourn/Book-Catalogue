@@ -53,14 +53,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.LibraryMultitypeHandler.BooklistChangeListener;
+import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
+import com.eleybourn.bookcatalogue.booklist.BooklistPseudoCursor;
+import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
+import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.booklist.LibraryBuilder;
 import com.eleybourn.bookcatalogue.booklist.LibraryBuilder.BookRowInfo;
 import com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds;
-import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
-import com.eleybourn.bookcatalogue.booklist.BooklistPseudoCursor;
 import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
-import com.eleybourn.bookcatalogue.booklist.BooklistStylePropertiesActivity;
-import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
@@ -158,6 +158,25 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
      * Saved position of last top row offset from view top
      */
     private int mTopRowTop = 0;
+    // Define the ActivityResultLauncher
+    private final androidx.activity.result.ActivityResultLauncher<Intent> mEditStyleLauncher =
+            registerForActivityResult(
+                    new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        // This replaces the logic in onActivityResult for ACTIVITY_BOOKLIST_STYLE_PROPERTIES
+                        if (result.getResultCode() == RESULT_OK) {
+                            Intent intent = result.getData();
+                            if (intent != null && intent.hasExtra(BooklistStylePropertiesActivity.KEY_STYLE)) {
+                                LibraryStyle style = (LibraryStyle) intent.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE);
+                                if (style != null)
+                                    mCurrentStyle = style;
+                            }
+                        }
+                        // These calls were common to the case in the switch statement
+                        this.savePosition();
+                        this.setupList();
+                    }
+            );
     /**
      * Database connection
      */
@@ -193,25 +212,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     private Spinner mBookshelfSpinner;
     private ArrayAdapter<String> mBookshelfAdapter;
     private MenuHandler mMenuHandler;
-    // Define the ActivityResultLauncher
-    private final androidx.activity.result.ActivityResultLauncher<Intent> mEditStyleLauncher =
-            registerForActivityResult(
-                    new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
-                    result -> {
-                        // This replaces the logic in onActivityResult for ACTIVITY_BOOKLIST_STYLE_PROPERTIES
-                        if (result.getResultCode() == RESULT_OK) {
-                            Intent intent = result.getData();
-                            if (intent != null && intent.hasExtra(BooklistStylePropertiesActivity.KEY_STYLE)) {
-                                LibraryStyle style = (LibraryStyle) intent.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE);
-                                if (style != null)
-                                    mCurrentStyle = style;
-                            }
-                        }
-                        // These calls were common to the case in the switch statement
-                        this.savePosition();
-                        this.setupList();
-                    }
-            );
 
     /**
      * TODO DEBUG ONLY. Count instances
@@ -325,11 +325,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             // This will cause the list to be generated.
             initBookshelfSpinner();
             setupList();
-
-            TextView empty = findViewById(R.id.empty);
-            if (mUniqueBooks == 0) {
-                empty.setVisibility(View.GONE);
-            }
 
             if (savedInstanceState == null) {
                 HintManager.displayHint(this, R.string.hint_view_only_book_details, null, null);
@@ -476,6 +471,9 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         } else {
             bookCounts.setVisibility(View.GONE);
         }
+        TextView empty = findViewById(R.id.empty);
+        if (mUniqueBooks != 0)
+            empty.setVisibility(View.GONE);
 
         long t0 = System.currentTimeMillis();
         // Save the old list so we can close it later, and set the new list locally

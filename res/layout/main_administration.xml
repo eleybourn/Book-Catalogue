@@ -135,14 +135,16 @@
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_copy"
                 android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_copy_database" />
+                android:text="@string/label_copy_database"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/importOldFilesLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_upload"
                 android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_import_old_files" />
+                android:text="@string/label_import_old_files"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/backgroundEventsLabel"

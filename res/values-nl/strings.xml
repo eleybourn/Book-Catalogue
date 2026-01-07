@@ -214,7 +214,7 @@
     <string name="title_library">Mijn Boeken</string>
     <string name="title_settings">Administratie en voorkeuren</string>
     <string name="title_other_preferences">Meer voorkeuren</string>
-    <string name="user_interface">Gebruikersinterface</string>
+    <string name="label_user_interface">Gebruikersinterface</string>
     <string name="preference_start_in_my_books">Opstarten in \'Mijn Boeken\'</string>
     <string name="background_tasks">Achtergrondtaken</string>
     <string name="cleanup_old_tasks">Opschonen oude taken</string>

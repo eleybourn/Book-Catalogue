@@ -63,13 +63,26 @@ public class AdminOtherPreferences extends PreferencesBase {
 	
 	private static final Properties mProperties = new Properties()
 
-	.add(new BooleanProperty(BookCataloguePreferences.PREF_START_IN_MY_BOOKS)
-		.setDefaultValue(false)
-		.setPreferenceKey(BookCataloguePreferences.PREF_START_IN_MY_BOOKS)
-		.setGlobal(true)
-		.setWeight(0)
-		.setNameResourceId(R.string.preference_start_in_my_books)
-		.setGroup(PropertyGroup.GRP_USER_INTERFACE))	
+        .add(new BooleanProperty(BookCataloguePreferences.PREF_ACCOUNT_OPT_IN)
+            .setDefaultValue(false)
+            .setPreferenceKey(BookCataloguePreferences.PREF_ACCOUNT_OPT_IN)
+            .setGlobal(true)
+            .setNameResourceId(R.string.title_enhance_search)
+            .setGroup(PropertyGroup.GRP_SYNC))
+
+        //.add(new StringProperty(BookCataloguePreferences.PREF_ACCOUNT_EMAIL, PropertyGroup.GRP_SYNC, R.string.label_email_address)
+        //    .setPreferenceKey(BookCataloguePreferences.PREF_ACCOUNT_EMAIL)
+        //    .setGlobal(true)
+        //    .setNameResourceId(R.string.title_enhance_search)
+        //    .setGroup(PropertyGroup.GRP_SYNC))
+
+        .add(new BooleanProperty(BookCataloguePreferences.PREF_START_IN_MY_BOOKS)
+            .setDefaultValue(false)
+            .setPreferenceKey(BookCataloguePreferences.PREF_START_IN_MY_BOOKS)
+            .setGlobal(true)
+            .setWeight(0)
+            .setNameResourceId(R.string.preference_start_in_my_books)
+            .setGroup(PropertyGroup.GRP_USER_INTERFACE))
 	
 		/*
 		 * Enabling/disabling read-only mode when opening book. If enabled book

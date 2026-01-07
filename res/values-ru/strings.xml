@@ -212,7 +212,7 @@
     <string name="title_library">Мои книги</string>
     <string name="title_settings">Администрирование и Настройки</string>
     <string name="title_other_preferences">Другие настройки</string>
-    <string name="user_interface">Пользовательский интерфейс</string>
+    <string name="label_user_interface">Пользовательский интерфейс</string>
     <string name="preference_start_in_my_books">Начинать с \'Мои книги\'</string>
     <string name="background_tasks">Фоновые задачи</string>
     <string name="cleanup_old_tasks">Очистить старые задачи</string>

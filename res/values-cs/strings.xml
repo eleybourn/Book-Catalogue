@@ -206,7 +206,7 @@
     <string name="title_library">Moje knihy</string>
     <string name="title_settings">Administrace a možnosti</string>
     <string name="title_other_preferences">Další možnosti</string>
-<string name="user_interface">Uživatelské rozhraní</string>
+<string name="label_user_interface">Uživatelské rozhraní</string>
 <string name="preference_start_in_my_books">Začínat v \'Moje knihy\'</string>
     <string name="background_tasks">Úlohy na pozadí</string>
 <string name="cleanup_old_tasks">Smazat staré úlohy</string>

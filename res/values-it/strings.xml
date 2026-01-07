@@ -218,7 +218,7 @@
     <string name="title_library">I miei libri</string>
     <string name="title_settings">Amministrazione e Preferenze</string>
     <string name="title_other_preferences">Altre Preferenze</string>
-    <string name="user_interface">Interfaccia Utente</string>
+    <string name="label_user_interface">Interfaccia Utente</string>
     <string name="preference_start_in_my_books">Inizia in \'I miei libri\'</string>
     <string name="background_tasks">Operazioni in background</string>
     <string name="cleanup_old_tasks">Cancella operazioni precedenti</string>

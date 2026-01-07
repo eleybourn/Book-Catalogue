@@ -39,6 +39,7 @@ public class PropertyGroup {
 	private static final int GRP_AUTHOR_ID = ++GRP_COUNT;
 	private static final int GRP_SERIES_ID = ++GRP_COUNT;
 	private static final int GRP_EXTRA_FILTERS_ID = ++GRP_COUNT;
+    private static final int GRP_SYNC_ID = ++GRP_COUNT;
 	private static final int GRP_USER_INTERFACE_ID = ++GRP_COUNT;
 	private static final int GRP_THUMBNAILS_ID = ++GRP_COUNT;
 	private static final int GRP_SCANNER_ID = ++GRP_COUNT;
@@ -59,7 +60,8 @@ public class PropertyGroup {
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_THUMBNAILS = mGroups.addGroup(GRP_THUMBNAILS_ID, R.string.thumbnails, 40);
 	/** Global PropertyGroup definition */
-	public static final PropertyGroup GRP_USER_INTERFACE = mGroups.addGroup(GRP_USER_INTERFACE_ID, R.string.user_interface, 35);
+    public static final PropertyGroup GRP_SYNC = mGroups.addGroup(GRP_SYNC_ID, R.string.label_sync, 30);
+	public static final PropertyGroup GRP_USER_INTERFACE = mGroups.addGroup(GRP_USER_INTERFACE_ID, R.string.label_user_interface, 35);
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_SCANNER = mGroups.addGroup(GRP_SCANNER_ID, R.string.scanning, 70);
 

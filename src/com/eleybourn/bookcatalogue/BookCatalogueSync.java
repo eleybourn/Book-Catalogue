@@ -1,6 +1,8 @@
 package com.eleybourn.bookcatalogue;
 
 import android.util.Log;
+import android.widget.Toast;
+
 import org.json.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -32,6 +34,11 @@ public class BookCatalogueSync {
         conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
         conn.setRequestProperty("Accept", "application/json");
 
+        // Save to Preferences
+        BookCataloguePreferences prefs = new BookCataloguePreferences();
+        prefs.setAccountOptIn(optIn);
+        prefs.setAccountEmail(email);
+
         try (OutputStream os = conn.getOutputStream();
              PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8), true)) {
 
@@ -45,13 +52,16 @@ public class BookCatalogueSync {
         if (responseCode == 200) {
             String response = readStream(conn.getInputStream());
             JSONObject json = new JSONObject(response);
+            String api_token = "";
             // Assuming the JSON structure is { "api_token": "..." } or { "user": { "api_token": "..." } }
             // Adjust based on exact server response. This assumes root level or user object:
             if (json.has("api_token")) {
-                return json.getString("api_token");
+                api_token = json.getString("api_token");
             } else if (json.has("user")) {
-                return json.getJSONObject("user").getString("api_token");
+                api_token = json.getJSONObject("user").getString("api_token");
             }
+            prefs.setAccountApiToken(api_token);
+            return api_token;
         }
         throw new Exception("Login failed: " + responseCode);
     }

@@ -223,7 +223,7 @@
     <string name="title_library">Kitaplarım</string>
     <string name="title_settings">Yönetim ve Seçenekler</string>
     <string name="title_other_preferences">Diğer seçenekler</string>
-    <string name="user_interface">Kullanıcı arayüzü</string>
+    <string name="label_user_interface">Kullanıcı arayüzü</string>
     <string name="preference_start_in_my_books">\'Kitaplarım\' içinde aç</string>
     <string name="background_tasks">Ardalan görevleri</string>
     <string name="cleanup_old_tasks">Eski görevleri temizle</string>

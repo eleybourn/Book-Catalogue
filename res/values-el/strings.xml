@@ -212,7 +212,7 @@
     <string name="title_library">Τα βιβλία μου</string>
     <string name="title_settings">Διαχείριση και προτιμήσεις</string>
     <string name="title_other_preferences">Άλλες Προτιμήσεις</string>
-    <string name="user_interface">Περιβάλλον Χρήστη</string>
+    <string name="label_user_interface">Περιβάλλον Χρήστη</string>
     <string name="preference_start_in_my_books">Εκκίνηση σε \'Τα βιβλία μου\'</string>
     <string name="background_tasks">Εργασίες Παρασκηνίου</string>
     <string name="cleanup_old_tasks">Εκκαθάριση παλιών εργασιών</string>

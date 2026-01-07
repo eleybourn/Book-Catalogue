@@ -162,24 +162,25 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
     };
 
     private void handleSignInSuccess(GetCredentialResponse result) {
-        // FIX: Capture as generic Credential first
         Credential credential = result.getCredential();
 
-        // FIX: Check instanceof CustomCredential
         if (credential instanceof CustomCredential) {
             CustomCredential customCredential = (CustomCredential) credential;
-
             try {
-                // Parse the Google ID Token
                 GoogleIdTokenCredential googleId = GoogleIdTokenCredential.createFrom(customCredential.getData());
-
-                // Get Email (ID field often contains email in this specific object, but safer to treat as ID)
-                String actualEmail = googleId.getId();
+                String email = googleId.getId(); // Or extract email if distinct from ID
 
                 runOnUiThread(() -> {
-                    Toast.makeText(MainMenu.this, "Signed in as: " + actualEmail, Toast.LENGTH_SHORT).show();
-                    performCloudSync(actualEmail);
+                    Toast.makeText(MainMenu.this, "Signed in as: " + email, Toast.LENGTH_SHORT).show();
+                    // Show the Opt-In Dialog instead of syncing immediately
+                    String savedEmail = new BookCataloguePreferences().getAccountEmail();
+                    if (savedEmail.isEmpty()) {
+                        showOptInDialog(email);
+                    } else {
+                        performCloudSync(email, new BookCataloguePreferences().getAccountOptIn());
+                    }
                 });
+
             } catch (Exception e) {
                 Log.e("MainMenu", "Invalid credential data", e);
                 runOnUiThread(() -> Toast.makeText(MainMenu.this, "Invalid credential data", Toast.LENGTH_SHORT).show());
@@ -190,9 +191,39 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
     }
 
     /**
+     * Shows a dialog asking the user to opt-in to sharing data.
+     */
+    private void showOptInDialog(final String email) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(R.string.title_enhance_search)
+                .setMessage(R.string.para_enhance_search)
+                .setPositiveButton("Yes, I'll help", (dialog, which) -> savePreferencesAndSync(email, true))
+                .setNegativeButton("No, keep private", (dialog, which) -> savePreferencesAndSync(email, false))
+                .setCancelable(false) // Force them to choose
+                .show();
+    }
+
+    /**
+     * Saves the user's choice and email, then triggers the sync.
+     */
+    private void savePreferencesAndSync(String email, boolean optIn) {
+        // Save to Preferences
+        BookCataloguePreferences prefs = new BookCataloguePreferences();
+        prefs.setAccountEmail(email);
+        prefs.setAccountOptIn(optIn);
+
+        // Notify user
+        String status = optIn ? "Opted In" : "Opted Out";
+        Toast.makeText(this, "Preferences Saved: " + status, Toast.LENGTH_SHORT).show();
+
+        // Pass the optIn boolean to the sync method so it sends the correct flag to the API
+        performCloudSync(email, optIn);
+    }
+
+    /**
      * Executes the API Sync Logic in background
      */
-    private void performCloudSync(String email) {
+    private void performCloudSync(String email, boolean optIn) {
         runOnUiThread(() -> Toast.makeText(this, "Starting Cloud Backup...", Toast.LENGTH_SHORT).show());
 
         mExecutor.execute(() -> {

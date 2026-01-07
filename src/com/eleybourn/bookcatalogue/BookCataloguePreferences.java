@@ -34,6 +34,9 @@ public class BookCataloguePreferences {
 	public static final String PREF_APP_LOCALE = "App.Locale";
 	/** Preferred interface locale */
 	private static final String PREF_CHECKED_MISSING_COVERS = "App.CheckedMissingCovers";
+    public static final String PREF_ACCOUNT_EMAIL = "Account.Email";
+    public static final String PREF_ACCOUNT_OPT_IN = "Account.OptIn";
+    public static final String PREF_ACCOUNT_API_TOKEN = "Account.ApiToken";
 
 	/** Get startup activity preference */
 	public boolean getStartInMyBook() {
@@ -102,7 +105,7 @@ public class BookCataloguePreferences {
 		return m_prefs.edit();
 	}
 
-    /** Static preferenced object so that we can respond to events relating to changes */
+    /** Static preference object so that we can respond to events relating to changes */
     private static SharedPreferences mPrefs = null;
     /** Get (or create) the static shared preferences */
 	public static SharedPreferences getSharedPreferences() {
@@ -119,4 +122,34 @@ public class BookCataloguePreferences {
 	public void setCheckedForMissingCovers(boolean checked) {
 		setBoolean(PREF_CHECKED_MISSING_COVERS, checked);
 	}
+
+    /** Get stored account email */
+    public String getAccountEmail() {
+        return getString(PREF_ACCOUNT_EMAIL, "");
+    }
+
+    /** Set account email */
+    public void setAccountEmail(String email) {
+        setString(PREF_ACCOUNT_EMAIL, email);
+    }
+
+    /** Get opt-in status */
+    public boolean getAccountOptIn() {
+        return getBoolean(PREF_ACCOUNT_OPT_IN, false);
+    }
+
+    /** Set opt-in status */
+    public void setAccountOptIn(boolean optIn) {
+        setBoolean(PREF_ACCOUNT_OPT_IN, optIn);
+    }
+
+    /** Get API Token */
+    public String getAccountApiToken() {
+        return getString(PREF_ACCOUNT_API_TOKEN, "");
+    }
+
+    /** Set API Token */
+    public void setAccountApiToken(String token) {
+        setString(PREF_ACCOUNT_API_TOKEN, token);
+    }
 }

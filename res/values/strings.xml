@@ -992,7 +992,7 @@
     <string name="option_usage_overwrite">Overwrites existing data</string>
 
     <string name="user_defined">User-defined</string>
-    <string name="user_interface">User Interface</string>
+    <string name="label_user_interface">User Interface</string>
 
     <string name="vldt_blank_required">Empty value required for \'%s\'</string>
     <string name="vldt_boolean_expected">Expected a boolean value (0,1,t,f,true,false) for \'%s\'</string>
@@ -1009,4 +1009,7 @@
     <string name="x_of_y">%1$d of %2$d</string>
 
     <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
+    <string name="title_enhance_search">Enhance Community Search</string>
+    <string name="para_enhance_search">Would you like to help other Book Catalogue users? \\n\\n\nBy clicking \'Yes\', you agree to allow public details from your book records (like ISBNs and Titles)\nto be used to improve search results for everyone.\\n\\n\nPrivate notes and personal details remain secure.\\n\\n\nYou can change this at any time in the Settings.</string>
+    <string name="label_email_address">Sync Email Login</string>
 </resources>

@@ -303,7 +303,7 @@
     <string name="label_location_of_book">Emplacement du livre</string>
     <string name="menu_crop_thumb">Recadrer la vignette</string>
     <string name="title_other_preferences">Autres préférences</string>
-    <string name="user_interface">Interface utilisateur</string>
+    <string name="label_user_interface">Interface utilisateur</string>
     <string name="preference_start_in_my_books">Commencer dans « mes livres »</string>
     <string name="background_tasks">Tâches en arrière plan</string>
     <string name="cleanup_old_tasks">Nettoyer les anciennes tâches</string>

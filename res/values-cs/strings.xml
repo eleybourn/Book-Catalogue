@@ -241,7 +241,6 @@
 <string name="no_title">(žádný titul)</string>
 <string name="no_publisher">(žádný vydavatel)</string>
 <string name="no_author">(žádný autor)</string>
-<string name="no_date">(žádné datum)</string>
     <string name="preference_show_thumbnails">Zobrazit náhledy</string>
 <string name="preference_prefer_large_thumbnails">Preferovat velké náhledy</string>
     <string name="sort_author_series">Autor, následně série</string>

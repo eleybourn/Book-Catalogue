@@ -249,7 +249,6 @@
     <string name="no_title">(no title)</string>
     <string name="no_publisher">(no publisher)</string>
     <string name="no_author">(no author)</string>
-    <string name="no_date">(no date)</string>
     <string name="preference_show_thumbnails">Show Thumbnails</string>
     <string name="preference_prefer_large_thumbnails">Prefer large thumbnails</string>
     <string name="sort_author_series">Author then Series</string>
@@ -745,7 +744,6 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="description_export_advanced_date_blurb">Optionally specify a date to use in selecting books and/or covers to export:</string>
     
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="option_all_books_added_or_updated_since">All books added or updated since:</string>
     <!-- Explanatory note for export data since last backup -->
     <string name="option_all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
 

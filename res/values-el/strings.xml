@@ -248,7 +248,6 @@
     <string name="no_title">(χωρίς τίτλο)</string>
     <string name="no_publisher">(χωρίς εκδότη)</string>
     <string name="no_author">(χωρίς συγγραφέα)</string>
-    <string name="no_date">(χωρίς ημερομηνία)</string>
     <string name="preference_show_thumbnails">Εμφάνιση μικρογραφιών</string>
     <string name="preference_prefer_large_thumbnails">Προτίμησε μεγάλες μικρογραφίες</string>
     <string name="sort_author_series">Συγγραφέας μετά σειρά</string>
@@ -744,7 +743,6 @@
     <string name="description_export_advanced_date_blurb">Προαιρετικά καθορίστε μια ημερομηνία να χρησιμοποιηθεί στην επιλογή βιβλίων ή/και εξωφύλλων για εξαγωγή:</string>
 
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="option_all_books_added_or_updated_since">Όλα τα βιβλία που προστέθηκαν ή ενημερώθηκαν από:</string>
     <!-- Explanatory note for export data since last backup -->
     <string name="option_all_books_added_or_updated_since_last_full_backup">Όλα τα βιβλία που προστέθηκαν ή ενημερώθηκαν από το τελευταίο πλήρες αντίγραφο ασφαλείας</string>
 

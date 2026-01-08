@@ -252,7 +252,6 @@
     <string name="no_title">(без заголовка)</string>
     <string name="no_publisher">(без издателя)</string>
     <string name="no_author">(без автора)</string>
-    <string name="no_date">(без даты)</string>
 
     <string name="preference_show_thumbnails">Показывать миниатюры</string>
     <string name="preference_prefer_large_thumbnails">Большие миниатюры предпочтительней</string>
@@ -640,8 +639,7 @@
     <string name="description_preferences_blurb">Настройки и пользовательские стили</string>
     
     <string name="description_export_advanced_date_blurb">Опционально укажите дату при выборе книг и/или обложек для экспорта:</string>
-    
-    <string name="option_all_books_added_or_updated_since">Все добавленные или обновленные книги с:</string>
+
     <string name="option_all_books_added_or_updated_since_last_full_backup">Все добавленные или обновленные книги с последнего бэкапа</string>
 
     <plurals

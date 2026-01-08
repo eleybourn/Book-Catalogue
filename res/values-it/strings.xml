@@ -258,7 +258,6 @@
     <string name="no_title">(titolo non indicato)</string>
     <string name="no_publisher">(editore non indicato)</string>
     <string name="no_author">(autore non indicato)</string>
-    <string name="no_date">(data non indicata)</string>
     <string name="preference_show_thumbnails">Mostra miniature</string>
     <string name="preference_prefer_large_thumbnails">Mostra miniature grandi</string>
     <string name="sort_author_series">Autore e Collana</string>
@@ -764,7 +763,6 @@
     <string name="description_export_advanced_date_blurb">In via opzionale, specifica una data da usare per selezionare libri e/o copertine da esportare:</string>
     
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="option_all_books_added_or_updated_since">Tutti i libri aggiunti o aggiornati dopo il giorno:</string>
     <!-- Explanatory note for export data since last backup -->
     <string name="option_all_books_added_or_updated_since_last_full_backup">Tutti i libri aggiunti o aggiornati dall\'ultimo backup completo</string>
 

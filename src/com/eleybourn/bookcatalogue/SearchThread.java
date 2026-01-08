@@ -24,7 +24,8 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.Series.SeriesDetails;
+import com.eleybourn.bookcatalogue.data.Series;
+import com.eleybourn.bookcatalogue.data.Series.SeriesDetails;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 

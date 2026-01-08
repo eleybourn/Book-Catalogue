@@ -21,13 +21,13 @@ package com.eleybourn.bookcatalogue.backup;
 
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.Author;
+import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookData;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.ImportThread.ImportException;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer.SyncLock;
 import com.eleybourn.bookcatalogue.utils.Logger;

@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import com.eleybourn.bookcatalogue.data.AnthologyTitle;
+import com.eleybourn.bookcatalogue.data.Author;
+import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.datamanager.DataAccessor;
 import com.eleybourn.bookcatalogue.datamanager.DataManager;
 import com.eleybourn.bookcatalogue.datamanager.Datum;

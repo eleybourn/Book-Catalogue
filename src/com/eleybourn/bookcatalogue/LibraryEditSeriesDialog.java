@@ -28,6 +28,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 public class LibraryEditSeriesDialog {

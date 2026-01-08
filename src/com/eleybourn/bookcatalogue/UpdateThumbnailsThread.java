@@ -33,6 +33,8 @@ import com.eleybourn.bookcatalogue.AdminUpdateFromInternet.FieldUsage;
 import com.eleybourn.bookcatalogue.AdminUpdateFromInternet.FieldUsages;
 import com.eleybourn.bookcatalogue.AdminUpdateFromInternet.FieldUsages.Usages;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import com.eleybourn.bookcatalogue.data.Author;
+import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**

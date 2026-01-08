@@ -81,6 +81,10 @@ import android.widget.ImageView;
 
 import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import com.eleybourn.bookcatalogue.data.AnthologyTitle;
+import com.eleybourn.bookcatalogue.data.Author;
+import com.eleybourn.bookcatalogue.data.Bookshelf;
+import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
 import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
@@ -2488,7 +2492,29 @@ public class CatalogueDBAdapter {
 		return fullSql;
 	}
 
-	/**
+    /**
+     * Return a list of all books in the database without restriction
+     *
+     * @return Cursor over all Books
+     */
+    public BooksCursor fetchAllBooks() {
+        // Get the SQL
+        String fullSql = fetchAllBooksSql("", "", "", "", "", "", "");
+
+        // Build and return a cursor.
+        BooksCursor returnable = null;
+        try {
+            returnable = fetchBooks(fullSql, EMPTY_STRING_ARRAY);
+        } catch (IllegalStateException e) {
+            open();
+            returnable = fetchBooks(fullSql, EMPTY_STRING_ARRAY);
+            Logger.logError(e);
+        }
+        return returnable;
+    }
+
+
+    /**
 	 * Return a list of all books in the database
 	 * 
 	 * @param order What order to return the books
@@ -3915,10 +3941,11 @@ public class CatalogueDBAdapter {
 			final int givenNameCol = cursor.getColumnIndex(CatalogueDBAdapter.KEY_GIVEN_NAMES);
 			final int authorIdCol = cursor.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_ID);
 			final int titleCol = cursor.getColumnIndex(CatalogueDBAdapter.KEY_TITLE);
+            final int anthologyIdCol = cursor.getColumnIndex(CatalogueDBAdapter.KEY_ROW_ID);
 
 			while (cursor.moveToNext()) {
 				Author a = new Author(cursor.getLong(authorIdCol), cursor.getString(familyNameCol), cursor.getString(givenNameCol));
-				list.add(new AnthologyTitle(a, cursor.getString(titleCol)));
+				list.add(new AnthologyTitle(a, cursor.getLong(anthologyIdCol), cursor.getString(titleCol)));
 			}			
 		} finally {
 			if (cursor != null && !cursor.isClosed())
@@ -3950,6 +3977,32 @@ public class CatalogueDBAdapter {
 		}
 		return authorList;
 	}
+
+    public ArrayList<Bookshelf> getBookBookshelfList(long id) {
+        ArrayList<Bookshelf> bookshelfList = new ArrayList<Bookshelf>();
+        Cursor bookshelves = null;
+        try {
+            bookshelves = fetchAllBookshelvesByBook(id);
+            int count = bookshelves.getCount();
+
+            if (count == 0)
+                return bookshelfList;
+
+            int idCol = bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_ROW_ID);
+            int nameCol = bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF);
+
+            while (bookshelves.moveToNext()) {
+                Bookshelf bs = new Bookshelf();
+                bs.id = bookshelves.getLong(idCol);
+                bs.name = bookshelves.getString(nameCol);
+                bookshelfList.add(bs);
+            }
+        } finally {
+            if (bookshelves != null)
+                bookshelves.close();
+        }
+        return bookshelfList;
+    }
 
 	public ArrayList<Series> getBookSeriesList(long id) {
 		ArrayList<Series> seriesList = new ArrayList<Series>();

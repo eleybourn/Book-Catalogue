@@ -43,6 +43,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.eleybourn.bookcatalogue.booklist.LibraryBuilder;
 import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
+import com.eleybourn.bookcatalogue.data.Author;
+import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.datamanager.DataEditor;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.BookshelfDialogFragment;

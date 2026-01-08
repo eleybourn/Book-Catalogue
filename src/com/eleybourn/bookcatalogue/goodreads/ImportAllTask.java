@@ -39,7 +39,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.Author;
+import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.BcQueueManager;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookData;
@@ -48,7 +48,7 @@ import com.eleybourn.bookcatalogue.BooksCursor;
 import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler;
 import com.eleybourn.bookcatalogue.goodreads.api.ListReviewsApiHandler.ListReviewsFieldNames;
 import com.eleybourn.bookcatalogue.utils.Logger;

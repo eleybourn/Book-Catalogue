@@ -25,6 +25,8 @@ import android.os.Bundle;
 import com.eleybourn.bookcatalogue.SearchThread.BookSearchResults;
 import com.eleybourn.bookcatalogue.SearchThread.DataSource;
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
+import com.eleybourn.bookcatalogue.data.Author;
+import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
 import com.eleybourn.bookcatalogue.utils.IsbnUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;

@@ -326,11 +326,9 @@ public class SimpleTaskQueue {
 					if (mQueue.remove(w))
 						mManagedTaskCount--;					
 				}
-				//System.out.println("SimpleTaskQueue(removeok): " + mQueue.size());			
 				return true;
 			}
 		}			
-		//System.out.println("SimpleTaskQueue(removefail): " + mQueue.size());			
 		return false;
 	}
 	
@@ -345,16 +343,14 @@ public class SimpleTaskQueue {
 					if (mQueue.remove(w))
 						mManagedTaskCount--;					
 				}
-				//System.out.println("SimpleTaskQueue(removeok): " + mQueue.size());			
 				return true;
 			}
 		}
-		//System.out.println("SimpleTaskQueue(removefail): " + mQueue.size());			
-		return false;			
+		return false;
 	}
 	
 	/**
-	 * Flag indicating runnable is queued but not run; avoids multiple unnecessary runnables
+	 * Flag indicating runnable is queued but not run; avoids multiple unnecessary runnable tasks
 	 */
 	private boolean mDoProcessResultsIsQueued = false;
 	/**
@@ -398,18 +394,6 @@ public class SimpleTaskQueue {
 			// Dereference
 			taskWrapper.activeThread = null;			
 		}
-
-		// Feature removed because onFinish() now gets any exception caught from run()
-		// Now the run() method can be used to change if onFinish() is called via the TaskContext
-		//
-		// 90% of implementations had to implement onFinish() and always returned true.
-		//
-		// See if we need to call finished(). Default to true.
-		//try {
-		//	taskWrapper.finishRequested = task.requiresOnFinish();
-		//} catch (Exception e) {
-		//	taskWrapper.finishRequested = true;
-		//}
 
 		synchronized(this) {
 

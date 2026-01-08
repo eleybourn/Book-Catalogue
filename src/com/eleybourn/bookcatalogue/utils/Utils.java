@@ -85,12 +85,12 @@ import android.widget.Toast;
 
 import androidx.core.text.HtmlCompat;
 
-import com.eleybourn.bookcatalogue.Author;
+import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.GetThumbnailTask;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.ThumbnailCacheWriterTask;
 import com.eleybourn.bookcatalogue.amazon.AmazonUtils;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;

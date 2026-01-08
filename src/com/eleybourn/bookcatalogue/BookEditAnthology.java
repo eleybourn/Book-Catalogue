@@ -48,6 +48,8 @@ import androidx.core.view.MenuProvider;
 import androidx.lifecycle.Lifecycle;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter.AnthologyTitleExistsException;
+import com.eleybourn.bookcatalogue.data.AnthologyTitle;
+import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.widgets.SimpleListAdapter;

@@ -41,6 +41,7 @@ import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialog
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
 import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
@@ -177,7 +178,8 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
                     if (savedEmail.isEmpty()) {
                         showOptInDialog(email);
                     } else {
-                        performCloudSync(email, new BookCataloguePreferences().getAccountOptIn());
+                        Toast.makeText(this, "Starting Cloud Backup...", Toast.LENGTH_SHORT).show();
+                        BookCatalogueSync.performCloudSync(email, new BookCataloguePreferences().getAccountOptIn());
                     }
                 });
 
@@ -217,39 +219,8 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         Toast.makeText(this, "Preferences Saved: " + status, Toast.LENGTH_SHORT).show();
 
         // Pass the optIn boolean to the sync method so it sends the correct flag to the API
-        performCloudSync(email, optIn);
-    }
-
-    /**
-     * Executes the API Sync Logic in background
-     */
-    private void performCloudSync(String email, boolean optIn) {
-        runOnUiThread(() -> Toast.makeText(this, "Starting Cloud Backup...", Toast.LENGTH_SHORT).show());
-
-        mExecutor.execute(() -> {
-            try {
-                // 1. Login to get API Token
-                String token = BookCatalogueSync.login(email, true);
-
-                // 2. Fetch books from DB & Upload
-                // (Existing logic...)
-                ArrayList<String> authors = new ArrayList<>();
-                authors.add("1, Doe, John");
-
-                BookCatalogueSync.uploadBook(
-                        token,
-                        12345,
-                        "My Great Book",
-                        authors,
-                        null
-                );
-
-                runOnUiThread(() -> Toast.makeText(MainMenu.this, "Backup Complete", Toast.LENGTH_LONG).show());
-
-            } catch (Exception e) {
-                runOnUiThread(() -> Toast.makeText(MainMenu.this, "Backup Failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
-            }
-        });
+        Toast.makeText(this, "Starting Cloud Backup...", Toast.LENGTH_SHORT).show();
+        BookCatalogueSync.performCloudSync(email, optIn);
     }
 
     /**

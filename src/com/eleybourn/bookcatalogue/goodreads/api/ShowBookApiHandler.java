@@ -50,9 +50,9 @@ import org.apache.http.client.methods.HttpGet;
 
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.Author;
+import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
-import com.eleybourn.bookcatalogue.Series;
+import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.BookNotFoundException;
 import com.eleybourn.bookcatalogue.goodreads.GoodreadsManager.Exceptions.NetworkException;

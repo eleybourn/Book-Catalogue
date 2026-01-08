@@ -26,6 +26,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.eleybourn.bookcatalogue.data.Author;
+
 public class LibraryEditAuthorDialog {
 	private final Context mContext;
 	private final CatalogueDBAdapter mDbHelper;

@@ -698,7 +698,6 @@
 
     <string name="no_author">(no author)</string>
     <string name="no_connection">No Internet connection is available.</string>
-    <string name="no_date">(no date)</string>
     <string name="no_editions">No editions available</string>
     <string name="no_genre">(no genre)</string>
     <string name="no_image_found">No image found</string>
@@ -729,7 +728,6 @@
 
     <string name="option_all_books">All Books</string>
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="option_all_books_added_or_updated_since">All books added or updated since:</string>
     <!-- Explanatory note for export data since last backup -->
     <string name="option_all_books_added_or_updated_since_last_full_backup">All books added or updated since last full backup</string>
     <string name="option_always_start_library_collapsed">Always start library collapsed</string>
@@ -1011,5 +1009,4 @@
     <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
     <string name="title_enhance_search">Enhance Community Search</string>
     <string name="para_enhance_search">Would you like to help other Book Catalogue users? \\n\\n\nBy clicking \'Yes\', you agree to allow public details from your book records (like ISBNs and Titles)\nto be used to improve search results for everyone.\\n\\n\nPrivate notes and personal details remain secure.\\n\\n\nYou can change this at any time in the Settings.</string>
-    <string name="label_email_address">Sync Email Login</string>
 </resources>

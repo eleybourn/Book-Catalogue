@@ -249,7 +249,6 @@
     <string name="no_title">(geen titel)</string>
     <string name="no_publisher">(geen uitgever)</string>
     <string name="no_author">(geen auteur)</string>
-    <string name="no_date">(geen datum)</string>
     <string name="preference_show_thumbnails">Toon Miniaturen</string>
     <string name="preference_prefer_large_thumbnails">Prefereer grote miniaturen</string>
     <string name="sort_author_series">Auteur daarna Serie</string>
@@ -740,7 +739,6 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="description_export_advanced_date_blurb">Specificeer desgewenst een datum voor de selectie van boeken en/of omslagen om te exporteren:</string>
     
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="option_all_books_added_or_updated_since">Alle boeken die zijn toegevoegd of bijgewerkt sinds:</string>
     <!-- Explanatory note for export data since last backup -->
     <string name="option_all_books_added_or_updated_since_last_full_backup">Alle boeken die zijn toegevoegd of bijgewerkt sinds de laatste volledige back-up</string>
 

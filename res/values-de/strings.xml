@@ -247,7 +247,6 @@
 <string name="no_title">(kein Titel)</string>
 <string name="no_publisher">(kein Verlag)</string>
 <string name="no_author">(kein Autor)</string>
-<string name="no_date">(kein Datum)</string>
     <string name="preference_show_thumbnails">Cover-Bilder anzeigen</string>
 <string name="preference_prefer_large_thumbnails">Große Cover-Bilder bevorzugen</string>
     <string name="sort_author_series">Autor, danach Serie</string>
@@ -704,7 +703,6 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
     <string name="description_export_advanced_date_blurb">Geben Sie wahlweise ein Datum an, um Bücher und Cover auszuwählen:</string>
 
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="option_all_books_added_or_updated_since">Alle neuen und aktualisierten Bücher seit:</string>
     <!-- Explanatory note for export data since last backup -->
     <string name="option_all_books_added_or_updated_since_last_full_backup">Alle neuen und aktualisierten Bücher seit der letzten vollständigen Sicherung</string>
 

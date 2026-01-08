@@ -263,7 +263,6 @@
     <string name="no_title">(ad yok)</string>
     <string name="no_publisher">(yayımcı yok)</string>
     <string name="no_author">(yazar yok)</string>
-    <string name="no_date">(günay yok)</string>
     <string name="preference_show_thumbnails">Ufak resimleri göster</string>
     <string name="preference_prefer_large_thumbnails">Büyük resimleri yeğle</string>
     <string name="sort_author_series">Önce yazar sonra seri</string>
@@ -749,7 +748,6 @@
     <!-- Explanatory note for export date (not yet implemented) -->
     <string name="description_export_advanced_date_blurb">Seçeneğe bağlı olarak, dışarı aktarılacak kitaplarda ve/veya kapak görsellerinde kullanılacak bir günay seçin:</string>
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="option_all_books_added_or_updated_since">Şu günaydan bu yana eklenen veya güncellenen kitaplar:</string>
     <!-- Explanatory note for export data since last backup -->
     <string name="option_all_books_added_or_updated_since_last_full_backup">Son tüm yedeklemeden bu yana eklenen veya güncellenen kitaplar</string>
    <!-- Short text for 'n books' -->

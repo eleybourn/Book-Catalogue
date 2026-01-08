@@ -338,7 +338,6 @@
     <string name="no_title">(Pas de titre)</string>
     <string name="no_publisher">(Pas d\'éditeur)</string>
     <string name="no_author">(Pas d\'auteur)</string>
-    <string name="no_date">(Pas de date)</string>
     <string name="preference_show_thumbnails">Montrer les miniatures</string>
     <string name="preference_prefer_large_thumbnails">Preférer les grandes miniatures</string>
     <string name="sort_author_series">Auteur puis série</string>
@@ -727,7 +726,6 @@
     <string name="description_export_advanced_date_blurb">Definissez la date à prendre en compte pour l\'archivage des livres (optionnel):</string>
 
     <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="option_all_books_added_or_updated_since">Tous les livres ajoutés ou mis à jour depuis le :</string>
     <!-- Explanatory note for export data since last backup -->
     <string name="option_all_books_added_or_updated_since_last_full_backup">Tous les livres ajoutés ou mis à jour depuis la dernière sauvegarde complète</string>
 

@@ -1,7 +1,9 @@
 package com.eleybourn.bookcatalogue;
 
 import android.database.Cursor;
+import android.util.Log;
 
+import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.data.AnthologyTitle;
 import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.data.Bookshelf;
@@ -54,9 +56,8 @@ public class BookCatalogueSyncTask implements SimpleTask {
                 int count = 0;
 
                 // Get column indices
-                int idIndex = bookCursor.getColumnIndexOrThrow("_id");
-                // Check if cover column exists, otherwise handle gracefully
-                int coverIndex = bookCursor.getColumnIndex("cover_url");
+                int idIndex = bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROW_ID);
+                int uuidIndex = bookCursor.getColumnIndexOrThrow(DatabaseDefinitions.DOM_BOOK_UUID.name);
 
                 do {
                     // Check if queue is killing us
@@ -64,15 +65,9 @@ public class BookCatalogueSyncTask implements SimpleTask {
 
                     try {
                         int bookId = bookCursor.getInt(idIndex);
+                        String uuid = bookCursor.getString(uuidIndex);
+                        File thumbFile = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
 
-                        String coverPath = (coverIndex > -1) ? bookCursor.getString(coverIndex) : null;
-
-                        // Prepare File
-                        File thumbFile = null;
-                        if (coverPath != null && !coverPath.trim().isEmpty()) {
-                            File f = new File(coverPath);
-                            if (f.exists()) thumbFile = f;
-                        }
                         ArrayList<Author> authors = db.getBookAuthorList(bookId);
                         ArrayList<Bookshelf> bookshelves = db.getBookBookshelfList(bookId);
                         ArrayList<Series> series = db.getBookSeriesList(bookId);

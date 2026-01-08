@@ -1,6 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.database.Cursor;
+import android.util.Log;
 
 import org.json.JSONObject;
 import java.io.*;
@@ -210,7 +211,6 @@ public class BookCatalogueSync {
         return 0.0f;
     }
 
-
     private static void addFormField(PrintWriter writer, String boundary, String name, String value) {
         if (value == null) value = ""; // Ensure we don't send nulls
         writer.append("--").append(boundary).append("\r\n");
@@ -219,11 +219,15 @@ public class BookCatalogueSync {
         writer.append(value).append("\r\n").flush();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static void addFilePart(PrintWriter writer, OutputStream os, String boundary, String fieldName, File uploadFile) throws IOException {
         String fileName = uploadFile.getName();
         writer.append("--").append(boundary).append("\r\n");
         writer.append("Content-Disposition: form-data; name=\"").append(fieldName).append("\"; filename=\"").append(fileName).append("\"\r\n");
-        writer.append("Content-Type: application/octet-stream\r\n\r\n").flush();
+        writer.append("Content-Type: application/octet-stream\r\n\r\n");
+
+        // CRITICAL FIX: Flush the writer before writing raw bytes to the underlying stream
+        writer.flush();
 
         try (FileInputStream inputStream = new FileInputStream(uploadFile)) {
             byte[] buffer = new byte[4096];
@@ -233,9 +237,11 @@ public class BookCatalogueSync {
             }
             os.flush();
         }
-        writer.append("\r\n").flush();
-    }
 
+        // Prepare for the next part (character data)
+        writer.append("\r\n");
+        writer.flush();
+    }
 
     private static String readStream(InputStream in) throws IOException {
         if (in == null) return "No error stream";

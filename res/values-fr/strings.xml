@@ -99,7 +99,6 @@
 
     <string name="bad_scanner">Votre scanner de code barre ne semble pas être compatible avec Book Catalogue. Nous vous recommandons d\'installer le scanner de code barre de Zxing et, s\'il est déjà installé, de le désinstaller puis le réinstaller.</string>
     <string name="option_show_book_under_primary_thing">Sous %1$s principal(e) seulement</string>
-    <string name="retry_x_of_y_next_at_z">Essai %1$s de %2$s, suivant à %3$s</string>
     <string name="title_add_book">Ajouter un livre</string>
     <string name="menu_delete_book">Supprimer un livre</string>
     <string name="label_author">Auteur</string>
@@ -294,8 +293,6 @@
     <string name="menu_share_this">Partager</string>
     <string name="label_email_export">Souhaitez-vous envoyer cet export par courriel ?</string>
     <string name="task_errors">Erreurs de tâches</string>
-    <string name="retry">Ré-essayer</string>
-    <string name="retry_task">Ré-essayer</string>
     <string name="delete_event">Supprimer l\'événement</string>
     <string name="delete_task">Supprimer la tâche</string>
     <string name="title_library">Mes livres</string>
@@ -310,18 +307,11 @@
     <string name="cleanup_old_events">Nettoyer les anciens événements</string>
     <string name="label_add_manually">Ajouter manuellement</string>
     <string name="label_search_internet">Chercher sur Internet</string>
-    <string name="send_books_to_goodreads">Envoyer les livres à Goodreads</string>
     <string name="legacy_task">Tâches anciennes</string>
-    <string name="occurred_at">S\'est produit à %1$s</string>
     <string name="unknown_uc">Inconnu</string>
-    <string name="this_book_deleted_uc">Ce livre a été supprimé</string>
-    <string name="by">par %1$s</string>
-    <string name="no_matching_book_found">Aucun livre correspondant n\'a été trouvé</string>
-    <string name="no_isbn_stored_for_book">Aucun ISBN enregistré pour ce livre</string>
     <string name="select_an_action">Choisissez une action</string>
     <string name="alert_if_the_problem_persists">Si le problème persiste, contactez le support via l\'aide du menu principal.</string>
     <string name="x_of_y">%1$d de %2$d</string>
-    <string name="send_book_to_goodreads">Envoyer le livre %1$s à Goodreads</string>
     <string name="label_erase_cover_cache">Effacer le cache des couvertures</string>
     <string name="crash_toast_text">Book Catalogue a planté. Merci de nous aider en reportant ce crash.</string>
     <string name="crash_notif_ticker_text">Book Catalogue a planté.</string>
@@ -364,7 +354,6 @@
     <string name="option_always_start_library_expanded">Toujours démarrer avec une liste de livre étendue</string>
     <string name="option_always_start_library_collapsed">Toujours démarrer avec une liste de livre réduite</string>
     <string name="option_remember_library_state">Conserver l\'état de la liste de livres</string>
-    <string name="searching_goodreads">Recherche en cours sur Goodreads</string>
     <string name="title_edit_library_styles">Modifier les styles de liste de livres</string>
     <string name="show_more_ellipsis">Montrer plus&#8230;</string>
     <string name="show_fewer_ellipsis">Montrer moins&#8230;</string>
@@ -429,10 +418,6 @@
     <string name="user_defined">Défini par l\'utilisateur</string>
     <string name="builtin">Par défaut</string>
     <string name="sort_unread">Non lu (auteur / séries)</string>
-    <string name="import_all_from_goodreads">Tout importer depuis Goodreads</string>
-    <string name="completed">Terminé</string>
-    <string name="failed">Échoué</string>
-    <string name="queued">En file d\'attente</string>
     <string name="unknown">Inconnu</string>
     <string name="cover_options_cc_ellipsis">Options de couverture&#8230;</string>
     <string name="show_events_ellipsis">Montrer les événement&#8230;</string>
@@ -447,18 +432,6 @@
     <string name="alert_hints_have_been_reset">Les astuces ont été réinitialisées.</string>
     <string name="hint_startup_screen">« Voici l\'écran de démarrage par défaut de Book Catalogue. Si vous le souhaitez, vous pouvez démarrer directement dans « mes livres » ; l\'écran de démarrage préféré peut être modifié dans les préférences. »</string>
     <string name="upgrading_ellipsis">Mise à niveau&#8230;</string>
-    <string name="explain_goodreads_no_isbn">Les livres sélectionnés n\'ont pas d\'ISBN ; il est impossible de les synchroniser avec Goodreads.
-		La solution la plus simple est de:
-		\n\n(1) supprimer le livre de BookCatalogue
-		\n\n(2) ajouter manuellement le livre à Goodreads par leur interface web
-		\n\n(3) Synchroniser avec goodreads
-		\n\nLe livre sera re-créé dans Book Catalogue et les deux livres seront alors liés.</string>
-    <string name="explain_goodreads_no_match">L\'ISBN du livre choisi n\'a pas pu être trouvé sur goodreads. Il existe de multiples causes à ça :
-		soit les données du livre sont erronées (vérifiez l\'ISBN), soit le livre n\'est pas sur Goodreads.
-		\n\nSi vous modifiez les données sur Book Catalogue, pressez simplement sur le bouton \'Ré-essayer\' et assurez vous
-		que la tâche associée est exécutée avec succès.
-		\n\nSi les données semblent correctes et que le livre n\'est toujours pas trouvé, il est alors nécessaire d\'ajouter manuellement un livre portant cet ISBN à Goodreads
-		sur leur site Web. Une fois que c\'est fait, vous pouvez essayer de renvoyer le livre.</string>
     <string name="label_read_amp_unread">Lu &amp; non lu</string>
     <string name="label_loaned">Prêté</string>
     <string name="label_publication_year">Année de publication</string>
@@ -511,8 +484,6 @@
     <string name="label_year">Année</string>
     <string name="label_month">Mois</string>
     <string name="day">Jour</string>
-    <string name="last_error_e">Dernière erreur : %1$s</string>
-    <string name="invalid_isbn_x_specified_in_search">ISBN incorrect dans la recherche \'%1$s\'</string>
     <string name="if_day_is_specified_month_and_year_must_be">Si le jour est précisé, le mois et l\'année doivent l\'être aussi.</string>
     <string name="if_month_is_specified_year_must_be">Si le mois est précisé, l\'année doit l\'être aussi.</string>
     <string name="preference_use_external_image_cropper">Recadrage d\'image avec un outil externe (expérimental)</string>
@@ -546,8 +517,6 @@
     <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
     <string name="label_loan">Prêt</string>
     <!-- Hint displayed when an export or database backup is done -->
-    <!-- Button text on the Goodreads activity; only displayed after user has registered -->
-    <!-- Extra text displayed on the Goodreads activity when a user HAS registered -->
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
     <!-- Admin option to import -->
     <string name="label_backup_to_archive">Sauvegarde des données</string>

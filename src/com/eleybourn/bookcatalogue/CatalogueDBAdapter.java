@@ -291,63 +291,8 @@ public class CatalogueDBAdapter {
 			DOM_LAST_UPDATE_DATE.getDefinition(true) +
 			")";
 	// ^^^^ NOTE: **NEVER** change this. Rename it, and create a new one. Unless you know what you are doing.
-	
-	//private static final String DATABASE_CREATE_BOOKS_70 =
-	//		"create table " + DB_TB_BOOKS + 
-	//		" (_id integer primary key autoincrement, " +
-	//		/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
-	//		KEY_TITLE + " text not null, " +
-	//		KEY_ISBN + " text, " +
-	//		KEY_PUBLISHER + " text, " +
-	//		KEY_DATE_PUBLISHED + " date, " +
-	//		KEY_RATING + " float not null default 0, " +
-	//		KEY_READ + " boolean not null default 0, " +
-	//		/* KEY_SERIES + " text, " + */
-	//		KEY_PAGES + " int, " +
-	//		/* KEY_SERIES_NUM + " text, " + */
-	//		KEY_NOTES + " text, " +
-	//		KEY_LIST_PRICE + " text, " +
-	//		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
-	//		KEY_LOCATION + " text, " +
-	//		KEY_READ_START + " date, " +
-	//		KEY_READ_END + " date, " +
-	//		KEY_FORMAT + " text, " +
-	//		KEY_SIGNED + " boolean not null default 0, " +
-	//		KEY_DESCRIPTION + " text, " +
-	//		KEY_GENRE + " text, " +
-	//		KEY_DATE_ADDED + " datetime default current_timestamp, " +
-	//		DOM_GOODREADS_BOOK_ID.getDefinition(true) + ", " +
-	//		DOM_BOOK_UUID.getDefinition(true) +
-	//		")";
-	//
-	//private static final String DATABASE_CREATE_BOOKS_69 =
-	//		"create table " + DB_TB_BOOKS + 
-	//		" (_id integer primary key autoincrement, " +
-	//		/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
-	//		KEY_TITLE + " text not null, " +
-	//		KEY_ISBN + " text, " +
-	//		KEY_PUBLISHER + " text, " +
-	//		KEY_DATE_PUBLISHED + " date, " +
-	//		KEY_RATING + " float not null default 0, " +
-	//		KEY_READ + " boolean not null default 0, " +
-	//		/* KEY_SERIES + " text, " + */
-	//		KEY_PAGES + " int, " +
-	//		/* KEY_SERIES_NUM + " text, " + */
-	//		KEY_NOTES + " text, " +
-	//		KEY_LIST_PRICE + " text, " +
-	//		KEY_ANTHOLOGY + " int not null default " + ANTHOLOGY_NO + ", " + 
-	//		KEY_LOCATION + " text, " +
-	//		KEY_READ_START + " date, " +
-	//		KEY_READ_END + " date, " +
-	//		KEY_FORMAT + " text, " +
-	//		KEY_SIGNED + " boolean not null default 0, " +
-	//		KEY_DESCRIPTION + " text, " +
-	//		KEY_GENRE + " text, " +
-	//		KEY_DATE_ADDED + " datetime default current_timestamp, " +
-	//		DOM_GOODREADS_BOOK_ID.getDefinition(true) +
-	//		")";
 
-	private static final String DATABASE_CREATE_BOOKS_68 =
+    private static final String DATABASE_CREATE_BOOKS_68 =
 			"create table " + DB_TB_BOOKS + 
 			" (_id integer primary key autoincrement, " +
 			/* KEY_AUTHOR + " integer not null REFERENCES " + DB_TB_AUTHORS + ", " + */
@@ -2971,23 +2916,8 @@ public class CatalogueDBAdapter {
 		String where = "b." + KEY_ROW_ID + "=" + rowId;
 		return fetchAllBooks("", "", "", where, "", "", "");
 	}
-	
-	/**
-	 * Return a book (Cursor) that matches the given goodreads book Id.
-	 * Note: MAYE RETURN MORE THAN ONE BOOK
-	 * 
-	 * @param grId Goodreads id of book(s) to retrieve
-	 *
-	 * @return Cursor positioned to matching book, if found
-	 * 
-	 * @throws SQLException if note could not be found/retrieved
-	 */
-	public BooksCursor fetchBooksByGoodreadsBookId(long grId) throws SQLException {
-		String where = TBL_BOOKS.dot(DOM_GOODREADS_BOOK_ID) + "=" + grId;
-		return fetchAllBooks("", "", "", where, "", "", "");
-	}
-	
-	/**
+
+    /**
 	 * Return a book (Cursor) that matches the given ISBN.
 	 * Note: MAYBE RETURN MORE THAN ONE BOOK
 	 * 
@@ -4886,9 +4816,6 @@ public class CatalogueDBAdapter {
 		return success;
 	}
 	
-/***************************************************************************************
- * GoodReads support
- **************************************************************************************/
 	/** Static Factory object to create the custom cursor */
 	private static final CursorFactory m_booksFactory = new CursorFactory() {
 			@Override
@@ -4914,37 +4841,10 @@ public class CatalogueDBAdapter {
 	}
 
 
-	/**
-	 * Query to get all book IDs and ISBN for sending to goodreads.
+    /**
+	 * Query to get a all bookshelves for a book.
 	 */
-	public BooksCursor getAllBooksForGoodreadsCursor(long startId, boolean updatesOnly) {
-		String sql = "Select " + KEY_ISBN + ", " + KEY_ROW_ID + ", " + DOM_GOODREADS_BOOK_ID +
-				", " + KEY_NOTES + ", " + KEY_READ + ", " + KEY_READ_END + ", " + KEY_RATING + 
-				" from " + DB_TB_BOOKS + " Where " + KEY_ROW_ID + " > " + startId;
-		if (updatesOnly) {
-			sql += " and " + DOM_LAST_UPDATE_DATE + " > " + DOM_LAST_GOODREADS_SYNC_DATE;
-		}
-		sql += " Order by " + KEY_ROW_ID;
-
-		BooksCursor cursor = fetchBooks(sql, EMPTY_STRING_ARRAY);
-		return cursor;
-	}
-
-	/**
-	 * Query to get a specific book ISBN from the ID for sending to goodreads.
-	 */
-	public BooksCursor getBookForGoodreadsCursor(long bookId) {
-		String sql = "Select " + KEY_ROW_ID + ", " + KEY_ISBN + ", " + DOM_GOODREADS_BOOK_ID + 
-				", " + KEY_NOTES + ", " + KEY_READ + ", " + KEY_READ_END + ", " + KEY_RATING + 
-				" from " + DB_TB_BOOKS + " Where " + KEY_ROW_ID + " = " + bookId + " Order by " + KEY_ROW_ID;
-		BooksCursor cursor = fetchBooks(sql, EMPTY_STRING_ARRAY);
-		return cursor;
-	}
-
-	/**
-	 * Query to get a all bookshelves for a book, for sending to goodreads.
-	 */
-	public Cursor getAllBookBookshelvesForGoodreadsCursor(long book) {
+	public Cursor getAllBookBookshelvesCursor(long book) {
 		String sql = "Select s." + KEY_BOOKSHELF + " from " + DB_TB_BOOKSHELF + " s"
 				 + " Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs On bbs." + KEY_BOOKSHELF + " = s." + KEY_ROW_ID
 				 + " and bbs." + KEY_BOOK + " = " + book + " Order by s." + KEY_BOOKSHELF;
@@ -4952,42 +4852,7 @@ public class CatalogueDBAdapter {
 		return cursor;
 	}
 
-	/** Support statement for setGoodreadsBookId() */
-	private SynchronizedStatement mSetGoodreadsBookIdStmt = null;
-	/**
-	 * Set the goodreads book id for this passed book. This is used by other goodreads-related 
-	 * functions.
-	 * 
-	 * @param bookId			Book to update
-	 * @param goodreadsBookId	GR book id
-	 */
-	public void setGoodreadsBookId(long bookId, long goodreadsBookId) {
-		if (mSetGoodreadsBookIdStmt == null ) {
-			String sql = "Update " + TBL_BOOKS + " Set " + DOM_GOODREADS_BOOK_ID + " = ? Where " + DOM_ID + " = ?";
-			mSetGoodreadsBookIdStmt = mStatements.add("mSetGoodreadsBookIdStmt", sql);
-		}
-		mSetGoodreadsBookIdStmt.bindLong(1, goodreadsBookId);
-		mSetGoodreadsBookIdStmt.bindLong(2, bookId);
-		mSetGoodreadsBookIdStmt.execute();
-	}
-
-	/** Support statement for setGoodreadsSyncDate() */
-	private SynchronizedStatement mSetGoodreadsSyncDateStmt = null;
-	/** 
-	 * Set the goodreads sync date to the current time
-	 * 
-	 * @param bookId
-	 */
-	public void setGoodreadsSyncDate(long bookId) {
-		if (mSetGoodreadsSyncDateStmt == null) {
-			String sql = "Update " + DB_TB_BOOKS + " Set " + DOM_LAST_GOODREADS_SYNC_DATE + " = current_timestamp Where " + KEY_ROW_ID + " = ?";
-			mSetGoodreadsSyncDateStmt = mStatements.add("mSetGoodreadsSyncDateStmt", sql);			
-		}
-		mSetGoodreadsSyncDateStmt.bindLong(1, bookId);
-		mSetGoodreadsSyncDateStmt.execute();		
-	}
-	
-/**************************************************************************************/
+    /**************************************************************************************/
 	
     /*
      * This will return the author based on the ID.

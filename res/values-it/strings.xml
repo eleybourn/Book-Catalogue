@@ -203,8 +203,6 @@
     <string name="label_email_export">Inviare il file di esportazione per email?</string>
     <string name="menu_crop_thumb">Ritaglia miniatura</string>
     <string name="task_errors">Task Errors</string>
-    <string name="retry">Riprova</string>
-    <string name="retry_task">Riprova</string>
     <string name="delete_event">Cancella evento</string>
     <string name="delete_task">Cancella operazione</string>
     <item name="TAG_EVENT" type="id"></item>
@@ -225,22 +223,14 @@
     <string name="cleanup_old_events">Cancella eventi trascorsi</string>
     <string name="label_add_manually">Aggiungi Manualmente</string>
     <string name="label_search_internet">Cerca in Internet</string>
-    <string name="send_books_to_goodreads">Invia libri a GoodReads</string>
     <string name="legacy_task">Operazione obsoleta</string>
-    <string name="occurred_at">si è verificata a %1$s</string>
     <string name="unknown_uc">SCONOSCIUTO</string>
-    <string name="this_book_deleted_uc">LIBRO CANCELLATO</string>
-    <string name="by">da %1$s</string>
-    <string name="no_matching_book_found">Nessuna corrispondenza trovata</string>
-    <string name="no_isbn_stored_for_book">Codice ISBN non memorizzato</string>
     <string name="select_an_action">Seleziona un\'azione</string>
     <string name="alert_if_the_problem_persists">Se il problema persiste, contatta il supporto dalla voce Aiuto del menu principale.</string>
     <string name="x_of_y">%1$d di %2$d</string>
-    <string name="send_book_to_goodreads">Invia il libro %1$s a Goodreads</string>
 
-    <item name="NOTIFICATION" type="id"></item>
-    <item name="TAG_GOODREADS_WORK" type="id"></item>
-    <item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
+    <item name="NOTIFICATION" type="id" />
+    <item name="TAG_GET_THUMBNAIL_TASK" type="id" />
 
     <string name="label_erase_cover_cache">Cancella cache copertina</string>
     <string name="crash_toast_text">BookCatalogue si è bloccato in modo anomalo. Aiutaci a migliorare il programma informandoci del problema.</string>
@@ -300,7 +290,6 @@
     <string name="option_always_start_library_expanded">Avvia con elelnco libri espansa</string>
     <string name="option_always_start_library_collapsed">Avvia con elenco libri compressa</string>
     <string name="option_remember_library_state">Ricorda lo stato elenco libri</string>
-    <string name="searching_goodreads">Ricerca in Goodreads</string>
     <string name="title_edit_library_styles">Modifica stili elenco libri</string>
     <string name="show_more_ellipsis">Mostra di più&#8230;</string>
     <string name="show_fewer_ellipsis">Mostra meno&#8230;</string>
@@ -369,11 +358,6 @@
     <string name="user_defined">Definito dall\'utente</string>
     <string name="builtin">Predefinito</string>
     <string name="sort_unread">Non letto (Autore/Serie)</string>
-    <string name="import_all_from_goodreads">Importa tutti da Goodreads</string>
-    <string name="retry_x_of_y_next_at_z">Riprova %1$s di %2$s di nuovo alle %3$s</string>
-    <string name="completed">Completato</string>
-    <string name="failed">Errore</string>
-    <string name="queued">In coda</string>
     <string name="unknown">Sconosciuto</string>
     <string name="cover_options_cc_ellipsis">Opzioni Copertine&#8230;</string>
     <string name="show_events_ellipsis">Mostra eventi&#8230;</string>
@@ -386,18 +370,6 @@
     <string name="alert_hints_have_been_reset">Suggerimenti azzerati</string>
     <string name="hint_startup_screen">Questa è la schermata iniziale standard di BookCatalogue. Se preferisci, puoi iniziare direttamente in \'I Miei Libri\'; è possibile impostare la schermata iniziale nelle Preferenze.</string>
     <string name="upgrading_ellipsis">Sto aggiornando&#8230;</string>
-    <string name="explain_goodreads_no_isbn">Il libro selezionato non possiede un codice ISBN; non è possibile sincronizzarlo automaticamente con Goodreads. 
-    									La soluzione più semplice è:
-    									\n\n(1) eliminare il libro da BookCatalogue
-    									\n\n(2) aggiungere manualmente il libro in Goodreads tramite il loro sito web
-    									\n\n(3) sincronizzare con Goodreads
-    									\n\nIl libro verrà così inserito di nuovo in BookCatalogue e da quel momento i due libri rimarranno collegati.</string>
-    <string name="explain_goodreads_no_match">Il codice ISBN del libro selezionato non è stato trovato in Goodreads. Le possibili cause di ciò sono due: 
-    									il codice ISBN del libro è sbagliato (si consiglia di verificarlo), o il libro non è presente in Goodreads. 
-    									\n\nSe effettui una qualsiasi modifica ai dati presenti in BookCatalogue, è sufficiente premere il pulsante \'Riprova\' e verificare se le risultanti
-    									attività in sottofondo si concludono con successo. 
-    									\n\nSe i dati sembrano corretti e ugualmente il libro non viene trovato, occorre allora inserire manualmente in Goodreads un libro con quel codice ISBN
-										sul loro sito web. Una volta fatto, si può riprovare ad inviare il libro.</string>
     <string name="label_read_amp_unread">Letto &amp; Non letto</string>
     <string name="label_loaned">Prestato</string>
     <string name="label_publication_year">Anno di Pubblicazione</string>
@@ -449,8 +421,6 @@
     <string name="label_year">Anno</string>
     <string name="label_month">Mese</string>
     <string name="day">Giorno</string>
-    <string name="last_error_e">Ultimo Errore: %1$s</string>
-    <string name="invalid_isbn_x_specified_in_search">Codice ISBN non valido \'%1$s\' specificato nella ricerca</string>
     <string name="if_day_is_specified_month_and_year_must_be">Se si indica il giorno, occorre indicare anche mese ed anno.</string>
     <string name="if_month_is_specified_year_must_be">Se si indica il mese, occorre indicare anche l\'anno.</string>
     <string name="preference_use_external_image_cropper">Usa un programma esterno per il ritaglio delle immagini (sperimentale)</string>
@@ -560,10 +530,6 @@
     <string name="label_loan">Prestito</string>
 
     <!-- Hint displayed when an export or database backup is done -->
-
-    <!-- Button text on the goodreads activity; only displayed after user has registered -->
-
-    <!-- Extra text displayed on the goodreads activity when a user HAS registered -->
 
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
 

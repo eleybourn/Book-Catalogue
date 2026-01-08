@@ -205,8 +205,6 @@
     <string name="label_email_export">Желаете ли Вы отправить этот экспорт по почте?</string>
     <string name="menu_crop_thumb">Обрезать эскиз</string>
     <string name="task_errors">Ошибки задач</string>
-    <string name="retry">Повторить</string>
-    <string name="retry_task">Повторить</string>
     <string name="delete_event">Удалить событие</string>
     <string name="delete_task">Удалить задачу</string>
     <string name="title_library">Мои книги</string>
@@ -219,21 +217,13 @@
     <string name="cleanup_old_events">Очистить старые события</string>
     <string name="label_add_manually">Добавить вручную</string>
     <string name="label_search_internet">Поиск в Интернете</string>
-    <string name="send_books_to_goodreads">Отправить книги на Goodreads</string>
     <string name="legacy_task">Действующая задача</string>
-    <string name="occurred_at">случилось в %1$s</string>
     <string name="unknown_uc">НЕИЗВЕСТНО</string>
-    <string name="this_book_deleted_uc">ЭТА КИНГА БЫЛА УДАЛЕНА</string>
-    <string name="by">к %1$s</string>
-    <string name="no_matching_book_found">Нет совпавших книг</string>
-    <string name="no_isbn_stored_for_book">Нет ISBN хранящегося для книги</string>
     <string name="select_an_action">Выберете дествие</string>
     <string name="alert_if_the_problem_persists">Если проблема осталась, свяжитесь с поддержкой через меню Помощь главного меню.</string>
     <string name="x_of_y">%1$d из %2$d</string>
-    <string name="send_book_to_goodreads">Отправить книгу %1$s на Goodreads</string>
 
     <item name="NOTIFICATION" type="id"></item>
-    <item name="TAG_GOODREADS_WORK" type="id"></item>
     <item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
 
     <string name="label_erase_cover_cache">Очистить кэш обложек</string>
@@ -295,7 +285,6 @@
     <string name="option_always_start_library_expanded">Всегда открывать списки раскрытыми</string>
     <string name="option_always_start_library_collapsed">Всегда открывать списоки свернутыми</string>
     <string name="option_remember_library_state">Запоминать состояние списков</string>
-    <string name="searching_goodreads">Поиск Goodreads</string>
     <string name="title_edit_library_styles">Редактировать стили списков книг</string>
     <string name="show_more_ellipsis">Показать больше&#8230;</string>
     <string name="show_fewer_ellipsis">Показать меньше&#8230;</string>
@@ -353,11 +342,6 @@
     <string name="user_defined">Определенный пользователем</string>
     <string name="builtin">Встроенный</string>
     <string name="sort_unread">Непрочтенные (Автор/Серии)</string>
-    <string name="import_all_from_goodreads">Импортировать все из Goodreads</string>
-    <string name="retry_x_of_y_next_at_z">Повторить %1$s из %2$s следующий к %3$s</string>
-    <string name="completed">Завершено</string>
-    <string name="failed">Неудача</string>
-    <string name="queued">В очереди</string>
     <string name="unknown">Неизвестно</string>
     <string name="cover_options_cc_ellipsis">Настройки обложек&#8230;</string>
     <string name="show_events_ellipsis">Показать события&#8230;</string>
@@ -373,17 +357,6 @@
     <string name="hint_startup_screen">        Это стандартное стартовое окно BookCatalogue.
         Если хотите, Вы можете начинать прямо с \'Мои книги\'; начальное окно может быть изменено в настройках.</string>
     <string name="upgrading_ellipsis">Обновление&#8230;</string>
-    <string name="explain_goodreads_no_isbn">        Выбранная книга не имеет ISBN; невозможно автоматически синхронизировать с Goodreads.
-        Вот самое простое решение:
-        \n\n(1) Удалить книгу в этом приложении
-        \n\n(2) Добавить книгу в Goodreads вручную через веб интерфейс
-        \n\n(3) Синхронизировать приложение с Goodreads
-        \n\nВ результате, во-первых книга будет пересоздана в BookCatalogue и во-вторых уже будет связана с Goodreads.</string>
-    <string name="explain_goodreads_no_match">        ISBN выбранной книги не найден на Goodreads. Для этого есть несколько причин:
-        либо данные о книги не правильны (проверьте ISBN), либо книги нет на Goodreads.
-        \n\nЕсли Вы сделаете какие-либо изменения в BookCatalogue, просто нажмите кнопку \'Повторить\' и проверьте выполнилась ли фоновая задача.
-        \n\nЕсли данные о книге правильны и книга все еще не найдена, то эта книга должна быть добавлена на Goodreads вручную через сайт.
-        После того, как это будет сделано, Вы можете повторить отправление книги.</string>
     <string name="label_read_amp_unread">Прочитано &amp; Не прочитано</string>
     <string name="label_loaned">Одолжено</string>
     <string name="label_publication_year">Год публикации</string>
@@ -437,8 +410,6 @@
     <string name="label_year">Год</string>
     <string name="label_month">Месяц</string>
     <string name="day">День</string>
-    <string name="last_error_e">Последняя ошибка: %1$s</string>
-    <string name="invalid_isbn_x_specified_in_search">В поиске указан неверный ISBN \'%1$s\'</string>
     <string name="if_day_is_specified_month_and_year_must_be">Если указан день, также необходимо указать месяц и год.</string>
     <string name="if_month_is_specified_year_must_be">Если указан месяц, также необходимо указать год.</string>
     <string name="preference_use_external_image_cropper">Использовать внешний редактор рисунков (экспериментально)</string>

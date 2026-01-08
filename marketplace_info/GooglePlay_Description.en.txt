@@ -9,7 +9,6 @@ Features include:
 * Searching
 * Thumbnails (download, gallery or camera)
 * Loaning books
-* goodreads synchronization
 * Export and Backup
 * Bookshelves (books can be on multiple shelves)
 

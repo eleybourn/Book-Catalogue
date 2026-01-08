@@ -205,8 +205,6 @@
     <string name="label_email_export">Would you like to send this export as an email somewhere?</string>
     <string name="menu_crop_thumb">Crop Thumbnail</string>
     <string name="task_errors">Task Errors</string>
-    <string name="retry">Retry</string>
-    <string name="retry_task">Retry</string>
     <string name="delete_event">Delete Event</string>
     <string name="delete_task">Delete Task</string>
 
@@ -220,18 +218,11 @@
     <string name="cleanup_old_events">Cleanup Old Events</string>
     <string name="label_add_manually">Add Manually</string>
     <string name="label_search_internet">Search Internet</string>
-    <string name="send_books_to_goodreads">Send books to goodreads</string>
     <string name="legacy_task">Legacy Task</string>
-    <string name="occurred_at">occurred at %1$s</string>
     <string name="unknown_uc">UNKNOWN</string>
-    <string name="this_book_deleted_uc">THIS BOOK HAS BEEN DELETED</string>
-    <string name="by">by %1$s</string>
-    <string name="no_matching_book_found">No matching book found</string>
-    <string name="no_isbn_stored_for_book">No ISBN stored for book</string>
     <string name="select_an_action">Select an action</string>
     <string name="alert_if_the_problem_persists">If the problem persists, contact support via Help on the main menu.</string>
     <string name="x_of_y">%1$d of %2$d</string>
-    <string name="send_book_to_goodreads">Send book %1$s to goodreads</string>
 
     <string name="label_erase_cover_cache">Erase cover cache</string>
     <string name="crash_toast_text">BookCatalogue has crashed unexpectedly. Please help us to make the application better by reporting this crash.</string>
@@ -278,7 +269,6 @@
     <string name="option_always_start_library_expanded">Always start book lists expanded</string>
     <string name="option_always_start_library_collapsed">Always start book lists collapsed</string>
     <string name="option_remember_library_state">Preserve book list state</string>
-    <string name="searching_goodreads">Searching goodreads</string>
     <string name="title_edit_library_styles">Edit book list styles</string>
     <string name="show_more_ellipsis">Show more&#8230;</string>
     <string name="show_fewer_ellipsis">Show fewer&#8230;</string>
@@ -347,11 +337,6 @@
     <string name="user_defined">User-defined</string>
     <string name="builtin">Builtin</string>
     <string name="sort_unread">Unread (Author/Series)</string>
-    <string name="import_all_from_goodreads">Import all from goodreads</string>
-    <string name="retry_x_of_y_next_at_z">Retry %1$s of %2$s next at %3$s</string>
-    <string name="completed">Completed</string>
-    <string name="failed">Failed</string>
-    <string name="queued">Queued</string>
     <string name="unknown">Unknown</string>
     <string name="cover_options_cc_ellipsis">Cover Options&#8230;</string>
     <string name="show_events_ellipsis">Show events&#8230;</string>
@@ -364,18 +349,6 @@
     <string name="alert_hints_have_been_reset">Hints have been reset</string>
     <string name="hint_startup_screen">This is the standard BookCatalogue startup screen. If you prefer, you can startup directly in \'My Books\'; the preferred startup screen can be changed in preferences.</string>
     <string name="upgrading_ellipsis">Upgrading&#8230;</string>
-    <string name="explain_goodreads_no_isbn">The selected book does not have an ISBN; it is not possible to automatically synchronize it with goodreads. 
-    									The simplest solution is to:
-    									\n\n(1) delete the book from BookCatalogue
-    									\n\n(2) add the book in goodreads manually via their web interface
-    									\n\n(3) Synchronize with goodreads
-    									\n\nThis will result in the book being recreated in BookCatalogue and the two will remain linked from that point onwards.</string>
-    <string name="explain_goodreads_no_match">The ISBN of the selected book could not be found on goodreads. There are two possible causes for this: 
-    									either the data for the book is wrong (you should check the ISBN), or the book is not in goodreads. 
-    									\n\nIf you make any changes to the data in BookCatalogue, just press the \'Retry\' button and check to see if the 
-    									resulting background task succeeds. 
-    									\n\nIf the data looks correct and the book is still not found, then a book with that ISBN needs to be added to goodreads manually
-										via their web site. Once that is done, you can retry sending the book.</string>
     <string name="label_read_amp_unread">Read &amp; Unread</string>
     <string name="label_loaned">Loaned</string>
     <string name="label_publication_year">Publication Year</string>
@@ -428,8 +401,6 @@
     <string name="label_year">Year</string>
     <string name="label_month">Month</string>
     <string name="day">Day</string>
-    <string name="last_error_e">Last Error: %1$s</string>
-    <string name="invalid_isbn_x_specified_in_search">Invalid ISBN \'%1$s\' specified in search</string>
     <string name="if_day_is_specified_month_and_year_must_be">If day is specified, then both month and year must also be specified.</string>
     <string name="if_month_is_specified_year_must_be">If month is specified, then year must also be specified.</string>
     <string name="preference_use_external_image_cropper">Use external image cropper (experimental)</string>
@@ -539,10 +510,6 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="label_loan">Loan</string>
 
     <!-- Hint displayed when an export or database backup is done -->
-
-    <!-- Button text on the goodreads activity; only displayed after user has registered -->
-
-    <!-- Extra text displayed on the goodreads activity when a user HAS registered -->
 
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
 

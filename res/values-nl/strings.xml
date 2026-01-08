@@ -206,8 +206,6 @@
     <string name="label_email_export">Wilt u dit exportbestand als e-mail ergens heen sturen?</string>
     <string name="menu_crop_thumb">Miniatuur bijsnijden</string>
     <string name="task_errors">Taakfouten</string>
-    <string name="retry">Opnieuw proberen</string>
-    <string name="retry_task">Opnieuw proberen</string>
     <string name="delete_event">Verwijder gebeurtenis</string>
     <string name="delete_task">Verwijder taak</string>
 
@@ -221,18 +219,11 @@
     <string name="cleanup_old_events">Opschonen oude gebeurtenissen</string>
     <string name="label_add_manually">Handmatig toevoegen</string>
     <string name="label_search_internet">Internet doorzoeken</string>
-    <string name="send_books_to_goodreads">Zend boeken naar goodreads</string>
     <string name="legacy_task">Verlopen taken</string>
-    <string name="occurred_at">opgetreden op %1$s</string>
     <string name="unknown_uc">ONBEKEND</string>
-    <string name="this_book_deleted_uc">DIT BOEK IS VERWIJDERD</string>
-    <string name="by">door %1$s</string>
-    <string name="no_matching_book_found">Geen overeenkomstig boek gevonden</string>
-    <string name="no_isbn_stored_for_book">Geen ISBN opgeslagen voor boek</string>
     <string name="select_an_action">Selecteer een actie</string>
     <string name="alert_if_the_problem_persists">Als het probleem aanhoud, maak dan contact met ondersteuning via Help in het hoofdmenu.</string>
     <string name="x_of_y">%1$d van %2$d</string>
-    <string name="send_book_to_goodreads">Zend boek %1$s naar goodreads</string>
     <string name="label_erase_cover_cache">Wis boekomslag cache</string>
     <string name="crash_toast_text">BookCatalogue is onverwacht gecrasht. Help ons aub de toepassing beter te maken door deze crash te melden.</string>
     <string name="crash_notif_ticker_text">BookCatalogue is gecrasht</string>
@@ -277,7 +268,6 @@
     <string name="option_always_start_library_expanded">Altijd boekenlijsten uitgeklapt starten</string>
     <string name="option_always_start_library_collapsed">Altijd boekenlijsten ingeklapt starten</string>
     <string name="option_remember_library_state">Behoud boekenlijst status</string>
-    <string name="searching_goodreads">Goodreads doorzoeken</string>
     <string name="title_edit_library_styles">Bewerk boekenlijststijlen</string>
     <string name="show_more_ellipsis">Toon meer&#8230;</string>
     <string name="show_fewer_ellipsis">Toon minder&#8230;</string>
@@ -345,11 +335,6 @@
     <string name="user_defined">Gebruiker-gedefinieerd</string>
     <string name="builtin">Ingebouwd</string>
     <string name="sort_unread">Ongelezen (Auteur/Serie)</string>
-    <string name="import_all_from_goodreads">Importeer alles uit goodreads</string>
-    <string name="retry_x_of_y_next_at_z">Probeer %1$s van %2$s opnieuw op %3$s</string>
-    <string name="completed">Gereed</string>
-    <string name="failed">Mislukt</string>
-    <string name="queued">In de wachtrij</string>
     <string name="unknown">Onbekend</string>
     <string name="cover_options_cc_ellipsis">Boekomslag opties&#8230;</string>
     <string name="show_events_ellipsis">Toon gebeurtenissen&#8230;</string>
@@ -362,16 +347,6 @@
     <string name="alert_hints_have_been_reset">Aanwijzingen zijn hersteld</string>
     <string name="hint_startup_screen">Dit is het standaard BookCatalogue opstartscherm. Als u dat wilt kunt u direct in \'Mijn Boeken\' opstarten. Het opstartscherm kan veranderd worden bij Voorkeuren.</string>
     <string name="upgrading_ellipsis">Upgrading&#8230;</string>
-    <string name="explain_goodreads_no_isbn">Het geselecteerde boek heeft geen ISBN en kan niet automatisch worden gesynchroniseerd met goodreads. 
-    									De simpelste oplossing is om:
-    									\n\n(1) het boek te verwijderen uit BookCatalogue
-    									\n\n(2) het boek handmatig toe te voegen aan goodreads via hun website
-    									\n\n(3) synchroniseren met goodreads
-    									\n\nDit zal als resultaat hebben dat het boek opnieuw wordt aangemaakt in BookCatalogue en dat de twee van af dat moment gekoppeld blijven.</string>
-    <string name="explain_goodreads_no_match">Het ISBN van het geselecteerde boek kon niet worden gevonden in goodreads. Er zijn twee mogelijke oorzaken hiervoor: 
-    									Of de boekgegevens zijn onjuist (controleer het ISBN), óf het boek staat niet in goodreads. 
-    									\n\nAls u de boekgegevens in BookCatalogue gaat veranderen drukt u daarna op de \'Probeer opnieuw\' knop en controleert of de op de achtergrond opgestarte taak met succes is beëindigd. 
-    									\n\nAls de boekgegevens correct lijken en het boek nog steeds niet kan worden gevonden dan moet een boek met dat ISBN handmatig worden toegevoegd aan goodreads via hun  website. Nadat dat is gedaan kunt u proberen het boek opnieuw te zenden.</string>
     <string name="label_read_amp_unread">Gelezen &amp; Ongelezen</string>
     <string name="label_loaned">Uitgeleend</string>
     <string name="label_publication_year">Jaar</string>
@@ -424,8 +399,6 @@
     <string name="label_year">Jaar</string>
     <string name="label_month">Maand</string>
     <string name="day">Dag</string>
-    <string name="last_error_e">Laatste fout: %1$s</string>
-    <string name="invalid_isbn_x_specified_in_search">Ongeldig ISBN \'%1$s\' gespecificeerd in zoekveld</string>
     <string name="if_day_is_specified_month_and_year_must_be">Als de dag is gespecificeerd dan moet ook de maand en het jaar ingevuld worden.</string>
     <string name="if_month_is_specified_year_must_be">Als de maand is gespecificeerd moet ook het jaar worden ingevuld.</string>
     <string name="preference_use_external_image_cropper">Gebruik een externe app voor bijsnijden afbeelding (experimenteel)</string>
@@ -534,10 +507,6 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="label_loan">Uitleen</string>
 
     <!-- Hint displayed when an export or database backup is done -->
-
-    <!-- Button text on the goodreads activity; only displayed after user has registered -->
-
-    <!-- Extra text displayed on the goodreads activity when a user HAS registered -->
 
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
 

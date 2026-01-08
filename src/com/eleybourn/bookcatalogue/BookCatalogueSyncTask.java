@@ -1,7 +1,6 @@
 package com.eleybourn.bookcatalogue;
 
 import android.database.Cursor;
-import android.util.Log;
 
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.data.AnthologyTitle;

@@ -21,14 +21,11 @@ package com.eleybourn.bookcatalogue.utils;
 
 import java.util.ArrayList;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnKeyListener;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -50,7 +47,7 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 
 /**
- * Fragment Class to wrap a trivial progress dialog arounf (generally) a single task.
+ * Fragment Class to wrap a trivial progress dialog around (generally) a single task.
  * 
  * @author pjw
  */
@@ -90,7 +87,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	private boolean mSuccess = true;
 	
 	/** List of messages to be sent to the underlying activity, but not yet sent */
-	private final ArrayList<TaskMessage> mTaskMessages = new ArrayList<TaskMessage>();
+	private final ArrayList<TaskMessage> mTaskMessages = new ArrayList<>();
 
 	/** Each message has a single method to deliver it and will only be called
 	 * when the underlying Activity is actually present.
@@ -111,7 +108,6 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
 	/**
 	 * TaskFinished message.
-	 * 
 	 * We only deliver onFinish() to the FragmentTask when the activity is present.
 	 */
 	private class TaskFinishedMessage implements TaskMessage {
@@ -191,8 +187,8 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	private void deliverMessages() {
 		Activity a = getActivity();
 		if (a != null) {
-			ArrayList<TaskMessage> toDeliver = new ArrayList<TaskMessage>();
-			int count = 0;
+			ArrayList<TaskMessage> toDeliver = new ArrayList<>();
+			int count;
 			do {
 				synchronized(mTaskMessages) {
 					toDeliver.addAll(mTaskMessages);
@@ -245,7 +241,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	
 	/**
 	 * Trivial implementation of FragmentTask that never calls onFinish(). The setState()/getState()
-	 * calles can be used to store state info by a caller, eg. if they override requiresOnFinish() etc.
+	 * calls can be used to store state info by a caller, eg. if they override requiresOnFinish() etc.
 	 * 
 	 * @author pjw
 	 */
@@ -303,7 +299,14 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	 */
 	public SimpleTaskQueueProgressFragment() {
 		mQueue = new SimpleTaskQueue("FragmentQueue");
-		mQueue.setTaskFinishListener(mTaskFinishListener);
+        // If there are no more tasks, close this dialog
+        SimpleTaskQueue.OnTaskFinishListener mTaskFinishListener = (task, e) -> {
+            // If there are no more tasks, close this dialog
+            if (!mQueue.hasActiveTasks()) {
+                queueAllTasksFinished();
+            }
+        };
+        mQueue.setTaskFinishListener(mTaskFinishListener);
 	}
 
 	/**
@@ -381,15 +384,13 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		synchronized(this) {
 			if (mMessages != null) {
 				for(String message: mMessages) {
-					if (message != null && !message.equals(""))
+					if (message != null && !message.isEmpty())
 						Toast.makeText(a, message, Toast.LENGTH_LONG).show();
 				}
 				mMessages.clear();
 			}			
 		}
-		//if (! (a instanceof OnSyncTaskCompleteListener))
-		//	throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnSyncTaskCompleteListener");
-	}
+    }
 
 	@Override
 	public void onStart() { // TODO: Decide if/how to use ViewModelProvider !!!
@@ -419,7 +420,8 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		super.onCreate(savedInstanceState);
 		// VERY IMPORTANT. We do not want this destroyed!
 		setRetainInstance(true);
-		mTaskId = getArguments().getInt("taskId");
+        assert getArguments() != null;
+        mTaskId = getArguments().getInt("taskId");
 	}
 
     //public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -441,7 +443,8 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	/**
 	 * Create the underlying dialog
 	 */
-	@Override
+	@NonNull
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// This is ESSENTIAL; setting this on the dialog is insufficient.
 		// Further, without this the 'back' key is used to dismiss the dialog (and fragment)
@@ -454,19 +457,20 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		dialog.setCancelable(true);
 		dialog.setCanceledOnTouchOutside(false);
 
-		int msg = getArguments().getInt("title");
+        assert getArguments() != null;
+        int msg = getArguments().getInt("title");
 		if (msg != 0)
-			dialog.setMessage(getActivity().getString(msg));
-		final boolean isIndet = getArguments().getBoolean("isIndeterminate");
-		dialog.setIndeterminate(isIndet);
-		if (isIndet) {
+			dialog.setMessage(requireActivity().getString(msg));
+		final boolean isIndeterminate = getArguments().getBoolean("isIndeterminate");
+		dialog.setIndeterminate(isIndeterminate);
+		if (isIndeterminate) {
 			dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		} else {
 			dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);			
 		}
 
 		// We can't use "this.requestUpdateProgress()" because getDialog() will still return null
-		if (!isIndet) {
+		if (!isIndeterminate) {
 			dialog.setMax(mMax);
 			dialog.setProgress(mProgress);
 			if (mMessage != null)
@@ -474,24 +478,21 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 			setDialogNumberFormat(dialog);
 		}
 
-		dialog.setOnKeyListener(new OnKeyListener() {
-			@Override
-			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-				if (keyCode == KeyEvent.KEYCODE_BACK) {
-					if (event.getAction() == KeyEvent.ACTION_UP) {
-						mWasCancelled = true;
-					}
-					return true;
-				}
-				return false;
-			}
-		});
+		dialog.setOnKeyListener((dialog1, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                if (event.getAction() == KeyEvent.ACTION_UP) {
+                    mWasCancelled = true;
+                }
+                return true;
+            }
+            return false;
+        });
 
 		return dialog;
 	}
 
 	@Override
-	public void onCancel(DialogInterface dialog) {
+	public void onCancel(@NonNull DialogInterface dialog) {
 		super.onCancel(dialog);
 		cancel();
 	}
@@ -505,21 +506,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 			dismiss();
     }
 
-	/**
-	 * Dismiss dialog if all tasks finished
-	 */
-	private final SimpleTaskQueue.OnTaskFinishListener mTaskFinishListener = new SimpleTaskQueue.OnTaskFinishListener() {
-
-		@Override
-		public void onTaskFinish(SimpleTask task, Exception e) {
-			// If there are no more tasks, close this dialog
-			if (!mQueue.hasActiveTasks()) {
-				queueAllTasksFinished();
-			}
-		}
-	};
-
-	/** Accessor */
+    /** Accessor */
 	public boolean isCancelled() {
 		return mWasCancelled;
 	}
@@ -571,8 +558,6 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
 	/**
 	 * Convenience method to step the progress by 1.
-	 * 
-	 * @param message
 	 */
 	public void step(String message) {
 		step(message, 1);
@@ -580,8 +565,6 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	
 	/**
 	 * Convenience method to step the progress by the passed delta
-	 * 
-	 * @param message
 	 */
 	public void step(String message, int delta) {
 		synchronized(this) {
@@ -597,9 +580,6 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
 	/**
 	 * Direct update of message and progress value
-	 * 
-	 * @param message
-	 * @param progress
 	 */
 	public void onProgress(String message, int progress) {
 
@@ -627,11 +607,9 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 					mMaxChanged = false;
 				}
 				if (mNumberFormatChanged) {
-					if (Build.VERSION.SDK_INT >= 11) {
-						// Called in a separate function so we can set API attributes
-						setDialogNumberFormat(d);
-					}
-					mNumberFormatChanged = false;
+                    // Called in a separate function so we can set API attributes
+                    setDialogNumberFormat(d);
+                    mNumberFormatChanged = false;
 				}
 				if (mMessageChanged) {
 					d.setMessage(mMessage);
@@ -649,25 +627,19 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
 	/**
 	 * Set the number format on API >= 11
-	 * @param d
 	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setDialogNumberFormat(ProgressDialog d) {
-		if (Build.VERSION.SDK_INT >= 11) {
-			try {
-				d.setProgressNumberFormat(mNumberFormat);				
-			} catch (Exception e) {
-				// Ignore and log; Android 3.2 seems not to like NULL format despite docs, 
-				// and this is a non-critical feature
-				Logger.logError(e);
-			}
-		}		
-	}
+        try {
+            d.setProgressNumberFormat(mNumberFormat);
+        } catch (Exception e) {
+// Ignore and log; Android 3.2 seems not to like NULL format despite docs,
+// and this is a non-critical feature
+            Logger.logError(e);
+        }
+    }
 
 	/**
 	 * Set the progress max value
-	 * 
-	 * @param max
 	 */
 	public void setMax(int max) {
 		mMax = max;
@@ -681,20 +653,17 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	 * @param format	Number format to use
 	 */
 	public void setNumberFormat(String format) {
-		if (Build.VERSION.SDK_INT >= 11) {
-			synchronized(this) {
-				mNumberFormat = format;
-				mNumberFormatChanged = true;			
-			}
-			requestUpdateProgress();
-		}
-	}
+        synchronized (this) {
+            mNumberFormat = format;
+            mNumberFormatChanged = true;
+        }
+        requestUpdateProgress();
+    }
 	
 	/**
-	 * Work-around for bug in compatibility library:
-	 * 
-	 *     http://code.google.com/p/android/issues/detail?id=17423
-	 */
+     * Work-around for bug in compatibility library:
+     *     <a href="http://code.google.com/p/android/issues/detail?id=17423">...</a>
+     */
 	@Override
 	 public void onDestroyView() {
 	     if (getDialog() != null && getRetainInstance())

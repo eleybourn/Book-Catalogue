@@ -101,12 +101,10 @@ public class CsvExporter implements Exporter {
 			'"' + "anthology_titles" + "\"," +						//24 
 			'"' + CatalogueDBAdapter.KEY_DESCRIPTION+ "\"," + 		//25
 			'"' + CatalogueDBAdapter.KEY_GENRE+ "\"," + 			//26
-			'"' + DatabaseDefinitions.DOM_LANGUAGE+ "\"," + 			//+1
-			'"' + CatalogueDBAdapter.KEY_DATE_ADDED+ "\"," + 		//27
-			'"' + DatabaseDefinitions.DOM_GOODREADS_BOOK_ID + "\"," + 		//28
-			'"' + DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE + "\"," + 		//29
-			'"' + DatabaseDefinitions.DOM_LAST_UPDATE_DATE + "\"," + 		//30
-			'"' + DatabaseDefinitions.DOM_BOOK_UUID + "\"," + 		//31
+			'"' + DatabaseDefinitions.DOM_LANGUAGE+ "\"," + 			//27
+			'"' + CatalogueDBAdapter.KEY_DATE_ADDED+ "\"," + 		//28
+			'"' + DatabaseDefinitions.DOM_LAST_UPDATE_DATE + "\"," + 		//29
+			'"' + DatabaseDefinitions.DOM_BOOK_UUID + "\"," + 		//30
 			"\n");
 		
 		long lastUpdate = 0;
@@ -233,8 +231,6 @@ public class CsvExporter implements Exporter {
 						row.append("\"" + formatCell(rv.getGenre()) + "\",");
 						row.append("\"" + formatCell(rv.getLanguage()) + "\",");
 						row.append("\"" + formatCell(dateAddedString) + "\",");
-						row.append("\"" + formatCell(rv.getGoodreadsBookId()) + "\",");
-						row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE.name))) + "\",");
 						row.append("\"" + formatCell(books.getString(books.getColumnIndexOrThrow(DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name))) + "\",");
 						row.append("\"" + formatCell(rv.getBookUuid()) + "\",");
 						row.append("\n");

@@ -203,8 +203,6 @@
 <string name="label_email_export">Möchten Sie diesen Export als E-Mail versenden?</string>
 <string name="menu_crop_thumb">Cover-Bild zuschneiden</string>
     <string name="task_errors">Aufgabenfehler</string>
-<string name="retry">Wiederholen</string>
-    <string name="retry_task">Wiederholen</string>
     <string name="delete_event">Ereignis löschen</string>
 <string name="delete_task">Aufgabe löschen</string>
 
@@ -218,20 +216,13 @@
 <string name="cleanup_old_events">Alte Ereignisse bereinigen</string>
     <string name="label_add_manually">Manuell hinzufügen</string>
     <string name="label_search_internet">Internet durchsuchen</string>
-    <string name="send_books_to_goodreads">Bücher zu Goodreads senden</string>
-<string name="legacy_task">Legacy Task</string>
-<string name="occurred_at">ist bei %1$s aufgetreten</string>
-<string name="unknown_uc">UNBEKANNT</string>
-<string name="this_book_deleted_uc">DIESES BUCH WURDE GELÖSCHT</string>
-<string name="by">von %1$s</string>
-<string name="no_matching_book_found">Kein passendes Buch gefunden</string>
-<string name="no_isbn_stored_for_book">Zu diesem Buch ist keine ISBN gespeichert</string>
-<string name="select_an_action">Eine Aktion wählen</string>
+    <string name="legacy_task">Legacy Task</string>
+    <string name="unknown_uc">UNBEKANNT</string>
+    <string name="select_an_action">Eine Aktion wählen</string>
     <string name="alert_if_the_problem_persists">Wenn das Problem weiterhin besteht, kontaktieren Sie den Support über das Menü "Hilfe"</string>
     <string name="x_of_y">%1$d von %2$d</string>
-<string name="send_book_to_goodreads">Buch %1$s an Goodreads senden</string>
 
-<string name="label_erase_cover_cache">Zwischenspeicher für Cover-Bilder löschen</string>
+    <string name="label_erase_cover_cache">Zwischenspeicher für Cover-Bilder löschen</string>
 <string name="crash_toast_text">BookCatalogue ist abgestürzt. Bitte helfen Sie uns bei der Verbesserung der App, indem Sie diesen Absturz melden.</string>
 <string name="crash_notif_ticker_text">BookCatalogue ist abgestürzt</string>
 <string name="crash_notif_title">BookCatalogue-Absturz</string>
@@ -275,8 +266,7 @@
 <string name="option_always_start_library_expanded">Bücherliste immer ausklappen</string>
 <string name="option_always_start_library_collapsed">Bücherliste immer einklappen</string>
 <string name="option_remember_library_state">Darstellung beibehalten</string>
-<string name="searching_goodreads">Suche bei Goodreads</string>
-<string name="title_edit_library_styles">Stile der Bücherlisten bearbeiten</string>
+    <string name="title_edit_library_styles">Stile der Bücherlisten bearbeiten</string>
 <string name="show_more_ellipsis">Mehr anzeigen…</string>
 <string name="show_fewer_ellipsis">Weniger anzeigen…</string>
 <string name="customize_ellipsis">Anpassen…</string>
@@ -338,12 +328,7 @@
 <string name="user_defined">Benutzerdefiniert</string>
 <string name="builtin">Eingebaut</string>
 <string name="sort_unread">Ungelesen (Autor/Serie)</string>
-<string name="import_all_from_goodreads">Alles von Goodreads importieren</string>
-    <string name="retry_x_of_y_next_at_z">Wiederholung %1$s von %2$s nächste um %3$s</string>
-<string name="completed">Abgeschlossen</string>
-<string name="failed">Fehlerhaft</string>
-<string name="queued">Eingereiht</string>
-<string name="unknown">Unbekannt</string>
+    <string name="unknown">Unbekannt</string>
     <string name="cover_options_cc_ellipsis">Umschlag-Einstellungen…</string>
 <string name="show_events_ellipsis">Ereignisse anzeigen…</string>
 <string name="hint_authors_book_may_appear_more_than_once">Ein Buch kann mehrfach in einer Liste erscheinen, wenn es bei jedem Autor angezeigt wird. In diesem Fall führt das Löschen eines Buchs zum Löschen aller Vorkommen von der Liste.</string>
@@ -355,19 +340,7 @@ Nach dem Klick auf ein Ereignis können Sie eine Vielzahl von Aktionen durchfüh
 <string name="alert_hints_have_been_reset">Hinweise wurden zurückgesetzt</string>
     <string name="hint_startup_screen">Das ist der Standard-Startbildschirm von BookCatalogue. Sie könne auch direkt in \'Meinen Bücher\' starten; der bevorzugte Startbildschirm kann in den Einstellungen geändert werden.</string>
 <string name="upgrading_ellipsis">Upgrade läuft…</string>
-<string name="explain_goodreads_no_isbn">Das gewählte Buch hat keine ISBN; eine automatische Synchronisation mit Goodreads ist nicht möglich.
-Die einfachste Lösung ist:
-        \n\n(1) löschen Sie das Buch aus BookCatalogue
-        \n\n(2) fügen Sie das Buch manuell in Goodreads auf der Website ein.
-        \n\n(3) Synchronisieren Sie mit Goodreads
-        \n\nDamit wird das Buch in BookCatalogue wieder erzeugt und die beiden sind von nun an verbunden.
-        </string>
-<string name="explain_goodreads_no_match">Die ISBN des gewählten Buchs könnte nicht in Goodreads gefunden werden. Dafür gibt es zwei mögliche Ursachen:
-Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) oder das Buch gibt es nicht in googdreads.
-        \n\nWenn Sie die Daten in BookCatalogue ändern, drücken sie den \'Wiederholen\'-Button und überprüfen Sie, ob die Hintergrundaufgabe erfolgreich ist.
-        \n\nWenn die Daten korrekt wirken und das Buch trotzdem nicht gefunden wird, muss ein Buch mit dieser ISBN manuell zu Goodreads über deren Website hinzugefügt werden. Sobald das geschehen ist, können Sie versuchen, das Buch erneut zu senden.
-        </string>
-<string name="label_read_amp_unread">Gelesen und ungelesen</string>
+    <string name="label_read_amp_unread">Gelesen und ungelesen</string>
 <string name="label_loaned">Verliehen</string>
 <string name="label_publication_year">Jahr der Veröffentlichung</string>
 <string name="label_publication_month">Monat der Veröffentlichung</string>
@@ -419,9 +392,7 @@ Entweder sind die Daten des Buchs falsch (Sie sollten die ISBN überprüfen) ode
 <string name="label_year">Jahr</string>
 <string name="label_month">Monat</string>
 <string name="day">Tag</string>
-    <string name="last_error_e">Letzter Fehler: %1$s</string>
-<string name="invalid_isbn_x_specified_in_search">Ungültige ISBN \'%1$s\' gesucht</string>
-<string name="if_day_is_specified_month_and_year_must_be">Wenn der Tag angegeben wird, muss auch Monat und Jahr angegeben werden.</string>
+    <string name="if_day_is_specified_month_and_year_must_be">Wenn der Tag angegeben wird, muss auch Monat und Jahr angegeben werden.</string>
 <string name="if_month_is_specified_year_must_be">Wenn das Monat angegeben wird, muss auch das Jahr angegeben werden.</string>
     <string name="preference_use_external_image_cropper">Externe Bildbearbeitung verwenden (experimentell)</string>
 <string name="preference_auto_rotate_camera_images">Bilder von der Kamera automatisch rotieren</string>

@@ -204,8 +204,6 @@
     <string name="label_email_export">Θα θέλατε να αποστείλετε σαν email αυτην την εξαγωγή;</string>
     <string name="menu_crop_thumb">Περικοπή Μικρογραφίας</string>
     <string name="task_errors">Σφάλματα εργασιών</string>
-    <string name="retry">Επανάληψη</string>
-    <string name="retry_task">Επανάληψη</string>
     <string name="delete_event">Διαγραφή Event</string>
     <string name="delete_task">Διαγραφή Εργασίας</string>
 
@@ -219,18 +217,11 @@
     <string name="cleanup_old_events">Εκκαθάριση παλιών events</string>
     <string name="label_add_manually">Χειροκίνητη Προσθήκη</string>
     <string name="label_search_internet">Αναζήτηση στο Internet</string>
-    <string name="send_books_to_goodreads">Αποστολή βιβλίων στο goodreads</string>
     <string name="legacy_task">Legacy εργασία</string>
-    <string name="occurred_at">συνέβη στο %1$s</string>
     <string name="unknown_uc">ΑΓΝΩΣΤΟ</string>
-    <string name="this_book_deleted_uc">ΑΥΤΟ ΤΟ ΒΙΒΛΙΟ ΕΧΕΙ ΔΙΑΓΡΑΦΕΙ</string>
-    <string name="by">κατα %1$s</string>
-    <string name="no_matching_book_found">Δεν βρέθηκε βιβλίο που να ταιριάζει</string>
-    <string name="no_isbn_stored_for_book">Δεν υπάρχει αποθηκευμένο ISBN για το βιβλίο</string>
     <string name="select_an_action">Επιλέξτε μια ενέργεια</string>
     <string name="alert_if_the_problem_persists">Εαν το πρόβλημα συνεχίζεται, επικοινωνήστε με την υποστήρηξη μέσω της Βοήθειας στο κέντρικό μενού.</string>
     <string name="x_of_y">%1$d από %2$d</string>
-    <string name="send_book_to_goodreads">Αποστολή βιβλίου %1$s στο goodreads</string>
 
     <string name="label_erase_cover_cache">Διαγραφή εξωφύλλων από προσωρινή μνήμη</string>
     <string name="crash_toast_text">Η λειτουργία του BookCatalogue διακόπηκε. Παρακαλούμε βοηθήστε μας να βελτιώσουμε την εφαρμογή στέλνοντας την αναφορά της διακοπής.</string>
@@ -277,7 +268,6 @@
     <string name="option_always_start_library_expanded">Εκκίνηση πάντα με ανοιχτές λίστες βιβλίων</string>
     <string name="option_always_start_library_collapsed">Εκκίνηση πάντα με κλειστές λίστες βιβλίων</string>
     <string name="option_remember_library_state">Διατήρηση κατάστασης λίστας βιβλίων</string>
-    <string name="searching_goodreads">Αναζήτηση στο goodreads</string>
     <string name="title_edit_library_styles">Επεξεργασία στυλ λίστας βιβλίων</string>
     <string name="show_more_ellipsis">Εμφάνιση περισσότερων&#8230;</string>
     <string name="show_fewer_ellipsis">Εμφάνιση λιγότερων&#8230;</string>
@@ -346,11 +336,6 @@
     <string name="user_defined">Καθορισμενο-από-χρήστη</string>
     <string name="builtin">Ενσωματωμένο</string>
     <string name="sort_unread">Μη αναγνωσμένο (Συγγραφέας/Σειρά)</string>
-    <string name="import_all_from_goodreads">Εισαγωγή όλων, από goodreads</string>
-    <string name="retry_x_of_y_next_at_z">Επανάληψη %1$s από %2$s επόμενο σε %3$s</string>
-    <string name="completed">Ολοκληρώθηκαν</string>
-    <string name="failed">Απέτυχαν</string>
-    <string name="queued">Σε σειρά</string>
     <string name="unknown">Άγνωστα</string>
     <string name="cover_options_cc_ellipsis">Επιλογές Εξωφύλλου&#8230;</string>
     <string name="show_events_ellipsis">Εμφάνιση events&#8230;</string>
@@ -363,18 +348,6 @@
     <string name="alert_hints_have_been_reset">Οι Συμβουλές έχουν επαναφερθεί</string>
     <string name="hint_startup_screen">Αυτή είναι η αρχική οθόνη του BookCatalogue. Αν θέλετε, μπορείτε να ξεκινήσετε κατευθείαν στην οθόνη \'Τα βιβλία μου\'. Η αρχική οθόνη μπορεί να αλλαχθεί στις Προτιμήσεις.</string>
     <string name="upgrading_ellipsis">Γίνεται αναβάθμηση&#8230;</string>
-    <string name="explain_goodreads_no_isbn">Το επιλεγμένο βιβλίο δεν έχει κωδικό ISBN - δε γίνεται να συγχρονιστεί αυτόματα με το goodreads.
-    									Η πιο εύκολη λύση είναι:
-    									\n\n(1) να διαγράψετε το βιβλίο από το BookCatalogue
-    									\n\n(2) να το προσθέσετε στο goodreads χειροκίνητα από την ιστοσελίδα του
-    									\n\n(3) να συγχρονιστείτε με το goodreads
-    									\n\nΈτσι το βιβλίο θα αναδημιουργηθεί στο BookCatalogue και θα είναι συνδεδεμένο με το άλλο στο μέλλον.</string>
-    <string name="explain_goodreads_no_match">Ο κωδικός ISBN του επιλεγμένου βιλίου δε βρέθηκε στο goodreads. Υπάρχουν δύο πιθανές αιτίες γι\'αυτό:
-    									είτε τα δεδομένα για το βιβλίο είναι λάθος (παρακαλούμε ελέγξτε το ISBN του), ή το βιβλίο δεν υπάρχει στο goodreads.
-    									\n\nΑν αλλάξετε κάτι στα δεδομένα στο BookCatalogue, πατήστε το κουμπί \'Επανάληψη\' για να δείτε αν
-    									η εργασία παρασκηνίου που προκύπτει είναι επιτυχής.
-    									\n\nΑν τα δεδομένα είναι σωστά και το βιβλίο ακόμα δεν εμφανίζεται, πρέπει να προστεθεί ένα βιβλίο με αυτό το ISBN στο goodreads χειροκίνητα
-										μέσω της ιστοσελίδας του. Μόλις γίνει αυτό, μπορείτε να δοκιμάσετε να ξαναστείλετε το βιβλίο.</string>
     <string name="label_read_amp_unread">Αναγνωσμένο &amp; Μη Αναγνωσμένο</string>
     <string name="label_loaned">Δανεισμένο</string>
     <string name="label_publication_year">Έτος Εκδοσης</string>
@@ -427,8 +400,6 @@
     <string name="label_year">Έτος</string>
     <string name="label_month">Μήνας</string>
     <string name="day">Ημέρα</string>
-    <string name="last_error_e">Τελευταίο σφάλμα: %1$s</string>
-    <string name="invalid_isbn_x_specified_in_search">Μη Έγκυρο ISBN \'%1$s\' προσδιορίστηκε στην αναζήτηση</string>
     <string name="if_day_is_specified_month_and_year_must_be">Αν προσδιοριστεί ημέρα, τότε πρέπει να προσδιοριστεί επίσης μήνας και έτος.</string>
     <string name="if_month_is_specified_year_must_be">Αν προσδιοριστεί μήνας, τότε πρέπει να προσδιοριστεί και έτος.</string>
     <string name="preference_use_external_image_cropper">Χρήση εξωτερικού κόπτη εικόνων (σε πειραματικό στάδιο)</string>
@@ -493,7 +464,7 @@
     <string name="new_in_423">
 <![CDATA[
     <p><b>New in 4.2.3</b>\n\n
-			* Improve handling of invalid ISBNs when sending to goodreads\n\n
+			* Improve handling of invalid ISBNs when sending to Goodreads\n\n
 			* Other minor bug fixes\n\n
 			</p>
 		]]>
@@ -538,10 +509,6 @@
     <string name="label_loan">Δανεισ.</string>
 
     <!-- Hint displayed when an export or database backup is done -->
-
-    <!-- Button text on the goodreads activity; only displayed after user has registered -->
-
-    <!-- Extra text displayed on the goodreads activity when a user HAS registered -->
 
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
 

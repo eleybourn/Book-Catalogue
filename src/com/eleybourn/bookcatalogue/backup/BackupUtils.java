@@ -36,10 +36,10 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter;
-import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.ElementContext;
-import com.eleybourn.bookcatalogue.goodreads.api.XmlFilter.XmlHandler;
-import com.eleybourn.bookcatalogue.goodreads.api.XmlResponseParser;
+import com.eleybourn.bookcatalogue.utils.XmlFilter;
+import com.eleybourn.bookcatalogue.utils.XmlFilter.ElementContext;
+import com.eleybourn.bookcatalogue.utils.XmlFilter.XmlHandler;
+import com.eleybourn.bookcatalogue.utils.XmlResponseParser;
 import com.eleybourn.bookcatalogue.utils.Base64;
 import com.eleybourn.bookcatalogue.utils.Logger;
 

@@ -201,8 +201,6 @@
 <string name="label_email_export">Přejete si odeslat tento export prostřednictvím mailu?</string>
 <string name="menu_crop_thumb">Oříznout náhled</string>
     <string name="task_errors">Chyby</string>
-<string name="retry">Opakovat</string>
-    <string name="retry_task">Opakovat</string>
     <string name="title_library">Moje knihy</string>
     <string name="title_settings">Administrace a možnosti</string>
     <string name="title_other_preferences">Další možnosti</string>
@@ -213,19 +211,12 @@
 <string name="cleanup_old_events">Smazat staré události</string>
     <string name="label_add_manually">Přidat ručně</string>
     <string name="label_search_internet">Prohledat internet</string>
-    <string name="send_books_to_goodreads">Poslat knihu do Goodreads</string>
-<string name="legacy_task">Odkaz úlohy</string>
-<string name="occurred_at">nastal v %1$s</string>
-<string name="unknown_uc">NEZNÁMÉ</string>
-<string name="this_book_deleted_uc">TATO KNIHA BYLA SMAZÁNA</string>
-<string name="by">(kým) %1$s</string>
-<string name="no_matching_book_found">Nebyla nalezena odpovídající kniha</string>
-<string name="no_isbn_stored_for_book">Kniha nemá uložen ISBN</string>
-<string name="select_an_action">Zvolte akci</string>
+    <string name="legacy_task">Odkaz úlohy</string>
+    <string name="unknown_uc">NEZNÁMÉ</string>
+    <string name="select_an_action">Zvolte akci</string>
     <string name="alert_if_the_problem_persists">Pokud problémy přetrvají, kontaktujte správce.</string>
     <string name="x_of_y">%1$d z %2$d</string>
-<string name="send_book_to_goodreads">Poslat knihu %1$s do Goodreads</string>
-<string name="label_erase_cover_cache">Vymazat vyrovnávací paměť pro obálky</string>
+    <string name="label_erase_cover_cache">Vymazat vyrovnávací paměť pro obálky</string>
 <string name="crash_toast_text">Došlo k neočekávanému pádu aplikace BookCatalogue. Prosím pomozte nám zlepšit aplikaci a informujte nás o tomto problému.</string>
 <string name="crash_notif_ticker_text">BookCatalogue spadl</string>
 <string name="crash_notif_title">BookCatalogue spadl</string>
@@ -268,8 +259,7 @@
 <string name="option_always_start_library_expanded">Vždy otevřít seznam knih rozbalený</string>
 <string name="option_always_start_library_collapsed">Vždy otevřít seznam knih sbalený</string>
 <string name="option_remember_library_state">Zachovat stav seznamu knih</string>
-<string name="searching_goodreads">Vyhledávám na Goodreads</string>
-<string name="title_edit_library_styles">Spravovat styly pro seznam knih</string>
+    <string name="title_edit_library_styles">Spravovat styly pro seznam knih</string>
 <string name="show_more_ellipsis">Zobrazit vše&#8230;</string>
 <string name="show_fewer_ellipsis">Zobrazit méně&#8230;</string>
 <string name="customize_ellipsis">Přizpůsobit&#8230;</string>
@@ -335,12 +325,7 @@
 <string name="user_defined">Definován uživatelem</string>
 <string name="builtin">Vestavěný</string>
 <string name="sort_unread">Nepřečtené (Autor/Série)</string>
-<string name="import_all_from_goodreads">Importovat vše z Goodreads</string>
-    <string name="retry_x_of_y_next_at_z">Opakovat %1$s z %2$s dále na %3$s</string>
-<string name="completed">Kompletní</string>
-<string name="failed">Neúspěšný</string>
-<string name="queued">Fronta</string>
-<string name="unknown">Neznámý</string>
+    <string name="unknown">Neznámý</string>
     <string name="cover_options_cc_ellipsis">Možnosti obálky&#8230;</string>
 <string name="show_events_ellipsis">Zobrazit události&#8230;</string>
 <string name="hint_authors_book_may_appear_more_than_once">Při zobrazení pod každým autorem se může stát, že jedna kniha se objeví v seznamu vícekrát - pokud však v takovém případě odstraníte kterýkoli z těchto záznamů, budou odstraněny všechny.</string>
@@ -352,18 +337,7 @@
 <string name="alert_hints_have_been_reset">Rady byly obnoveny</string>
     <string name="hint_startup_screen">Toto je standardní výchozí obrazovka aplikace BookCatalogue. Pokud si však přejete, může aplikace ihned po spuštění zobrazit sekci \'Moje knihy\'; případnou změnu spouštění aplikace můžete provést v sekci Nastavení.</string>
 <string name="upgrading_ellipsis">Aktualizování&#8230;</string>
-<string name="explain_goodreads_no_isbn">Zvolená kniha nemá zadaný ISBN kód; není proto možné ji automaticky synchronizovat s Goodreads. 
-    									Tuto situaci můžete jednoduše vyřešit následujícím způsobem:
-    									\n\n(1) smažte tuto knihu z aplikace BookCatalogue
-    									\n\n(2) přidejte knihu ručně přes webové rozhraní přímo v Goodreads
-    									\n\n(3) poté proveďte synchronizaci s Goodreads
-    									\n\nVýsledkem tohoto postupu bude znovuvytvoření knihy v aplikaci BookCatalogue a její propojení s obsahem v Goodreads.</string>
-<string name="explain_goodreads_no_match">ISBN kód zvolené knihy nebyl v Goodreads nalezen. Tato situace může mít dvě možné příčiny: 
-    									buď jsou data uvedená u knihy špatná (měl by být zkontrolován ISBN kód), nebo tato kniha není v databázi Goodreads. 
-    									\n\nPokud změníte data v aplikaci BookCatalogue, můžete použít tlačítko \'Opakovat\' a zkontrolovat, zda operace proběhla úspěšně. 
-    									\n\nPokud jsou data v pořádku a kniha stále nebyla nalezena, musí být kniha s tímto ISBN kódem do Goodreads přidána ručně
-										přes webové rozhraní - poté můžete knihu zkusit znovu odeslat.</string>    									    
-<string name="label_read_amp_unread">Přečteno &amp; Nepřečteno</string>
+    <string name="label_read_amp_unread">Přečteno &amp; Nepřečteno</string>
 <string name="label_loaned">Půjčeno</string>
 <string name="label_publication_year">Rok vydání</string>
 <string name="label_publication_month">Měsíc vydání</string>

@@ -63,8 +63,6 @@ public class HintManager {
 		.add("BACKGROUND_TASKS", R.string.hint_background_tasks)
 		.add("BACKGROUND_TASK_EVENTS", R.string.hint_background_task_events)
 		.add("STARTUP_SCREEN", R.string.hint_startup_screen)
-		.add("explain_goodreads_no_isbn", R.string.explain_goodreads_no_isbn)
-		.add("explain_goodreads_no_match", R.string.explain_goodreads_no_match)
 		.add("hint_booklist_style_menu", R.string.hint_library_style_menu)
 		.add("hint_autorotate_camera_images", R.string.hint_autorotate_camera_images)
 		.add("hint_view_only_book_details", R.string.hint_view_only_book_details)

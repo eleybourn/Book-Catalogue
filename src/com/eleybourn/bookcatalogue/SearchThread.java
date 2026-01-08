@@ -40,7 +40,6 @@ abstract public class SearchThread extends ManagedTask {
 		Google(SearchManager.SEARCH_GOOGLE),
 		OpenLibrary(0),
 		LibraryThing(SearchManager.SEARCH_LIBRARY_THING),
-		Goodreads(SearchManager.SEARCH_GOODREADS),
 		BCDB(SearchManager.SEARCH_BC),
 		Other(0),
 		;

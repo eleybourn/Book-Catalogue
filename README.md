@@ -241,7 +241,6 @@ new in 4.0
 * More bugs introduced
 * email bug reports after application crashes 
 
-TODO: goodreads IMPORT
 TODO: Disable thumbnail cache if no external media?
 TODO: User preference to disable thumbnail cache
 

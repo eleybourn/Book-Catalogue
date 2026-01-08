@@ -204,8 +204,6 @@
     <string name="label_email_export">¿Desea enviar por correo electrónico el fichero exportado?</string>
     <string name="menu_crop_thumb">Recortar miniatura</string>
     <string name="task_errors">Errores en tareas</string>
-    <string name="retry">Reintentar</string>
-    <string name="retry_task">Reintentar</string>
     <string name="delete_event">Eliminar Evento</string>
     <string name="delete_task">Eliminar Tarea</string>
 
@@ -219,18 +217,11 @@
     <string name="cleanup_old_events">Eliminar eventos antiguos</string>
     <string name="label_add_manually">Añadir manualmente</string>
     <string name="label_search_internet">Buscar en internet</string>
-    <string name="send_books_to_goodreads">Enviar libros a goodreads</string>
     <string name="legacy_task">Legacy Task</string>
-    <string name="occurred_at">ocurrido en %1$s</string>
     <string name="unknown_uc">DESCONOCIDO</string>
-    <string name="this_book_deleted_uc">ESTE LIBRO HA SIDO ELIMINADO</string>
-    <string name="by">por %1$s</string>
-    <string name="no_matching_book_found">No se ha encontrado ningún libro</string>
-    <string name="no_isbn_stored_for_book">No se ha guardado ISBN para el libro</string>
     <string name="select_an_action">Seleccione una opción</string>
     <string name="alert_if_the_problem_persists">Si el problema persiste, contacte con soporte utilizando la opción de Ayuda del menú principal.</string>
     <string name="x_of_y">%1$d de %2$d</string>
-    <string name="send_book_to_goodreads">Enviar libro %1$s a goodreads</string>
 
     <string name="label_erase_cover_cache">Borrar caché de portadas</string>
     <string name="crash_toast_text">BookCatalogue se ha detenido de forma inesperada. Por favor, ayúdenos a mejorar la aplicación reportando este problema.</string>
@@ -277,7 +268,6 @@
     <string name="option_always_start_library_expanded">Iniciar siempre el listado de libros expandido</string>
     <string name="option_always_start_library_collapsed">Iniciar siempre el listado de libros comprimido</string>
     <string name="option_remember_library_state">Preservar el estado del listado de libros</string>
-    <string name="searching_goodreads">Buscando en goodreads</string>
     <string name="title_edit_library_styles">Editar estilos del listado de libros</string>
     <string name="show_more_ellipsis">Mostrar más&#8230;</string>
     <string name="show_fewer_ellipsis">Mostrar menos&#8230;</string>
@@ -346,11 +336,6 @@
     <string name="user_defined">Definido por el usuario</string>
     <string name="builtin">Predefinido</string>
     <string name="sort_unread">No leídos (Autor/Serie)</string>
-    <string name="import_all_from_goodreads">Importar todo de goodreads</string>
-    <string name="retry_x_of_y_next_at_z">Reintento %1$s de %2$s, el próximo a las %3$s</string>
-    <string name="completed">Completado</string>
-    <string name="failed">Fallido</string>
-    <string name="queued">En cola</string>
     <string name="unknown">Desconocido</string>
     <string name="cover_options_cc_ellipsis">Opciones de Portadas&#8230;</string>
     <string name="show_events_ellipsis">Mostrar eventos&#8230;</string>
@@ -363,18 +348,6 @@
     <string name="alert_hints_have_been_reset">Sugerencias reseteadas</string>
     <string name="hint_startup_screen">Esta es la pantalla estándar de inicio de BookCatalogue. Si lo prefiere, puede iniciar la aplicación directamente en \'Mis Libros\'; la pantalla de inicio preferida puede cambiarse en preferencias.</string>
     <string name="upgrading_ellipsis">Actualizando&#8230;</string>
-    <string name="explain_goodreads_no_isbn">El libro seleccionado no tiene ISBN; no se puede sincronizar de forma automática con goodreads. 
-    									Para solucionarlo puede:
-    									\n\n(1) eliminar el libro BookCatalogue
-    									\n\n(2) añadir el libro de forma manual en goodreads utilizando su interfaz web
-    									\n\n(3) sincronizar con goodreads
-    									\n\nAl hacerlo, se volverá a crear el libro en BookCatalogue y ambos permanecerán vinculados a partir de ese momento.</string>
-    <string name="explain_goodreads_no_match">El ISBN del libro seleccionado no se pudo localizar en goodreads. Esto puede ocurrir por dos motivos: 
-    									los datos del libro son erróneos (debería comprobar el ISBN), o el libro no está en goodreads. 
-    									\n\nSi modifica los datos en BookCatalogue, pulse el botón \'Retry\' y compruebe si la tarea de
-    									fondo creada termina con éxito. 
-    									\n\nSi los datos son correctos y el libro sigue sin aparecer, entonces debe añadir un libro con ese ISBN de forma manual en 
-										el sitio web de goodreads. Una vez haya hecho eso, puede volver a intentar enviar el libro.</string>
     <string name="label_read_amp_unread">Leído &amp; No leído</string>
     <string name="label_loaned">Prestado</string>
     <string name="label_publication_year">Año de publicación</string>
@@ -426,8 +399,6 @@
     <string name="label_year">Año</string>
     <string name="label_month">Mes</string>
     <string name="day">Día</string>
-    <string name="last_error_e">Último error: %1$s</string>
-    <string name="invalid_isbn_x_specified_in_search">ISBN no válido \'%1$s\' en la búsqueda</string>
     <string name="if_day_is_specified_month_and_year_must_be">Si se especifica un día, deben especificarse también el mes y el año.</string>
     <string name="if_month_is_specified_year_must_be">Si se especifica el mes, debe especificarse también el año.</string>
     <string name="preference_use_external_image_cropper">Utilizar recortador de imágenes externo (experimental)</string>
@@ -537,10 +508,6 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="label_loan">Préstamo</string>
 
     <!-- Hint displayed when an export or database backup is done -->
-
-    <!-- Button text on the goodreads activity; only displayed after user has registered -->
-
-    <!-- Extra text displayed on the goodreads activity when a user HAS registered -->
 
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
 

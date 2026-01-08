@@ -207,8 +207,6 @@
     <string name="label_email_export">Dışarı aktarılan veriyi e-posta ile göndermemizi ister misiniz?</string>
     <string name="menu_crop_thumb">Küçük resmi kırp</string>
     <string name="task_errors">Görev hataları</string>
-    <string name="retry">Yeniden dene</string>
-    <string name="retry_task">Yinele</string>
     <string name="delete_event">Olayı sil</string>
     <string name="delete_task">Görevi sil</string>
 
@@ -230,21 +228,13 @@
     <string name="cleanup_old_events">Eski olayları temizle</string>
     <string name="label_add_manually">El ile ekle</string>
     <string name="label_search_internet">Genelağ\'da ara</string>
-    <string name="send_books_to_goodreads">Kitapları GoodReads\'e gönder</string>
     <string name="legacy_task">Eski görev</string>
-    <string name="occurred_at">%1$s içinde oluştu</string>
     <string name="unknown_uc">BİLİNMEYEN</string>
-    <string name="this_book_deleted_uc">BU BETİK SİLİNDİ</string>
-    <string name="by">%1$s ile</string>
-    <string name="no_matching_book_found">Eşleşen kitap bulunamadı</string>
-    <string name="no_isbn_stored_for_book">Bu kitap için bir ISBN depolanmamış</string>
     <string name="select_an_action">Bir eylem seçin</string>
     <string name="alert_if_the_problem_persists">Eğer sorun sürerse lütfen ana seçkedeki Yardım bölümünden destek ile iletişime geçin.</string>
     <string name="x_of_y">%1$d (Toplam %2$d)</string>
-    <string name="send_book_to_goodreads">Bu kitabı Goodreads\'e gönder: %1$s</string>
 
     <item name="NOTIFICATION" type="id"></item>
-    <item name="TAG_GOODREADS_WORK" type="id"></item>
     <item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
 
     <string name="label_erase_cover_cache">Kapak önbelleğini sil</string>
@@ -305,7 +295,6 @@
     <string name="option_always_start_library_expanded">Kitap dizelgelerini genişletilmiş olarak başlat</string>
     <string name="option_always_start_library_collapsed">Kitap dizelgelerini içe kapalı olarak başlat</string>
     <string name="option_remember_library_state">Kitap dizelgesi durumunu koru</string>
-    <string name="searching_goodreads">Goodreads\'te aranıyor</string>
     <string name="title_edit_library_styles">Kitap dizelgesi biçemlerini düzenle</string>
     <string name="show_more_ellipsis">Daha fazla göster&#8230;</string>
     <string name="show_fewer_ellipsis">Daha az göster&#8230;</string>
@@ -371,11 +360,6 @@
     <string name="user_defined">Kullanıcı tanımlı</string>
     <string name="builtin">Yerleşik</string>
     <string name="sort_unread">Okunmayan (Yazar/Seri)</string>
-    <string name="import_all_from_goodreads">Tümünü Goodreads\'den içe aktar</string>
-    <string name="retry_x_of_y_next_at_z">Yeniden dene: %1$s (Toplam %2$s), sonraki: %3$s</string>
-    <string name="completed">Tamamlandı</string>
-    <string name="failed">Başarısız</string>
-    <string name="queued">Kuyrukta</string>
     <string name="unknown">Bilinmeyen</string>
     <string name="cover_options_cc_ellipsis">Kapak seçenekleri&#8230;</string>
     <string name="show_events_ellipsis">Olayları göster&#8230;</string>
@@ -388,18 +372,6 @@
     <string name="alert_hints_have_been_reset">İpuçları sıfırlandı</string>
     <string name="hint_startup_screen">Bu ölçünlü BookCatalogue başlangıç ekranıdır. Eğer isterseniz doğrudan \'Kitaplarım\'; ekranından başlayabilirsiniz. Başlangıç ekranı yeğlenenlerden değiştirilebilir.</string>
     <string name="upgrading_ellipsis">Yükseltiliyor&#8230;</string>
-    <string name="explain_goodreads_no_isbn">Seçili kitabın bir ISBN numarası yok, dolayısıyla Goodreads ile özdevinimli olarak eşitlenmesi olanaklı değil. 
-    									En yalın çözüm olarak:
-    									\n\n(1) Kitabı Goodreads\'ten silin,
-    									\n\n(2) Kitabı Goodreads\'e el ile ağ sayfasından ekleyin,
-    									\n\n(3) Goodreads ile eşitleme yapın.
-    									\n\nBu kitabın BookCatalogue\'de yeniden oluşturulmasını sağlar ve her iki giri birbiri ile sürekli eşitlenmiş kalacaktır.</string>
-    <string name="explain_goodreads_no_match">Seçili kitabın ISBN\'si Goodreads\'te bulunamadı. Bunun olası iki nedeni vardır: 
-    									Ya kitap için girdiğiniz veri hatalı (ISBN\'yi kontrol edin) veya kitap Goodreads\'te bulunmuyor. 
-    									\n\nEğer BookCatalogue\'de herhangi bir veriyi değiştirirseniz, yalnızca \'Yeniden dene\' düğmesine basın 
-    									ve oluşan ardalan görevinin başarıyla tamamlanıp tamamlanmadığına bakın. 
-    									\n\nEğer veri doğru olup, ancak kitap hala bulunamıyorsa bu kitabın ISBN\'si ile birlikte Goodreads\'e el ile
-									ağ sayfasından eklenmesi gerekmektedir. Bu yapıldıktan sonra kitabı yeniden göndermeyi deneyebilirsiniz.</string>
     <string name="label_read_amp_unread">Okunan &amp; Okunmayan</string>
     <string name="label_loaned">Ödünç verilen</string>
     <string name="label_publication_year">Yayım yılı</string>
@@ -451,8 +423,6 @@
     <string name="label_year">Yıl</string>
     <string name="label_month">Ay</string>
     <string name="day">Gün</string>
-    <string name="last_error_e">Son hata: %1$s</string>
-    <string name="invalid_isbn_x_specified_in_search">Aramara belirtilen ISBN \'%1$s\' geçersiz</string>
     <string name="if_day_is_specified_month_and_year_must_be">Eğer gün belirtmiş iseniz hem ay hem yıl bölümlerini de doldurmalısınız.</string>
     <string name="if_month_is_specified_year_must_be">Eğer bir ay belirtmiş iseniz yıl da belirtmelisiniz.</string>
     <string name="preference_use_external_image_cropper">Başka resim kırpıcı kullan (deneysel özellik)</string>
@@ -561,10 +531,6 @@
     <string name="label_loan">Ödünç ver</string>
 
     <!-- Hint displayed when an export or database backup is done -->
-
-    <!-- Button text on the goodreads activity; only displayed after user has registered -->
-
-    <!-- Extra text displayed on the goodreads activity when a user HAS registered -->
 
     <!-- Progress dialog message displayed when doing a long network operation to a web site -->
 

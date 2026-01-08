@@ -865,7 +865,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                         if ((mFlags & LibraryStyle.EXTRAS_BOOKSHELVES) != 0) {
                             // Now build a list of all bookshelves the book is on.
                             StringBuilder shelves = new StringBuilder();
-                            try (Cursor sc = dba.getAllBookBookshelvesForGoodreadsCursor(mBookId)) {
+                            try (Cursor sc = dba.getAllBookBookshelvesCursor(mBookId)) {
                                 if (sc.moveToFirst()) {
                                     do {
                                         if (shelves.length() > 0)

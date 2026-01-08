@@ -31,7 +31,6 @@ import android.widget.AdapterView;
 
 /**
  * BookCatalogue implementation of QueueManager.
- * 
  * This just implements the application-specific (and localized) versions of basic
  * QueueManager objects.
  * 
@@ -47,7 +46,6 @@ public class BcQueueManager extends QueueManager {
 
 	/**
 	 * Create the queue we need, if they do not already exist.
-	 * 
 	 * main: long-running tasks, or tasks that can just wait
 	 * small_jobs: trivial background tasks that will only take a few seconds.
 	 */
@@ -61,26 +59,8 @@ public class BcQueueManager extends QueueManager {
 	public static final String QUEUE_SMALL_JOBS = "small_jobs";
 
 	public static final long CAT_LEGACY = 1;
-	public static final long CAT_GOODREADS_AUTH = 2;
-	public static final long CAT_GOODREADS_IMPORT_ALL = 3;
-	public static final long CAT_GOODREADS_EXPORT_ALL = 4;
-	public static final long CAT_GOODREADS_EXPORT_ONE = 5;
-	
-//	/**
-//	 * Create the queue we need, if they do not already exist.
-//	 * 
-//	 * main: long-running tasks, or tasks that can just wait
-//	 * small_jobs: trivial background tasks that will only take a few seconds.
-//	 */
-//	@Override
-//    public void onCreate() {
-//		super.onCreate();
-//
-//		initializeQueue(QUEUE_MAIN);
-//		initializeQueue(QUEUE_SMALL_JOBS);
-//	}
 
-	/**
+    /**
 	 * Return a localized LegacyEvent for the passed blob.
 	 * This method is used when deserialization fails, most likely as a result of changes
 	 * to the underlying serialized class.
@@ -97,7 +77,7 @@ public class BcQueueManager extends QueueManager {
 	 * @author Philip Warner
 	 *
 	 */
-	public class BcLegacyEvent extends LegacyEvent {
+	public static class BcLegacyEvent extends LegacyEvent {
 		private static final long serialVersionUID = 1992740024689009867L;
 
 		public BcLegacyEvent(byte[] original) {
@@ -110,11 +90,7 @@ public class BcQueueManager extends QueueManager {
 				ArrayList<ContextDialogItem> items,
 				Object appInfo) {
 
-			items.add(new ContextDialogItem(ctx.getString(R.string.delete_event), new Runnable() {
-				@Override
-				public void run() {
-					QueueManager.getQueueManager().deleteEvent(BcLegacyEvent.this.getId());
-				}}));
+			items.add(new ContextDialogItem(ctx.getString(R.string.delete_event), () -> QueueManager.getQueueManager().deleteEvent(BcLegacyEvent.this.getId())));
 
 		}		
 	}
@@ -126,7 +102,7 @@ public class BcQueueManager extends QueueManager {
 	 * @author Philip Warner
 	 *
 	 */
-	public class BcLegacyTask extends LegacyTask {
+	public static class BcLegacyTask extends LegacyTask {
 		private static final long serialVersionUID = 164669981603757736L;
 
 		public BcLegacyTask(byte[] original, String description) {
@@ -139,11 +115,7 @@ public class BcQueueManager extends QueueManager {
 				ArrayList<ContextDialogItem> items,
 				Object appInfo) {
 
-			items.add(new ContextDialogItem(ctx.getString(R.string.delete_task), new Runnable() {
-				@Override
-				public void run() {
-					QueueManager.getQueueManager().deleteTask(BcLegacyTask.this.getId());
-				}}));
+			items.add(new ContextDialogItem(ctx.getString(R.string.delete_task), () -> QueueManager.getQueueManager().deleteTask(BcLegacyTask.this.getId())));
 
 		}
 

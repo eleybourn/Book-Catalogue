@@ -58,17 +58,7 @@ public class BooksRowView {
 		return mCursor.getLong(mIdCol);// mCurrentRow[mIsbnCol];
 	}
 
-	private int mGoodreadsBookIdCol = -2;
-	public final long getGoodreadsBookId() {
-		if (mGoodreadsBookIdCol < 0) {
-			mGoodreadsBookIdCol = mCursor.getColumnIndex(DatabaseDefinitions.DOM_GOODREADS_BOOK_ID.name);
-			if (mGoodreadsBookIdCol < 0)
-				throw new RuntimeException("Goodreads Book ID column not in result set");
-		}
-		return mCursor.getLong(mGoodreadsBookIdCol);// mCurrentRow[mIsbnCol];
-	}
-
-	private int mBookUuidCol = -2;
+    private int mBookUuidCol = -2;
 	public final String getBookUuid() {
 		if (mBookUuidCol < 0) {
 			mBookUuidCol = mCursor.getColumnIndex(DatabaseDefinitions.DOM_BOOK_UUID.name);

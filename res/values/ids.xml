@@ -11,7 +11,6 @@
     <item name="TAG_DIALOG_ITEM" type="id"></item>
 
     <item name="NOTIFICATION" type="id"></item>
-    <item name="TAG_GOODREADS_WORK" type="id"></item>
     <item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
 
     <item name="MENU_DELETE_BOOK" type="id"/>

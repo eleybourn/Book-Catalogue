@@ -55,10 +55,8 @@ public class SearchManager implements TaskManagerListener {
 	public static final int SEARCH_BC = 2;
 	/** Flag indicating a search source to use */
 	public static final int SEARCH_LIBRARY_THING = 4;
-	/** Flag indicating a search source to use */
-	public static final int SEARCH_GOODREADS = 8;
-	/** Mask including all search sources */
-	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_BC; // | SEARCH_GOODREADS; // | SEARCH_LIBRARY_THING ;
+    /** Mask including all search sources */
+	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_BC;  // | SEARCH_LIBRARY_THING ;
 	
 	// ENHANCE: Allow user to change the default search data priority
 	// NOTE: BCDB search will return AMAZON, GOOGLE, BCDB and OPEN_LIBRARY
@@ -96,6 +94,7 @@ public class SearchManager implements TaskManagerListener {
 	private HashSet<DataSource> mSearchesCompleted = new HashSet<>();
 	/** Output from search threads */
 	private Hashtable<DataSource,Bundle> mSearchResults = new Hashtable<>();
+    private final Object mSearchResultsLock = new Object();
 
 	// Debug search results
 	//private String mDebugText = "";
@@ -205,19 +204,7 @@ public class SearchManager implements TaskManagerListener {
 		}
 	}
 
-	/**
-	 * Start an Goodreads search
-	 */
-	private boolean startGoodreads(){
-		if (!mCancelledFlg) {
-			startOne( new SearchGoodreadsThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
-			return true;
-		} else {
-			return false;			
-		}
-	}
-
-	/**
+    /**
 	 * Start a search
 	 * 
 	 * @param author	Author to search for
@@ -486,7 +473,7 @@ public class SearchManager implements TaskManagerListener {
 	/**
 	 * When running in single-stream mode, start the next thread that has no data.
 	 * While Google is reputedly most likely to succeed, it also produces garbage a lot. 
-	 * So we search Amazon, Goodreads, Google and LT last as it REQUIRES an ISBN.
+	 * So we search Amazon, Google and LT last as it REQUIRES an ISBN.
 	 */
 	private boolean startNext() {
 		// Loop though in 'search-priority' order
@@ -536,8 +523,6 @@ public class SearchManager implements TaskManagerListener {
                 return startAmazon();
             case SEARCH_LIBRARY_THING:
                 return startLibraryThing();
-            //case SEARCH_GOODREADS:
-            //    return startGoodreads();
             default:
                 throw new RuntimeException("Unexpected search source: " + source);
         }
@@ -563,7 +548,7 @@ public class SearchManager implements TaskManagerListener {
 		for(BookSearchResults result: resultList) {
 			Bundle bookData = result.data;
 
-			synchronized (mSearchResults) {
+			synchronized (mSearchResultsLock) {
 				//// Debug search results (compare matching keys)
                 mSearchResults.put(result.source, bookData);
 			}
@@ -631,20 +616,11 @@ public class SearchManager implements TaskManagerListener {
 	}
 
 	public interface SearchController {
-		void requestAbort();
-		SearchManager getSearchManager();
+
 	}
 	
 	private final SearchController mController = new SearchController() {
-		@Override
-		public void requestAbort() {
-			mTaskManager.cancelAllTasks();
-		}
-		@Override
-		public SearchManager getSearchManager() {
-			return SearchManager.this;
-		}
-	};
+    };
 
 	/**
 	 * 	STATIC Object for passing messages from background tasks to activities that may be recreated 

@@ -230,31 +230,6 @@ public class CropUtil {
 		}
 	}
 
-	/**
-	 * Make a bitmap from a given Uri.
-	 * 
-	 * @param uri
-	 */
-	// private static ParcelFileDescriptor makeInputStream(Uri uri,
-	// ContentResolver cr) {
-	// try {
-	// return cr.openFileDescriptor(uri, "r");
-	// } catch (IOException ex) {
-	// return null;
-	// }
-	// }
-	//
-	// public static void debugWhere(String tag, String msg) {
-	// StackTraceElement elements[] = Thread.currentThread().getStackTrace();
-	// // skip first 3 element, they are not related to the caller
-	// for (int i = 3, n = elements.length; i < n; ++i) {
-	// StackTraceElement st = elements[i];
-	// String message = String.format("    at %s.%s(%s:%s)",
-	// st.getClassName(), st.getMethodName(), st.getFileName(),
-	// st.getLineNumber());
-	// }
-	// }
-
 	public static synchronized OnClickListener getNullOnClickListener() {
 		if (sNullOnClickListener == null) {
 			sNullOnClickListener = new OnClickListener() {

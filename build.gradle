@@ -10,7 +10,7 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 def BcSigning = properties.getProperty(SigningProperty)
 
-if(BcSigning != null && (new File(BcSigning)).exists()) {
+if (BcSigning != null && (new File(BcSigning)).exists()) {
     apply from: BcSigning
 }
 
@@ -50,7 +50,7 @@ dependencies {
 }
 
 android {
-        namespace = 'com.eleybourn.bookcatalogue'
+    namespace = 'com.eleybourn.bookcatalogue'
 //    signingConfigs {
 //        Default {
 //            storeFile file('O:\\Documents\\BookCatalogue Dev\\KeyStore\\bc_key_evan')
@@ -60,14 +60,14 @@ android {
 //        }
 //    }
 //
-//    buildTypes {
-//        release {
-//            signingConfig signingConfigs.Default
-//        }
-//        debug {
-//            signingConfig signingConfigs.Default
-//        }
-//    }
+    buildTypes {
+        release {
+            buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", properties.getProperty("GOOGLE_OAUTH_CLIENT_ID", "\"\"")
+        }
+        debug {
+            buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", properties.getProperty("GOOGLE_OAUTH_CLIENT_ID", "\"\"")
+        }
+    }
     compileSdkVersion 36
 
     packagingOptions {

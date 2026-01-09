@@ -102,12 +102,9 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * Book Catalogue database access helper class. Defines the basic CRUD operations
  * for the catalogue (based on the Notepad tutorial), and gives the 
  * ability to list all books as well as retrieve or modify a specific book.
- *
  * NOTE: As of 4.2, DO NOT USE OnUpgrade TO DISPLAY UPGRADE MESSAGES. Use the UpgradeMessageManager class
  * This change separated messages from DB changes (most releases do not involve DB upgrades).
- *
  * ENHANCE: Use date_added to add 'Recent Acquisitions' virtual shelf; need to resolve how this may relate to date_purchased and 'I own this book'...
- *
  */
 public class CatalogueDBAdapter {
 	/** DEBUG ONLY. Set to true to enable logging of instances of this class. */
@@ -174,9 +171,8 @@ public class CatalogueDBAdapter {
 	public static final String KEY_AUTHOR_FORMATTED = "author_formatted";
 	public static final String KEY_AUTHOR_FORMATTED_GIVEN_FIRST = "author_formatted_given_first";
 	public static final String KEY_SERIES_FORMATTED = "series_formatted";
-	public static final String KEY_SERIES_NUM_FORMATTED = "series_num_formatted";
 
-	// We tried 'Collate UNICODE' but it seemed to be case sensitive. We ended
+    // We tried 'Collate UNICODE' but it seemed to be case sensitive. We ended
 	// up with 'Ursula Le Guin' and 'Ursula le Guin'.
 	//
 	//	We now use Collate LOCALE and check to see if it is case sensitive. We *hope* in the
@@ -449,12 +445,8 @@ public class CatalogueDBAdapter {
 		"CREATE UNIQUE INDEX IF NOT EXISTS book_author_book ON "+DB_TB_BOOK_AUTHOR+" ("+KEY_BOOK+", " + KEY_AUTHOR_ID + ");",
 		"CREATE UNIQUE INDEX IF NOT EXISTS anthology_pk_idx ON " + DB_TB_ANTHOLOGY + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_TITLE + ")"
 		};
-	
-//	private static String AUTHOR_FIELDS = "a." + KEY_ROW_ID + " as " + KEY_AUTHOR_NAME + ", a." + KEY_FAMILY_NAME + " as " + KEY_FAMILY_NAME 
-//						+ ", a." + KEY_GIVEN_NAMES + " as " + KEY_GIVEN_NAMES 
-//						+ ", a." + KEY_FAMILY_NAME + " || ', ' || a." + KEY_GIVEN_NAMES + " as " + KEY_AUTHOR_FORMATTED;
 
-		private static String getAuthorFields(String alias, String idName) {
+    private static String getAuthorFields(String alias, String idName) {
 			String sql;
 			if (idName != null && idName.length() > 0) {
 				sql = " " + alias + "." + KEY_ROW_ID + " as " + idName + ", ";
@@ -472,26 +464,7 @@ public class CatalogueDBAdapter {
 			return sql;
 		}
 
-		//		private static String BOOK_FIELDS = 
-//		"b." + KEY_TITLE + " as " + KEY_TITLE + ", " +
-//		"b." + KEY_ISBN + " as " + KEY_ISBN + ", " +
-//		"b." + KEY_PUBLISHER + " as " + KEY_PUBLISHER + ", " +
-//		"b." + KEY_DATE_PUBLISHED + " as " + KEY_DATE_PUBLISHED + ", " +
-//		"b." + KEY_RATING + " as " + KEY_RATING + ", " +
-//		"b." + KEY_READ + " as " + KEY_READ + ", " +
-//		"b." + KEY_PAGES + " as " + KEY_PAGES + ", " +
-//		"b." + KEY_NOTES + " as " + KEY_NOTES + ", " +
-//		"b." + KEY_LIST_PRICE + " as " + KEY_LIST_PRICE + ", " +
-//		"b." + KEY_ANTHOLOGY + " as " + KEY_ANTHOLOGY + ", " +
-//		"b." + KEY_LOCATION + " as " + KEY_LOCATION + ", " +
-//		"b." + KEY_READ_START + " as " + KEY_READ_START + ", " +
-//		"b." + KEY_READ_END + " as " + KEY_READ_END + ", " +
-//		"b." + KEY_FORMAT + " as " + KEY_FORMAT + ", " +
-//		"b." + KEY_SIGNED + " as " + KEY_SIGNED + ", " + 
-//		"b." + KEY_DESCRIPTION + " as " + KEY_DESCRIPTION + ", " + 
-//		"b." + KEY_GENRE  + " as " + KEY_GENRE;
-
-		private static String getBookFields(String alias, String idName) {
+    private static String getBookFields(String alias, String idName) {
 			String sql;
 			if (idName != null && idName.length() > 0) {
 				sql = alias + "." + KEY_ROW_ID + " as " + idName + ", ";
@@ -539,16 +512,7 @@ public class CatalogueDBAdapter {
 			alias + "." + DOM_BOOK_UUID  + " as " + DOM_BOOK_UUID;
 		}
 
-//	private static String SERIES_FIELDS = "s." + KEY_ROW_ID + " as " + KEY_SERIES_ID
-//		+ " CASE WHEN s." + KEY_SERIES_NAME + "='' THEN '' ELSE s." + KEY_SERIES_NAME + " || CASE WHEN s." + KEY_SERIES_NUM + "='' THEN '' ELSE ' #' || s." + KEY_SERIES_NUM + " END END AS " + KEY_SERIES_FORMATTED;
-//
-//	private static String BOOKSHELF_TABLES = DB_TB_BOOKS + " b LEFT OUTER JOIN " + DB_TB_BOOK_BOOKSHELF_WEAK + " w ON (b." + KEY_ROW_ID + "=w." + KEY_BOOK + ") LEFT OUTER JOIN " + DB_TB_BOOKSHELF + " bs ON (bs." + KEY_ROW_ID + "=w." + KEY_BOOKSHELF + ") ";
-//	private static String SERIES_TABLES = DB_TB_BOOKS 
-//						+ " b LEFT OUTER JOIN " + DB_TB_BOOK_SERIES + " w "
-//						+ " ON (b." + KEY_ROW_ID + "=w." + KEY_BOOK + ") "
-//						+ " LEFT OUTER JOIN " + DB_TB_SERIES + " s ON (s." + KEY_ROW_ID + "=w." + KEY_SERIES_ID + ") ";
-
-	//TODO: Update database version RELEASE: Update database version
+    //TODO: Update database version RELEASE: Update database version
 	public static final int DATABASE_VERSION = 82;
 
 	private TableInfo mBooksInfo = null;
@@ -1843,17 +1807,7 @@ public class CatalogueDBAdapter {
 		return fetchThumbnailByUuid(uuid, "");
 	}
 
-//	/**
-//	 * return the thumbnail (as a File object) for the given id
-//	 * 
-//	 * @param id The id of the book
-//	 * @return The File object
-//	 */
-//	private static File fetchThumbnailById(long id) {
-//		return fetchThumbnailById(id, "");
-//	}
-
-	/**
+    /**
 	 * return the thumbnail (as a File object) for the given id. Optionally use a suffix
 	 * on the file name.
 	 * 
@@ -1888,11 +1842,8 @@ public class CatalogueDBAdapter {
 	 * @param id The id of the book
 	 * @return The File object
 	 */
-//	private static File fetchThumbnailById(long id, String suffix) {
-//		return fetchThumbnailByName(Long.toString(id), suffix);
-//	}
-	
-	/**
+
+    /**
 	 * return the thumbnail (as a File object) for the given id. Optionally use a suffix
 	 * on the file name.
 	 * 
@@ -5022,13 +4973,7 @@ public class CatalogueDBAdapter {
 
 			globalReplacePositionedBookItem(DB_TB_BOOK_SERIES, KEY_SERIES_ID, KEY_SERIES_POSITION, oldSeries.id, newSeries.id);
 
-			//sql = "Delete from " + DB_TB_BOOK_SERIES + " Where " + KEY_SERIES_ID + " = " + oldSeries.id 
-			//+ " and Exists(Select NULL From " + DB_TB_BOOK_SERIES + " bs Where "
-			//+ "                 bs." + KEY_BOOK + " = " + DB_TB_BOOK_SERIES + "." + KEY_BOOK
-			//+ "                 and bs." + KEY_SERIES_ID + " = " + newSeries.id + ")";
-			//mDb.execSQL(sql);
-
-			mDb.setTransactionSuccessful();
+            mDb.setTransactionSuccessful();
 		} finally {
 			mDb.endTransaction(l);
 		}
@@ -5671,9 +5616,7 @@ public class CatalogueDBAdapter {
 				try { books.close(); } catch (Exception e) {}
             if (l != null)
 				mDb.endTransaction(l);
-			//long t1 = System.currentTimeMillis();
-			//System.out.println("Inserted FTS in " + (t1-t0) + "ms");
-		}
+        }
 	}
 	
 	/**

@@ -1,7 +1,6 @@
 package com.eleybourn.bookcatalogue;
 
 import android.database.Cursor;
-import android.util.Log;
 
 import org.json.JSONObject;
 import java.io.*;
@@ -17,7 +16,7 @@ import com.eleybourn.bookcatalogue.data.Bookshelf;
 import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 
-public class BookCatalogueSync {
+public class BookCatalogueAPI {
 
     private static final SimpleTaskQueue mSyncQueue = new SimpleTaskQueue("BookCatalogueSyncQueue");
     private static final String BASE_URL = "https://book-catalogue.com/api";
@@ -73,25 +72,9 @@ public class BookCatalogueSync {
     /**
      * Executes the API Sync Logic in background
      */
-    public static void performCloudSync(String email, boolean optIn) {
+    public static void performCloudSync(String email, boolean optIn, BookCatalogueAPITask.SyncListener listener) {
         // Create the task
-        BookCatalogueSyncTask syncTask = new BookCatalogueSyncTask(email, optIn, new BookCatalogueSyncTask.SyncListener() {
-            @Override
-            public void onSyncProgress(int current, int total) {
-                // Optional: Show a progress bar or toast
-                // Toast.makeText(MainMenu.this, "Uploaded " + current + "/" + total, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onSyncComplete(String message) {
-                //Toast.makeText(MainMenu.this, message, Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onSyncError(String error) {
-                //Toast.makeText(MainMenu.this, "Backup Failed: " + error, Toast.LENGTH_LONG).show();
-            }
-        });
+        BookCatalogueAPITask syncTask = new BookCatalogueAPITask(email, optIn, listener);
         mSyncQueue.enqueue(syncTask);
     }
 
@@ -113,6 +96,8 @@ public class BookCatalogueSync {
         conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
         conn.setRequestProperty("Accept", "application/json");
 
+        String title;
+
         try (OutputStream os = conn.getOutputStream();
              PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8), true)) {
 
@@ -124,7 +109,8 @@ public class BookCatalogueSync {
                     addFormField(writer, boundary, "authors[]", author.id + ", " + author.familyName + ", " + author.givenNames);
                 }
             }
-            addFormField(writer, boundary, "title", bookCursor.getString(bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE)));
+            title = bookCursor.getString(bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
+            addFormField(writer, boundary, "title", title);
             addFormField(writer, boundary, "isbn", bookCursor.getString(bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ISBN)));
             addFormField(writer, boundary, "publisher", bookCursor.getString(bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_PUBLISHER)));
             addFormField(writer, boundary, "date_published", bookCursor.getString(bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_DATE_PUBLISHED)));
@@ -183,7 +169,7 @@ public class BookCatalogueSync {
         int responseCode = conn.getResponseCode();
         if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_CREATED) {
             String error = readStream(conn.getErrorStream());
-            throw new Exception("Upload failed for book ID " + bookId + " (" + responseCode + "): " + error);
+            throw new Exception("Upload failed for book ID " + bookId + " (" + title + "): " + error);
         }
     }
 
@@ -254,7 +240,6 @@ public class BookCatalogueSync {
             return result.toString();
         }
     }
-
 
     /**
      * Cleanup!

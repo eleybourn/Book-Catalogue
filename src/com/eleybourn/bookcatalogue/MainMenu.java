@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,7 +42,6 @@ import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialog
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
 import com.eleybourn.bookcatalogue.utils.HintManager;
-import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
@@ -69,6 +69,8 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
     // 1. Declare Credential Manager
     private CredentialManager mCredentialManager;
 
+    private ProgressBar mSyncProgressBar;
+
     @Override
     protected RequiredPermission[] getRequiredPermissions() {
         return new RequiredPermission[0];
@@ -87,6 +89,8 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         setSupportActionBar(topAppBar);
         topAppBar.setLogo(R.drawable.ic_launcher4);
         topAppBar.setNavigationIcon(null);
+
+        mSyncProgressBar = findViewById(R.id.syncProgressBar);
 
         // Setup handlers for items. It's just a menu after all.
         setOnClickListener(R.id.cardLibrary, mBrowseHandler);
@@ -123,9 +127,10 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
      */
     private final OnClickListener mSyncHandler = v -> {
         // Build the Google ID Option
+        // GOOGLE_OAUTH_CLIENT_ID should be stored in local.properties
         GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
-                .setServerClientId("759470837643-hidcvea8cu63aml1n8ghhbl1fdep4lte.apps.googleusercontent.com")
+                .setServerClientId(BuildConfig.GOOGLE_OAUTH_CLIENT_ID)
                 .setAutoSelectEnabled(true)
                 .build();
 
@@ -179,7 +184,26 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
                         showOptInDialog(email);
                     } else {
                         Toast.makeText(this, "Starting Cloud Backup...", Toast.LENGTH_SHORT).show();
-                        BookCatalogueSync.performCloudSync(email, new BookCataloguePreferences().getAccountOptIn());
+                        BookCatalogueAPI.performCloudSync(email, new BookCataloguePreferences().getAccountOptIn(), new BookCatalogueAPITask.SyncListener() {
+                            @Override
+                            public void onSyncProgress(int current, int total) {
+                                mSyncProgressBar.setMax(total);
+                                mSyncProgressBar.setProgress(current);
+                                mSyncProgressBar.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onSyncComplete(String message) {
+                                mSyncProgressBar.setVisibility(View.GONE);
+                                Toast.makeText(MainMenu.this, message, Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onSyncError(String error) {
+                                mSyncProgressBar.setVisibility(View.GONE);
+                                Toast.makeText(MainMenu.this, "Backup Failed: " + error, Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 });
 
@@ -220,7 +244,26 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
 
         // Pass the optIn boolean to the sync method so it sends the correct flag to the API
         Toast.makeText(this, "Starting Cloud Backup...", Toast.LENGTH_SHORT).show();
-        BookCatalogueSync.performCloudSync(email, optIn);
+        BookCatalogueAPI.performCloudSync(email, optIn, new BookCatalogueAPITask.SyncListener() {
+            @Override
+            public void onSyncProgress(int current, int total) {
+                mSyncProgressBar.setMax(total);
+                mSyncProgressBar.setProgress(current);
+                mSyncProgressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onSyncComplete(String message) {
+                mSyncProgressBar.setVisibility(View.GONE);
+                Toast.makeText(MainMenu.this, message, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onSyncError(String error) {
+                mSyncProgressBar.setVisibility(View.GONE);
+                Toast.makeText(MainMenu.this, "Backup Failed: " + error, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**

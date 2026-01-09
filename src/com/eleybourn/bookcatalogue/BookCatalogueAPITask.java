@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * A self-contained task to perform Google Cloud Backup.
  * Implements SimpleTask to work with SimpleTaskQueue.
  */
-public class BookCatalogueSyncTask implements SimpleTask {
+public class BookCatalogueAPITask implements SimpleTask {
 
     // Callback interface to update the UI (MainMenu)
     public interface SyncListener {
@@ -32,7 +32,7 @@ public class BookCatalogueSyncTask implements SimpleTask {
     private int mSuccessCount = 0;
     private int mErrorCount = 0;
 
-    public BookCatalogueSyncTask(String email, boolean optIn, SyncListener listener) {
+    public BookCatalogueAPITask(String email, boolean optIn, SyncListener listener) {
         this.mEmail = email;
         this.mOptIn = optIn;
         this.mListener = listener;
@@ -42,11 +42,11 @@ public class BookCatalogueSyncTask implements SimpleTask {
     public void run(SimpleTaskContext taskContext) throws Exception {
         // 1. Authenticate with the API
         // Note: We do this inside the background thread
-        String token = BookCatalogueSync.login(mEmail, mOptIn);
+        String token = BookCatalogueAPI.login(mEmail, mOptIn);
 
         CatalogueDBAdapter db = taskContext.getDb();
 
-        // Query all books. 
+        // Query all books.
         // Note: Using the raw cursor from the adapter provided by SimpleTaskContext
         try (Cursor bookCursor = db.fetchAllBooks()) {
 
@@ -73,7 +73,7 @@ public class BookCatalogueSyncTask implements SimpleTask {
                         ArrayList<AnthologyTitle> anthology = db.getBookAnthologyTitleList(bookId);
 
                         // Upload
-                        BookCatalogueSync.uploadBook(token, bookId, bookCursor, authors, bookshelves, series, anthology, thumbFile);
+                        BookCatalogueAPI.uploadBook(token, bookId, bookCursor, authors, bookshelves, series, anthology, thumbFile);
                         mSuccessCount++;
                     } catch (Exception e) {
                         // Log the specific error for this book, but continue the loop
@@ -82,13 +82,7 @@ public class BookCatalogueSyncTask implements SimpleTask {
                     }
                     count++;
 
-                    // Optional: Update progress every 5 items to reduce UI spam
-                    if (mListener != null && count % 5 == 0) {
-                        // We can't call UI methods directly here, but we can log
-                        // If you need real-time progress, you'd usually post a Runnable to a Handler here
-                        // For now, we rely on onFinish, or you can add a progress callback that uses a Handler.
-                        notifyProgress(count, total);
-                    }
+                    notifyProgress(count, total);
 
                 } while (bookCursor.moveToNext());
             }
@@ -119,7 +113,7 @@ public class BookCatalogueSyncTask implements SimpleTask {
      */
     private void notifyProgress(int current, int total) {
         if (mListener != null) {
-            // We need a handler to jump to main thread, 
+            // We need a handler to jump to main thread,
             // but SimpleTaskQueue doesn't expose one easily inside 'run'.
             // In standard Android, we can use the Main Looper:
             new android.os.Handler(android.os.Looper.getMainLooper()).post(() ->

@@ -1,297 +1,211 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="_empty_"/>
 
-    <string name="app_name">Book Catalogue</string>
-    <string name="title_add_book">Boek Toevoegen</string>
-    <string name="menu_delete_book">Boek verwijderen</string>
-    <string name="label_author">Auteur</string>
-    <string name="label_title">Titel</string>
-    <string name="label_isbn">ISBN</string>
-    <string name="label_publisher">Uitgever</string>
-    <string name="label_date_published">Datum uitgave</string>
-    <string name="label_rating">Waardering</string>
-    <string name="label_bookshelf">Boekenplank</string>
-    <string name="label_read">Heeft u dit boek gelezen?</string>
-    <string name="label_series">Serie</string>
-    <string name="label_pages">Pagina\'s</string>
-    <string name="button_confirm_add">Boek toevoegen</string>
-    <string name="button_update">Bijwerken</string>
-    <string name="para_no_books">Er staan geen boeken op deze boekenplank. Voeg er een paar toe via het menu onderaan dit scherm.</string>
-    <string name="menu_sort_by_author_expanded">Alles uitklappen</string>
-    <string name="menu_sort_by_author_collapsed">Alles inklappen</string>
-    <string name="label_search">Zoeken</string>
-    <string name="button_cancel">Annuleren</string>
-    <string name="button_confirm_save">Boek opslaan</string>
-    <string name="description_no_bookshelves">U heef nog geen boekenplank aangemaakt. Voeg er een toe via het menu onderaan dit scherm.</string>
-    <string name="menu_insert_bs">Boekenplank maken</string>
-    <string name="confirm_add_bs">Toevoegen Boekenplank</string>
-    <string name="title_manage_bookshelves">Beheer boekenplanken</string>
-    <string name="confirm_save_bs">Boekenplank opslaan</string>
-    <string name="menu_delete_bs">Boekenplank verwijderen</string>
-    <string name="delete_1st_bs">De eerste boekenplank kan niet verwijderd worden</string>
-    <string name="option_all_books">Alle Boeken</string>
-    <string name="title_isbn_search">Book Catalogue: ISBN zoeken</string>
-    <string name="title_edit_bookshelf">Book Catalogue: Boekenplank bewerken</string>
-    <string name="label_search_for_books">Zoeken naar boeken</string>
-    <string name="label_search_by">zoeken naar auteurs of titels</string>
-    <string name="book_not_found">Het gescande boek is niet gevonden. U kunt de juiste streepjescode aan de achterkant van de omslag vinden. Vul anders de gegevens handmatig in.</string>
-    <string name="label_series_num">#</string>
-    <string name="label_import_books">Boeken Importeren</string>
+    <string name="alert_backup_failed">Back-up mislukt</string>
+    <string name="alert_backup_success">Back-up gelukt</string>
+    <string name="alert_cancelled">Geannuleerd</string>
+    <string name="alert_export_failed_sdcard">Export mislukt - kon niet naar de SD kaart wegschrijven</string>
+    <string name="alert_hints_have_been_reset">Aanwijzingen zijn hersteld</string>
+    <string name="alert_if_the_problem_persists">Als het probleem aanhoud, maak dan contact met ondersteuning via Help in het hoofdmenu.</string>
     <string name="alert_import">Waarschuwing. Het importeren van gegevens kan bestaande boekgegevens onbedoeld bijwerken met nieuwe informatie als de UUID-kolom niet aanwezig is en de id in het import-bestand dezelfde is als het bestaande id. Dit is meestal geen bezwaar als u een veld in een exportbestand heeft veranderd. Als u een nieuwe boek item heeft gemaakt, of iemand anders zijn boeken importeert, zorg dan dat het UUID veld aanwezig is of dat het id veld leeg is.</string>
     <string name="alert_import_failed_is_location_correct">FOUT: Import van gegevens (van SD kaart) mislukt. Staat het bestand op de juiste plaats?</string>
-    <string name="install_scan_title">Streepjescode Scanner Installeren</string>
-    <string name="label_version_number">Versienummer:</string>
-    <string name="para_donate">Als u de ontwikkeling van deze applicatie wilt ondersteunen, kunt u een bijdrage doen via mijn Amazon Wishlist of de Paypal knop hieronder. Omdat ik in Australië ben kan ik geen betaalde &quot;betaalde&quot; versie publiceren. :-) </string>
-    <string name="upgrade_title">Sinds uw laatste upgrade</string>
-    <string name="menu_edit_book">Boek bewerken</string>
-    <string name="label_comments">Mijn Commentaar</string>
-    <string name="button_loan_book">Boek uitlenen</string>
-    <string name="label_notes">Notities</string>
-    <string name="label_loaned_to">Dit boek is uitgeleend aan:</string>
-    <string name="option_nobody">Niemand</string>
-    <string name="label_loan_to">Leen boek aan:</string>
-    <string name="button_returned">Teruggebracht</string>
-    <string name="option_name">Naam</string>
-    <string name="label_webpage">Webpagina:</string>
-    <string name="label_sourcecode">Broncode:</string>
-    <string name="label_contact">Contacten:</string>
-    <string name="url_webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
-    <string name="url_sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
-    <string name="url_help">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
-    <string name="contact1">eleybourn@gmail.com</string>
-    <string name="contact2">philip.warner@rhyme.com.au</string>
-    <string name="label_donate">Doneren</string>
-    <string name="label_about">Over deze App</string>
-    <string name="label_list_price">Prijs</string>
-    <string name="label_update_fields">Automatisch Velden bijwerken</string>
-    <string name="title_select_fields_to_update">Selecteer bij te werken velden</string>
-    <string name="description_select_fields_to_update_help">De geselecteerde velden zullen worden bijgewerkt vanaf het internet. Niet geselecteerde velden blijven onveranderd.</string>
-    <string name="description_overwrite_thumbnail">Dit zal de geselecteerde velden zoals getoond bijwerken, maar miniaturen kunnen desgewenst voor Alle boeken worden gedownload.\n\nWilt u alle miniaturen overschrijven? Waarschuwing: dit kan een lange tijd in beslag nemen. </string>
-    <string name="option_yes">Ja</string>
-    <string name="option_no">Nee</string>
-    <string name="button_ok">OK</string>
-    <string name="search_fail">Het zoeken naar het boek is mislukt. Controleer uw netwerk instellingen.</string>
-    <string name="search_exception">Zoeken mislukt terwijl %1$s: %2$s</string>
-    <string name="menu_delete_thumb">Verwijder miniatuur</string>
-    <string name="label_help">Help</string>
-    <string name="title_manage_fields">Zichtbaarheid velden beheren</string>
-    <string name="para_manage_fields_help">Geselecteerde velden zijn zichtbaar in de toevoegen/bewerken boekschermen. Ongeselecteerde velden zijn verborgen.</string>
-    <string name="label_anthology_titles">Bloemlezing titels</string>
-    <string name="label_amazon_wishlist">Amazon Verlanglijst</string>
-    <string name="label_same_author">Alle verhalen in deze bloemlezing zijn geschreven door dezelfde auteur</string>
-    <string name="menu_delete_anthology">Verwijder titels uit bloemlezing</string>
-    <string name="label_is_anthology">Is dit boek een bloemlezing?</string>
-    <string name="populate_anthology_titles">Automatisch titels invullen (EXPERIMENTEEL)</string>
-    <string name="automatic_population_failed">Automatisch titels invullen mislukt</string>
-    <string name="label_anthology">Bloemlezing</string>
+    <!-- Descriptive text associated with import options not available with older archives -->
+    <string name="alert_old_archive_blurb">Deze optie wordt niet ondersteund voor oudere archief versies.</string>
+    <!-- Displayed when any write operation to the sd card fails -->
+    <string name="alert_please_check_sd_writable">Controleer aub of de SD Kaart beschrijfbaar is en voldoende vrije ruimte heeft.</string>
+    <string name="alert_problem_starting_import_arg">Het is een probleem bij het starten van de import van: %1$s</string>
+    <string name="alert_select_min_1_field">Selecteer tenminste één veld om te updaten</string>
+    <string name="alert_unexpected_error">Er is een onverwachte fout opgetreden. Zend ons aub de details via de \'Help\' optie in het hoofdmenu</string>
+
     <string name="anthology_confirm">Bevestig dat deze bloemlezingtitels (voor het merendeel) correct zijn</string>
     <string name="anthology_save">Opslaan</string>
-    <string name="button_anthology_add">Toevoegen</string>
-    <string name="menu_add_thumb_photo">Van Camera&#8230;</string>
-    <string name="label_thumbnail">Omslag miniatuur</string>
-    <string name="menu_rotate_thumb">Omdraaien miniatuur&#8230;</string>
-    <string name="menu_rotate_thumb_cw">Rechts draaien</string>
-    <string name="menu_rotate_thumb_ccw">Links draaien</string>
-    <string name="menu_rotate_thumb_180">180 graden draaien</string>
-    <string name="label_signed">Is dit boek gesigneerd?</string>
-    <string name="label_read_start">Begindatum lezen</string>
-    <string name="label_read_end">Einddatum lezen</string>
-    <string name="label_location_of_book">Locatie van het boek</string>
-    <string name="duplicate_book_title">Dupliceer Boek</string>
-    <string name="duplicate_book_message">Het boek dat u wilt toevoegen is al aanwezig in de database, weet u zeker dat u nog een exemplaar wilt toevoegen?</string>
-    <string name="menu_add_thumb_gallery">Van Galerij&#8230;</string>
-    <string name="backup_request">Wilt u  een back-up van uw database op uw SD kaart maken?</string>
-    <string name="backup_title">Back-up maken?</string>
-    <string name="searching_google_books">Zoeken bij Google Books</string>
-    <string name="searching_library_thing">Zoeken bij LibraryThing</string>
-    <string name="label_select_bookshelves">Selecteer Boekenplanken</string>
-    <string name="label_format">Formaat</string>
-    <string name="option_format1">Paperback</string>
-    <string name="option_format2">Harde Kaft</string>
-    <string name="option_format3">e-Book</string>
-    <string name="option_format4">Gesproken boek</string>
-    <string name="option_format5">Gids / Handboek</string>
-    <!-- NOTE: Adding a new format will involve changing code that references this list -->
-    <string name="label_description">Beschrijving</string>
-    <string name="label_genre">Genre</string>
-    <string name="not_set">Niet Ingevuld</string>
-    <string name="menu_search">Zoek boeken</string>
-    <string name="para_isbn_name_search_help">toevoegen van boeken via ISBN is veel preciezer dan toevoegen via auteur en titel en verdient meestal de voorkeur. De juiste streepjescode kunt u meestal vinden aan de achterkant van de boekomslag. \n\n</string>
-    <string name="para_help_click_here">Tik hier voor online help</string>
-    <string name="vldt_unable_to_get_value">Kan de waarde voor \'%s\' niet krijgen</string>
-    <string name="vldt_integer_expected">Verwachtte een numerieke waarde voor \'%s\'</string>
-    <string name="vldt_real_expected">Verwachtte een echt nummer voor \'%s\'</string>
-    <string name="vldt_date_expected">Verwachtte een datum voor \'%s\'</string>
-    <string name="vldt_boolean_expected">Verwachtte een boolean waarde (0,1,t,f,waar,onwaar) voor \'%s\'</string>
-    <string name="vldt_nonblank_required">Waardeveld mag niet leeg zijn voor \'%s\'</string>
-    <string name="vldt_blank_required">Waardeveld moet leeg zijn voor \'%s\'</string>
-    <string name="vldt_failed">Validatie mislukt voor \'%s\'</string>
-    <string name="vldt_read_start_after_end">De begindatum voor lezen moet vóór de einddatum liggen</string>
-    <string name="alert_backup_success">Back-up gelukt</string>
-    <string name="alert_backup_failed">Back-up mislukt</string>
-    <string name="file_must_contain_column">Bestandsnaam moet een kolomnaam %s bevatten</string>
-    <string name="file_must_contain_any_column">Bestandsnaam moet een kolom met de volgende namen bevatten: %s</string>
-    <string name="column_is_blank">Kolom %1$s is leeg op rij %2$s</string>
-    <string name="columns_are_blank">Kolommen %1$s zijn allemaal leeg op rij %2$d</string>
-    <string name="button_save">Opslaan</string>
-    <string name="label_add">Toevoegen</string>
-    <string name="para_no_authors">Er zijn geen auteurs voor dit boek. Voeg er een toe met het tekstveld en de knop bovenin dit scherm.</string>
-    <string name="para_no_series">Er zijn geen series voor dit boek. U kunt er een toevoegen met het tekstveld en de knop bovenin dit scherm.</string>
-    <string name="cover_corrupt">Omslagafbeelding is niet geldig</string>
-    <string name="cover_detail">Omslagafbeelding detail</string>
-    <string name="label_set_authors">Invullen auteurs&#8230;</string>
-    <string name="fragment_and_others">et. al.</string>
-    <string name="set_series">Invullen Serie&#8230;</string>
+
+    <string name="app_name">Book Catalogue</string>
+
     <string name="author_already_in_list">Auteur staat al in de lijst</string>
     <string name="author_is_blank">Auteurveld is leeg</string>
-    <string name="series_already_in_list">Serie staat al in de lijst</string>
-    <string name="series_is_blank">Serieveld is leeg</string>
-    <string name="alert_export_failed_sdcard">Export mislukt - kon niet naar de SD kaart wegschrijven</string>
-    <string name="skip_title">Overslaan van - %s</string>
-    <string name="num_books_searched">%s Boeken gezocht</string>
-    <string name="cancelled_info">Geannuleerd - %s</string>
-    <string name="edit_book_series">Bewerken van boekseries</string>
-    <string name="label_family_name">Achternaam</string>
-    <string name="label_given_names">Voornamen</string>
-    <string name="edit_author_details">Bewerken auteurdetails</string>
-    <string name="para_immediate_global_changes">NB: Alle opgeslagen veranderingen worden direct en overal toegepast</string>
-    <string name="menu_replace_thumb">Vervangen miniatuur&#8230;</string>
     <string name="author_required">Er moet tenminste één auteur worden vermeld</string>
-    <string name="title_required">Het titelveld mag niet leeg zijn</string>
-    <string name="menu_delete_series">Verwijderen serie&#8230;</string>
-    <string name="menu_edit_author">Bewerken auteur&#8230;</string>
-    <string name="menu_edit_series">Bewerken serie&#8230;</string>
-    <string name="delete_series">Verwijderen serie</string>
-    <string name="really_delete_series">Wilt u werkelijk de serie \'%s\'verwijderen?\n\nDe boeken zelf worden niet verwijderd.\n\nOverweeg de serie te bewerken en de serienaam te veranderen om deze gegevens te behouden</string>
-    <string name="edit_series">Bewerken seriedetails</string>
-    <string name="select_cover">Selecteer omslagafbeelding</string>
-    <string name="no_isbn_no_editions">Kan geen uitgavegegevens verkrijgen van een boek zonder ISBN</string>
-    <string name="unsaved_edits">De door u gemaakte veranderingen zijn niet opgeslagen. Wilt u toch doorgaan?</string>
-    <string name="unsaved_edits_title">Niet opgeslagen veranderingen</string>
-    <string name="changed_author_how_apply">U heeft de auteursnaam veranderd van:\n  \'%1$s\' naar \n  \'%2$s\'\nHoe wilt u deze verandering toepassen?\nNB: De keuze \'%3$s\' wordt onmiddelijk toegepast.</string>
-    <string name="this_book">Dit boek</string>
-    <string name="scope_of_change">Omvang van de verandering</string>
-    <string name="changed_series_how_apply">U heeft de serie veranderd van:\n  \'%1$s\' naar \n  \'%2$s\'\nHoe wilt u deze verandering doorvoeren?\nNB: De keuze \'Alle Boeken\' wordt onmiddelijk toegepast.</string>
-    <string name="unable_to_find_book">Kan gespecificeerd boek niet vinden</string>
-    <string name="list_and">en</string>
-    <string name="really_delete_book">Dit zal het boek met de titel \'%1$s\' door %2$s compleet verwijderen. Weet u zeker dat u door wilt gaan?</string>
-    <string name="no_editions">Geen uitgavegegevens beschikbaar</string>
-    <string name="finding_editions">Zoeken naar uitgaven&#8230;</string>
-    <string name="click_on_thumb">Tik op een miniatuur voor vergroting</string>
-    <string name="loading">Bezig met laden&#8230;</string>
-    <string name="image_not_found">Afbeelding niet gevonden</string>
 
-    <item name="fieldCheckbox" type="id"></item>
+    <string name="automatic_population_failed">Automatisch titels invullen mislukt</string>
 
-    <string name="alert_select_min_1_field">Selecteer tenminste één veld om te updaten</string>
-    <string name="option_usage_copy_if_blank">kopieer indien leeg</string>
-    <string name="option_usage_add_extra">Voegt extra gegevens toe</string>
-    <string name="option_usage_overwrite">Overschrijft bestaande gegevens</string>
-    <string name="cancelling">Aan \'t Annuleren</string>
-    <string name="starting_search">Opstarten zoeken</string>
-    <string name="para_send_info">Tik op de knop hieronder om informatie te verzamelen over recente crashes of andere fouten en zend deze naar een van onze ontwikkelaars. Dit maakt een back-up van uw hele database en van alle log-bestanden. Als u deze bestanden niet wilt opsturen, kunt u ze van de bijlagen lijst in het e-mailbericht verwijderen voordat u dit verstuurt.</string>
-    <string name="button_send_info">Zend informatie</string>
-    <string name="para_cleanup_files">Permanent te verwijderen bestanden nemen %s van uw SD kaart in beslag. Log-bestanden en andere gegevens worden opgeslagen op uw SD kaart bij iedere upgrade, na elke back-up van de database of wanneer de toepassing crasht. Tik op de knop hieronder om deze bestanden permanent te verwijderen van uw SD kaart. Als u veel crashes ondervindt of ander fouten, overweeg dan de  \'Zend Informatie\' knop eerst te gebruiken.</string>
-    <string name="button_cleanup_files">Bestanden opschonen</string>
-    <string name="megabytes">%.2fMB</string>
-    <string name="kilobytes">%.2fkB</string>
-    <string name="bytes">%.0f bytes</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-    <string name="debug_subject">Verzamelde foutopsporingsgegevens</string>
-    <string name="debug_body">Beschrijf in het kort de problemen die u heeft ondervonden.</string>
-    <string name="menu_duplicate">Dupliceer boek</string>
-    <string name="cannot_edit_system">U kunt de systeemwaarden niet bewerken</string>
-    <string name="no_connection">Geen Internet verbinding beschikbaar.</string>
-    <string name="menu_share_this">Delen</string>
-    <string name="label_email_export">Wilt u dit exportbestand als e-mail ergens heen sturen?</string>
-    <string name="menu_crop_thumb">Miniatuur bijsnijden</string>
-    <string name="task_errors">Taakfouten</string>
-    <string name="delete_event">Verwijder gebeurtenis</string>
-    <string name="delete_task">Verwijder taak</string>
+    <string name="available">Beschikbaar</string>
 
-    <string name="title_library">Mijn Boeken</string>
-    <string name="title_settings">Administratie en voorkeuren</string>
-    <string name="title_other_preferences">Meer voorkeuren</string>
-    <string name="label_user_interface">Gebruikersinterface</string>
-    <string name="preference_start_in_my_books">Opstarten in \'Mijn Boeken\'</string>
     <string name="background_tasks">Achtergrondtaken</string>
-    <string name="cleanup_old_tasks">Opschonen oude taken</string>
+
+    <!-- Showed in progress dialog when an import starts -->
+    <string name="backing_up_ellipsis">Aan \'t Back-uppen…</string>
+
+    <string name="backup_request">Wilt u  een back-up van uw database op uw SD kaart maken?</string>
+    <string name="backup_title">Back-up maken?</string>
+
+    <string name="bad_scanner">Het lijkt er op dat de door u gebruikt streepjescode scanner app niet compatibel is met Book Catalogue. Wij kunnen de Zxing streepjescode scanner application aanbevelen. als deze al is geïnstalleerd raden we aan deze te deïnstalleren en daarna weer opnieuw te installeren.</string>
+
+    <string name="book">Boek</string>
+    <string name="book_catalogue_startup">BookCatalogue Opstart</string>
+    <string name="book_details_readonly_by">door</string>
+    <string name="book_details_readonly_loaned_to">Uitgeleend aan %1$s</string>
+    <string name="book_details_readonly_pages">%1$s pagina\'s</string>
+    <string name="book_not_found">Het gescande boek is niet gevonden. U kunt de juiste streepjescode aan de achterkant van de omslag vinden. Vul anders de gegevens handmatig in.</string>
+
+    <string name="brackets">(%1$s)</string>
+
+    <string name="builtin">Ingebouwd</string>
+
+    <string name="button_anthology_add">Toevoegen</string>
+    <string name="button_cancel">Annuleren</string>
+    <string name="button_cleanup_files">Bestanden opschonen</string>
+    <string name="button_confirm_add">Boek toevoegen</string>
+    <string name="button_confirm_save">Boek opslaan</string>
+    <string name="button_loan_book">Boek uitlenen</string>
+    <string name="button_ok">OK</string>
+    <string name="button_returned">Teruggebracht</string>
+    <string name="button_save">Opslaan</string>
+    <string name="button_send_info">Zend informatie</string>
+    <string name="button_update">Bijwerken</string>
+
+    <string name="bytes">%.0f bytes</string>
+
+    <string name="cancelled_info">Geannuleerd - %s</string>
+
+    <string name="cancelling">Aan \'t Annuleren</string>
+
+    <string name="cannot_edit_system">U kunt de systeemwaarden niet bewerken</string>
+
+    <string name="changed_author_how_apply">U heeft de auteursnaam veranderd van:\n  \'%1$s\' naar \n  \'%2$s\'\nHoe wilt u deze verandering toepassen?\nNB: De keuze \'%3$s\' wordt onmiddelijk toegepast.</string>
+    <string name="changed_series_how_apply">U heeft de serie veranderd van:\n  \'%1$s\' naar \n  \'%2$s\'\nHoe wilt u deze verandering doorvoeren?\nNB: De keuze \'Alle Boeken\' wordt onmiddelijk toegepast.</string>
+
     <string name="cleanup_old_events">Opschonen oude gebeurtenissen</string>
-    <string name="label_add_manually">Handmatig toevoegen</string>
-    <string name="label_search_internet">Internet doorzoeken</string>
-    <string name="legacy_task">Verlopen taken</string>
-    <string name="unknown_uc">ONBEKEND</string>
-    <string name="select_an_action">Selecteer een actie</string>
-    <string name="alert_if_the_problem_persists">Als het probleem aanhoud, maak dan contact met ondersteuning via Help in het hoofdmenu.</string>
-    <string name="x_of_y">%1$d van %2$d</string>
-    <string name="label_erase_cover_cache">Wis boekomslag cache</string>
-    <string name="crash_toast_text">BookCatalogue is onverwacht gecrasht. Help ons aub de toepassing beter te maken door deze crash te melden.</string>
-    <string name="crash_notif_ticker_text">BookCatalogue is gecrasht</string>
-    <string name="crash_notif_title">BookCatalogue crash</string>
-    <string name="crash_notif_text">Tik hier voor details</string>
-    <string name="crash_dialog_title">BookCatalogue crash</string>
-    <string name="crash_dialog_text">Het lijkt er op dat BookCatalogue is gecrasht. Beschrijf indien mogelijk hieronder wat de oorzaak kan zijn en druk op "OK" om ons een e-mail te sturen over deze crash. U kunt het bericht inzien voordat het wordt verzonden.</string>
+    <string name="cleanup_old_tasks">Opschonen oude taken</string>
+
+    <string name="click_on_thumb">Tik op een miniatuur voor vergroting</string>
+
+    <string name="clone_style">Stijl klonen</string>
+
+    <string name="column_is_blank">Kolom %1$s is leeg op rij %2$s</string>
+
+    <string name="columns_are_blank">Kolommen %1$s zijn allemaal leeg op rij %2$d</string>
+
+    <string name="compact">Compact</string>
+
+    <string name="confirm_add_bs">Toevoegen Boekenplank</string>
+    <string name="confirm_save_bs">Boekenplank opslaan</string>
+
+    <string name="contact1">eleybourn@gmail.com</string>
+
+    <string name="contact2">philip.warner@rhyme.com.au</string>
+
+    <string name="continue_editing">Doorgaan met bewerken</string>
+
+    <string name="could_not_copy_image">Kon afbeelding niet kopiëren</string>
+
+    <string name="cover_corrupt">Omslagafbeelding is niet geldig</string>
+    <string name="cover_detail">Omslagafbeelding detail</string>
+    <string name="cover_options_cc_ellipsis">Boekomslag opties…</string>
+
+    <!-- Displayed in progress dialog when exporting covers -->
+    <string name="covers_progress">%1$s boekomslagen verwerkt (%2$s missend)</string>
+    <!-- Description of the 'import all books' option -->
+    <!-- Description of the 'export new & changed' option -->
+    <!-- Part of the progress message displayed when exporting books -->
+    <!-- Displayed in progress dialog when exporting covers in incremental mode -->
+    <string name="covers_progress_increment">%1$s boekomslagen verwerkt (%2$s missend, %3$s overgeslagen)</string>
+
     <string name="crash_dialog_comment_prompt">Uw commentaar (of laat dit leeg):</string>
     <string name="crash_dialog_ok_toast">Dank u!</string>
-    <string name="no_series">(geen series)</string>
-    <string name="option_library_read">Gelezen</string>
-    <string name="option_library_unread">Ongelezen</string>
-    <string name="no_genre">(geen genre)</string>
-    <string name="no_title">(geen titel)</string>
-    <string name="no_publisher">(geen uitgever)</string>
-    <string name="no_author">(geen auteur)</string>
-    <string name="preference_show_thumbnails">Toon Miniaturen</string>
-    <string name="preference_prefer_large_thumbnails">Prefereer grote miniaturen</string>
-    <string name="sort_author_series">Auteur daarna Serie</string>
-    <string name="sort_series">Series</string>
-    <string name="label_sort_title_first_letter">Titel eerste letter</string>
-    <string name="sort_genre">Genrenaam</string>
-    <string name="sort_loaned">Uitgeleend</string>
-    <string name="sort_read_and_unread">Gelezen en ongelezen</string>
-    <string name="sort_publication_date">Publicatiedatum</string>
-    <string name="sort_added_date">Datum toegevoegd</string>
-    <string name="sort_author_year">Auteur en jaar</string>
-    <string name="empty_with_brackets">(leeg)</string>
-    <string name="title_library_preferences">Boekenlijst Voorkeuren</string>
-    <string name="preference_extra_book_details">Extra boekdetails</string>
-    <string name="general">Algemeen</string>
-    <string name="label_bookshelves">Boekenplanken</string>
-    <string name="shelves">Planken</string>
-    <string name="label_location">Locatie</string>
-    <string name="label_data_import_export">Gegevens Import/Export</string>
-    <string name="unrecognized_task">Onherkenbare taak</string>
-    <string name="rebuilding_search_index">Zoekindex opnieuw opbouwen&#8230;</string>
-    <string name="optimizing_databases">Databases optimaliseren&#8230;</string>
-    <string name="starting_up">Opstarten&#8230;</string>
-    <string name="book_catalogue_startup">BookCatalogue Opstart</string>
-    <string name="preference_library_state">Boekenlijst status</string>
-    <string name="option_always_start_library_expanded">Altijd boekenlijsten uitgeklapt starten</string>
-    <string name="option_always_start_library_collapsed">Altijd boekenlijsten ingeklapt starten</string>
-    <string name="option_remember_library_state">Behoud boekenlijst status</string>
-    <string name="title_edit_library_styles">Bewerk boekenlijststijlen</string>
-    <string name="show_more_ellipsis">Toon meer&#8230;</string>
-    <string name="show_fewer_ellipsis">Toon minder&#8230;</string>
-    <string name="customize_ellipsis">Aanpassen&#8230;</string>
-    <string name="label_reset_hints">Herstel aanwijzingen</string>
+    <string name="crash_dialog_text">Het lijkt er op dat BookCatalogue is gecrasht. Beschrijf indien mogelijk hieronder wat de oorzaak kan zijn en druk op "OK" om ons een e-mail te sturen over deze crash. U kunt het bericht inzien voordat het wordt verzonden.</string>
+    <string name="crash_dialog_title">BookCatalogue crash</string>
+    <string name="crash_notif_text">Tik hier voor details</string>
+    <string name="crash_notif_ticker_text">BookCatalogue is gecrasht</string>
+    <string name="crash_notif_title">BookCatalogue crash</string>
+    <string name="crash_toast_text">BookCatalogue is onverwacht gecrasht. Help ons aub de toepassing beter te maken door deze crash te melden.</string>
+
+    <string name="customize_ellipsis">Aanpassen…</string>
+
+    <string name="day">Dag</string>
+
+    <string name="debug_body">Beschrijf in het kort de problemen die u heeft ondervonden.</string>
+    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_subject">Verzamelde foutopsporingsgegevens</string>
+
+    <string name="delete_1st_bs">De eerste boekenplank kan niet verwijderd worden</string>
+    <string name="delete_event">Verwijder gebeurtenis</string>
+    <string name="delete_series">Verwijderen serie</string>
+    <string name="delete_style">Stijl verwijderen</string>
+    <string name="delete_task">Verwijder taak</string>
+
+    <!-- Description of the 'import all books' option -->
+    <string name="description_all_books_blurb">Alle boeken in het archief zullen worden geïmporteerd en zo de bestaande boeken bijwerken en nieuwe toevoegen.</string>
+    <!-- Brief description -->
+    <string name="description_book_details_blurb">De details van het boek zelf</string>
+    <!-- Brief description -->
+    <string name="description_cover_images_blurb">Omslagafbeeldingen voor alle geselecteerde boeken. Dit zal de export aanzienlijk groter maken.</string>
+    <string name="description_displaying_n_books">tonen van %1$s boeken</string>
+    <string name="description_displaying_n_books_in_m_entries">tonen van %1$s boeken, in %2$s invoeren</string>
+    <!-- Explanatory note for 'advanced export' option -->
+    <string name="description_export_advanced_blurb">Selecteer wat geëxporteerd zal worden naar het archief.</string>
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="description_export_advanced_date_blurb">Specificeer desgewenst een datum voor de selectie van boeken en/of omslagen om te exporteren:</string>
+    <!-- Explanatory note for 'export all' option -->
+    <string name="description_export_all_blurb">Alle boeken, omslagafbeeldingen, instellingen en aangepaste stijlen zullen worden geëxporteerd naar het archief.</string>
+    <!--  Explanatory text for 'export' dialogue -->
+    <string name="description_export_books_blurb">De boeken in de catalogus zullen worden geëxporteerd. Tik op één van de twee opties om de export te starten of druk op \'terug\' om te annuleren:</string>
+    <!-- End: Added/Updated in 5.0.9 -->
+    <!-- Begin: Added/Updated in 5.1.0 -->
+    <!--  Explanatory text for 'import' dialogue -->
+    <string name="description_import_books_blurb">De boeken in dit archief zullen worden geïmporteerd. Tik op één van de twee opties om de import te starten of druk op \'terug\' om te annuleren:</string>
+    <string name="description_import_complete">Import Compleet</string>
+    <!-- Description of the 'import new & changed' option -->
+    <string name="description_new_and_changed_books_blurb">Alleen nieuwe boeken importeren of boeken die onlangs zijn bijgewerkt in het archief. Dit is handig bij het synchroniseren van twee apparaten.</string>
+    <string name="description_no_bookshelves">U heef nog geen boekenplank aangemaakt. Voeg er een toe via het menu onderaan dit scherm.</string>
+    <string name="description_overwrite_thumbnail">Dit zal de geselecteerde velden zoals getoond bijwerken, maar miniaturen kunnen desgewenst voor Alle boeken worden gedownload.\n\nWilt u alle miniaturen overschrijven? Waarschuwing: dit kan een lange tijd in beslag nemen. </string>
+    <!-- Brief description -->
+    <string name="description_preferences_blurb">Voorkeuren en aangepaste boekenlijst stijlen</string>
+    <string name="description_select_fields_to_update_help">De geselecteerde velden zullen worden bijgewerkt vanaf het internet. Niet geselecteerde velden blijven onveranderd.</string>
+
+    <string name="details_have_changed">De details zijn veranderd</string>
+
     <string name="do_not_show_again">Laat niet meer zien</string>
-    <string name="hint_library_styles_editor">U kunt dit scherm gebruiken om de lijst met stijlen aan te passen die in uw standaard stijlen menu wordt getoond.
-    										\n\nEen goren vinkje betekent dat een stijl getoond wordt in de lijst en een rood kruisje dat die niet wordt getoond.
-    										Tikken op een groen vinkje zal het in een rood kruisje veranderen en vice-versa.
-    										\n\nAls geen stijlen zijn aangevinkt zullen alle stijlen worden getoond.
-    										\n\nHet is ook mogelijk de items te herschikken door ze met het pictogram uiterst rechts van de rij op en neer te verslepen.
-    										\n\nOveral elders in de rij tikken geeft de mogelijkheid de details van een bepaalde stijl te bewerken (of deze te klonen als het een ingebouwde stijl is).
-</string>
-    <string name="hint_library_style_groups">U kunt dit scherm gebruiken om de hierarchie van de kopteksten voor een bepaalde boekenlijststijl te bewerken.
-    										\n\nEen groen vinkje geeft aan dat de koptekst in de lijst te zien is en een rood kruisje dat deze niet te zien is.
-    										Tikken op een groen vinkje zal het in een rood kruisje veranderen en vice-versa.
-    										\n\nU kunt de hierarchie herschikken door ze met het pictogram uiterst rechts van de rij op en neer verslepen.
-</string>
-    <string name="hint_library_style_properties">U kunt dit scherm gebruiken om de eigenschappen van een bepaalde boekenlijststijl te bewerken.
-    										\n\nU kunt de naam veranderen, de groepering bewerken om de hierarchie te veranderen en een nog veel meer aanpassingen 
-    										doen aan de instellingen om een stijl te bouwen naar uw eigen inzichten.
-    										\n\nHet is ook mogelijk \'Boekfilters\' te gebruiken om de selectie van weer te geven boeken in de lijst aan te passen,
-    										bijvoorbeeld alleen die boeken die u nog niet heeft gelezen.
-</string>
+
+    <string name="duplicate_book_message">Het boek dat u wilt toevoegen is al aanwezig in de database, weet u zeker dat u nog een exemplaar wilt toevoegen?</string>
+    <string name="duplicate_book_title">Dupliceer Boek</string>
+
+    <string name="edit_author_details">Bewerken auteurdetails</string>
+    <string name="edit_book_series">Bewerken van boekseries</string>
+    <string name="edit_series">Bewerken seriedetails</string>
+    <string name="edit_style">Stijl bewerken</string>
+
+    <string name="empty_with_brackets">(leeg)</string>
+
+    <string name="exit">Afsluiten</string>
+
+    <string name="export_starting_ellipsis">Starten van Export…</string>
+
+    <string name="extra_filters">Boekfilters</string>
+
+    <item name="fieldCheckbox" type="id"/>
+
+    <string name="file_must_contain_any_column">Bestandsnaam moet een kolom met de volgende namen bevatten: %s</string>
+    <string name="file_must_contain_column">Bestandsnaam moet een kolomnaam %s bevatten</string>
+
+    <string name="finding_editions">Zoeken naar uitgaven…</string>
+
+    <!-- Hint displayed when aCatalogue Backup is done -->
+    <string name="fragment_a_and_b">%1$s and %2$s</string>
+    <string name="fragment_and_others">et. al.</string>
+
+    <string name="general">Algemeen</string>
+
+    <string name="groupings">Groeperingen</string>
+
+    <string name="hint_authors_book_may_appear_more_than_once">Als boeken worden getoond met alle auteurs, kunnen ze meermalen voorkomen in de lijst. Het verwijderen van één van die boeken heeft tot gevolg dat alle exemplaren worden verwijderd uit de lijst.</string>
+    <string name="hint_autorotate_camera_images">Als u altijd uw camera-opnames dezelfde kant opdraait kunt u proberen de applicatie-instellingen te veranderen zodat dit automatisch gebeurt.</string>
+    <string name="hint_background_task_events">Vanaf hier kunt u de gebeurtenissen zien die zijn geassocieerd met op de achtergrond lopende taken. 
+    								    Tikken op een gebeurtenis laat u een aantal acties uitvoeren die samenhangen met die gebeurtenis.</string>
+    <string name="hint_background_tasks">Vanaf deze plaats kunt u de lopende taken zien en eveneens vorige taken die met fouten of ander vermeldingswaardige gebeurtenissen zijn beëindigd. 
+    								     Tikken op een taak laat u de bijbehorende gebeurtenissen zien en ook de taak laten verwijderen (samen met de gerelateerde gebeurtenissen).</string>
+    <!-- Hint text displayed when user enters the book listw -->
+    <string name="hint_library">Tikken op een boek zal de details van het boek tonen, lang drukken op een titel in de lijst geeft verdere opties.</string>
     <string name="hint_library_global_properties">U kunt dit scherm gebruiken om de standaard eigenschappen van alle boekenlijststijlen in te stellen.
     										\n\nDe meeste eigenschappen kunnen worden overschreven door individuele stijlen, maar de standaardwaarden worden
     										hier gedefinieerd.
@@ -299,124 +213,241 @@
     										veranderen die, waar mogelijk, toegepast worden op alle stijlen.
     										\n\nU kunt ook het stijl-menu aanpassen en van hieruit de stijlen zelf.
 </string>
-    <string name="preferred_styles">Voorkeursstijlen</string>
-    <string name="title_edit_style_colon_name">Bewerk stijl: %1$s</string>
-    <string name="title_add_style">Stijl toevoegen</string>
-    <string name="title_clone_style_colon_name">Klonen van Stijl: %1$s</string>
-    <string name="option_select_read_only">Selecteer alleen gelezen boeken</string>
-    <string name="option_select_unread_only">Selecteer alleen ongelezen boeken</string>
-    <string name="extra_filters">Boekfilters</string>
-    <string name="new_style">Nieuwe stijl</string>
-    <string name="select_based_on_read_status">Selecteer op \'Gelezen\' status</string>
-    <string name="preference_books_with_multiple_authors">Boeken met meerdere auteurs</string>
-    <string name="preference_books_in_multiple_series">Boeken in meerdere series</string>
-    <string name="option_use_default_setting">Gebruik de standaard waarden</string>
-    <string name="option_show_book_under_each_thing">Onder elke %1$s</string>
-    <string name="option_show_book_under_primary_thing">Alleen onder primaire %1$s</string>
-    <string name="preference_format_of_author_names">Formaat van auteursnamen</string>
-    <string name="option_given_name_first_eg">Voornaam eerst bijv. \'Gerard Reve\'</string>
-    <string name="option_family_name_first_eg">Achternaam eerst bijv. \'Reve, Gerard\'</string>
-    <string name="thumbnails">Miniaturen</string>
-    <string name="preference_size_of_library_items">Grootte van boekenlijstitems</string>
-    <string name="option_normal">Normaal</string>
-    <string name="option_smaller">Kleiner</string>
-    <string name="select_style">Selecteer stijl</string>
-    <string name="thing_must_not_be_blank">%1$s mag niet leeg zijn</string>
-    <string name="label_edit">Bewerken</string>
-    <string name="groupings">Groeperingen</string>
-    <string name="label_preferences">Voorkeuren</string>
-    <string name="alert_unexpected_error">Er is een onverwachte fout opgetreden. Zend ons aub de details via de \'Help\' optie in het hoofdmenu</string>
-    <string name="delete_style">Stijl verwijderen</string>
-    <string name="edit_style">Stijl bewerken</string>
-    <string name="clone_style">Stijl klonen</string>
-    <string name="label_dash_or_dash">- Of -</string>
-    <string name="label_paypal_donation">PayPal Donatie</string>
-    <string name="compact">Compact</string>
-    <string name="user_defined">Gebruiker-gedefinieerd</string>
-    <string name="builtin">Ingebouwd</string>
-    <string name="sort_unread">Ongelezen (Auteur/Serie)</string>
-    <string name="unknown">Onbekend</string>
-    <string name="cover_options_cc_ellipsis">Boekomslag opties&#8230;</string>
-    <string name="show_events_ellipsis">Toon gebeurtenissen&#8230;</string>
-    <string name="hint_authors_book_may_appear_more_than_once">Als boeken worden getoond met alle auteurs, kunnen ze meermalen voorkomen in de lijst. Het verwijderen van één van die boeken heeft tot gevolg dat alle exemplaren worden verwijderd uit de lijst.</string>
-    <string name="hint_series_book_may_appear_more_than_once">Als boeken worden getoond in alle series, kunnen ze meermalen voorkomen in de lijst. Het verwijderen van één van die boeken heeft tot gevolg dat alle exemplaren worden verwijderd uit de lijst.</string>
-    <string name="hint_background_tasks">Vanaf deze plaats kunt u de lopende taken zien en eveneens vorige taken die met fouten of ander vermeldingswaardige gebeurtenissen zijn beëindigd. 
-    								     Tikken op een taak laat u de bijbehorende gebeurtenissen zien en ook de taak laten verwijderen (samen met de gerelateerde gebeurtenissen).</string>
-    <string name="hint_background_task_events">Vanaf hier kunt u de gebeurtenissen zien die zijn geassocieerd met op de achtergrond lopende taken. 
-    								    Tikken op een gebeurtenis laat u een aantal acties uitvoeren die samenhangen met die gebeurtenis.</string>
-    <string name="alert_hints_have_been_reset">Aanwijzingen zijn hersteld</string>
-    <string name="hint_startup_screen">Dit is het standaard BookCatalogue opstartscherm. Als u dat wilt kunt u direct in \'Mijn Boeken\' opstarten. Het opstartscherm kan veranderd worden bij Voorkeuren.</string>
-    <string name="upgrading_ellipsis">Upgrading&#8230;</string>
-    <string name="label_read_amp_unread">Gelezen &amp; Ongelezen</string>
-    <string name="label_loaned">Uitgeleend</string>
-    <string name="label_publication_year">Jaar</string>
-    <string name="label_publication_month">Maand</string>
-    <string name="label_added_year">Jaar</string>
-    <string name="label_added_month">Maand</string>
-    <string name="label_added_day">Dag</string>
-    <string name="book">Boek</string>
-    <string name="label_in">In</string>
-    <string name="label_size">Grootte</string>
-    <string name="label_updated">Bijgewerkt</string>
-    <string name="alert_problem_starting_import_arg">Het is een probleem bij het starten van de import van: %1$s</string>
+    <string name="hint_library_style_groups">U kunt dit scherm gebruiken om de hierarchie van de kopteksten voor een bepaalde boekenlijststijl te bewerken.
+    										\n\nEen groen vinkje geeft aan dat de koptekst in de lijst te zien is en een rood kruisje dat deze niet te zien is.
+    										Tikken op een groen vinkje zal het in een rood kruisje veranderen en vice-versa.
+    										\n\nU kunt de hierarchie herschikken door ze met het pictogram uiterst rechts van de rij op en neer verslepen.
+</string>
     <string name="hint_library_style_menu">Dit menu laat u de lijststijl selecteren.
     								\n\nU kunt het menu ook aanpassen of u eigen lijststijl maken door te tikken op \'Aanpassen\' onderaan de lijst.</string>
-    <string name="menu_edit_format">Formaat bewerken&#8230;</string>
-    <string name="label_edit_format_name">Formaat naam bewerken</string>
-    <string name="name_can_not_be_blank">Naamveld mag niet leeg zijn</string>
-    <string name="export_starting_ellipsis">Starten van Export&#8230;</string>
-    <string name="preference_resizing_cover_thumbnails">Herschalen boekomslag miniaturen</string>
-    <string name="option_resize_each_time">Herschaal elke keer als ze nodig zijn (gebruikt minder opslagruimte, scrollen zal langzamer gaan)</string>
-    <string name="option_cache_resized_thumbnails_for_later_use">Cache herschaalde miniaturen (gebruikt meer opslagruimte, scrollen van de lijst gaat sneller)</string>
-    <string name="preference_generating_cover_thumbnails">Aanmaken boekomslag miniaturen</string>
-    <string name="option_use_background_thread">Gebruik achtergrond deelproces (lijsten scrollen sneller, tonen afbeeldingen misschien vertraagd)</string>
-    <string name="option_generate_immediately">Genereer onmiddelijk (lijsten scrollen langzamer, afbeeldingen worden onmiddelijk getoond)</string>
-    <string name="sort_and_style_ellipsis">Sorteren &amp; Stijlen&#8230;</string>
-    <string name="description_displaying_n_books_in_m_entries">tonen van %1$s boeken, in %2$s invoeren</string>
-    <string name="description_displaying_n_books">tonen van %1$s boeken</string>
-    <string name="available">Beschikbaar</string>
-    <string name="loaned_to_2">\u2192</string>
-    <string name="preference_summary_details_in_header">Samenvattingsdetails in koptekst</string>
-    <string name="option_hide_summary_details">Verberg samenvattingsdetails</string>
-    <string name="x_is_not_a_valid_isbn">%1$s is geen geldige ISBN</string>
-    <string name="preference_beep_if_scanned_isbn_invalid">Beep als het gescande ISBN ongeldig is</string>
-    <string name="no_image_found">Geen afbeelding gevonden</string>
-    <string name="could_not_copy_image">Kon afbeelding niet kopiëren</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">Deze optie is niet aanwezig voordat het boek is opgeslagen</string>
-    <string name="label_scan_barcode_isbn">Scan streepjescode/ISBN</string>
-    <string name="label_enter_isbn">Invullen ISBN</string>
-    <string name="label_allow_asin">Toestaan ASIN</string>
-    <string name="x_is_not_a_valid_isbn_or_asin">%1$s is geen geldig ISBN of ASIN</string>
-    <string name="label_read_year">Jaar</string>
-    <string name="label_read_month">Maand</string>
-    <string name="label_read_day">Dag</string>
-    <string name="sort_read_date">Datum gelezen</string>
-    <string name="details_have_changed">De details zijn veranderd</string>
-    <string name="you_have_unsaved_changes">U heeft niet opgeslagen veranderingen. Als u nu afsluit gaan die verloren.</string>
-    <string name="exit">Afsluiten</string>
-    <string name="continue_editing">Doorgaan met bewerken</string>
-    <string name="the_title_already_exists">De titel bestaat al</string>
-    <string name="label_year">Jaar</string>
-    <string name="label_month">Maand</string>
-    <string name="day">Dag</string>
+    <string name="hint_library_style_properties">U kunt dit scherm gebruiken om de eigenschappen van een bepaalde boekenlijststijl te bewerken.
+    										\n\nU kunt de naam veranderen, de groepering bewerken om de hierarchie te veranderen en een nog veel meer aanpassingen 
+    										doen aan de instellingen om een stijl te bouwen naar uw eigen inzichten.
+    										\n\nHet is ook mogelijk \'Boekfilters\' te gebruiken om de selectie van weer te geven boeken in de lijst aan te passen,
+    										bijvoorbeeld alleen die boeken die u nog niet heeft gelezen.
+</string>
+    <string name="hint_library_styles_editor">U kunt dit scherm gebruiken om de lijst met stijlen aan te passen die in uw standaard stijlen menu wordt getoond.
+    										\n\nEen goren vinkje betekent dat een stijl getoond wordt in de lijst en een rood kruisje dat die niet wordt getoond.
+    										Tikken op een groen vinkje zal het in een rood kruisje veranderen en vice-versa.
+    										\n\nAls geen stijlen zijn aangevinkt zullen alle stijlen worden getoond.
+    										\n\nHet is ook mogelijk de items te herschikken door ze met het pictogram uiterst rechts van de rij op en neer te verslepen.
+    										\n\nOveral elders in de rij tikken geeft de mogelijkheid de details van een bepaalde stijl te bewerken (of deze te klonen als het een ingebouwde stijl is).
+</string>
+    <string name="hint_series_book_may_appear_more_than_once">Als boeken worden getoond in alle series, kunnen ze meermalen voorkomen in de lijst. Het verwijderen van één van die boeken heeft tot gevolg dat alle exemplaren worden verwijderd uit de lijst.</string>
+    <string name="hint_startup_screen">Dit is het standaard BookCatalogue opstartscherm. Als u dat wilt kunt u direct in \'Mijn Boeken\' opstarten. Het opstartscherm kan veranderd worden bij Voorkeuren.</string>
+    <!-- End: Added/Updated in 5.2.0 -->
+    <!-- Begin: Added/Updated in 5.2.1 -->
+    <string name="hint_tempus_locum"><![CDATA[
+	    		<p><b>De hoofdontwikkelaar van Book Catalogue heeft een nieuwe app ontwikkelt!</b></p><p>Blijf op de hoogte van locaties, afbeeldingen, geluidsopnames en notities; en als je geïnteresseerd bent in wetenschap
+				beheer dan voorbeelden en labels.</p><p>Bekijk het in de Google Play Store:</p><p><a href="market://details?id=info.philipwarner.fieldassistant">Tempus Locum</a></p><p>of u kunt het op deze website zien:</p><p><a href="http://www.tempuslocum.com/">http://www.tempuslocum.com/</a></p>
+			]]></string>
+    <!-- Hint text displayed when user enters the book listw -->
+    <string name="hint_view_only_book_details">Wanneer u op een item in deze lijst tikt, kunt u nu kiezen naar een alleen-lezen detailoverzicht te gaan. 
+Zie "Meer voorkeuren" voor de relevante instelling.
+</string>
+    <!-- Hint text displayed when user enters the 'read-only' book view -->
+    <string name="hint_view_only_help">Dit is het alleen-lezen detailoverzicht. U kunt naar link en rechts vegen om naar andere boeken te gaan en u kunt het boek bewerken via het opties menu door gebruik te maken van de menuknop of overvloeiend menu-pictogram.
+</string>
+
     <string name="if_day_is_specified_month_and_year_must_be">Als de dag is gespecificeerd dan moet ook de maand en het jaar ingevuld worden.</string>
     <string name="if_month_is_specified_year_must_be">Als de maand is gespecificeerd moet ook het jaar worden ingevuld.</string>
-    <string name="preference_use_external_image_cropper">Gebruik een externe app voor bijsnijden afbeelding (experimenteel)</string>
-    <string name="preference_auto_rotate_camera_images">met camera-opnames automatisch draaien</string>
-    <string name="hint_autorotate_camera_images">Als u altijd uw camera-opnames dezelfde kant opdraait kunt u proberen de applicatie-instellingen te veranderen zodat dit automatisch gebeurt.</string>
-    <string name="preference_default_crop_frame_is_whole_image">Standaard kader voor bijsnijden is hele afbeelding</string>
-    <string name="alert_cancelled">Geannuleerd</string>
-    <string name="description_import_complete">Import Compleet</string>
-    <string name="searching_ellipsis">Aan \'t zoeken&#8230;</string>
-    <string name="status_adding_book_ellipsis">Boeken aan \'t toevoegen&#8230;</string>
-    <string name="preference_global_opening_book_mode">Open boek in alleen-lezen modus</string>
+
+    <string name="image_not_found">Afbeelding niet gevonden</string>
+
+    <!-- Displayed when an archive operation fails -->
+    <string name="import_failed">Import mislukt.</string>
+
+    <!-- Showed in progress dialog when an import starts -->
+    <string name="importing_ellipsis">Aan \'t Importeren…</string>
+
+    <string name="install_scan_title">Streepjescode Scanner Installeren</string>
+
+    <string name="kilobytes">%.2fkB</string>
+
+    <string name="label_about">Over deze App</string>
+    <string name="label_add">Toevoegen</string>
+    <string name="label_add_manually">Handmatig toevoegen</string>
+    <string name="label_added_day">Dag</string>
+    <string name="label_added_month">Maand</string>
+    <string name="label_added_year">Jaar</string>
+    <!-- Heading in Admin activity -->
+    <string name="label_advanced_options">Geavanceerde opties</string>
+    <string name="label_allow_asin">Toestaan ASIN</string>
+    <string name="label_amazon_wishlist">Amazon Verlanglijst</string>
+    <string name="label_anthology">Bloemlezing</string>
+    <string name="label_anthology_titles">Bloemlezing titels</string>
+    <string name="label_author">Auteur</string>
+    <!-- Hint displayed when an export or database backup is done -->
+    <!-- Progress dialog message displayed when doing a long network operation to a web site -->
+    <!-- Admin option to import -->
+    <string name="label_backup_to_archive">Back-up naar archief</string>
+    <!-- Introduction for 'advanced export' option -->
+    <!-- Text for button -->
+    <string name="label_book_details">Boek details</string>
+    <string name="label_bookshelf">Boekenplank</string>
+    <string name="label_bookshelves">Boekenplanken</string>
+    <string name="label_comments">Mijn Commentaar</string>
+    <string name="label_contact">Contacten:</string>
+    <!-- Displayed in Admin menu advanced options (top make a copy of the internal database on the sdcard -->
+    <string name="label_copy_database">Kopieer Database (voor technische ondersteuning)</string>
+    <!-- Text for button -->
+    <string name="label_cover_images">Omslagafbeeldingen</string>
+    <string name="label_dash_or_dash">- Of -</string>
+    <string name="label_data_import_export">Gegevens Import/Export</string>
+    <string name="label_date_published">Datum uitgave</string>
+    <!-- NOTE: Adding a new format will involve changing code that references this list -->
+    <string name="label_description">Beschrijving</string>
+    <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
+    <string name="label_details">Details</string>
+    <string name="label_donate">Doneren</string>
+    <string name="label_edit">Bewerken</string>
+    <string name="label_edit_format_name">Formaat naam bewerken</string>
+    <string name="label_email_export">Wilt u dit exportbestand als e-mail ergens heen sturen?</string>
+    <string name="label_enter_isbn">Invullen ISBN</string>
+    <string name="label_erase_cover_cache">Wis boekomslag cache</string>
+    <!-- Content description for the 'up' icon in the folder browser -->
+    <!-- Displayed when a user tries to browse higher than the root directory, or if the parent is unable to be read -->
+    <!-- For saving and opening exports or backups -->
+    <!-- Admin option to export books -->
+    <string name="label_export_to_csv">Exporteer naar CSV-bestand</string>
+    <string name="label_family_name">Achternaam</string>
+    <string name="label_format">Formaat</string>
+    <string name="label_genre">Genre</string>
+    <string name="label_given_names">Voornamen</string>
+    <string name="label_help">Help</string>
+    <string name="label_import_books">Boeken Importeren</string>
+    <!-- Admin option to import -->
+    <string name="label_import_from_archive">Importeren vanuit archief</string>
+    <!-- Admin option to import books -->
+    <string name="label_import_from_csv">Importeer vanuit CSV-bestand</string>
+    <string name="label_in">In</string>
+    <string name="label_is_anthology">Is dit boek een bloemlezing?</string>
+    <string name="label_isbn">ISBN</string>
+    <!-- End: Added/Updated in 5.0.3 -->
+    <!-- Begin: Added/Updated in 5.0.4 -->
+    <!-- Short Heading for 'Language' field in book details -->
+    <string name="label_language">Taal</string>
+    <string name="label_list_price">Prijs</string>
+    <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
+    <string name="label_loan">Uitleen</string>
+    <string name="label_loan_to">Leen boek aan:</string>
+    <string name="label_loaned">Uitgeleend</string>
+    <string name="label_loaned_to">Dit boek is uitgeleend aan:</string>
+    <string name="label_location">Locatie</string>
+    <string name="label_location_of_book">Locatie van het boek</string>
+    <string name="label_month">Maand</string>
+    <string name="label_notes">Notities</string>
+    <string name="label_pages">Pagina\'s</string>
+    <string name="label_paypal_donation">PayPal Donatie</string>
+    <string name="label_preferences">Voorkeuren</string>
+    <string name="label_publication_month">Maand</string>
+    <string name="label_publication_year">Jaar</string>
+    <string name="label_publisher">Uitgever</string>
     <string name="label_publishing">Publiceren</string>
-    <string name="book_details_readonly_by">door</string>
-    <string name="book_details_readonly_loaned_to">Uitgeleend aan %1$s</string>
-    <string name="book_details_readonly_pages">%1$s pagina\'s</string>
-    <string name="brackets">(%1$s)</string>
-    <string name="new_in_42">
-<![CDATA[
+    <string name="label_rating">Waardering</string>
+    <string name="label_read">Heeft u dit boek gelezen?</string>
+    <string name="label_read_amp_unread">Gelezen &amp; Ongelezen</string>
+    <string name="label_read_day">Dag</string>
+    <string name="label_read_end">Einddatum lezen</string>
+    <string name="label_read_month">Maand</string>
+    <string name="label_read_start">Begindatum lezen</string>
+    <string name="label_read_year">Jaar</string>
+    <string name="label_reset_hints">Herstel aanwijzingen</string>
+    <string name="label_same_author">Alle verhalen in deze bloemlezing zijn geschreven door dezelfde auteur</string>
+    <string name="label_scan_barcode_isbn">Scan streepjescode/ISBN</string>
+    <string name="label_search">Zoeken</string>
+    <string name="label_search_by">zoeken naar auteurs of titels</string>
+    <string name="label_search_for_books">Zoeken naar boeken</string>
+    <string name="label_search_internet">Internet doorzoeken</string>
+    <string name="label_select_bookshelves">Selecteer Boekenplanken</string>
+    <string name="label_series">Serie</string>
+    <string name="label_series_num">#</string>
+    <string name="label_set_authors">Invullen auteurs…</string>
+    <string name="label_signed">Is dit boek gesigneerd?</string>
+    <string name="label_size">Grootte</string>
+    <string name="label_sort_title_first_letter">Titel eerste letter</string>
+    <string name="label_sourcecode">Broncode:</string>
+    <!-- Heading in 'about' dialog -->
+    <string name="label_special_thanks">Speciale dankbetuiging</string>
+    <string name="label_thumbnail">Omslag miniatuur</string>
+    <string name="label_title">Titel</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="label_update_day">Dag update</string>
+    <string name="label_update_fields">Automatisch Velden bijwerken</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="label_update_month">Maand update</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="label_update_year">Jaar update</string>
+    <string name="label_updated">Bijgewerkt</string>
+    <string name="label_user_interface">Gebruikersinterface</string>
+    <string name="label_version_number">Versienummer:</string>
+    <string name="label_webpage">Webpagina:</string>
+    <string name="label_year">Jaar</string>
+
+    <string name="legacy_task">Verlopen taken</string>
+
+    <string name="list_and">en</string>
+
+    <string name="loading">Bezig met laden…</string>
+
+    <string name="loaned_to_2">\u2192</string>
+
+    <string name="megabytes">%.2fMB</string>
+
+    <string name="menu_add_thumb_gallery">Van Galerij…</string>
+    <string name="menu_add_thumb_photo">Van Camera…</string>
+    <!-- Menu item -->
+    <string name="menu_amazon_books_by_author">Boeken van deze auteur</string>
+    <!-- Menu item -->
+    <string name="menu_amazon_books_by_author_in_series">Boeken per auteur/serie</string>
+    <!-- Menu item -->
+    <string name="menu_amazon_books_in_series">Boeken in deze serie</string>
+    <string name="menu_crop_thumb">Miniatuur bijsnijden</string>
+    <string name="menu_delete_anthology">Verwijder titels uit bloemlezing</string>
+    <string name="menu_delete_book">Boek verwijderen</string>
+    <string name="menu_delete_bs">Boekenplank verwijderen</string>
+    <string name="menu_delete_series">Verwijderen serie…</string>
+    <string name="menu_delete_thumb">Verwijder miniatuur</string>
+    <string name="menu_duplicate">Dupliceer boek</string>
+    <string name="menu_edit_author">Bewerken auteur…</string>
+    <string name="menu_edit_book">Boek bewerken</string>
+    <string name="menu_edit_format">Formaat bewerken…</string>
+    <string name="menu_edit_series">Bewerken serie…</string>
+    <string name="menu_insert_bs">Boekenplank maken</string>
+    <string name="menu_replace_thumb">Vervangen miniatuur…</string>
+    <string name="menu_rotate_thumb">Omdraaien miniatuur…</string>
+    <string name="menu_rotate_thumb_180">180 graden draaien</string>
+    <string name="menu_rotate_thumb_ccw">Links draaien</string>
+    <string name="menu_rotate_thumb_cw">Rechts draaien</string>
+    <string name="menu_search">Zoek boeken</string>
+    <string name="menu_share_this">Delen</string>
+    <string name="menu_sort_by_author_collapsed">Alles inklappen</string>
+    <string name="menu_sort_by_author_expanded">Alles uitklappen</string>
+
+    <!-- Short text for 'n books' -->
+    <plurals name="n_books" tools:ignore="UnusedQuantity">
+        <item quantity="zero">geen boeken</item>
+        <item quantity="one">1 boek</item>
+        <item quantity="other">%1$s boeken</item>
+    </plurals>
+    <!-- Short text for 'n covers' -->
+    <plurals name="n_covers" tools:ignore="UnusedQuantity">
+        <item quantity="zero">geen omslagen</item>
+        <item quantity="one">1 omslag</item>
+        <item quantity="other">%1$s omslagen</item>
+    </plurals>
+    <!-- Part of the progress message displayed when importing books -->
+    <string name="n_created_m_updated">%1$s toegevoegd, %2$s bijgewerkt</string>
+    <!-- Short text for 'n stars' -->
+    <plurals name="n_stars" tools:ignore="UnusedQuantity">
+        <item quantity="zero">%1$s sterren</item>
+        <item quantity="one">%1$s ster</item>
+        <item quantity="other">%1$s sterren</item>
+    </plurals>
+
+    <string name="name_can_not_be_blank">Naamveld mag niet leeg zijn</string>
+
+    <string name="new_in_42"><![CDATA[
     <p><b>New in 4.2</b>\n\n
 			* Date-Picker die datums tot 0 AD ondersteund zowel als partiële datums\n\n
 			* HTML beschrijvingen correct afgebeeld met tik voor bewerken\n\n
@@ -438,19 +469,13 @@
 			Veel dank aan onze toegewijde betatesters en vertalers!\n\n
 			Verwijt Grunthos alle bugs en fouten. En zend ons foutrapporten.
 			</p>
-		]]>
-    </string>
-    <string name="_empty_"></string>
-    <string name="new_in_421">
-<![CDATA[
+		]]></string>
+    <string name="new_in_421"><![CDATA[
     <p><b>New in 4.2.1</b>\n\n
 			* Crash gefixt bij uitklappen lijstitems en gebruiken van \'Alles uitklappen\'\n\n
 			</p>
-		]]>
-    </string>
-    <string name="bad_scanner">Het lijkt er op dat de door u gebruikt streepjescode scanner app niet compatibel is met Book Catalogue. Wij kunnen de Zxing streepjescode scanner application aanbevelen. als deze al is geïnstalleerd raden we aan deze te deïnstalleren en daarna weer opnieuw te installeren.</string>
-    <string name="new_in_422">
-<![CDATA[
+		]]></string>
+    <string name="new_in_422"><![CDATA[
     <p><b>New in 4.2.2</b>\n\n
 			* In tegels weergeven van achtergrondafbeeldingen hersteld voor sommige Android versies\n\n
 			* Betere afhandeling van niet compatibele scanner apps\n\n
@@ -458,29 +483,14 @@
 			* Opschonen van lay-outs (Nick Silin)\n\n
 			* Foutcorrecties\n\n
 			</p>
-		]]>
-    </string>
-    <string name="new_in_423">
-<![CDATA[
+		]]></string>
+    <string name="new_in_423"><![CDATA[
     <p><b>New in 4.2.3</b>\n\n
 			* Verbeterde afhandeling van ongeldige ISBN\'s bij verzenden naar goodreads\n\n
 			* Andere kleine fouten hersteld\n\n
 			</p>
-		]]>
-    </string>
-
-    <!-- Heading for scanner-related preferences -->
-    <string name="scanning">Scannen</string>
-    <!-- Preference name, displayed in a preference activity -->
-    <string name="preference_preferred_scanner">Voorkeur Scanner</string>
-    <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="option_zxing_compatible_scanner">Zxing Compatibele Scanner</string>
-    <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="option_pic2shop_scanner">Pic2Shop Scanner</string>
-    <!-- Preference name, displayed in a preference activity -->
-    <string name="preference_beep_if_scanned_isbn_valid">Beep als gescande ISBN geldig is</string>
-    <string name="new_in_424">
-<![CDATA[
+		]]></string>
+    <string name="new_in_424"><![CDATA[
 	<p><b>New in 4.2.4</b>\n\n
 		* Een niet-bewerkbare weergave van boekdetails met \'fling\' ondersteuning! (Zie \"Andere voorkeuren\") (Nick Silin)\n\n
 		* Ondersteuning voor pic2shop scanner (beter voor vaste focus, minder licht en voor webcam camera\'s)\n\n
@@ -489,64 +499,11 @@
 		* Meer Franse vertalingsupdates (Djiko)\n\n
 		* Foutcorrecties\n\n
 		</p>
-		]]>
-    </string>
-
-    <!-- Hint text displayed when user enters the book listw -->
-    <string name="hint_view_only_book_details">Wanneer u op een item in deze lijst tikt, kunt u nu kiezen naar een alleen-lezen detailoverzicht te gaan. 
-Zie "Meer voorkeuren" voor de relevante instelling.
-</string>
-
-    <!-- Hint text displayed when user enters the 'read-only' book view -->
-    <string name="hint_view_only_help">Dit is het alleen-lezen detailoverzicht. U kunt naar link en rechts vegen om naar andere boeken te gaan en u kunt het boek bewerken via het opties menu door gebruik te maken van de menuknop of overvloeiend menu-pictogram.
-</string>
-
-    <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
-    <string name="label_details">Details</string>
-    <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
-    <string name="label_loan">Uitleen</string>
-
-    <!-- Hint displayed when an export or database backup is done -->
-
-    <!-- Progress dialog message displayed when doing a long network operation to a web site -->
-
-    <!-- Admin option to import -->
-    <string name="label_backup_to_archive">Back-up naar archief</string>
-    <!-- Admin option to import -->
-    <string name="label_import_from_archive">Importeren vanuit archief</string>
-
-    <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="fragment_a_and_b">%1$s and %2$s</string>
-    <string name="para_archive_complete_details">Een %3$s bestand met de naam %2$s is aangemaakt in de \"%1$s\" map op uw
-        SD kaart.  U wordt aangeraden dit bestand naar een ander plek te kopiëren om de gegevens veilig te stellen in geval uw apparaat wordt gestolen, beschadigd of kwijt raakt.</string>
-
-    <!-- Displayed in progress dialog when exporting covers -->
-    <string name="covers_progress">%1$s boekomslagen verwerkt (%2$s missend)</string>
-    <!-- Heading in Admin activity -->
-    <string name="label_advanced_options">Geavanceerde opties</string>
-    <!-- Showed in progress dialog when an import starts -->
-    <string name="backing_up_ellipsis">Aan \'t Back-uppen&#8230;</string>
-    <!-- Showed in progress dialog when an import starts -->
-    <string name="importing_ellipsis">Aan \'t Importeren&#8230;</string>
-
-    <!-- Content description for the 'up' icon in the folder browser -->
-
-    <!-- Displayed when a user tries to browse higher than the root directory, or if the parent is unable to be read -->
-
-    <!-- For saving and opening exports or backups -->
-
-    <!-- Admin option to export books -->
-    <string name="label_export_to_csv">Exporteer naar CSV-bestand</string>
-    <!-- Admin option to import books -->
-    <string name="label_import_from_csv">Importeer vanuit CSV-bestand</string>
-
+		]]></string>
     <!-- Displayed when a file/open dialog results in selecting a non-exitant file -->
-
     <!-- Displayed when a file/save dialog results in selecting a directory file -->
-
     <!-- This is pretty close to the expected feature list! It is a merge of 424 and 430... -->
-    <string name="new_in_500">
-<![CDATA[
+    <string name="new_in_500"><![CDATA[
 	<p><b>Nieuw in 5.0.0</b>\n\n
 		* Een niet-bewerkbaar overzicht van de boekdetails met \'fling\' ondersteuning! (Zie \"Ander Voorkeuren\") (Nick Silin)\n\n
 		* Archivering (Back-up & Importeren) van de gehele catalogus, inclusief boeken, omslagen, voorkeuren en stijlen\n\n
@@ -560,179 +517,62 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 		* Interne veranderingen anticiperend op verbeterde tablet interface\n\n
 		* Foutcorrecties\n\n
 		</p>
-		]]>
-    </string>
-
-    <!-- Displayed in Admin menu advanced options (top make a copy of the internal database on the sdcard -->
-    <string name="label_copy_database">Kopieer Database (voor technische ondersteuning)</string>
-
-    <!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
-    <string name="option_show_book_count">Toon aantal boeken</string>
-    <string name="option_show_first_level_and_book_count">Toon eerste niveau koptekst en aantal boeken</string>
-    <string name="option_show_all_summary_details">Toon alle samenvattingsdetails</string>
-
-    <!-- Displayed when an archive operation fails -->
-    <string name="import_failed">Import mislukt.</string>
-    <!-- Displayed when any write operation to the sd card fails -->
-    <string name="alert_please_check_sd_writable">Controleer aub of de SD Kaart beschrijfbaar is en voldoende vrije ruimte heeft.</string>
-    <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_readable">Controleer aub of de SD Kaart toegankelijk is.</string>
-
+		]]></string>
     <!-- Begin: Added/Updated in 5.0.2 -->
-
-    <string name="new_in_502">
-		<![CDATA[
+    <string name="new_in_502"><![CDATA[
 			<p><b>Nieuw in 5.0.2</b>\n\n
 				* Foutcorrecties\n\n
 			</p>
-		]]>
-    </string>
-
+		]]></string>
     <!-- End: Added/Updated in 5.0.2 -->
-    
     <!-- Begin: Added/Updated in 5.0.3 -->
-
-    <string name="new_in_503">
-		<![CDATA[
+    <string name="new_in_503"><![CDATA[
 			<p><b>Nieuw in 5.0.3</b>\n\n
 				* Foutcorrecties\n\n
 				* Franse vertalingsupdates (Imkal)\n\n
 			</p>
-		]]>
-    </string>
-
-    <!-- End: Added/Updated in 5.0.3 -->
-    
-    <!-- Begin: Added/Updated in 5.0.4 -->
-    
-    <!-- Short Heading for 'Language' field in book details -->
-    <string name="label_language">Taal</string>
-    <string name="new_in_504">
-		<![CDATA[
+		]]></string>
+    <string name="new_in_504"><![CDATA[
 			<p><b>Nieuw in 5.0.4</b>\n\n
 				* Nieuw veld: Taal\n\n
 				* Franse vertalingsupdates (Imkal)\n\n
 				* Foutcorrecties\n\n
 			</p>
-11		]]>
-    </string>
-    
+11		]]></string>
     <!-- End: Added/Updated in 5.0.4 -->
-
     <!-- Begin: Added/Updated in 5.0.5 -->
     <!--  New preference to override the default method used to generate bookslists as defined by API level -->
     <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
     <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
     <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
     <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
-
-    <string name="new_in_505">
-		<![CDATA[
+    <string name="new_in_505"><![CDATA[
 			<p><b>Nieuw in 5.0.5</b>\n\n
 				* "Datum toegevoegd" Lijst nu gesorteerd in tegengestelde volgorde\n\n
 				* Franse vertalingsupdates (Imkal)\n\n
 				* Foutcorrecties\n\n
 			</p>
-		]]>
-    </string>
-    
+		]]></string>
     <!-- End: Added/Updated in 5.0.5 -->
-
     <!-- Begin: Added/Updated in 5.0.8 -->
-    <string name="new_in_508">
-		<![CDATA[
+    <string name="new_in_508"><![CDATA[
 			<p><b>Nieuw in 5.0.8</b>\n\n
 				* Duitse vertalingsupdates (Robert Wetzlmayr)\n\n
 			</p>
-		]]>
-    </string>
+		]]></string>
     <!-- End: Added/Updated in 5.0.8 -->
-
-	<!--  Note to Translators: don't bother translating strings until they get a version number. They are very much 'draft' versions -->
-
+    <!--  Note to Translators: don't bother translating strings until they get a version number. They are very much 'draft' versions -->
     <!-- Begin: Added/Updated in 5.0.9 -->
-    <string name="new_in_509">
-		<![CDATA[
+    <string name="new_in_509"><![CDATA[
 			<p><b>New in 5.0.9</b>\n\n
 				* Foutcorrecties voor Android 4.4 (KitKat)\n\n
 				* Dutch translation (Gideon van Melle)\n\n
 				* Andere kleine foutcorrecties
 			</p>
-		]]>
-    </string>
-
-    <!-- End: Added/Updated in 5.0.9 -->
-
-    <!-- Begin: Added/Updated in 5.1.0 -->
-    
-    <!--  Explanatory text for 'import' dialogue -->
-    <string name="description_import_books_blurb">De boeken in dit archief zullen worden geïmporteerd. Tik op één van de twee opties om de import te starten of druk op \'terug\' om te annuleren:</string>
-    <!-- Description of the 'import all books' option -->
-    <string name="description_all_books_blurb">Alle boeken in het archief zullen worden geïmporteerd en zo de bestaande boeken bijwerken en nieuwe toevoegen.</string>
-    <!-- Menu text for the 'import/export new & changed' option -->
-    <string name="option_new_and_changed_books">Nieuwe en bijgewerkte boeken</string>
-    <!-- Description of the 'import new & changed' option -->
-    <string name="description_new_and_changed_books_blurb">Alleen nieuwe boeken importeren of boeken die onlangs zijn bijgewerkt in het archief. Dit is handig bij het synchroniseren van twee apparaten.</string>
-    <!-- Descriptive text associated with import options not available with older archives -->
-    <string name="alert_old_archive_blurb">Deze optie wordt niet ondersteund voor oudere archief versies.</string>
-    <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$s toegevoegd, %2$s bijgewerkt</string>
-
-    <!--  Explanatory text for 'export' dialogue -->
-    <string name="description_export_books_blurb">De boeken in de catalogus zullen worden geëxporteerd. Tik op één van de twee opties om de export te starten of druk op \'terug\' om te annuleren:</string>
-    <!-- Description of the 'import all books' option -->
-    <!-- Description of the 'export new & changed' option -->
-    <!-- Part of the progress message displayed when exporting books -->
-
-    <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$s boekomslagen verwerkt (%2$s missend, %3$s overgeslagen)</string>
-    
-    <!-- Explanatory note for 'export all' option -->
-    <string name="description_export_all_blurb">Alle boeken, omslagafbeeldingen, instellingen en aangepaste stijlen zullen worden geëxporteerd naar het archief.</string>
-    <!-- Explanatory note for 'advanced export' option -->
-    <string name="description_export_advanced_blurb">Selecteer wat geëxporteerd zal worden naar het archief.</string>
-    <!-- Introduction for 'advanced export' option -->
-
-    <!-- Text for button -->
-    <string name="label_book_details">Boek details</string>
-    <!-- Brief description -->
-    <string name="description_book_details_blurb">De details van het boek zelf</string>
-    <!-- Text for button -->
-    <string name="label_cover_images">Omslagafbeeldingen</string>
-    <!-- Brief description -->
-    <string name="description_cover_images_blurb">Omslagafbeeldingen voor alle geselecteerde boeken. Dit zal de export aanzienlijk groter maken.</string>
-    <!-- Brief description -->
-    <string name="description_preferences_blurb">Voorkeuren en aangepaste boekenlijst stijlen</string>
-    
-    <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="description_export_advanced_date_blurb">Specificeer desgewenst een datum voor de selectie van boeken en/of omslagen om te exporteren:</string>
-    
-    <!-- Explanatory note for export date (not yet implemented) -->
-    <!-- Explanatory note for export data since last backup -->
-    <string name="option_all_books_added_or_updated_since_last_full_backup">Alle boeken die zijn toegevoegd of bijgewerkt sinds de laatste volledige back-up</string>
-
-    <!-- Short text for 'n books' -->
-    <plurals
-        name="n_books">
-        <item quantity="zero">geen boeken</item>
-        <item quantity="one">1 boek</item>
-        <item quantity="other">%1$s boeken</item>
-    </plurals>
-
-    <!-- Short text for 'n covers' -->
-    <plurals
-        name="n_covers">
-        <item quantity="zero">geen omslagen</item>
-        <item quantity="one">1 omslag</item>
-        <item quantity="other">%1$s omslagen</item>
-    </plurals>
-
+		]]></string>
     <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
-
     <!-- Short progress message -->
-
-    <string name="new_in_510">
-		<![CDATA[
+    <string name="new_in_510"><![CDATA[
 			<p><b>Nieuw in 5.1.0</b>\n\n
 				* Italiaanse vertaling (Eugenio Davolio)\n\n
 				* Spaanse vertaling (José M. Galdo)\n\n
@@ -742,90 +582,16 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 				* Opties toegevoegd om boeken op Auteur/Serie te vinden bij Amazon\n\n
 				* Andere kleinere foutcorrecties\n\n
 			</p>
-		]]>
-    </string>
-    
-    <!-- Menu item -->
-    <string name="menu_amazon_books_in_series">Boeken in deze serie</string>
-    <!-- Menu item -->
-    <string name="menu_amazon_books_by_author">Boeken van deze auteur</string>
-    <!-- Menu item -->
-    <string name="menu_amazon_books_by_author_in_series">Boeken per auteur/serie</string>
-    
-    <!-- Hint text displayed when user enters the book listw -->
-    <string name="hint_library">Tikken op een boek zal de details van het boek tonen, lang drukken op een titel in de lijst geeft verdere opties.</string>
-
-    <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
-    
-    <string name="option_zxing_scanner">Zxing Scanner</string>
-    
-    <!-- Heading in 'about' dialog -->
-    <string name="label_special_thanks">Speciale dankbetuiging</string>
-    
-    <!-- Credits in the 'about' dialog -->
-    <string name="para_translators">BookCatalogue is het resultaat van de inspanning van vele personen en zou niet zo\'n grote verspreiding \nkennen zonder de genereuse hulp van vrijwillige vertalers: %1$s (als we iemand zijn vergeten, laat het ons aub weten).</string>
-    
-    <!-- End: Added/Updated in 5.1.0 -->
-    
-    <!-- Begin: Added/Updated in 5.1.1 -->
-
-    <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
-    <!-- A hint describing the benefit of folowing the Amazon links -->
-    <!--<string name="hint_amazon_links_blurb">&lt;p&gt;Indien u boeken koopt bij Amazon na het selecteren van de &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; of &lt;i&gt;\"%3$s\"&lt;/i&gt; menu items, zal een deel van de aankoopprijs gezonden worden naar de ontwikkelaars van  %4$s.&lt;/p&gt;&lt;p&gt;U kunt ook de &lt;a href=\"https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29\"&gt;links op de FAQ pagina&lt;/a&gt; gebruiken om direct naar Amazon of Paypal te gaan.&lt;/p&gt;</string>-->
-    <!-- Name of the new style grouping (needs to be short). -->
-    <string name="update_date">Datum update</string>
-    <!-- Name of the new style grouping (needs to be short). -->
-    <string name="label_update_year">Jaar update</string>
-    <!-- Name of the new style grouping (needs to be short). -->
-    <string name="label_update_month">Maand update</string>
-    <!-- Name of the new style grouping (needs to be short). -->
-    <string name="label_update_day">Dag update</string>
-
-    <!-- Short text for 'n stars' -->
-    <plurals
-        name="n_stars">
-        <item quantity="zero">%1$s sterren</item>
-        <item quantity="one">%1$s ster</item>
-        <item quantity="other">%1$s sterren</item>
-    </plurals>
-
-    <string name="new_in_511">
-		<![CDATA[
+		]]></string>
+    <string name="new_in_511"><![CDATA[
 			<p><b>New in 5.1.1</b>\n\n
 				* Foutcorrecties\n\n
 				* Nieuwe stijl: Groeperen op datum laatste update\n\n
 				* Nieuwe stijl: Groeperen op  waardering\n\n
 				* Nieuwe stijl: Groeperen op naam van boekenplank\n\n
 			</p>
-		]]>
-    </string>
-
-    <!-- End: Added/Updated in 5.1.1 -->
-
-    <!-- Begin: Added/Updated in 5.1.2 -->
-
-    <!-- A heading in the 'about' dialog -->
-
-    <!-- The following strings are not in this release, but will be in a future release -->
-    <!--  Menu Item - will be in the next release -->
-
-    <!-- Heading for the "new_in_xxx" message to make future updates less work for translators...I hope -->
-    <!-- The plan is to use specific feature strings so that we can also update the store listing and add/remove reatures easily -->
-    <!-- Part of the "new in x.x.x" message -->
-
-    <!-- End: Added/Updated in 5.1.2 -->
-
-    <!-- Begin: Added/Updated in 5.2.0 -->
-    
-    <!-- Preference name (fairly short) for preferred language -->
-    <string name="preference_preferred_interface_language">Voorkeurstaal voor Interface</string>
-    <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
-    <string name="option_preferred_language_x">%1$s (%2$s)</string>
-
-    <string name="system_locale">Systeem taal</string>
-
-    <string name="new_in_520">
-		<![CDATA[
+		]]></string>
+    <string name="new_in_520"><![CDATA[
 			<p><b>Nieuw in 5.2.0</b>\n\n
 			    * Door de gebruiker te kiezen taal in de voorkeursinstellingen\n\n
 			    * Griekse vertaling (Dimitris Klisiaris)\n\n
@@ -833,38 +599,263 @@ Zie "Meer voorkeuren" voor de relevante instelling.
                 * Verbeteringen in zoeken\n\n
 				* Bug fixes\n\n
 			</p>
-		]]>
-    </string>
-
-    <!-- End: Added/Updated in 5.2.0 -->
-
-    <!-- Begin: Added/Updated in 5.2.1 -->
-    <string name="hint_tempus_locum">
-	    		<![CDATA[
-	    		<p><b>De hoofdontwikkelaar van Book Catalogue heeft een nieuwe app ontwikkelt!</b></p>
-				<p>Blijf op de hoogte van locaties, afbeeldingen, geluidsopnames en notities; en als je geïnteresseerd bent in wetenschap
-				beheer dan voorbeelden en labels.</p>
-				<p>Bekijk het in de Google Play Store:</p>
-				<p><a href="market://details?id=info.philipwarner.fieldassistant">Tempus Locum</a></p>
-				<p>of u kunt het op deze website zien:</p>
-				<p><a href="http://www.tempuslocum.com/">http://www.tempuslocum.com/</a>
-				</p>
-			]]>
-    </string>
+		]]></string>
     <!-- End: Added/Updated in 5.2.1 -->
-
     <!-- Begin: Added/Updated in 5.2.2 -->
-    <string name="new_in_522">
-		<![CDATA[
+    <string name="new_in_522"><![CDATA[
 			<p><b>Nieuw in 5.2.2</b>\n\n
 				* Bug fixes\n\n
 			</p>
-		]]>
-    </string>
-    <!-- End: Added/Updated in 5.2.2 -->
+		]]></string>
+    <string name="new_style">Nieuwe stijl</string>
 
+    <string name="no_author">(geen auteur)</string>
+    <string name="no_connection">Geen Internet verbinding beschikbaar.</string>
+    <string name="no_editions">Geen uitgavegegevens beschikbaar</string>
+    <string name="no_genre">(geen genre)</string>
+    <string name="no_image_found">Geen afbeelding gevonden</string>
+    <string name="no_isbn_no_editions">Kan geen uitgavegegevens verkrijgen van een boek zonder ISBN</string>
+    <string name="no_publisher">(geen uitgever)</string>
+    <string name="no_series">(geen series)</string>
+    <string name="no_title">(geen titel)</string>
+
+    <string name="not_set">Niet Ingevuld</string>
+
+    <string name="num_books_searched">%s Boeken gezocht</string>
+
+    <string name="optimizing_databases">Databases optimaliseren…</string>
+
+    <string name="option_all_books">Alle Boeken</string>
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <!-- Explanatory note for export data since last backup -->
+    <string name="option_all_books_added_or_updated_since_last_full_backup">Alle boeken die zijn toegevoegd of bijgewerkt sinds de laatste volledige back-up</string>
+    <string name="option_always_start_library_collapsed">Altijd boekenlijsten ingeklapt starten</string>
+    <string name="option_always_start_library_expanded">Altijd boekenlijsten uitgeklapt starten</string>
+    <string name="option_cache_resized_thumbnails_for_later_use">Cache herschaalde miniaturen (gebruikt meer opslagruimte, scrollen van de lijst gaat sneller)</string>
+    <string name="option_family_name_first_eg">Achternaam eerst bijv. \'Reve, Gerard\'</string>
+    <string name="option_format1">Paperback</string>
+    <string name="option_format2">Harde Kaft</string>
+    <string name="option_format3">e-Book</string>
+    <string name="option_format4">Gesproken boek</string>
+    <string name="option_format5">Gids / Handboek</string>
+    <string name="option_generate_immediately">Genereer onmiddelijk (lijsten scrollen langzamer, afbeeldingen worden onmiddelijk getoond)</string>
+    <string name="option_given_name_first_eg">Voornaam eerst bijv. \'Gerard Reve\'</string>
+    <string name="option_hide_summary_details">Verberg samenvattingsdetails</string>
+    <string name="option_library_read">Gelezen</string>
+    <string name="option_library_unread">Ongelezen</string>
+    <string name="option_name">Naam</string>
+    <!-- Menu text for the 'import/export new & changed' option -->
+    <string name="option_new_and_changed_books">Nieuwe en bijgewerkte boeken</string>
+    <string name="option_no">Nee</string>
+    <string name="option_nobody">Niemand</string>
+    <string name="option_normal">Normaal</string>
+    <!-- Preference VALUE, displayed in a preference activity -->
+    <string name="option_pic2shop_scanner">Pic2Shop Scanner</string>
+    <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
+    <string name="option_preferred_language_x">%1$s (%2$s)</string>
+    <string name="option_remember_library_state">Behoud boekenlijst status</string>
+    <string name="option_resize_each_time">Herschaal elke keer als ze nodig zijn (gebruikt minder opslagruimte, scrollen zal langzamer gaan)</string>
+    <string name="option_select_read_only">Selecteer alleen gelezen boeken</string>
+    <string name="option_select_unread_only">Selecteer alleen ongelezen boeken</string>
+    <string name="option_show_all_summary_details">Toon alle samenvattingsdetails</string>
+    <!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
+    <string name="option_show_book_count">Toon aantal boeken</string>
+    <string name="option_show_book_under_each_thing">Onder elke %1$s</string>
+    <string name="option_show_book_under_primary_thing">Alleen onder primaire %1$s</string>
+    <string name="option_show_first_level_and_book_count">Toon eerste niveau koptekst en aantal boeken</string>
+    <string name="option_smaller">Kleiner</string>
+    <string name="option_usage_add_extra">Voegt extra gegevens toe</string>
+    <string name="option_usage_copy_if_blank">kopieer indien leeg</string>
+    <string name="option_usage_overwrite">Overschrijft bestaande gegevens</string>
+    <string name="option_use_background_thread">Gebruik achtergrond deelproces (lijsten scrollen sneller, tonen afbeeldingen misschien vertraagd)</string>
+    <string name="option_use_default_setting">Gebruik de standaard waarden</string>
+    <string name="option_yes">Ja</string>
+    <!-- Preference VALUE, displayed in a preference activity -->
+    <string name="option_zxing_compatible_scanner">Zxing Compatibele Scanner</string>
+    <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
+    <string name="option_zxing_scanner">Zxing Scanner</string>
+
+    <string name="para_archive_complete_details">Een %3$s bestand met de naam %2$s is aangemaakt in de \"%1$s\" map op uw
+        SD kaart.  U wordt aangeraden dit bestand naar een ander plek te kopiëren om de gegevens veilig te stellen in geval uw apparaat wordt gestolen, beschadigd of kwijt raakt.</string>
+    <string name="para_cleanup_files">Permanent te verwijderen bestanden nemen %s van uw SD kaart in beslag. Log-bestanden en andere gegevens worden opgeslagen op uw SD kaart bij iedere upgrade, na elke back-up van de database of wanneer de toepassing crasht. Tik op de knop hieronder om deze bestanden permanent te verwijderen van uw SD kaart. Als u veel crashes ondervindt of ander fouten, overweeg dan de  \'Zend Informatie\' knop eerst te gebruiken.</string>
+    <string name="para_donate">Als u de ontwikkeling van deze applicatie wilt ondersteunen, kunt u een bijdrage doen via mijn Amazon Wishlist of de Paypal knop hieronder. Omdat ik in Australië ben kan ik geen betaalde "betaalde" versie publiceren. :-) </string>
+    <string name="para_help_click_here">Tik hier voor online help</string>
+    <string name="para_immediate_global_changes">NB: Alle opgeslagen veranderingen worden direct en overal toegepast</string>
+    <string name="para_isbn_name_search_help">toevoegen van boeken via ISBN is veel preciezer dan toevoegen via auteur en titel en verdient meestal de voorkeur. De juiste streepjescode kunt u meestal vinden aan de achterkant van de boekomslag. \n\n</string>
+    <string name="para_manage_fields_help">Geselecteerde velden zijn zichtbaar in de toevoegen/bewerken boekschermen. Ongeselecteerde velden zijn verborgen.</string>
+    <string name="para_no_authors">Er zijn geen auteurs voor dit boek. Voeg er een toe met het tekstveld en de knop bovenin dit scherm.</string>
+    <string name="para_no_books">Er staan geen boeken op deze boekenplank. Voeg er een paar toe via het menu onderaan dit scherm.</string>
+    <string name="para_no_series">Er zijn geen series voor dit boek. U kunt er een toevoegen met het tekstveld en de knop bovenin dit scherm.</string>
+    <string name="para_send_info">Tik op de knop hieronder om informatie te verzamelen over recente crashes of andere fouten en zend deze naar een van onze ontwikkelaars. Dit maakt een back-up van uw hele database en van alle log-bestanden. Als u deze bestanden niet wilt opsturen, kunt u ze van de bijlagen lijst in het e-mailbericht verwijderen voordat u dit verstuurt.</string>
+    <!-- Credits in the 'about' dialog -->
+    <string name="para_translators">BookCatalogue is het resultaat van de inspanning van vele personen en zou niet zo\'n grote verspreiding \nkennen zonder de genereuse hulp van vrijwillige vertalers: %1$s (als we iemand zijn vergeten, laat het ons aub weten).</string>
+
+    <!-- Displayed when any write operation to the sd card fails -->
+    <string name="please_check_sd_readable">Controleer aub of de SD Kaart toegankelijk is.</string>
+
+    <string name="populate_anthology_titles">Automatisch titels invullen (EXPERIMENTEEL)</string>
+
+    <string name="preference_auto_rotate_camera_images">met camera-opnames automatisch draaien</string>
+    <string name="preference_beep_if_scanned_isbn_invalid">Beep als het gescande ISBN ongeldig is</string>
+    <!-- Preference name, displayed in a preference activity -->
+    <string name="preference_beep_if_scanned_isbn_valid">Beep als gescande ISBN geldig is</string>
+    <string name="preference_books_in_multiple_series">Boeken in meerdere series</string>
+    <string name="preference_books_with_multiple_authors">Boeken met meerdere auteurs</string>
+    <string name="preference_default_crop_frame_is_whole_image">Standaard kader voor bijsnijden is hele afbeelding</string>
+    <string name="preference_extra_book_details">Extra boekdetails</string>
+    <string name="preference_format_of_author_names">Formaat van auteursnamen</string>
+    <string name="preference_generating_cover_thumbnails">Aanmaken boekomslag miniaturen</string>
+    <string name="preference_global_opening_book_mode">Open boek in alleen-lezen modus</string>
+    <string name="preference_library_state">Boekenlijst status</string>
+    <string name="preference_prefer_large_thumbnails">Prefereer grote miniaturen</string>
+    <!-- End: Added/Updated in 5.1.1 -->
+    <!-- Begin: Added/Updated in 5.1.2 -->
+    <!-- A heading in the 'about' dialog -->
+    <!-- The following strings are not in this release, but will be in a future release -->
+    <!--  Menu Item - will be in the next release -->
+    <!-- Heading for the "new_in_xxx" message to make future updates less work for translators...I hope -->
+    <!-- The plan is to use specific feature strings so that we can also update the store listing and add/remove reatures easily -->
+    <!-- Part of the "new in x.x.x" message -->
+    <!-- End: Added/Updated in 5.1.2 -->
+    <!-- Begin: Added/Updated in 5.2.0 -->
+    <!-- Preference name (fairly short) for preferred language -->
+    <string name="preference_preferred_interface_language">Voorkeurstaal voor Interface</string>
+    <!-- Preference name, displayed in a preference activity -->
+    <string name="preference_preferred_scanner">Voorkeur Scanner</string>
+    <string name="preference_resizing_cover_thumbnails">Herschalen boekomslag miniaturen</string>
+    <string name="preference_show_thumbnails">Toon Miniaturen</string>
+    <string name="preference_size_of_library_items">Grootte van boekenlijstitems</string>
+    <string name="preference_start_in_my_books">Opstarten in \'Mijn Boeken\'</string>
+    <string name="preference_summary_details_in_header">Samenvattingsdetails in koptekst</string>
+    <string name="preference_use_external_image_cropper">Gebruik een externe app voor bijsnijden afbeelding (experimenteel)</string>
+
+    <string name="preferred_styles">Voorkeursstijlen</string>
+
+    <string name="really_delete_book">Dit zal het boek met de titel \'%1$s\' door %2$s compleet verwijderen. Weet u zeker dat u door wilt gaan?</string>
+    <string name="really_delete_series">Wilt u werkelijk de serie \'%s\'verwijderen?\n\nDe boeken zelf worden niet verwijderd.\n\nOverweeg de serie te bewerken en de serienaam te veranderen om deze gegevens te behouden</string>
+
+    <string name="rebuilding_search_index">Zoekindex opnieuw opbouwen…</string>
+
+    <!-- Heading for scanner-related preferences -->
+    <string name="scanning">Scannen</string>
+
+    <string name="scope_of_change">Omvang van de verandering</string>
+
+    <string name="search_exception">Zoeken mislukt terwijl %1$s: %2$s</string>
+    <string name="search_fail">Het zoeken naar het boek is mislukt. Controleer uw netwerk instellingen.</string>
+
+    <!-- End: Added/Updated in 5.2.2 -->
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
     <string name="searching_book_catalogue">Zoek bij book-catalogue.com</string>
-    <!-- End: Added/Updated in [Next Version] -->
+    <string name="searching_ellipsis">Aan \'t zoeken…</string>
+    <string name="searching_google_books">Zoeken bij Google Books</string>
+    <string name="searching_library_thing">Zoeken bij LibraryThing</string>
 
+    <string name="select_an_action">Selecteer een actie</string>
+    <string name="select_based_on_read_status">Selecteer op \'Gelezen\' status</string>
+    <string name="select_cover">Selecteer omslagafbeelding</string>
+    <string name="select_style">Selecteer stijl</string>
+
+    <string name="series_already_in_list">Serie staat al in de lijst</string>
+    <string name="series_is_blank">Serieveld is leeg</string>
+
+    <string name="set_series">Invullen Serie…</string>
+
+    <string name="shelves">Planken</string>
+
+    <string name="show_events_ellipsis">Toon gebeurtenissen…</string>
+    <string name="show_fewer_ellipsis">Toon minder…</string>
+    <string name="show_more_ellipsis">Toon meer…</string>
+
+    <string name="skip_title">Overslaan van - %s</string>
+
+    <string name="sort_added_date">Datum toegevoegd</string>
+    <string name="sort_and_style_ellipsis">Sorteren &amp; Stijlen…</string>
+    <string name="sort_author_series">Auteur daarna Serie</string>
+    <string name="sort_author_year">Auteur en jaar</string>
+    <string name="sort_genre">Genrenaam</string>
+    <string name="sort_loaned">Uitgeleend</string>
+    <string name="sort_publication_date">Publicatiedatum</string>
+    <string name="sort_read_and_unread">Gelezen en ongelezen</string>
+    <string name="sort_read_date">Datum gelezen</string>
+    <string name="sort_series">Series</string>
+    <string name="sort_unread">Ongelezen (Auteur/Serie)</string>
+
+    <string name="starting_search">Opstarten zoeken</string>
+    <string name="starting_up">Opstarten…</string>
+
+    <string name="status_adding_book_ellipsis">Boeken aan \'t toevoegen…</string>
+
+    <string name="system_locale">Systeem taal</string>
+
+    <string name="task_errors">Taakfouten</string>
+
+    <string name="the_title_already_exists">De titel bestaat al</string>
+
+    <string name="thing_must_not_be_blank">%1$s mag niet leeg zijn</string>
+
+    <string name="this_book">Dit boek</string>
+    <string name="this_option_is_not_available_until_the_book_is_saved">Deze optie is niet aanwezig voordat het boek is opgeslagen</string>
+
+    <string name="thumbnails">Miniaturen</string>
+
+    <string name="title_add_book">Boek Toevoegen</string>
+    <string name="title_add_style">Stijl toevoegen</string>
+    <string name="title_clone_style_colon_name">Klonen van Stijl: %1$s</string>
+    <string name="title_edit_bookshelf">Book Catalogue: Boekenplank bewerken</string>
+    <string name="title_edit_library_styles">Bewerk boekenlijststijlen</string>
+    <string name="title_edit_style_colon_name">Bewerk stijl: %1$s</string>
+    <string name="title_isbn_search">Book Catalogue: ISBN zoeken</string>
+    <string name="title_library">Mijn Boeken</string>
+    <string name="title_library_preferences">Boekenlijst Voorkeuren</string>
+    <string name="title_manage_bookshelves">Beheer boekenplanken</string>
+    <string name="title_manage_fields">Zichtbaarheid velden beheren</string>
+    <string name="title_other_preferences">Meer voorkeuren</string>
+    <string name="title_required">Het titelveld mag niet leeg zijn</string>
+    <string name="title_select_fields_to_update">Selecteer bij te werken velden</string>
+    <string name="title_settings">Administratie en voorkeuren</string>
+
+    <string name="unable_to_find_book">Kan gespecificeerd boek niet vinden</string>
+
+    <string name="unknown">Onbekend</string>
+    <string name="unknown_uc">ONBEKEND</string>
+
+    <string name="unrecognized_task">Onherkenbare taak</string>
+
+    <string name="unsaved_edits">De door u gemaakte veranderingen zijn niet opgeslagen. Wilt u toch doorgaan?</string>
+    <string name="unsaved_edits_title">Niet opgeslagen veranderingen</string>
+
+    <!-- End: Added/Updated in 5.1.0 -->
+    <!-- Begin: Added/Updated in 5.1.1 -->
+    <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
+    <!-- A hint describing the benefit of folowing the Amazon links -->
+    <!--<string name="hint_amazon_links_blurb">&lt;p&gt;Indien u boeken koopt bij Amazon na het selecteren van de &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; of &lt;i&gt;\"%3$s\"&lt;/i&gt; menu items, zal een deel van de aankoopprijs gezonden worden naar de ontwikkelaars van  %4$s.&lt;/p&gt;&lt;p&gt;U kunt ook de &lt;a href=\"https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29\"&gt;links op de FAQ pagina&lt;/a&gt; gebruiken om direct naar Amazon of Paypal te gaan.&lt;/p&gt;</string>-->
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_date">Datum update</string>
+
+    <string name="upgrade_title">Sinds uw laatste upgrade</string>
+
+    <string name="upgrading_ellipsis">Upgrading…</string>
+
+    <string name="url_help">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
+    <string name="url_sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
+    <string name="url_webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
+
+    <string name="user_defined">Gebruiker-gedefinieerd</string>
+
+    <string name="validator_blank_required">Waardeveld moet leeg zijn voor \'%s\'</string>
+    <string name="validator_boolean_expected">Verwachtte een boolean waarde (0,1,t,f,waar,onwaar) voor \'%s\'</string>
+    <string name="validator_date_expected">Verwachtte een datum voor \'%s\'</string>
+    <string name="validator_failed">Validatie mislukt voor \'%s\'</string>
+    <string name="validator_integer_expected">Verwachtte een numerieke waarde voor \'%s\'</string>
+    <string name="validator_nonblank_required">Waardeveld mag niet leeg zijn voor \'%s\'</string>
+    <string name="validator_read_start_after_end">De begindatum voor lezen moet vóór de einddatum liggen</string>
+    <string name="validator_real_expected">Verwachtte een echt nummer voor \'%s\'</string>
+    <string name="validator_unable_to_get_value">Kan de waarde voor \'%s\' niet krijgen</string>
+
+    <string name="x_is_not_a_valid_isbn">%1$s is geen geldige ISBN</string>
+    <string name="x_is_not_a_valid_isbn_or_asin">%1$s is geen geldig ISBN of ASIN</string>
+    <string name="x_of_y">%1$d van %2$d</string>
+
+    <string name="you_have_unsaved_changes">U heeft niet opgeslagen veranderingen. Als u nu afsluit gaan die verloren.</string>
 </resources>

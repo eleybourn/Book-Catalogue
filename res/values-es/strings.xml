@@ -1,279 +1,229 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="_empty_"/>
 
-	<string name="app_name">Book Catalogue</string>
-    <string name="title_add_book">Añadir libro</string>
-	<string name="menu_delete_book">Eliminar libro</string>
-	<string name="label_author">Autor</string>
-	<string name="label_title">Título</string>
-	<string name="label_publisher">Editorial</string>
-	<string name="label_date_published">Fecha de publicación</string>
-	<string name="label_rating">Calificación</string>
-	<string name="label_bookshelf">Biblioteca</string>
-	<string name="label_read">¿Has leído este libro?</string>
-	<string name="label_series">Serie</string>
-	<string name="label_pages">Páginas</string>
-	<string name="button_confirm_add">Añadir libro</string>
-	<string name="button_update">Actualizar</string>
-	<string name="para_no_books">No hay libros en esta biblioteca. Añada alguno utilizando el menú al pie de esta pantalla.</string>
-	<string name="menu_sort_by_author_expanded">Expandir todo</string>
-    <string name="menu_sort_by_author_collapsed">Comprimir todo</string>
-    <string name="label_search">Buscar</string>
-	<string name="button_cancel">Cancelar</string>
-	<string name="button_confirm_save">Guardar libro</string>
-	<string name="description_no_bookshelves">Todavía no has creado ninguna biblioteca. Cree una utilizando el menú al pie de esta pantalla.</string>
-	<string name="menu_insert_bs">Crear biblioteca</string>
-	<string name="confirm_add_bs">Añadir biblioteca</string>
-	<string name="title_manage_bookshelves">Gestionar bibliotecas</string>
-	<string name="confirm_save_bs">Guardar biblioteca</string>
-	<string name="menu_delete_bs">Eliminar biblioteca</string>
-	<string name="delete_1st_bs">La biblioteca predefinida no se puede eliminar</string>
-    <string name="option_all_books">Todos los libros</string>
-    <string name="title_isbn_search">Book Catalogue: Buscar ISBN</string>
-    <string name="title_edit_bookshelf">Book Catalogue: Editar bibliotecas</string>
-    <string name="label_search_for_books">Buscar libro</string>
-	<string name="label_search_by">Buscar autor o título</string>
-	<string name="book_not_found">El libro escaneado no ha sido encontrado. El código de barras correcto se encuentra a veces en el interior de la portada. También puede introducir los datos de forma manual.</string>
-	<string name="label_series_num">#</string>
-    <string name="label_import_books">Importar libros</string>
-	<string name="alert_import">¡Atención! La importación de datos puede actualizar los datos de libros existentes con nueva información si el ID del fichero de importación existe ya en la base de datos. Esto puede ser aceptable si se modifica un campo de un fichero exportado. Si crea un registro para un nuevo libro, compruebe que el campo ID está en blanco.</string>
+    <string name="alert_backup_failed">Copia de seguridad errónea</string>
+    <string name="alert_backup_success">Copia de seguridad correcta</string>
+    <string name="alert_cancelled">Cancelado</string>
+    <string name="alert_export_failed_sdcard">La exportación falló: no se pudo escribir en la tarjeta SD</string>
+    <string name="alert_hints_have_been_reset">Sugerencias reseteadas</string>
+    <string name="alert_if_the_problem_persists">Si el problema persiste, contacte con soporte utilizando la opción de Ayuda del menú principal.</string>
+    <string name="alert_import">¡Atención! La importación de datos puede actualizar los datos de libros existentes con nueva información si el ID del fichero de importación existe ya en la base de datos. Esto puede ser aceptable si se modifica un campo de un fichero exportado. Si crea un registro para un nuevo libro, compruebe que el campo ID está en blanco.</string>
     <string name="alert_import_failed_is_location_correct">ERROR: La importación (desde la tarjeta SD) ha fallado. ¿Está el fichero en el lugar correcto?</string>
-    <string name="install_scan_title">Instalar Escáner de código de barras</string>
-	<string name="label_version_number">Versión</string>
-	<string name="para_donate">Si desea contribuir al desarrollo de esta aplicación puede realizar su aportación económica utilizando Amazon Wishlist o el botón de Paypal que figura más abajo. En Australia no se puede publicar una versión &quot;de pago&quot;. :-)</string>
-    <string name="upgrade_title">Desde la última actualización</string>
-	<string name="menu_edit_book">Editar libro</string>
-	<string name="label_comments">Sus comentarios</string>
-	<string name="button_loan_book">Prestar libro</string>
-    <string name="label_notes">Notas</string>
-	<string name="label_loaned_to">Este libro ha sido prestado a:</string>
-	<string name="option_nobody">Nadie</string>
-	<string name="label_loan_to">Libro prestado a:</string>
-	<string name="button_returned">Devuelto</string>
-	<string name="option_name">Nombre</string>
-	<string name="label_webpage">Página web</string>
-	<string name="label_sourcecode">Código fuente</string>
-	<string name="label_contact">Contacto</string>
-	<string name="url_webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
-	<string name="url_sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
-	<string name="url_help">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
-	<string name="contact1">eleybourn@gmail.com</string>
-	<string name="contact2">philip.warner@rhyme.com.au</string>
-	<string name="label_donate">Contribuir</string>
-	<string name="label_about">Acerca de esta App</string>
-    <string name="label_list_price">Precio</string>
-    <string name="label_update_fields">Actualización automática de campos</string>
-	<string name="title_select_fields_to_update">Seleccione campos para actualizar</string>
-	<string name="description_select_fields_to_update_help">Los campos seleccionados se actualizarán con datos de internet. Los campos no marcados no se modificarán.</string>
-	<string name="description_overwrite_thumbnail">Los campos seleccionados se actualizarán tal y como se muestra, pero las imágenes de portadas se pueden descargar, si lo desea, para TODOS los libros.\n\n¿Desea sobreescribir todas las portadas existentes? ¡Atención!, esto puede requerir un tiempo considerable.</string>
-	<string name="option_yes">Sí</string>
-	<string name="option_no">No</string>
-	<string name="button_ok">Aceptar</string>
-    <string name="search_fail">La búsqueda del libro ha fallado. Por favor, verifique la configuración de su conexión a internet.</string>
-	<string name="search_exception">La búsqueda ha fallado %1$s: %2$s</string>
-    <string name="menu_delete_thumb">Eliminar portada</string>
-	<string name="label_help">Ayuda</string>
-    <string name="title_manage_fields">Visibilidad de campos</string>
-	<string name="para_manage_fields_help">Los campos marcados serán visibles en las pantallas de Añadir y Editar libros. Los no marcados no se mostrarán.</string>
-	<string name="label_anthology_titles">Antologías</string>
-	<string name="label_amazon_wishlist">Amazon Wishlist</string>
-	<string name="label_same_author">Todos los libros de esta antología son del mismo autor</string>
-	<string name="menu_delete_anthology">Eliminar título de una antología</string>
-	<string name="label_is_anthology">¿Se trata de una antología?</string>
-	<string name="populate_anthology_titles">Actualización automática de títulos (EXPERIMENTAL)</string>
-	<string name="automatic_population_failed">La actualización automática de títulos ha fallado</string>
-	<string name="label_anthology">Antología</string>
-	<string name="anthology_confirm">Por favor, confirme que los títulos de la antología son (en su mayoría) correctos</string>
-	<string name="anthology_save">Guardar</string>
-	<string name="button_anthology_add">Añadir</string>
-	<string name="menu_add_thumb_photo">Desde la cámara&#8230;</string>
-	<string name="label_thumbnail">Portada</string>
-	<string name="menu_rotate_thumb">Girar imagen&#8230;</string>
-	<string name="menu_rotate_thumb_cw">Sentido horario</string>
-	<string name="menu_rotate_thumb_ccw">Sentido antihorario</string>
-	<string name="menu_rotate_thumb_180">180 grados</string>
-    <string name="label_signed">¿Está firmado este libro?</string>
-	<string name="label_read_start">Fecha de inicio de lectura</string>
-	<string name="label_read_end">Fecha de fin de lectura</string>
-	<string name="label_location_of_book">Ubicación del libro</string>
-    <string name="duplicate_book_title">Libro duplicado</string>
-	<string name="duplicate_book_message">El libro que intenta añadir ya está en la base de datos. ¿Desea añadir otra copia?</string>
-	<string name="menu_add_thumb_gallery">Desde la galería&#8230;</string>
-	<string name="backup_request">¿Desea realizar una copia de la base de datos a la tarjeta SD?</string>
-	<string name="backup_title">¿Realizar copia?</string>
-    <string name="searching_google_books">Buscando en Google Books</string>
-	<string name="searching_library_thing">Buscando en LibraryThing</string>
-    <string name="label_select_bookshelves">Seleccionar biblioteca</string>
-	<string name="label_format">Formato</string>
-	<string name="option_format1">Bolsillo</string>
-	<string name="option_format2">Tapa dura</string>
-	<string name="option_format3">eBook</string>
-	<string name="option_format4">Audiobook</string>
-	<string name="option_format5">Guía</string>
-    <!-- NOTE: Adding a new format will involve changing code that references this list -->
-	<string name="label_description">Descripción</string>
-	<string name="label_genre">Género</string>
-    <string name="not_set">No configurado</string>
-	<string name="menu_search">Buscar libro</string>
-    <string name="para_isbn_name_search_help">Añadir libros con ISBN es mucho más preciso que hacerlo por autor y título. Recuerde que en ocasiones el código de barras o el ISBN se encuentran en la parte interior de la portada.\n\n</string>
-	<string name="para_help_click_here">Pulse aquí para acceder a la ayuda online</string>
-    <string name="vldt_unable_to_get_value">Falta \'%s\'</string>
-	<string name="vldt_integer_expected">\'%s\' debe ser un entero</string>
-	<string name="vldt_real_expected">\'%s\' debe ser un número real</string>
-	<string name="vldt_date_expected">\'%s\' debe ser una fecha</string>
-	<string name="vldt_boolean_expected">\'%s\' debe ser 0, 1, V, F, Verdadero o Falso</string>
-	<string name="vldt_nonblank_required">\'%s\' no puede estar en blanco</string>
-	<string name="vldt_blank_required">\'%s\' debe estar en blanco</string>
-	<string name="vldt_failed">Falló la validación para \'%s\'</string>
-    <string name="vldt_read_start_after_end">La fecha de inicio de lectura es posterior a la de finalización</string>
-	<string name="alert_backup_success">Copia de seguridad correcta</string>
-	<string name="alert_backup_failed">Copia de seguridad errónea</string>
-	<string name="file_must_contain_column">El fichero debe tener una columna con el nombre %s</string>
-	<string name="file_must_contain_any_column">El fichero debe tener una columna con uno de los nombres siguientes: %s</string>
-	<string name="column_is_blank">La columna %1$s tiene en blanco la fila %2$s</string>
-	<string name="columns_are_blank">Las columnas %1$s tienen en blanco la fila %2$d</string>
-	<string name="button_save">Guardar</string>
-	<string name="label_add">Añadir</string>
-	<string name="para_no_authors">El libro no tiene autor. Añada alguno utilizando el campo de texto y el botón de la parte superior de esta pantalla.</string>
-	<string name="para_no_series">El libro no tiene serie. Puede especificar una utilizando el campo de texto y el botón de la parte superior de esta pantalla.</string>
+    <!-- Descriptive text associated with import options not available with older archives -->
+    <string name="alert_old_archive_blurb">Esta opción no está soportada para versiones de archivo antiguas.</string>
+    <!-- Displayed when any write operation to the sd card fails -->
+    <string name="alert_please_check_sd_writable">Compruebe que se puede escribir en la tarjeta SD, y que tiene suficiente espacio.</string>
+    <string name="alert_problem_starting_import_arg">Ha habido un problema con la importación: %1$s</string>
+    <string name="alert_select_min_1_field">Seleccione al menos un campo para actualizar</string>
+    <string name="alert_unexpected_error">Se ha producido un error inesperado. Por favor, envíe los detalles a soporte utilizando la opción \'Help\' del menú principal</string>
+
+    <string name="anthology_confirm">Por favor, confirme que los títulos de la antología son (en su mayoría) correctos</string>
+    <string name="anthology_save">Guardar</string>
+
+    <string name="app_name">Book Catalogue</string>
+
+    <string name="author_already_in_list">Ese autor ya está en la lista</string>
+    <string name="author_is_blank">El campo Autor está en blanco</string>
+    <string name="author_required">Se debe especificar al menos un autor</string>
+
+    <string name="automatic_population_failed">La actualización automática de títulos ha fallado</string>
+
+    <string name="available">Disponible</string>
+
+    <string name="background_tasks">Tareas en segundo plano</string>
+
+    <!-- Showed in progress dialog when an import starts -->
+    <string name="backing_up_ellipsis">Copiando…</string>
+
+    <string name="backup_request">¿Desea realizar una copia de la base de datos a la tarjeta SD?</string>
+    <string name="backup_title">¿Realizar copia?</string>
+
+    <string name="bad_scanner">Su aplicación de escaneado de código de barras no es compatible con Book Catalogue. Recomendamos la instalción de Zxing barcode scanner, y si ya está instalada, pruebe a desinstalarla y volver a instalarla.</string>
+
+    <string name="book">Libro</string>
+    <string name="book_catalogue_startup">Arranque de BookCatalogue</string>
+    <string name="book_details_readonly_by">por</string>
+    <string name="book_details_readonly_loaned_to">Prestado a %1$s</string>
+    <string name="book_details_readonly_pages">%1$s páginas</string>
+    <string name="book_not_found">El libro escaneado no ha sido encontrado. El código de barras correcto se encuentra a veces en el interior de la portada. También puede introducir los datos de forma manual.</string>
+
+    <string name="brackets">(%1$s)</string>
+
+    <string name="builtin">Predefinido</string>
+
+    <string name="button_anthology_add">Añadir</string>
+    <string name="button_cancel">Cancelar</string>
+    <string name="button_cleanup_files">Borrar ficheros</string>
+    <string name="button_confirm_add">Añadir libro</string>
+    <string name="button_confirm_save">Guardar libro</string>
+    <string name="button_loan_book">Prestar libro</string>
+    <string name="button_ok">Aceptar</string>
+    <string name="button_returned">Devuelto</string>
+    <string name="button_save">Guardar</string>
+    <string name="button_send_info">Enviar información</string>
+    <string name="button_update">Actualizar</string>
+
+    <string name="bytes">%.0f bytes</string>
+
+    <string name="cancelled_info">Cancelado - %s</string>
+
+    <string name="cancelling">Cancelando</string>
+
+    <string name="cannot_edit_system">No se pueden modificar los valores del sistema</string>
+
+    <string name="changed_author_how_apply">Ha cambiado el autor de :\n  \'%1$s\' a \n  \'%2$s\'\n¿Cómo quiere aplicar este cambio?\nNota: La opción \'%3$s\' se aplicará de manera inmediata.</string>
+    <string name="changed_series_how_apply">Ha cambiado la serie de:\n  \'%1$s\' a \n  \'%2$s\'\n¿Cómo quiere aplicar este cambio?\nNota: La opción \'All Books\' se aplicará de manera inmediata.</string>
+
+    <string name="cleanup_old_events">Eliminar eventos antiguos</string>
+    <string name="cleanup_old_tasks">Eliminar tareas antiguas</string>
+
+    <string name="click_on_thumb">Pinche sobre una portada para ver una imagen de mayor tamaño</string>
+
+    <string name="clone_style">Duplicar Estilo</string>
+
+    <string name="column_is_blank">La columna %1$s tiene en blanco la fila %2$s</string>
+
+    <string name="columns_are_blank">Las columnas %1$s tienen en blanco la fila %2$d</string>
+
+    <string name="compact">Compacto</string>
+
+    <string name="confirm_add_bs">Añadir biblioteca</string>
+    <string name="confirm_save_bs">Guardar biblioteca</string>
+
+    <string name="contact1">eleybourn@gmail.com</string>
+
+    <string name="contact2">philip.warner@rhyme.com.au</string>
+
+    <string name="continue_editing">Continuar editando</string>
+
+    <string name="could_not_copy_image">No se pudo copiar la imagen</string>
 
     <string name="cover_corrupt">La imagen de portada está dañada</string>
-	<string name="cover_detail">Portada</string>
-    <string name="label_set_authors">Definir autores&#8230;</string>
-	<string name="fragment_and_others">et. al.</string>
-	<string name="set_series">Definir serie&#8230;</string>
-	<string name="author_already_in_list">Ese autor ya está en la lista</string>
-	<string name="author_is_blank">El campo Autor está en blanco</string>
-	<string name="series_already_in_list">Esa serie ya está en la lista</string>
-	<string name="series_is_blank">El campo Serie está en blanco</string>
-	<string name="alert_export_failed_sdcard">La exportación falló: no se pudo escribir en la tarjeta SD</string>
-    <string name="skip_title">Excluir - %s</string>
-	<string name="num_books_searched">%s libros encontrados</string>
-	<string name="cancelled_info">Cancelado - %s</string>
-	<string name="edit_book_series">Modificar serie</string>
-	<string name="label_family_name">Apellidos</string>
-	<string name="label_given_names">Nombre</string>
-	<string name="edit_author_details">Modificar autor</string>
-	<string name="para_immediate_global_changes">NOTA: Todos los cambios guardados se aplican de manera instantánea y global</string>
-	<string name="menu_replace_thumb">Cambiar portada&#8230;</string>
-    <string name="author_required">Se debe especificar al menos un autor</string>
-	<string name="title_required">El título no puede estar en blanco</string>
-	<string name="menu_delete_series">Eliminar serie&#8230;</string>
-	<string name="menu_edit_author">Modificar autor&#8230;</string>
-	<string name="menu_edit_series">Modificar serie&#8230;</string>
-	<string name="delete_series">Eliminar serie</string>
-	<string name="really_delete_series">Confirme la eliminación de la serie \'%s\'\n\nLos libros no se eliminarán.\n\nConsidere la opción de editar la serie para cambiar el nombre, para conservar los datos</string>
-	<string name="edit_series">Modificar serie</string>
-    <string name="select_cover">Seleccionar portada</string>
-	<string name="no_isbn_no_editions">No se pueden obtener ediciones para un libro sin ISBN</string>
-	<string name="unsaved_edits">No ha guardado los cambios. ¿Está seguro de que desea continuar?</string>
-	<string name="unsaved_edits_title">Cambios sin guardar</string>
-	<string name="changed_author_how_apply">Ha cambiado el autor de :\n  \'%1$s\' a \n  \'%2$s\'\n¿Cómo quiere aplicar este cambio?\nNota: La opción \'%3$s\' se aplicará de manera inmediata.</string>
-	<string name="this_book">Este libro</string>
-	<string name="scope_of_change">Alcance del cambio</string>
-	<string name="changed_series_how_apply">Ha cambiado la serie de:\n  \'%1$s\' a \n  \'%2$s\'\n¿Cómo quiere aplicar este cambio?\nNota: La opción \'All Books\' se aplicará de manera inmediata.</string>
-	<string name="unable_to_find_book">No se ha encontrado el libro especificado</string>
-	<string name="list_and">y</string>
-	<string name="really_delete_book">Se dispone a eliminar el libro con el título \'%1$s\' de %2$s. ¿Está seguro de que desea continuar?</string>
-    <string name="no_editions">No hay más ediciones</string>
-	<string name="finding_editions">Buscando ediciones&#8230;</string>
-	<string name="click_on_thumb">Pinche sobre una portada para ver una imagen de mayor tamaño</string>
-	<string name="loading">Cargando&#8230;</string>
-	<string name="image_not_found">Imagen no encontrada</string>
+    <string name="cover_detail">Portada</string>
+    <string name="cover_options_cc_ellipsis">Opciones de Portadas…</string>
 
-	<string name="alert_select_min_1_field">Seleccione al menos un campo para actualizar</string>
-	<string name="option_usage_copy_if_blank">Copiar si está en blanco</string>
-	<string name="option_usage_add_extra">Añadir datos adicionales</string>
-	<string name="option_usage_overwrite">Sobreescribir los datos existentes</string>
-	<string name="cancelling">Cancelando</string>
-	<string name="starting_search">Iniciando búsqueda</string>
-    <string name="para_send_info">Pulse el botón siguiente para recopilar información sobre cualquier fallo reciente y enviarlo al equipo de desarrollo. Se creará una copia de seguridad de su base de datos y de los archivos de registro. Si no desea enviar alguno de estos ficheros, elimine los correspondientes adjuntos antes de enviar el correo que se generará.</string>
-	<string name="button_send_info">Enviar información</string>
-	<string name="para_cleanup_files">Los ficheros que se pueden eliminar ocupan %s en la tarjeta SD. Cada vez que se actualiza la versión de BookCatalogue, al hacer una copia de seguridad o cuando falla la aplicación se crean ficheros de registro en la tarjeta SD. Pulse el botón siguiente para eliminarlos. Si ha detectado algún error, le agradeceremos que utilice primero la opción de \'Enviar información\'.</string>
-	<string name="button_cleanup_files">Borrar ficheros</string>
-    <string name="megabytes">%.2fMB</string>
-	<string name="kilobytes">%.2fkB</string>
-	<string name="bytes">%.0f bytes</string>
-	<string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
-    <string name="debug_subject">Recopilando información sobre fallos</string>
-	<string name="debug_body">Por favor, explique brevemente el problema experimentado.</string>
-	<string name="menu_duplicate">Duplicar libro</string>
-    <string name="cannot_edit_system">No se pueden modificar los valores del sistema</string>
-    <string name="no_connection">No hay conexión a internet.</string>
-    <string name="menu_share_this">Compartir</string>
-    <string name="label_email_export">¿Desea enviar por correo electrónico el fichero exportado?</string>
-    <string name="menu_crop_thumb">Recortar miniatura</string>
-    <string name="task_errors">Errores en tareas</string>
-    <string name="delete_event">Eliminar Evento</string>
-    <string name="delete_task">Eliminar Tarea</string>
+    <!-- Displayed in progress dialog when exporting covers -->
+    <string name="covers_progress">%1$s portadas procesadas (%2$s descartadas)</string>
+    <!-- Description of the 'import all books' option -->
+    <!-- Description of the 'export new & changed' option -->
+    <!-- Part of the progress message displayed when exporting books -->
+    <!-- Displayed in progress dialog when exporting covers in incremental mode -->
+    <string name="covers_progress_increment">%1$s portadas procesadas (%2$s no encontradas, %3$s saltadas)</string>
 
-    <string name="title_library">Mis Libros</string>
-    <string name="title_settings">Administración y Preferencias</string>
-    <string name="title_other_preferences">Otras preferencias</string>
-    <string name="label_user_interface">Interfaz de usuario</string>
-    <string name="preference_start_in_my_books">Empezar en \'Mis libros\'</string>
-    <string name="background_tasks">Tareas en segundo plano</string>
-    <string name="cleanup_old_tasks">Eliminar tareas antiguas</string>
-    <string name="cleanup_old_events">Eliminar eventos antiguos</string>
-    <string name="label_add_manually">Añadir manualmente</string>
-    <string name="label_search_internet">Buscar en internet</string>
-    <string name="legacy_task">Legacy Task</string>
-    <string name="unknown_uc">DESCONOCIDO</string>
-    <string name="select_an_action">Seleccione una opción</string>
-    <string name="alert_if_the_problem_persists">Si el problema persiste, contacte con soporte utilizando la opción de Ayuda del menú principal.</string>
-    <string name="x_of_y">%1$d de %2$d</string>
-
-    <string name="label_erase_cover_cache">Borrar caché de portadas</string>
-    <string name="crash_toast_text">BookCatalogue se ha detenido de forma inesperada. Por favor, ayúdenos a mejorar la aplicación reportando este problema.</string>
-    <string name="crash_notif_ticker_text">BookCatalogue se ha detenido</string>
-    <string name="crash_notif_title">Error de BookCatalogue</string>
-    <string name="crash_notif_text">Pulse para ver más detalles</string>
-    <string name="crash_dialog_title">Error de BookCatalogue</string>
-    <string name="crash_dialog_text">Parece que BookCatalogue se ha detenido. Si es posible, indique cualquier detalle que usted considere relevante y pulse OK para enviarnos un correo electrónico sobre el problema. Podrá revisar el correo antes de que se envíe.</string>
     <string name="crash_dialog_comment_prompt">Sus comentarios (puede dejarlos en blanco):</string>
     <string name="crash_dialog_ok_toast">¡Muchas gracias!</string>
-    <string name="no_series">(sin serie)</string>
-    <string name="option_library_read">Leídos</string>
-    <string name="option_library_unread">No leídos</string>
-    <string name="no_genre">(sin género)</string>
-    <string name="no_title">(sin título)</string>
-    <string name="no_publisher">(sin Editorial)</string>
-    <string name="no_author">(sin autor)</string>
-    <string name="preference_show_thumbnails">Mostrar miniaturas</string>
-    <string name="preference_prefer_large_thumbnails">Mostrar miniaturas grandes</string>
-    <string name="sort_author_series">Primero Autor después Serie</string>
-    <string name="sort_series">Serie</string>
-    <string name="label_sort_title_first_letter">Primera letra del título</string>
-    <string name="sort_genre">Género</string>
-    <string name="sort_loaned">Prestados</string>
-    <string name="sort_read_and_unread">Leídos y No leídos</string>
-    <string name="sort_publication_date">Fecha de publicación</string>
-    <string name="sort_added_date">Fecha de inclusión</string>
-    <string name="sort_author_year">Autor y Año</string>
+    <string name="crash_dialog_text">Parece que BookCatalogue se ha detenido. Si es posible, indique cualquier detalle que usted considere relevante y pulse OK para enviarnos un correo electrónico sobre el problema. Podrá revisar el correo antes de que se envíe.</string>
+    <string name="crash_dialog_title">Error de BookCatalogue</string>
+    <string name="crash_notif_text">Pulse para ver más detalles</string>
+    <string name="crash_notif_ticker_text">BookCatalogue se ha detenido</string>
+    <string name="crash_notif_title">Error de BookCatalogue</string>
+    <string name="crash_toast_text">BookCatalogue se ha detenido de forma inesperada. Por favor, ayúdenos a mejorar la aplicación reportando este problema.</string>
+
+    <string name="customize_ellipsis">Configurar…</string>
+
+    <string name="day">Día</string>
+
+    <string name="debug_body">Por favor, explique brevemente el problema experimentado.</string>
+    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_subject">Recopilando información sobre fallos</string>
+
+    <string name="delete_1st_bs">La biblioteca predefinida no se puede eliminar</string>
+    <string name="delete_event">Eliminar Evento</string>
+    <string name="delete_series">Eliminar serie</string>
+    <string name="delete_style">Eliminar Estilo</string>
+    <string name="delete_task">Eliminar Tarea</string>
+
+    <!-- Description of the 'import all books' option -->
+    <string name="description_all_books_blurb">Importar todos los libros del fichero, actualizando los que existan y añadiendo los nuevos.</string>
+    <!-- Brief descriptionn -->
+    <string name="description_book_details_blurb">Todos los datos de todos los libros</string>
+    <!-- Brief descriptionn -->
+    <string name="description_cover_images_blurb">Portadas de todos los libros seleccionadas. La exportación requerirá mucho más tiempo.</string>
+    <string name="description_displaying_n_books">Se muestran %1$s libros</string>
+    <string name="description_displaying_n_books_in_m_entries">Se muestran %1$s libros, en %2$s entradas</string>
+    <!-- Explanatory note for 'advanced export' option -->
+    <string name="description_export_advanced_blurb">Seleccione lo que desea exportar al fichero.</string>
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <string name="description_export_advanced_date_blurb">Si lo desea, especifique una fecha para seleccionar los libros o portadas que se exportarán:</string>
+    <!-- Explanatory note for 'export all' option -->
+    <string name="description_export_all_blurb">Se exportarán al fichero todos los libros, portadas, configuraciones y estilos personalizados.</string>
+    <!--  Explanatory text for 'export' dialogue -->
+    <string name="description_export_books_blurb">Se exportarán los libros de su catálogo. Seleccione una opción para iniciar la exportación, o pulse \'Atrás\' para cancelar:</string>
+    <!-- End: Added/Updated in 5.0.9 -->
+    <!-- Begin: Added/Updated in 5.1.0 -->
+    <!--  Explanatory text for 'import' dialogue -->
+    <string name="description_import_books_blurb">Se importarán los libros de este fichero. Seleccione una de las dos opciones propuestas para empezar la importación, o pulse \'Atrás\' para cancelar:</string>
+    <string name="description_import_complete">Importación finalizada</string>
+    <!-- Description of the 'import new & changed' option -->
+    <string name="description_new_and_changed_books_blurb">Importar sólo los libros nuevos, o los que tienen fecha de actualización más reciente en el fichero. Esto es útil para sincronizar dispositivos.</string>
+    <string name="description_no_bookshelves">Todavía no has creado ninguna biblioteca. Cree una utilizando el menú al pie de esta pantalla.</string>
+    <string name="description_overwrite_thumbnail">Los campos seleccionados se actualizarán tal y como se muestra, pero las imágenes de portadas se pueden descargar, si lo desea, para TODOS los libros.\n\n¿Desea sobreescribir todas las portadas existentes? ¡Atención!, esto puede requerir un tiempo considerable.</string>
+    <!-- Brief descriptionn -->
+    <string name="description_preferences_blurb">Preferencias y estilos definidos por el usuario</string>
+    <string name="description_select_fields_to_update_help">Los campos seleccionados se actualizarán con datos de internet. Los campos no marcados no se modificarán.</string>
+
+    <string name="details_have_changed">Detalles modificados</string>
+
+    <string name="do_not_show_again">No volver a mostrar</string>
+
+    <string name="duplicate_book_message">El libro que intenta añadir ya está en la base de datos. ¿Desea añadir otra copia?</string>
+    <string name="duplicate_book_title">Libro duplicado</string>
+
+    <string name="edit_author_details">Modificar autor</string>
+    <string name="edit_book_series">Modificar serie</string>
+    <string name="edit_series">Modificar serie</string>
+    <string name="edit_style">Editar Estilo</string>
+
     <string name="empty_with_brackets">(vacío)</string>
 
-    <string name="title_library_preferences">Preferencias para listas de libros</string>
-    <string name="preference_extra_book_details">Detalles adicionales</string>
+    <string name="exit">Salir</string>
+
+    <string name="export_starting_ellipsis">Empezando exportación…</string>
+
+    <string name="extra_filters">Filtros adicionales</string>
+
+    <string name="file_must_contain_any_column">El fichero debe tener una columna con uno de los nombres siguientes: %s</string>
+    <string name="file_must_contain_column">El fichero debe tener una columna con el nombre %s</string>
+
+    <string name="finding_editions">Buscando ediciones…</string>
+
+    <!-- Hint displayed when aCatalogue Backup is done -->
+    <string name="fragment_a_and_b">%1$s y %2$s</string>
+    <string name="fragment_and_others">et. al.</string>
+
     <string name="general">General</string>
-    <string name="label_bookshelves">Biblioteca</string>
-    <string name="shelves">Biblioteca</string>
-    <string name="label_location">Ubicación</string>
-    <string name="label_data_import_export">Importación/Exportación de datos</string>
-    <string name="unrecognized_task">Tarea no reconocida</string>
-    <string name="rebuilding_search_index">Reconstruyendo índices&#8230;</string>
-    <string name="optimizing_databases">Optimizando bases de datos&#8230;</string>
-    <string name="starting_up">Arrancando&#8230;</string>
-    <string name="book_catalogue_startup">Arranque de BookCatalogue</string>
-    <string name="preference_library_state">Estado del listado de libros</string>
-    <string name="option_always_start_library_expanded">Iniciar siempre el listado de libros expandido</string>
-    <string name="option_always_start_library_collapsed">Iniciar siempre el listado de libros comprimido</string>
-    <string name="option_remember_library_state">Preservar el estado del listado de libros</string>
-    <string name="title_edit_library_styles">Editar estilos del listado de libros</string>
-    <string name="show_more_ellipsis">Mostrar más&#8230;</string>
-    <string name="show_fewer_ellipsis">Mostrar menos&#8230;</string>
-    <string name="customize_ellipsis">Configurar&#8230;</string>
-    <string name="label_reset_hints">Resetear sugerencias</string>
-    <string name="do_not_show_again">No volver a mostrar</string>
+
+    <string name="groupings">Grupos</string>
+
+    <string name="hint_authors_book_may_appear_more_than_once">Si se muestra para cada autor, un mismo libro puede aparecer más de una vez en un listado. En ese caso, si se elimina uno de esos libros se eliminará de todas las posiciones del listado.</string>
+    <string name="hint_autorotate_camera_images">Si siempre tiene que girar las imágenes de la cámara en el mismo sentido, intente cambiar la configuración para aplicar la rotación automática.</string>
+    <string name="hint_background_task_events">Aquí puede ver los eventos asociados con una tarea en segundo plano. 
+    								Haciendo clic sobre un evento podrá realizar distintas acciones según el tipo de evento.</string>
+    <string name="hint_background_tasks">Aquí puede ver las tareas que se están ejecutando, así como las que ya se han completado con errores o con otro tipo de incidencias. 
+    								Haciendo clic sobre una tarea podrá ver los eventos asociados, o borrar la tarea (y los eventos).</string>
+    <!-- Hint text displayed when user enters the book listw -->
+    <string name="hint_library">Si pulsa sobre un libro se muestran sus detalles. Si mantiene pulsado, se muestran más opciones.</string>
+    <string name="hint_library_global_properties">Puede utilizar esta opción para configurar las características por defecto de todos los estilos de listados de libros.
+    										\n\nLa mayoría de las propiedades se pueden modificar para cada estilo individual, pero los valores por defecto se
+    										definen aquí.
+    										\n\nPuede cambiar el fondo, la forma en que los listados se muestran de inicio, y modificar otros parámetros
+    										que se aplicarán a todos sus estilos cuando sea posible.
+    										\n\nTambién puede editar desde aquí el menú de estilos, y los propios estilos.
+</string>
+    <string name="hint_library_style_groups">Puede utilizar esta opción para modificar la jerarquía de las cabeceras para un determinado estilo de listado.
+    										\n\nUna marca verde indica que el encabezado se mostrará en la lista, un aspa roja indica que no se mostrará.
+    										Al hacer clic sobre una marca verde se convierte en un aspa roja, y viceversa.
+    										\n\nPuede reordenar la jerarquía arrastrando el icono del extremo derecho de cada fila hacia arriba o hacia abajo.
+</string>
+    <string name="hint_library_style_menu">Esta opción le permite seleccionar el estilo de los listados.
+    								\n\nTambién puede modificar este menú, así como crear sus propios estilos de listado, seleccionando \'Configurar\' al final de la lista.</string>
+    <string name="hint_library_style_properties">Puede utilizar esta opción para configurar las características de un determinado estilo de listado.
+    										\n\nPuede cambiar el nombre, editar los grupos para cambiar la jerarquía y modificar otros parámetros para
+    										configurar un estilo que le resulte útil.
+    										\n\nTambién se pueden utilizar \'Filtrar libros\' para modificar la selección de libros que se mostrarán en
+    										el listado, por ejemplo, para mostrar únicamente libros no leídos.
+</string>
     <string name="hint_library_styles_editor">Puede utilizar esta opción para configurar la lista de estilos que se mostrarán en su menú de estilos.
     										\n\nUna marca verde indica que el estilo se mostrará en la lista, un aspa roja indica que no se mostrará.
     										Al hacer clic sobre una marca verde se convierte en un aspa roja, y viceversa.
@@ -282,141 +232,216 @@
     										\n\nHaciendo clic en cualquier otro sitio de la línea podrá editar los detalles de un estilo específico 
     										(o copiarlo, si es un estilo predefinido).
 </string>
-    <string name="hint_library_style_groups">Puede utilizar esta opción para modificar la jerarquía de las cabeceras para un determinado estilo de listado.
-    										\n\nUna marca verde indica que el encabezado se mostrará en la lista, un aspa roja indica que no se mostrará.
-    										Al hacer clic sobre una marca verde se convierte en un aspa roja, y viceversa.
-    										\n\nPuede reordenar la jerarquía arrastrando el icono del extremo derecho de cada fila hacia arriba o hacia abajo.
-</string>
-    <string name="hint_library_style_properties">Puede utilizar esta opción para configurar las características de un determinado estilo de listado.
-    										\n\nPuede cambiar el nombre, editar los grupos para cambiar la jerarquía y modificar otros parámetros para
-    										configurar un estilo que le resulte útil.
-    										\n\nTambién se pueden utilizar \'Filtrar libros\' para modificar la selección de libros que se mostrarán en
-    										el listado, por ejemplo, para mostrar únicamente libros no leídos.
-</string>
-    <string name="hint_library_global_properties">Puede utilizar esta opción para configurar las características por defecto de todos los estilos de listados de libros.
-    										\n\nLa mayoría de las propiedades se pueden modificar para cada estilo individual, pero los valores por defecto se
-    										definen aquí.
-    										\n\nPuede cambiar el fondo, la forma en que los listados se muestran de inicio, y modificar otros parámetros
-    										que se aplicarán a todos sus estilos cuando sea posible.
-    										\n\nTambién puede editar desde aquí el menú de estilos, y los propios estilos.
-</string>
-    <string name="preferred_styles">Estilos preferidos</string>
-    <string name="title_edit_style_colon_name">Editar estilo: %1$s</string>
-    <string name="title_add_style">Añadir estilo</string>
-    <string name="title_clone_style_colon_name">Duplicar estilo: %1$s</string>
-    <string name="option_select_read_only">Seleccionar sólo libros leídos</string>
-    <string name="option_select_unread_only">Seleccionar sólo libros no leídos</string>
-    <string name="extra_filters">Filtros adicionales</string>
-    <string name="new_style">Nuevo estilo</string>
-    <string name="select_based_on_read_status">Seleccionar en función del estado \'Leído\'</string>
-    <string name="preference_books_with_multiple_authors">Libros con varios autores</string>
-    <string name="preference_books_in_multiple_series">Libros en varias series</string>
-    <string name="option_use_default_setting">Utilizar configuración por defecto</string>
-    <string name="option_show_book_under_each_thing">Bajo cada %1$s</string>
-    <string name="option_show_book_under_primary_thing">Sólo bajo primer %1$s</string>
-    <string name="preference_format_of_author_names">Formato para nombres de autor</string>
-    <string name="option_given_name_first_eg">Nombre primero, por ejemplo \'Antonio García\'</string>
-    <string name="option_family_name_first_eg">Apellido primero, por ejemplo \'García, Antonio\'</string>
-    <string name="thumbnails">Miniaturas</string>
-    <string name="preference_size_of_library_items">Tamaño de los elementos en el listado</string>
-    <string name="option_normal">Normal</string>
-    <string name="option_smaller">Pequeño</string>
-    <string name="select_style">Seleccionar Estilo</string>
-    <string name="thing_must_not_be_blank">%1$s no puede ser blanco</string>
-    <string name="label_edit">Editar</string>
-    <string name="groupings">Grupos</string>
-    <string name="label_preferences">Preferencias</string>
-    <string name="alert_unexpected_error">Se ha producido un error inesperado. Por favor, envíe los detalles a soporte utilizando la opción \'Help\' del menú principal</string>
-    <string name="delete_style">Eliminar Estilo</string>
-    <string name="edit_style">Editar Estilo</string>
-    <string name="clone_style">Duplicar Estilo</string>
-    <string name="label_dash_or_dash">- O -</string>
-    <string name="label_paypal_donation">Donación PayPal</string>
-    <string name="compact">Compacto</string>
-    <string name="user_defined">Definido por el usuario</string>
-    <string name="builtin">Predefinido</string>
-    <string name="sort_unread">No leídos (Autor/Serie)</string>
-    <string name="unknown">Desconocido</string>
-    <string name="cover_options_cc_ellipsis">Opciones de Portadas&#8230;</string>
-    <string name="show_events_ellipsis">Mostrar eventos&#8230;</string>
-    <string name="hint_authors_book_may_appear_more_than_once">Si se muestra para cada autor, un mismo libro puede aparecer más de una vez en un listado. En ese caso, si se elimina uno de esos libros se eliminará de todas las posiciones del listado.</string>
     <string name="hint_series_book_may_appear_more_than_once">Si se muestra en cada serie, un mismo libro puede aparecer más de una vez en un listado. En ese caso, si se elimina uno de esos libros se eliminará de todas las posiciones del listado.</string>
-    <string name="hint_background_tasks">Aquí puede ver las tareas que se están ejecutando, así como las que ya se han completado con errores o con otro tipo de incidencias. 
-    								Haciendo clic sobre una tarea podrá ver los eventos asociados, o borrar la tarea (y los eventos).</string>
-    <string name="hint_background_task_events">Aquí puede ver los eventos asociados con una tarea en segundo plano. 
-    								Haciendo clic sobre un evento podrá realizar distintas acciones según el tipo de evento.</string>
-    <string name="alert_hints_have_been_reset">Sugerencias reseteadas</string>
     <string name="hint_startup_screen">Esta es la pantalla estándar de inicio de BookCatalogue. Si lo prefiere, puede iniciar la aplicación directamente en \'Mis Libros\'; la pantalla de inicio preferida puede cambiarse en preferencias.</string>
-    <string name="upgrading_ellipsis">Actualizando&#8230;</string>
-    <string name="label_read_amp_unread">Leído &amp; No leído</string>
-    <string name="label_loaned">Prestado</string>
-    <string name="label_publication_year">Año de publicación</string>
-    <string name="label_publication_month">Mes de publicación</string>
-    <string name="label_added_year">Año de inclusión</string>
-    <string name="label_added_month">Mes de inclusión</string>
-    <string name="label_added_day">Día de inclusión</string>
-    <string name="book">Libro</string>
-    <string name="label_in">en</string>
-    <string name="label_size">Tamaño</string>
-    <string name="label_updated">Actualizado</string>
-    <string name="alert_problem_starting_import_arg">Ha habido un problema con la importación: %1$s</string>
-    <string name="hint_library_style_menu">Esta opción le permite seleccionar el estilo de los listados.
-    								\n\nTambién puede modificar este menú, así como crear sus propios estilos de listado, seleccionando \'Configurar\' al final de la lista.</string>
-    <string name="menu_edit_format">Editar Formato&#8230;</string>
-    <string name="label_edit_format_name">Editar Nombre del Formato</string>
-    <string name="name_can_not_be_blank">El nombre no puede ser blanco</string>
-    <string name="export_starting_ellipsis">Empezando exportación&#8230;</string>
-    <string name="preference_resizing_cover_thumbnails">Redimensionado de miniaturas</string>
-    <string name="option_resize_each_time">Redimensionar cada vez que se necesitan (se utiliza menos almacenamiento, el desplazamiento será más lento)</string>
-    <string name="option_cache_resized_thumbnails_for_later_use">Miniaturas redimensionadas en caché (usa más almacenamiento, desplazamiento más rápido)</string>
-    <string name="preference_generating_cover_thumbnails">Generación de miniaturas</string>
-    <string name="option_use_background_thread">Usar hilo de fondo (desplazamiento más rápido, las imágenes pueden retrasarse)</string>
-    <string name="option_generate_immediately">Generar inmediatamente (desplazamiento más lento, las imágenes se muestran inmediatamente)</string>
-    <string name="sort_and_style_ellipsis">Estilo de &amp; ordenación&#8230;</string>
-    <string name="description_displaying_n_books_in_m_entries">Se muestran %1$s libros, en %2$s entradas</string>
-    <string name="description_displaying_n_books">Se muestran %1$s libros</string>
-    <string name="available">Disponible</string>
-    <string name="preference_summary_details_in_header">Resumen en la cabecera</string>
-    <string name="option_hide_summary_details">Ocultar resumen</string>
-    <string name="x_is_not_a_valid_isbn">%1$s no es un ISBN válido</string>
-    <string name="preference_beep_if_scanned_isbn_invalid">Pitido si el ISBN escaneado no es válido</string>
-    <string name="no_image_found">No se ha encontrado imagen</string>
-    <string name="could_not_copy_image">No se pudo copiar la imagen</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">Esta opción no está disponible mientras no se guarde el libro</string>
-    <string name="label_scan_barcode_isbn">Escanear código de barras/ISBN</string>
-    <string name="label_enter_isbn">Introducir ISBN</string>
-    <string name="label_allow_asin">Permitir ASIN</string>
-    <string name="x_is_not_a_valid_isbn_or_asin">%1$s no es un ISBN o ASIN válido</string>
-    <string name="label_read_year">Año de lectura</string>
-    <string name="label_read_month">Mes de lectura</string>
-    <string name="label_read_day">Día de lectura</string>
-    <string name="sort_read_date">Fecha de lectura</string>
-    <string name="details_have_changed">Detalles modificados</string>
-    <string name="you_have_unsaved_changes">Hay cambios que no se han guardado. Si sale ahora, se perderán.</string>
-    <string name="exit">Salir</string>
-    <string name="continue_editing">Continuar editando</string>
-    <string name="the_title_already_exists">El título ya existe</string>
-    <string name="label_year">Año</string>
-    <string name="label_month">Mes</string>
-    <string name="day">Día</string>
+    <!-- Hint text displayed when user enters the book listw -->
+    <string name="hint_view_only_book_details">Al pulsar sobre un elemento de esta lista, puede seleccionar la opción de ir a una vista no editable con los detalles del libro. 
+Vea "Otras preferencias" para configurarlo.
+</string>
+    <!-- Hint text displayed when user enters the 'read-only' book view -->
+    <string name="hint_view_only_help">Esta es la vista no editable de la pantalla de detalles. Puede deslizar la pantalla a derecha o izquierda para ver otros libros, 
+y puede editar el libro utilizando el menú de opciones.
+</string>
+
     <string name="if_day_is_specified_month_and_year_must_be">Si se especifica un día, deben especificarse también el mes y el año.</string>
     <string name="if_month_is_specified_year_must_be">Si se especifica el mes, debe especificarse también el año.</string>
-    <string name="preference_use_external_image_cropper">Utilizar recortador de imágenes externo (experimental)</string>
-    <string name="preference_auto_rotate_camera_images">Girar automáticamente las imágenes de la cámara</string>
-    <string name="hint_autorotate_camera_images">Si siempre tiene que girar las imágenes de la cámara en el mismo sentido, intente cambiar la configuración para aplicar la rotación automática.</string>
-    <string name="preference_default_crop_frame_is_whole_image">Por defecto, la imagen se guarda completa</string>
-    <string name="alert_cancelled">Cancelado</string>
-    <string name="description_import_complete">Importación finalizada</string>
-    <string name="searching_ellipsis">Buscando&#8230;</string>
-    <string name="status_adding_book_ellipsis">Añadiendo libro&#8230;</string>
-    <string name="preference_global_opening_book_mode">Abrir libro en modo sólo lectura</string>
+
+    <string name="image_not_found">Imagen no encontrada</string>
+
+    <!-- Displayed when an archive operation fails -->
+    <string name="import_failed">La importación falló.</string>
+
+    <!-- Showed in progress dialog when an import starts -->
+    <string name="importing_ellipsis">Importando…</string>
+
+    <string name="install_scan_title">Instalar Escáner de código de barras</string>
+
+    <string name="kilobytes">%.2fkB</string>
+
+    <string name="label_about">Acerca de esta App</string>
+    <string name="label_add">Añadir</string>
+    <string name="label_add_manually">Añadir manualmente</string>
+    <string name="label_added_day">Día de inclusión</string>
+    <string name="label_added_month">Mes de inclusión</string>
+    <string name="label_added_year">Año de inclusión</string>
+    <!-- Heading in Admin activity -->
+    <string name="label_advanced_options">Opciones avanzadas</string>
+    <string name="label_allow_asin">Permitir ASIN</string>
+    <string name="label_amazon_wishlist">Amazon Wishlist</string>
+    <string name="label_anthology">Antología</string>
+    <string name="label_anthology_titles">Antologías</string>
+    <string name="label_author">Autor</string>
+    <!-- Hint displayed when an export or database backup is done -->
+    <!-- Progress dialog message displayed when doing a long network operation to a web site -->
+    <!-- Admin option to import -->
+    <string name="label_backup_to_archive">Backup a fichero</string>
+    <!-- Introduction for 'advanced export' option -->
+    <!-- Text for button -->
+    <string name="label_book_details">Detalles de los libros</string>
+    <string name="label_bookshelf">Biblioteca</string>
+    <string name="label_bookshelves">Biblioteca</string>
+    <string name="label_comments">Sus comentarios</string>
+    <string name="label_contact">Contacto</string>
+    <!-- Displayed in Admin menu advanced options (top make a copy of the internal database on the sdcard -->
+    <string name="label_copy_database">Copiar Base de Datos (para soporte técnico)</string>
+    <!-- Text for button -->
+    <string name="label_cover_images">Portadas</string>
+    <string name="label_dash_or_dash">- O -</string>
+    <string name="label_data_import_export">Importación/Exportación de datos</string>
+    <string name="label_date_published">Fecha de publicación</string>
+    <!-- NOTE: Adding a new format will involve changing code that references this list -->
+    <string name="label_description">Descripción</string>
+    <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
+    <string name="label_details">Detalles</string>
+    <string name="label_donate">Contribuir</string>
+    <string name="label_edit">Editar</string>
+    <string name="label_edit_format_name">Editar Nombre del Formato</string>
+    <string name="label_email_export">¿Desea enviar por correo electrónico el fichero exportado?</string>
+    <string name="label_enter_isbn">Introducir ISBN</string>
+    <string name="label_erase_cover_cache">Borrar caché de portadas</string>
+    <!-- Content description for the 'up' icon in the folder browser -->
+    <!-- Displayed when a user tries to browse higher than the root directory, or if the parent is unable to be read -->
+    <!-- For saving and opening exports or backups -->
+    <!-- Admin option to export books -->
+    <string name="label_export_to_csv">Exportar a fichero CSV</string>
+    <string name="label_family_name">Apellidos</string>
+    <string name="label_format">Formato</string>
+    <string name="label_genre">Género</string>
+    <string name="label_given_names">Nombre</string>
+    <string name="label_help">Ayuda</string>
+    <string name="label_import_books">Importar libros</string>
+    <!-- Admin option to import -->
+    <string name="label_import_from_archive">Importar de fichero</string>
+    <!-- Admin option to import books -->
+    <string name="label_import_from_csv">Importar de fichero CSV</string>
+    <string name="label_in">en</string>
+    <string name="label_is_anthology">¿Se trata de una antología?</string>
+    <!-- End: Added/Updated in 5.0.3 -->
+    <!-- Begin: Added/Updated in 5.0.4 -->
+    <!-- Short Heading for 'Language' field in book details -->
+    <string name="label_language">Idioma</string>
+    <string name="label_list_price">Precio</string>
+    <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
+    <string name="label_loan">Préstamo</string>
+    <string name="label_loan_to">Libro prestado a:</string>
+    <string name="label_loaned">Prestado</string>
+    <string name="label_loaned_to">Este libro ha sido prestado a:</string>
+    <string name="label_location">Ubicación</string>
+    <string name="label_location_of_book">Ubicación del libro</string>
+    <string name="label_month">Mes</string>
+    <string name="label_notes">Notas</string>
+    <string name="label_pages">Páginas</string>
+    <string name="label_paypal_donation">Donación PayPal</string>
+    <string name="label_preferences">Preferencias</string>
+    <string name="label_publication_month">Mes de publicación</string>
+    <string name="label_publication_year">Año de publicación</string>
+    <string name="label_publisher">Editorial</string>
     <string name="label_publishing">Editor</string>
-    <string name="book_details_readonly_by">por</string>
-    <string name="book_details_readonly_loaned_to">Prestado a %1$s</string>
-    <string name="book_details_readonly_pages">%1$s páginas</string>
-    <string name="brackets">(%1$s)</string>
-    <string name="new_in_42">
-<![CDATA[
+    <string name="label_rating">Calificación</string>
+    <string name="label_read">¿Has leído este libro?</string>
+    <string name="label_read_amp_unread">Leído &amp; No leído</string>
+    <string name="label_read_day">Día de lectura</string>
+    <string name="label_read_end">Fecha de fin de lectura</string>
+    <string name="label_read_month">Mes de lectura</string>
+    <string name="label_read_start">Fecha de inicio de lectura</string>
+    <string name="label_read_year">Año de lectura</string>
+    <string name="label_reset_hints">Resetear sugerencias</string>
+    <string name="label_same_author">Todos los libros de esta antología son del mismo autor</string>
+    <string name="label_scan_barcode_isbn">Escanear código de barras/ISBN</string>
+    <string name="label_search">Buscar</string>
+    <string name="label_search_by">Buscar autor o título</string>
+    <string name="label_search_for_books">Buscar libro</string>
+    <string name="label_search_internet">Buscar en internet</string>
+    <string name="label_select_bookshelves">Seleccionar biblioteca</string>
+    <string name="label_series">Serie</string>
+    <string name="label_series_num">#</string>
+    <string name="label_set_authors">Definir autores…</string>
+    <string name="label_signed">¿Está firmado este libro?</string>
+    <string name="label_size">Tamaño</string>
+    <string name="label_sort_title_first_letter">Primera letra del título</string>
+    <string name="label_sourcecode">Código fuente</string>
+    <!-- Heading in 'about' dialog -->
+    <string name="label_special_thanks">Agradecimientos</string>
+    <string name="label_thumbnail">Portada</string>
+    <string name="label_title">Título</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="label_update_day">Día de actualización</string>
+    <string name="label_update_fields">Actualización automática de campos</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="label_update_month">Mes de actualización</string>
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="label_update_year">Año de actualización</string>
+    <string name="label_updated">Actualizado</string>
+    <string name="label_user_interface">Interfaz de usuario</string>
+    <string name="label_version_number">Versión</string>
+    <string name="label_webpage">Página web</string>
+    <string name="label_year">Año</string>
+
+    <string name="legacy_task">Legacy Task</string>
+
+    <string name="list_and">y</string>
+
+    <string name="loading">Cargando…</string>
+
+    <string name="megabytes">%.2fMB</string>
+
+    <string name="menu_add_thumb_gallery">Desde la galería…</string>
+    <string name="menu_add_thumb_photo">Desde la cámara…</string>
+    <!-- Menu item -->
+    <string name="menu_amazon_books_by_author">Libros del mismo autor</string>
+    <!-- Menu item -->
+    <string name="menu_amazon_books_by_author_in_series">Libros del autor/serie</string>
+    <!-- Menu item -->
+    <string name="menu_amazon_books_in_series">Libros de la misma serie</string>
+    <string name="menu_crop_thumb">Recortar miniatura</string>
+    <string name="menu_delete_anthology">Eliminar título de una antología</string>
+    <string name="menu_delete_book">Eliminar libro</string>
+    <string name="menu_delete_bs">Eliminar biblioteca</string>
+    <string name="menu_delete_series">Eliminar serie…</string>
+    <string name="menu_delete_thumb">Eliminar portada</string>
+    <string name="menu_duplicate">Duplicar libro</string>
+    <string name="menu_edit_author">Modificar autor…</string>
+    <string name="menu_edit_book">Editar libro</string>
+    <string name="menu_edit_format">Editar Formato…</string>
+    <string name="menu_edit_series">Modificar serie…</string>
+    <string name="menu_insert_bs">Crear biblioteca</string>
+    <string name="menu_replace_thumb">Cambiar portada…</string>
+    <string name="menu_rotate_thumb">Girar imagen…</string>
+    <string name="menu_rotate_thumb_180">180 grados</string>
+    <string name="menu_rotate_thumb_ccw">Sentido antihorario</string>
+    <string name="menu_rotate_thumb_cw">Sentido horario</string>
+    <string name="menu_search">Buscar libro</string>
+    <string name="menu_share_this">Compartir</string>
+    <string name="menu_sort_by_author_collapsed">Comprimir todo</string>
+    <string name="menu_sort_by_author_expanded">Expandir todo</string>
+
+    <!-- Short text for 'n books' -->
+    <plurals name="n_books" tools:ignore="UnusedQuantity">
+        <item quantity="zero">ningún libro</item>
+        <item quantity="one">1 libro</item>
+        <item quantity="other">%1$s libros</item>
+        <item quantity="many">%1$s libros</item>
+    </plurals>
+    <!-- Short text for 'n covers' -->
+    <plurals name="n_covers" tools:ignore="UnusedQuantity">
+        <item quantity="zero">ninguna portada</item>
+        <item quantity="one">1 portada</item>
+        <item quantity="other">%1$s portadas</item>
+        <item quantity="many">%1$s portadas</item>
+    </plurals>
+    <!-- Part of the progress message displayed when importing books -->
+    <string name="n_created_m_updated">%1$s creados, %2$s actualizados</string>
+    <!-- Short text for 'n stars' -->
+    <plurals name="n_stars" tools:ignore="UnusedQuantity">
+        <item quantity="zero">%1$s estrellas</item>
+        <item quantity="one">%1$s estrella</item>
+        <item quantity="other">%1$s estrellas</item>
+        <item quantity="many">%1$s estrellas</item>
+    </plurals>
+
+    <string name="name_can_not_be_blank">El nombre no puede ser blanco</string>
+
+    <string name="new_in_42"><![CDATA[
     <p><b>Novedades en la versión 4.2</b>\n\n
 			* Introducción de fecha que soporta fechas desde 0AD así como fechas parciales\n\n
 			* Las descripciones HTML se muestran correctamente al hacer clic para editar\n\n
@@ -438,19 +463,13 @@
 			Muchas gracias a nuestros beta-testers y traductores!\n\n
 			Gracias a Grunthos por todos los errores reportados. Enviadnos por favor vuestros informes de errores.
 			</p>
-		]]>
-    </string>
-    <string name="_empty_"></string>
-    <string name="new_in_421">
-<![CDATA[
+		]]></string>
+    <string name="new_in_421"><![CDATA[
     <p><b>Novedades en la versión 4.2.1</b>\n\n
 			* Corregido error cuando se expandía la lista utilizando \'Expandir todo\'\n\n
 			</p>
-		]]>
-    </string>
-    <string name="bad_scanner">Su aplicación de escaneado de código de barras no es compatible con Book Catalogue. Recomendamos la instalción de Zxing barcode scanner, y si ya está instalada, pruebe a desinstalarla y volver a instalarla.</string>
-    <string name="new_in_422">
-<![CDATA[
+		]]></string>
+    <string name="new_in_422"><![CDATA[
     <p><b>Novedades en la versión 4.2.2</b>\n\n
 			* Corrección en la gestión de la imagen de fondo para ciertas versiones de Android\n\n
 			* Mejoras en la gestión de aplicaciones de escaneado no compatibles\n\n
@@ -458,29 +477,14 @@
 			* Simplificación de pantallas (Nick Silin)\n\n
 			* Corrección de otros errores\n\n
 			</p>
-		]]>
-    </string>
-    <string name="new_in_423">
-<![CDATA[
+		]]></string>
+    <string name="new_in_423"><![CDATA[
     <p><b>Novedades en la versión 4.2.3</b>\n\n
 			* Mejoras en la gestión de ISBNs no válidos al enviar a goodreads\n\n
 			* Corrección de otros pequeños errores\n\n
 			</p>
-		]]>
-    </string>
-
-    <!-- Heading for scanner-related preferences -->
-    <string name="scanning">Escaneado</string>
-    <!-- Preference name, displayed in a preference activity -->
-    <string name="preference_preferred_scanner">Escaner preferido</string>
-    <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="option_zxing_compatible_scanner">Zxing Compatible Scanner</string>
-    <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="option_pic2shop_scanner">Pic2Shop Scanner</string>
-    <!-- Preference name, displayed in a preference activity -->
-    <string name="preference_beep_if_scanned_isbn_valid">Pitido si el ISBN escaneado es válido</string>
-    <string name="new_in_424">
-<![CDATA[
+		]]></string>
+    <string name="new_in_424"><![CDATA[
 	<p><b>Novedades en la versión 4.2.4</b>\n\n
 		* Vista no editable de los detalles de un libro, con soporte \'fling\'! (Ver \"Otras preferencias\") (Nick Silin)\n\n
 		* Soporte para el escáner pic2shop (mejor para foco fijo, poca luz y cámaras frontales)\n\n
@@ -489,65 +493,11 @@
 		* Actualización de la traducción al francés (Djiko)\n\n
 		* Corrección de errores\n\n
 		</p>
-		]]>
-    </string>
-
-    <!-- Hint text displayed when user enters the book listw -->
-    <string name="hint_view_only_book_details">Al pulsar sobre un elemento de esta lista, puede seleccionar la opción de ir a una vista no editable con los detalles del libro. 
-Vea "Otras preferencias" para configurarlo.
-</string>
-
-    <!-- Hint text displayed when user enters the 'read-only' book view -->
-    <string name="hint_view_only_help">Esta es la vista no editable de la pantalla de detalles. Puede deslizar la pantalla a derecha o izquierda para ver otros libros, 
-y puede editar el libro utilizando el menú de opciones.
-</string>
-
-    <!-- This is the heading of the 'Details' tab when editing a book. It needs to be short. "Book Details" is too long. -->
-    <string name="label_details">Detalles</string>
-    <!-- This is the heading of the 'Loan' tab when editing a book. It needs to be short. "Loan Book" is too long. -->
-    <string name="label_loan">Préstamo</string>
-
-    <!-- Hint displayed when an export or database backup is done -->
-
-    <!-- Progress dialog message displayed when doing a long network operation to a web site -->
-
-    <!-- Admin option to import -->
-    <string name="label_backup_to_archive">Backup a fichero</string>
-    <!-- Admin option to import -->
-    <string name="label_import_from_archive">Importar de fichero</string>
-
-    <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="fragment_a_and_b">%1$s y %2$s</string>
-    <string name="para_archive_complete_details">Se ha creado un fichero de %3$s llamado %2$s en el directorio \"%1$s\" de su tarjeta SD.
-    \n\nDebe copiarlo a otro lugar para proteger los datos en caso de que su dispositivo resulte dañado, se pierda o sea robado.</string>
-
-    <!-- Displayed in progress dialog when exporting covers -->
-    <string name="covers_progress">%1$s portadas procesadas (%2$s descartadas)</string>
-    <!-- Heading in Admin activity -->
-    <string name="label_advanced_options">Opciones avanzadas</string>
-    <!-- Showed in progress dialog when an import starts -->
-    <string name="backing_up_ellipsis">Copiando&#8230;</string>
-    <!-- Showed in progress dialog when an import starts -->
-    <string name="importing_ellipsis">Importando&#8230;</string>
-
-    <!-- Content description for the 'up' icon in the folder browser -->
-
-    <!-- Displayed when a user tries to browse higher than the root directory, or if the parent is unable to be read -->
-
-    <!-- For saving and opening exports or backups -->
-
-    <!-- Admin option to export books -->
-    <string name="label_export_to_csv">Exportar a fichero CSV</string>
-    <!-- Admin option to import books -->
-    <string name="label_import_from_csv">Importar de fichero CSV</string>
-
+		]]></string>
     <!-- Displayed when a file/open dialog results in selecting a non-exitant file -->
-
     <!-- Displayed when a file/save dialog results in selecting a directory file -->
-
     <!-- This is pretty close to the expected feature list! It is a merge of 424 and 430... -->
-    <string name="new_in_500">
-<![CDATA[
+    <string name="new_in_500"><![CDATA[
 	<p><b>Novedades en la versión 5.0.0</b>\n\n
 		* Vista no editable de los detalles de un libro, con soporte \'fling\'! (Ver \"Otras preferencias\") (Nick Silin)\n\n
 		* Archivado (Backup & Importación) del catálogo completo, incluyendo libros, portadas, preferencias y estilos\n\n
@@ -561,179 +511,62 @@ y puede editar el libro utilizando el menú de opciones.
 		* Cambios internos, en preparación para una interfaz mejorada para tabletas\n\n
 		* Corrección de errores\n\n
 		</p>
-		]]>
-    </string>
-
-    <!-- Displayed in Admin menu advanced options (top make a copy of the internal database on the sdcard -->
-    <string name="label_copy_database">Copiar Base de Datos (para soporte técnico)</string>
-
-    <!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
-    <string name="option_show_book_count">Mostrar el número de libros</string>
-    <string name="option_show_first_level_and_book_count">Mostrar el primer nivel de cabecera y el número de libros</string>
-    <string name="option_show_all_summary_details">Mostrar todos los detalles del resumen</string>
-
-    <!-- Displayed when an archive operation fails -->
-    <string name="import_failed">La importación falló.</string>
-    <!-- Displayed when any write operation to the sd card fails -->
-    <string name="alert_please_check_sd_writable">Compruebe que se puede escribir en la tarjeta SD, y que tiene suficiente espacio.</string>
-    <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_readable">Compruebe que se puede acceder a la tarjeta SD.</string>
-
+		]]></string>
     <!-- Begin: Added/Updated in 5.0.2 -->
-
-    <string name="new_in_502">
-		<![CDATA[
+    <string name="new_in_502"><![CDATA[
 			<p><b>Novedades en la versión 5.0.2</b>\n\n
 				* Corrección de errores\n\n
 			</p>
-		]]>
-    </string>
-
+		]]></string>
     <!-- End: Added/Updated in 5.0.2 -->
-    
     <!-- Begin: Added/Updated in 5.0.3 -->
-
-    <string name="new_in_503">
-		<![CDATA[
+    <string name="new_in_503"><![CDATA[
 			<p><b>Novedades en la versión 5.0.3</b>\n\n
 				* Corrección de errores\n\n
 				* Actualización de la traducción al francés (Imkal)\n\n
 			</p>
-		]]>
-    </string>
-
-    <!-- End: Added/Updated in 5.0.3 -->
-    
-    <!-- Begin: Added/Updated in 5.0.4 -->
-    
-    <!-- Short Heading for 'Language' field in book details -->
-    <string name="label_language">Idioma</string>
-    <string name="new_in_504">
-		<![CDATA[
+		]]></string>
+    <string name="new_in_504"><![CDATA[
 			<p><b>Novedades en la versión 5.0.4</b>\n\n
 				* Nuevo campo: Idioma\n\n
 				* Actualización de la traducción al francés (Imkal)\n\n
 				* Corrección de errores\n\n
 			</p>
-		]]>
-    </string>
-    
+		]]></string>
     <!-- End: Added/Updated in 5.0.4 -->
-
     <!-- Begin: Added/Updated in 5.0.5 -->
     <!--  New preference to override the default method used to generate bookslists as defined by API level -->
     <!-- Option listed under "booklist_generation" referring to a very conservative way of generating bookslists -->
     <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
     <!-- Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
     <!-- Default Option listed under "booklist_generation" referring to a conservative way of generating bookslists -->
-
-    <string name="new_in_505">
-		<![CDATA[
+    <string name="new_in_505"><![CDATA[
 			<p><b>Novedades en la versión 5.0.5</b>\n\n
 				* Se puede ordenar por "Fecha de inclusión", inversa\n\n
 				* Actualización de la traducción al francés (Imkal)\n\n
 				* Corrección de errores\n\n
 			</p>
-		]]>
-    </string>
-    
+		]]></string>
     <!-- End: Added/Updated in 5.0.5 -->
-
     <!-- Begin: Added/Updated in 5.0.8 -->
-    <string name="new_in_508">
-		<![CDATA[
+    <string name="new_in_508"><![CDATA[
 			<p><b>Novedades en la versión 5.0.8</b>\n\n
 				* Actualización de la traducción al alemán (Robert Wetzlmayr)\n\n
 			</p>
-		]]>
-    </string>
+		]]></string>
     <!-- End: Added/Updated in 5.0.8 -->
-
-	<!--  Note to Translators: don't bother translating strings until they get a version number. They are very much 'draft' versions -->
-    
+    <!--  Note to Translators: don't bother translating strings until they get a version number. They are very much 'draft' versions -->
     <!-- Begin: Added/Updated in 5.0.9 -->
-    <string name="new_in_509">
-		<![CDATA[
+    <string name="new_in_509"><![CDATA[
 			<p><b>Novedades en la versión 5.0.9</b>\n\n
 				* Corrección de errores para Android 4.4 (KitKat)\n\n
 				* Actualización de la traducción al alemán (Gideon van Melle)\n\n
 				* Corrección de otros pequeños errores
 			</p>
-		]]>
-    </string>
-
-    <!-- End: Added/Updated in 5.0.9 -->
-
-    <!-- Begin: Added/Updated in 5.1.0 -->
-    
-    <!--  Explanatory text for 'import' dialogue -->
-    <string name="description_import_books_blurb">Se importarán los libros de este fichero. Seleccione una de las dos opciones propuestas para empezar la importación, o pulse \'Atrás\' para cancelar:</string>
-    <!-- Description of the 'import all books' option -->
-    <string name="description_all_books_blurb">Importar todos los libros del fichero, actualizando los que existan y añadiendo los nuevos.</string>
-    <!-- Menu text for the 'import/export new & changed' option -->
-    <string name="option_new_and_changed_books">Libros nuevos y actualizados</string>
-    <!-- Description of the 'import new & changed' option -->
-    <string name="description_new_and_changed_books_blurb">Importar sólo los libros nuevos, o los que tienen fecha de actualización más reciente en el fichero. Esto es útil para sincronizar dispositivos.</string>
-    <!-- Descriptive text associated with import options not available with older archives -->
-    <string name="alert_old_archive_blurb">Esta opción no está soportada para versiones de archivo antiguas.</string>
-    <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$s creados, %2$s actualizados</string>
-
-    <!--  Explanatory text for 'export' dialogue -->
-    <string name="description_export_books_blurb">Se exportarán los libros de su catálogo. Seleccione una opción para iniciar la exportación, o pulse \'Atrás\' para cancelar:</string>
-    <!-- Description of the 'import all books' option -->
-    <!-- Description of the 'export new & changed' option -->
-    <!-- Part of the progress message displayed when exporting books -->
-
-    <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$s portadas procesadas (%2$s no encontradas, %3$s saltadas)</string>
-    
-    <!-- Explanatory note for 'export all' option -->
-    <string name="description_export_all_blurb">Se exportarán al fichero todos los libros, portadas, configuraciones y estilos personalizados.</string>
-    <!-- Explanatory note for 'advanced export' option -->
-    <string name="description_export_advanced_blurb">Seleccione lo que desea exportar al fichero.</string>
-    <!-- Introduction for 'advanced export' option -->
-
-    <!-- Text for button -->
-    <string name="label_book_details">Detalles de los libros</string>
-    <!-- Brief descriptionn -->
-    <string name="description_book_details_blurb">Todos los datos de todos los libros</string>
-    <!-- Text for button -->
-    <string name="label_cover_images">Portadas</string>
-    <!-- Brief descriptionn -->
-    <string name="description_cover_images_blurb">Portadas de todos los libros seleccionadas. La exportación requerirá mucho más tiempo.</string>
-    <!-- Brief descriptionn -->
-    <string name="description_preferences_blurb">Preferencias y estilos definidos por el usuario</string>
-    
-    <!-- Explanatory note for export date (not yet implemented) -->
-    <string name="description_export_advanced_date_blurb">Si lo desea, especifique una fecha para seleccionar los libros o portadas que se exportarán:</string>
-    
-    <!-- Explanatory note for export date (not yet implemented) -->
-    <!-- Explanatory note for export data since last backup -->
-    <string name="option_all_books_added_or_updated_since_last_full_backup">Todos los libros añadidos o actualizados desde la última copia de seguridad completa</string>
-
-    <!-- Short text for 'n books' -->
-    <plurals
-        name="n_books">
-        <item quantity="zero">ningún libro</item>
-        <item quantity="one">1 libro</item>
-        <item quantity="other">%1$s libros</item>
-    </plurals>
-
-    <!-- Short text for 'n covers' -->
-    <plurals
-        name="n_covers">
-        <item quantity="zero">ninguna portada</item>
-        <item quantity="one">1 portada</item>
-        <item quantity="other">%1$s portadas</item>
-    </plurals>
-
+		]]></string>
     <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
-
     <!-- Short progress message -->
-
-    <string name="new_in_510">
-		<![CDATA[
+    <string name="new_in_510"><![CDATA[
 			<p><b>Novedades en la versión 5.1.0</b>\n\n
 				* Traducción al italiano (Eugenio Davolio)\n\n
 				* Traducción al español (José M. Galdo)\n\n
@@ -743,68 +576,249 @@ y puede editar el libro utilizando el menú de opciones.
 				* Nuevas opciones para buscar libros del mismo autor o serie en Amazon\n\n
 				* Corrección de otros pequeños errores\n\n
 			</p>
-		]]>
-    </string>
-    
-    <!-- Menu item -->
-    <string name="menu_amazon_books_in_series">Libros de la misma serie</string>
-    <!-- Menu item -->
-    <string name="menu_amazon_books_by_author">Libros del mismo autor</string>
-    <!-- Menu item -->
-    <string name="menu_amazon_books_by_author_in_series">Libros del autor/serie</string>
-    
-    <!-- Hint text displayed when user enters the book listw -->
-    <string name="hint_library">Si pulsa sobre un libro se muestran sus detalles. Si mantiene pulsado, se muestran más opciones.</string>
-
-    <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
-
-    <!-- Preference VALUE, displayed in a preference activity -->
-    <string name="option_zxing_scanner">Zxing Scanner</string>
-
-    <!-- Heading in 'about' dialog -->
-    <string name="label_special_thanks">Agradecimientos</string>
-    
-    <!-- Credits in the 'about' dialog -->
-    <string name="para_translators">BookCatalogue es fruto del esfuerzo de muchas personas, y no tendría un uso tan extendido sin la generosa \naportación de nuestros traductores (voluntarios): %1$s (si nos hemos olvidado de alguien, por favor, díganoslo).</string>
-
-    <!-- End: Added/Updated in 5.1.0 -->
-    <!-- Begin: Added/Updated in 5.1.1 -->
-
-    <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
-    <!-- A hint describing the benefit of folowing the Amazon links -->
-    <!--<string name="hint_amazon_links_blurb">&lt;p&gt;Si compra productos en Amazon después de haber seleccionado las opciones &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; o &lt;i&gt;\"%3$s\"&lt;/i&gt;, un porcentaje del precio de compra será enviado a los desarrolladores de %4$s.&lt;/p&gt;&lt;p&gt;También puede utilizar el enlace &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt;en nuestras FAQ&lt;/a&gt; para acceder directamente a Amazon o PayPal.&lt;/p&gt;</string>-->
-
-    <!-- Name of the new style grouping (needs to be short). -->
-    <string name="update_date">Fecha de actualización</string>
-    <!-- Name of the new style grouping (needs to be short). -->
-    <string name="label_update_year">Año de actualización</string>
-        <!-- Name of the new style grouping (needs to be short). -->
-    <string name="label_update_month">Mes de actualización</string>
-        <!-- Name of the new style grouping (needs to be short). -->
-    <string name="label_update_day">Día de actualización</string>
-
-    <!-- Short text for 'n stars' -->
-    <plurals
-        name="n_stars">
-        <item quantity="zero">%1$s estrellas</item>
-        <item quantity="one">%1$s estrella</item>
-        <item quantity="other">%1$s estrellas</item>
-    </plurals>
-
-    <string name="new_in_511">
-		<![CDATA[
+		]]></string>
+    <string name="new_in_511"><![CDATA[
 			<p><b>Novedades en la versión 5.1.1</b>\n\n
 				* Corrección de errores\n\n
 				* Nuevo estilo: Agrupar por fecha de última actualización\n\n
 				* Nuevo estilo: Agrupar por calificación\n\n
 				* Nuevo estilo: Agrupar por nombre de la biblioteca\n\n
 			</p>
-		]]>
-    </string>
+		]]></string>
+    <string name="new_style">Nuevo estilo</string>
+
+    <string name="no_author">(sin autor)</string>
+    <string name="no_connection">No hay conexión a internet.</string>
+    <string name="no_editions">No hay más ediciones</string>
+    <string name="no_genre">(sin género)</string>
+    <string name="no_image_found">No se ha encontrado imagen</string>
+    <string name="no_isbn_no_editions">No se pueden obtener ediciones para un libro sin ISBN</string>
+    <string name="no_publisher">(sin Editorial)</string>
+    <string name="no_series">(sin serie)</string>
+    <string name="no_title">(sin título)</string>
+
+    <string name="not_set">No configurado</string>
+
+    <string name="num_books_searched">%s libros encontrados</string>
+
+    <string name="optimizing_databases">Optimizando bases de datos…</string>
+
+    <string name="option_all_books">Todos los libros</string>
+    <!-- Explanatory note for export date (not yet implemented) -->
+    <!-- Explanatory note for export data since last backup -->
+    <string name="option_all_books_added_or_updated_since_last_full_backup">Todos los libros añadidos o actualizados desde la última copia de seguridad completa</string>
+    <string name="option_always_start_library_collapsed">Iniciar siempre el listado de libros comprimido</string>
+    <string name="option_always_start_library_expanded">Iniciar siempre el listado de libros expandido</string>
+    <string name="option_cache_resized_thumbnails_for_later_use">Miniaturas redimensionadas en caché (usa más almacenamiento, desplazamiento más rápido)</string>
+    <string name="option_family_name_first_eg">Apellido primero, por ejemplo \'García, Antonio\'</string>
+    <string name="option_format1">Bolsillo</string>
+    <string name="option_format2">Tapa dura</string>
+    <string name="option_format3">eBook</string>
+    <string name="option_format4">Audiobook</string>
+    <string name="option_format5">Guía</string>
+    <string name="option_generate_immediately">Generar inmediatamente (desplazamiento más lento, las imágenes se muestran inmediatamente)</string>
+    <string name="option_given_name_first_eg">Nombre primero, por ejemplo \'Antonio García\'</string>
+    <string name="option_hide_summary_details">Ocultar resumen</string>
+    <string name="option_library_read">Leídos</string>
+    <string name="option_library_unread">No leídos</string>
+    <string name="option_name">Nombre</string>
+    <!-- Menu text for the 'import/export new & changed' option -->
+    <string name="option_new_and_changed_books">Libros nuevos y actualizados</string>
+    <string name="option_no">No</string>
+    <string name="option_nobody">Nadie</string>
+    <string name="option_normal">Normal</string>
+    <!-- Preference VALUE, displayed in a preference activity -->
+    <string name="option_pic2shop_scanner">Pic2Shop Scanner</string>
+    <string name="option_remember_library_state">Preservar el estado del listado de libros</string>
+    <string name="option_resize_each_time">Redimensionar cada vez que se necesitan (se utiliza menos almacenamiento, el desplazamiento será más lento)</string>
+    <string name="option_select_read_only">Seleccionar sólo libros leídos</string>
+    <string name="option_select_unread_only">Seleccionar sólo libros no leídos</string>
+    <string name="option_show_all_summary_details">Mostrar todos los detalles del resumen</string>
+    <!-- Items in list of options for the 'Summary Details' preference. Detrmines what is show in book list header -->
+    <string name="option_show_book_count">Mostrar el número de libros</string>
+    <string name="option_show_book_under_each_thing">Bajo cada %1$s</string>
+    <string name="option_show_book_under_primary_thing">Sólo bajo primer %1$s</string>
+    <string name="option_show_first_level_and_book_count">Mostrar el primer nivel de cabecera y el número de libros</string>
+    <string name="option_smaller">Pequeño</string>
+    <string name="option_usage_add_extra">Añadir datos adicionales</string>
+    <string name="option_usage_copy_if_blank">Copiar si está en blanco</string>
+    <string name="option_usage_overwrite">Sobreescribir los datos existentes</string>
+    <string name="option_use_background_thread">Usar hilo de fondo (desplazamiento más rápido, las imágenes pueden retrasarse)</string>
+    <string name="option_use_default_setting">Utilizar configuración por defecto</string>
+    <string name="option_yes">Sí</string>
+    <!-- Preference VALUE, displayed in a preference activity -->
+    <string name="option_zxing_compatible_scanner">Zxing Compatible Scanner</string>
+    <!-- TRANLATORS NOTE: I HAVE UPDATED THE new_in_510, above! Sorry. -->
+    <!-- Preference VALUE, displayed in a preference activity -->
+    <string name="option_zxing_scanner">Zxing Scanner</string>
+
+    <string name="para_archive_complete_details">Se ha creado un fichero de %3$s llamado %2$s en el directorio \"%1$s\" de su tarjeta SD.
+    \n\nDebe copiarlo a otro lugar para proteger los datos en caso de que su dispositivo resulte dañado, se pierda o sea robado.</string>
+    <string name="para_cleanup_files">Los ficheros que se pueden eliminar ocupan %s en la tarjeta SD. Cada vez que se actualiza la versión de BookCatalogue, al hacer una copia de seguridad o cuando falla la aplicación se crean ficheros de registro en la tarjeta SD. Pulse el botón siguiente para eliminarlos. Si ha detectado algún error, le agradeceremos que utilice primero la opción de \'Enviar información\'.</string>
+    <string name="para_donate">Si desea contribuir al desarrollo de esta aplicación puede realizar su aportación económica utilizando Amazon Wishlist o el botón de Paypal que figura más abajo. En Australia no se puede publicar una versión "de pago". :-)</string>
+    <string name="para_help_click_here">Pulse aquí para acceder a la ayuda online</string>
+    <string name="para_immediate_global_changes">NOTA: Todos los cambios guardados se aplican de manera instantánea y global</string>
+    <string name="para_isbn_name_search_help">Añadir libros con ISBN es mucho más preciso que hacerlo por autor y título. Recuerde que en ocasiones el código de barras o el ISBN se encuentran en la parte interior de la portada.\n\n</string>
+    <string name="para_manage_fields_help">Los campos marcados serán visibles en las pantallas de Añadir y Editar libros. Los no marcados no se mostrarán.</string>
+    <string name="para_no_authors">El libro no tiene autor. Añada alguno utilizando el campo de texto y el botón de la parte superior de esta pantalla.</string>
+    <string name="para_no_books">No hay libros en esta biblioteca. Añada alguno utilizando el menú al pie de esta pantalla.</string>
+    <string name="para_no_series">El libro no tiene serie. Puede especificar una utilizando el campo de texto y el botón de la parte superior de esta pantalla.</string>
+    <string name="para_send_info">Pulse el botón siguiente para recopilar información sobre cualquier fallo reciente y enviarlo al equipo de desarrollo. Se creará una copia de seguridad de su base de datos y de los archivos de registro. Si no desea enviar alguno de estos ficheros, elimine los correspondientes adjuntos antes de enviar el correo que se generará.</string>
+    <!-- Credits in the 'about' dialog -->
+    <string name="para_translators">BookCatalogue es fruto del esfuerzo de muchas personas, y no tendría un uso tan extendido sin la generosa \naportación de nuestros traductores (voluntarios): %1$s (si nos hemos olvidado de alguien, por favor, díganoslo).</string>
+
+    <!-- Displayed when any write operation to the sd card fails -->
+    <string name="please_check_sd_readable">Compruebe que se puede acceder a la tarjeta SD.</string>
+
+    <string name="populate_anthology_titles">Actualización automática de títulos (EXPERIMENTAL)</string>
+
+    <string name="preference_auto_rotate_camera_images">Girar automáticamente las imágenes de la cámara</string>
+    <string name="preference_beep_if_scanned_isbn_invalid">Pitido si el ISBN escaneado no es válido</string>
+    <!-- Preference name, displayed in a preference activity -->
+    <string name="preference_beep_if_scanned_isbn_valid">Pitido si el ISBN escaneado es válido</string>
+    <string name="preference_books_in_multiple_series">Libros en varias series</string>
+    <string name="preference_books_with_multiple_authors">Libros con varios autores</string>
+    <string name="preference_default_crop_frame_is_whole_image">Por defecto, la imagen se guarda completa</string>
+    <string name="preference_extra_book_details">Detalles adicionales</string>
+    <string name="preference_format_of_author_names">Formato para nombres de autor</string>
+    <string name="preference_generating_cover_thumbnails">Generación de miniaturas</string>
+    <string name="preference_global_opening_book_mode">Abrir libro en modo sólo lectura</string>
+    <string name="preference_library_state">Estado del listado de libros</string>
+    <string name="preference_prefer_large_thumbnails">Mostrar miniaturas grandes</string>
+    <!-- Preference name, displayed in a preference activity -->
+    <string name="preference_preferred_scanner">Escaner preferido</string>
+    <string name="preference_resizing_cover_thumbnails">Redimensionado de miniaturas</string>
+    <string name="preference_show_thumbnails">Mostrar miniaturas</string>
+    <string name="preference_size_of_library_items">Tamaño de los elementos en el listado</string>
+    <string name="preference_start_in_my_books">Empezar en \'Mis libros\'</string>
+    <string name="preference_summary_details_in_header">Resumen en la cabecera</string>
+    <string name="preference_use_external_image_cropper">Utilizar recortador de imágenes externo (experimental)</string>
+
+    <string name="preferred_styles">Estilos preferidos</string>
+
+    <string name="really_delete_book">Se dispone a eliminar el libro con el título \'%1$s\' de %2$s. ¿Está seguro de que desea continuar?</string>
+    <string name="really_delete_series">Confirme la eliminación de la serie \'%s\'\n\nLos libros no se eliminarán.\n\nConsidere la opción de editar la serie para cambiar el nombre, para conservar los datos</string>
+
+    <string name="rebuilding_search_index">Reconstruyendo índices…</string>
+
+    <!-- Heading for scanner-related preferences -->
+    <string name="scanning">Escaneado</string>
+
+    <string name="scope_of_change">Alcance del cambio</string>
+
+    <string name="search_exception">La búsqueda ha fallado %1$s: %2$s</string>
+    <string name="search_fail">La búsqueda del libro ha fallado. Por favor, verifique la configuración de su conexión a internet.</string>
 
     <!-- End: Added/Updated in 5.1.1 -->
-
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
-	<string name="searching_book_catalogue">Buscando en book-catalogue.com</string>
-    <!-- End: Added/Updated in [Next Version] -->
+    <string name="searching_book_catalogue">Buscando en book-catalogue.com</string>
+    <string name="searching_ellipsis">Buscando…</string>
+    <string name="searching_google_books">Buscando en Google Books</string>
+    <string name="searching_library_thing">Buscando en LibraryThing</string>
+
+    <string name="select_an_action">Seleccione una opción</string>
+    <string name="select_based_on_read_status">Seleccionar en función del estado \'Leído\'</string>
+    <string name="select_cover">Seleccionar portada</string>
+    <string name="select_style">Seleccionar Estilo</string>
+
+    <string name="series_already_in_list">Esa serie ya está en la lista</string>
+    <string name="series_is_blank">El campo Serie está en blanco</string>
+
+    <string name="set_series">Definir serie…</string>
+
+    <string name="shelves">Biblioteca</string>
+
+    <string name="show_events_ellipsis">Mostrar eventos…</string>
+    <string name="show_fewer_ellipsis">Mostrar menos…</string>
+    <string name="show_more_ellipsis">Mostrar más…</string>
+
+    <string name="skip_title">Excluir - %s</string>
+
+    <string name="sort_added_date">Fecha de inclusión</string>
+    <string name="sort_and_style_ellipsis">Estilo de &amp; ordenación…</string>
+    <string name="sort_author_series">Primero Autor después Serie</string>
+    <string name="sort_author_year">Autor y Año</string>
+    <string name="sort_genre">Género</string>
+    <string name="sort_loaned">Prestados</string>
+    <string name="sort_publication_date">Fecha de publicación</string>
+    <string name="sort_read_and_unread">Leídos y No leídos</string>
+    <string name="sort_read_date">Fecha de lectura</string>
+    <string name="sort_series">Serie</string>
+    <string name="sort_unread">No leídos (Autor/Serie)</string>
+
+    <string name="starting_search">Iniciando búsqueda</string>
+    <string name="starting_up">Arrancando…</string>
+
+    <string name="status_adding_book_ellipsis">Añadiendo libro…</string>
+
+    <string name="task_errors">Errores en tareas</string>
+
+    <string name="the_title_already_exists">El título ya existe</string>
+
+    <string name="thing_must_not_be_blank">%1$s no puede ser blanco</string>
+
+    <string name="this_book">Este libro</string>
+    <string name="this_option_is_not_available_until_the_book_is_saved">Esta opción no está disponible mientras no se guarde el libro</string>
+
+    <string name="thumbnails">Miniaturas</string>
+
+    <string name="title_add_book">Añadir libro</string>
+    <string name="title_add_style">Añadir estilo</string>
+    <string name="title_clone_style_colon_name">Duplicar estilo: %1$s</string>
+    <string name="title_edit_bookshelf">Book Catalogue: Editar bibliotecas</string>
+    <string name="title_edit_library_styles">Editar estilos del listado de libros</string>
+    <string name="title_edit_style_colon_name">Editar estilo: %1$s</string>
+    <string name="title_isbn_search">Book Catalogue: Buscar ISBN</string>
+    <string name="title_library">Mis Libros</string>
+    <string name="title_library_preferences">Preferencias para listas de libros</string>
+    <string name="title_manage_bookshelves">Gestionar bibliotecas</string>
+    <string name="title_manage_fields">Visibilidad de campos</string>
+    <string name="title_other_preferences">Otras preferencias</string>
+    <string name="title_required">El título no puede estar en blanco</string>
+    <string name="title_select_fields_to_update">Seleccione campos para actualizar</string>
+    <string name="title_settings">Administración y Preferencias</string>
+
+    <string name="unable_to_find_book">No se ha encontrado el libro especificado</string>
+
+    <string name="unknown">Desconocido</string>
+    <string name="unknown_uc">DESCONOCIDO</string>
+
+    <string name="unrecognized_task">Tarea no reconocida</string>
+
+    <string name="unsaved_edits">No ha guardado los cambios. ¿Está seguro de que desea continuar?</string>
+    <string name="unsaved_edits_title">Cambios sin guardar</string>
+
+    <!-- End: Added/Updated in 5.1.0 -->
+    <!-- Begin: Added/Updated in 5.1.1 -->
+    <!-- Name of the 'Default' bookshelf, created when app first installed. Needs to be short. -->
+    <!-- A hint describing the benefit of folowing the Amazon links -->
+    <!--<string name="hint_amazon_links_blurb">&lt;p&gt;Si compra productos en Amazon después de haber seleccionado las opciones &lt;i&gt;\"%1$s\"&lt;/i&gt;, &lt;i&gt;\"%2$s\"&lt;/i&gt; o &lt;i&gt;\"%3$s\"&lt;/i&gt;, un porcentaje del precio de compra será enviado a los desarrolladores de %4$s.&lt;/p&gt;&lt;p&gt;También puede utilizar el enlace &lt;a href=""https://github.com/eleybourn/Book-Catalogue/wiki/Frequently-Asked-Questions-%%28FAQ%%29""&gt;en nuestras FAQ&lt;/a&gt; para acceder directamente a Amazon o PayPal.&lt;/p&gt;</string>-->
+    <!-- Name of the new style grouping (needs to be short). -->
+    <string name="update_date">Fecha de actualización</string>
+
+    <string name="upgrade_title">Desde la última actualización</string>
+
+    <string name="upgrading_ellipsis">Actualizando…</string>
+
+    <string name="url_help">https://github.com/eleybourn/Book-Catalogue/wiki/Help</string>
+    <string name="url_sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
+    <string name="url_webpage">https://wiki.github.com/eleybourn/Book-Catalogue/</string>
+
+    <string name="user_defined">Definido por el usuario</string>
+
+    <string name="validator_blank_required">\'%s\' debe estar en blanco</string>
+    <string name="validator_boolean_expected">\'%s\' debe ser 0, 1, V, F, Verdadero o Falso</string>
+    <string name="validator_date_expected">\'%s\' debe ser una fecha</string>
+    <string name="validator_failed">Falló la validación para \'%s\'</string>
+    <string name="validator_integer_expected">\'%s\' debe ser un entero</string>
+    <string name="validator_nonblank_required">\'%s\' no puede estar en blanco</string>
+    <string name="validator_read_start_after_end">La fecha de inicio de lectura es posterior a la de finalización</string>
+    <string name="validator_real_expected">\'%s\' debe ser un número real</string>
+    <string name="validator_unable_to_get_value">Falta \'%s\'</string>
+
+    <string name="x_is_not_a_valid_isbn">%1$s no es un ISBN válido</string>
+    <string name="x_is_not_a_valid_isbn_or_asin">%1$s no es un ISBN o ASIN válido</string>
+    <string name="x_of_y">%1$d de %2$d</string>
+
+    <string name="you_have_unsaved_changes">Hay cambios que no se han guardado. Si sale ahora, se perderán.</string>
 </resources>

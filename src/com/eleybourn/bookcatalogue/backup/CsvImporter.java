@@ -64,7 +64,7 @@ public class CsvImporter {
 
 	private void importBooks(ArrayList<String> export, Importer.OnImporterListener listener, int importFlags) {
 
-		if (export == null || export.size() == 0)
+		if (export == null || export.isEmpty())
 			return;
 
 		Integer nCreated = 0;
@@ -155,7 +155,7 @@ public class CsvImporter {
 				// Validate ID
 				String idStr = values.getString(CatalogueDBAdapter.KEY_ROW_ID.toLowerCase());
 				long idLong;
-				if (idStr == null || idStr.equals("")) {
+				if (idStr == null || idStr.isEmpty()) {
 					hasNumericId = false;
 					idLong = 0L;
 				} else {
@@ -175,7 +175,7 @@ public class CsvImporter {
 				boolean hasUuid;
 				final String uuidColumnName = DatabaseDefinitions.DOM_BOOK_UUID.name.toLowerCase();
 				String uuidVal = values.getString(uuidColumnName);
-				if (uuidVal != null && !uuidVal.equals("")) {
+				if (uuidVal != null && !uuidVal.isEmpty()) {
 					hasUuid = true;
 				} else {
 					// Remove any blank UUID column, just in case
@@ -192,7 +192,7 @@ public class CsvImporter {
 					// Get the list of authors from whatever source is available.
 					String authorDetails;
 					authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_DETAILS);
-					if (authorDetails == null || authorDetails.length() == 0) {
+					if (authorDetails == null || authorDetails.isEmpty()) {
 						// Need to build it from other fields.
 						if (values.containsKey(CatalogueDBAdapter.KEY_FAMILY_NAME)) {
 							// Build from family/given
@@ -200,7 +200,7 @@ public class CsvImporter {
 							String given = "";
 							if (values.containsKey(CatalogueDBAdapter.KEY_GIVEN_NAMES))
 								given = values.getString(CatalogueDBAdapter.KEY_GIVEN_NAMES);
-							if (given != null && given.length() > 0)
+							if (given != null && !given.isEmpty())
 								authorDetails += ", " + given;
 						} else if (values.containsKey(CatalogueDBAdapter.KEY_AUTHOR_NAME)) {
 							authorDetails = values.getString(CatalogueDBAdapter.KEY_AUTHOR_NAME);
@@ -212,7 +212,7 @@ public class CsvImporter {
 					// A pre-existing bug sometimes results in blank author-details due to bad underlying data
 					// (it seems a 'book' record gets written without an 'author' record; should not happen)
 					// so we allow blank author_details and full in a regionalized version of "Author, Unknown"
-					if (authorDetails == null || authorDetails.length() == 0) {
+					if (authorDetails == null || authorDetails.isEmpty()) {
 						authorDetails = BookCatalogueApp.getResourceString(R.string.label_author) + ", " + BookCatalogueApp.getResourceString(R.string.unknown);
 					}
 
@@ -226,11 +226,11 @@ public class CsvImporter {
 				{
 					String seriesDetails;
 					seriesDetails = values.getString(CatalogueDBAdapter.KEY_SERIES_DETAILS);
-					if (seriesDetails == null || seriesDetails.length() == 0) {
+					if (seriesDetails == null || seriesDetails.isEmpty()) {
 						// Try to build from SERIES_NAME and SERIES_NUM. It may all be blank
 						if (values.containsKey(CatalogueDBAdapter.KEY_SERIES_NAME)) {
 							seriesDetails = values.getString(CatalogueDBAdapter.KEY_SERIES_NAME);
-							if (seriesDetails != null && seriesDetails.length() != 0) {
+							if (seriesDetails != null && !seriesDetails.isEmpty()) {
 								String seriesNum = values.getString(CatalogueDBAdapter.KEY_SERIES_NUM);
 								if (seriesNum == null)
 									seriesNum = "";
@@ -248,7 +248,7 @@ public class CsvImporter {
 				}
 				
 				
-				// Make sure we have bookself_text if we imported bookshelf
+				// Make sure we have bookshelf_text if we imported bookshelf
 				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
 					values.setBookshelfList(values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));
 				}
@@ -260,7 +260,7 @@ public class CsvImporter {
 						// Always import empty IDs...even if they are duplicates.
 						long id = db.createBook(values, CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
 						values.putString(CatalogueDBAdapter.KEY_ROW_ID, Long.toString(id));
-						// Would be nice to import a cover, but with no ID/UUID thats not possible
+						// Would be nice to import a cover, but with no ID/UUID that's not possible
 						//mImportCreated++;
 					} else {
 						boolean exists;
@@ -291,7 +291,7 @@ public class CsvImporter {
 								Date bookDate;
 								Date importDate;
 								String bookDateStr = db.getBookUpdateDate(idLong);
-								if (bookDateStr == null || bookDateStr.equals("")) {
+								if (bookDateStr == null || bookDateStr.isEmpty()) {
 									bookDate = null; // Local record has never been updated
 								} else {
 									try {
@@ -301,7 +301,7 @@ public class CsvImporter {
 									}
 								}
 								String importDateStr = values.getString(DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name);
-								if (importDateStr == null || importDateStr.equals("")) {
+								if (importDateStr == null || importDateStr.isEmpty()) {
 									importDate = null; // Imported record has never been updated
 								} else {
 									try {
@@ -332,7 +332,7 @@ public class CsvImporter {
 							idLong = newId;
 						}
 
-						// Note: Because Google don't allow read access to randome locations, we
+						// Note: Because Google don't allow read access to random locations, we
 						// can no longer do this.
 						//// When importing a file that has an ID or UUID, try to import a cover.
 						//if (coverFinder != null) {
@@ -369,9 +369,9 @@ public class CsvImporter {
 										
 										int j = extracted_title.indexOf("*");
 										if (j > -1) {
-											String anth_title = extracted_title.substring(0, j).trim();
-											String anth_author = extracted_title.substring((j+1)).trim();
-											db.createAnthologyTitle(id, anth_author, anth_title, true, false);
+											String anthology_title = extracted_title.substring(0, j).trim();
+											String anthology_author = extracted_title.substring((j+1)).trim();
+											db.createAnthologyTitle(id, anthology_author, anthology_title, true, false);
 										}
 										oldi = i + 1;
 										i = anthology_titles.indexOf("|", oldi);
@@ -433,7 +433,7 @@ public class CsvImporter {
 		boolean inEsc = false;		// Found an escape char
 		char c;						// 'Current' char
 		char next					// 'Next' char 
-				= (row.length() > 0) ? row.charAt(0) : '\0';
+				= (!row.isEmpty()) ? row.charAt(0) : '\0';
 		int endPos					// Last position in row 
 				= row.length() - 1;
 		ArrayList<String> fields	// Array of fields found in row
@@ -562,7 +562,7 @@ public class CsvImporter {
 
 	@SuppressWarnings("SameParameterValue")
 	private void requireNonBlank(BookData values, int row, String name) {
-		if (values.getString(name).length() != 0)
+		if (!values.getString(name).isEmpty())
 			return;
 		String s = BookCatalogueApp.getResourceString(R.string.column_is_blank);
 		throw new ImportException(String.format(s, name, row));
@@ -571,7 +571,7 @@ public class CsvImporter {
 	@SuppressWarnings("unused")
 	private void requireAnyNonBlank(BookData values, int row, String... names) {
 		for (String name : names)
-			if (values.containsKey(name) && values.getString(name).length() != 0)
+			if (values.containsKey(name) && !values.getString(name).isEmpty())
 				return;
 
 		String s = BookCatalogueApp.getResourceString(R.string.columns_are_blank);

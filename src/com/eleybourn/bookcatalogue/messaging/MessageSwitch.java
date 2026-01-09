@@ -28,6 +28,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.NonNull;
+
 import com.eleybourn.bookcatalogue.utils.Logger;
 /**
  * Switchboard class for disconnecting listener instances from task instances. Maintains
@@ -49,11 +51,11 @@ public class MessageSwitch<T,U> {
 	/** ID counter for unique sender IDs; set > 0 to allow for possible future static senders **/
 	private static Long mSenderIdCounter = 1024L;
 	/** List of message sources */
-	private final Hashtable<Long,MessageSender<U>> mSenders = new Hashtable<Long,MessageSender<U>>();
+	private final Hashtable<Long,MessageSender<U>> mSenders = new Hashtable<>();
 	/** List of all messages in the message queue, both messages and replies */
-	private final LinkedBlockingQueue<RoutingSlip> mMessageQueue = new LinkedBlockingQueue<RoutingSlip>();
+	private final LinkedBlockingQueue<RoutingSlip> mMessageQueue = new LinkedBlockingQueue<>();
 	/** List of message listener queues */
-	private final Hashtable<Long, MessageListeners> mListeners = new Hashtable<Long, MessageListeners>();
+	private final Hashtable<Long, MessageListeners> mListeners = new Hashtable<>();
 
 	/** Handler object for posting to main thread and for testing if running on UI thread */
 	private static final Handler mHandler = new Handler(Looper.getMainLooper());
@@ -105,12 +107,7 @@ public class MessageSwitch<T,U> {
 				if (mHandler.getLooper().getThread() == Thread.currentThread()) {
 					r.message.deliver(listener);
 				} else {
-					mHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							r.message.deliver(listener);
-						}
-					});			
+					mHandler.post(() -> r.message.deliver(listener));
 				}
 			}
 		}
@@ -118,9 +115,6 @@ public class MessageSwitch<T,U> {
 
 	/**
 	 * Remove the specified listener from the specified queue
-	 * 
-	 * @param senderId
-	 * @param l
 	 */
 	public void removeListener(Long senderId, T l) {
 		synchronized(mListeners) {
@@ -185,7 +179,7 @@ public class MessageSwitch<T,U> {
 		/** Last message sent */
 		private MessageRoutingSlip mLastMessage = null;
 		/** Weak refs to all listeners */
-		private final ArrayList<WeakReference<T>> mList = new ArrayList<WeakReference<T>>();
+		private final ArrayList<WeakReference<T>> mList = new ArrayList<>();
 
 		/** Accessor */
 		public void setLastMessage(MessageRoutingSlip m) {
@@ -200,7 +194,7 @@ public class MessageSwitch<T,U> {
 		/** Add a listener to this queue */
 		public void add(T listener) {
 			synchronized(mList) {
-				mList.add(new WeakReference<T>(listener));
+				mList.add(new WeakReference<>(listener));
 			}
 		}
 
@@ -212,7 +206,7 @@ public class MessageSwitch<T,U> {
 		public void remove(T listener) {
 			synchronized(mList) {
 				// List of refs to be removed
-				ArrayList<WeakReference<T>> toRemove = new ArrayList<WeakReference<T>>();
+				ArrayList<WeakReference<T>> toRemove = new ArrayList<>();
 				// Scan the list for matches or dead refs
 				for(WeakReference<T> w: mList) {
 					T l = w.get();
@@ -230,12 +224,12 @@ public class MessageSwitch<T,U> {
 		 * Return an iterator to a *copy* of the valid underlying elements. This means that
 		 * callers can make changes to the underlying list with impunity, and more importantly
 		 * they can iterate over type T, rather than a bunch of weak references to T.
-		 * 
 		 * Side-effect: removes invalid listeners
 		 */
-		@Override
+		@NonNull
+        @Override
 		public Iterator<T> iterator() {
-			ArrayList<T> list = new ArrayList<T>();
+			ArrayList<T> list = new ArrayList<>();
 			ArrayList<WeakReference<T>> toRemove = null;
 			synchronized(mList) {
 				for(WeakReference<T> w: mList) {
@@ -244,7 +238,7 @@ public class MessageSwitch<T,U> {
 						list.add(l);
 					} else {
 						if (toRemove == null)
-							toRemove = new ArrayList<WeakReference<T>>();
+							toRemove = new ArrayList<>();
 						toRemove.add(w);
 					}
 				}
@@ -259,8 +253,6 @@ public class MessageSwitch<T,U> {
 
 	/**
 	 * Remove a sender and it's queue
-	 * 
-	 * @param s
 	 */
 	private void removeSender(MessageSender<U> s) {
 		synchronized(mSenders) {
@@ -303,7 +295,7 @@ public class MessageSwitch<T,U> {
 			// Iterator for iterating queue
 			Iterator<T> i = null;
 
-			MessageListeners queue = null;
+			MessageListeners queue;
 			// Get the queue and find the iterator
 			synchronized(mListeners) {
 				// Queue for given ID
@@ -378,12 +370,8 @@ public class MessageSwitch<T,U> {
 		if (mHandler.getLooper().getThread() == Thread.currentThread()) {
 			processMessages();
 		} else {
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					processMessages();
-				}}
-			);		
+			mHandler.post(this::processMessages
+            );
 		}
 	}
 
@@ -391,7 +379,7 @@ public class MessageSwitch<T,U> {
 	 * Process the queued messages
 	 */
 	private void processMessages() {
-		RoutingSlip m = null;
+		RoutingSlip m;
 		do {
 			synchronized(mMessageQueue) {
 				m = mMessageQueue.poll();

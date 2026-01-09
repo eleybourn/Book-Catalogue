@@ -116,7 +116,7 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
                 if (end == null || end.isEmpty())
                     return;
                 if (start.compareToIgnoreCase(end) > 0)
-                    throw new ValidatorException(R.string.vldt_read_start_after_end,new Object[]{});
+                    throw new ValidatorException(R.string.validator_read_start_after_end,new Object[]{});
             });
 
 			try {

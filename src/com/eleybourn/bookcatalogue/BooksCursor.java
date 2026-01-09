@@ -20,8 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.Hashtable;
-
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
@@ -32,8 +30,7 @@ import com.eleybourn.bookcatalogue.utils.TrackedCursor;
 /**
  * Cursor implementation for book-related queries. The cursor wraps common
  * column lookups and reduces code clutter when accessing common columns.
- * 
- * The cursor also simulates a 'selected' flag for each book based on a 
+ * The cursor also simulates a 'selected' flag for each book based on a
  * hashmap of book IDs.
  * 
  * @author Philip Warner
@@ -41,10 +38,7 @@ import com.eleybourn.bookcatalogue.utils.TrackedCursor;
  */
 public class BooksCursor extends TrackedCursor {
 
-	/** Hashmap of selected book IDs */
-	private final Hashtable<Long,Boolean> m_selections = new Hashtable<Long,Boolean>();
-
-	/**
+    /**
 	 * Constructor
 	 */
 	public BooksCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query, Synchronizer sync) {
@@ -52,25 +46,7 @@ public class BooksCursor extends TrackedCursor {
 	}
 
 
-	/**
-	 * Fake attribute to handle multi-select ListViews. if we ever do them.
-	 * 
-	 * @return	Flag indicating if current row has been marked as 'selected'.
-	 */
-	public boolean getIsSelected() {
-		Long id = getId();
-		if (m_selections.containsKey(id)) {
-			return m_selections.get(id);			
-		} else {
-			return false;
-		}
-	}
-
-	public void setIsSelected(boolean selected) {
-		m_selections.put(getId(), selected);
-	}
-	
-	/**
+    /**
 	 * Get the row ID; need a local implementation so that get/setSelected() works.
 	 */
 	private int mIdCol = -2;
@@ -93,43 +69,12 @@ public class BooksCursor extends TrackedCursor {
 		return mView;
 	}
 
-//	/**
-//	 * Snapshot cursor to use with this cursor.
-//	 * 
-//	 * NOT IMPLEMENTED: Android 1.6 SQLite interface does not support getting column types.
-//	 * 
-//	 * @author Philip Warner
-//	 */
-//	public static class BooksSnapshotCursor extends CursorSnapshotCursor {
-//		BooksRowView mView;
-//
-//		public BooksSnapshotCursor(SQLiteCursor source) {
-//			super(source);
-//		}
-//		
-//		public BooksRowView getRowView() {
-//			if (mView == null)
-//				mView = new BooksRowView(this);
-//			return mView;
-//		}
-//
-//		/**
-//		 * Clear the RowView and selections, if any
-//		 */
-//		@Override
-//		public void close() {
-//			super.close();
-//			mView = null;
-//		}
-//	}
-
-	/**
+    /**
 	 * Clear the RowView and selections, if any
 	 */
 	@Override
 	public void close() {
 		super.close();
-		m_selections.clear();
 		mView = null;
 	}
 }

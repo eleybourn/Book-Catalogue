@@ -28,7 +28,6 @@ import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
  * Convenience class to avoid having to write the same code in more than one place. This
  * class has get*() methods for the most common book-related fields. Passed a Cursor object
  * it will retrieve the specified value using the current cursor row.
- * 
  * Both BooksCursor and BooksSnapshotCursor implement a getRowView() method that returns
  * a cached BookRowView based on the cursor.
  * 
@@ -79,14 +78,14 @@ public class BooksRowView {
 	}
 
 	private int mPrimaryAuthorCol = -2;
-	public final String getPrimaryAuthorName() {
+	@SuppressWarnings("unused")
+    public final String getPrimaryAuthorName() {
 		if (mPrimaryAuthorCol < 0) {
 			mPrimaryAuthorCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST);
 			if (mPrimaryAuthorCol < 0)
 				throw new RuntimeException("Primary author column not in result set");
 		}
 		return mCursor.getString(mPrimaryAuthorCol);
-//		return mCurrentRow[mPrimaryAuthorCol];
 	}
 
 	private int mTitleCol = -2;
@@ -123,7 +122,8 @@ public class BooksRowView {
 	}
 
 	private int mRatingCol = -2;
-	public final double getRating() {
+	@SuppressWarnings("unused")
+    public final double getRating() {
 		if (mRatingCol < 0) {
 			mRatingCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_RATING);
 			if (mRatingCol < 0)
@@ -133,7 +133,8 @@ public class BooksRowView {
 	}
 
 	private int mReadEndCol = -2;
-	public final String getReadEnd() {
+	@SuppressWarnings("unused")
+    public final String getReadEnd() {
 		if (mReadEndCol < 0) {
 			mReadEndCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_READ_END);
 			if (mReadEndCol < 0)
@@ -183,7 +184,8 @@ public class BooksRowView {
 	}
 
 	private int mDatePublishedCol = -2;
-	public final String getDatePublished() {
+	@SuppressWarnings("unused")
+    public final String getDatePublished() {
 		if (mDatePublishedCol < 0) {
 			mDatePublishedCol = mCursor.getColumnIndex(CatalogueDBAdapter.KEY_DATE_PUBLISHED);
 			if (mDatePublishedCol < 0)

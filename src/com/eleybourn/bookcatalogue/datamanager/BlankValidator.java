@@ -41,12 +41,12 @@ public class BlankValidator implements DataValidator {
 			if (!s.equals("")) {
 				s = s.trim();
 				if (!s.equals("")) {
-					throw new ValidatorException(R.string.vldt_blank_required, new Object[]{datum.getKey()});
+					throw new ValidatorException(R.string.validator_blank_required, new Object[]{datum.getKey()});
 				}
 				data.putString(datum, s);
 			}
         } catch (Exception e) {
-			throw new ValidatorException(R.string.vldt_blank_required, new Object[]{datum.getKey()});
+			throw new ValidatorException(R.string.validator_blank_required, new Object[]{datum.getKey()});
 		}
 	}
 }

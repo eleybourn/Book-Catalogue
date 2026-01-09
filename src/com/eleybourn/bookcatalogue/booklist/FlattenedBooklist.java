@@ -2,7 +2,7 @@ package com.eleybourn.bookcatalogue.booklist;
 
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_ID;
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_NAVIGATOR_FLATTENED_DEFN;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_NAVIGATOR_FLATTENED_DEF;
 import android.database.sqlite.SQLiteDoneException;
 
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
@@ -46,7 +46,7 @@ public class FlattenedBooklist {
 	 * @param tableName		Name of underlying table
 	 */
 	public FlattenedBooklist(SynchronizedDb db, String tableName) {
-		TableDefinition flat = TBL_ROW_NAVIGATOR_FLATTENED_DEFN.clone();
+		TableDefinition flat = TBL_ROW_NAVIGATOR_FLATTENED_DEF.clone();
 		flat.setName(tableName);
 		flat.setType(TableTypes.Temporary); //RELEASE Make sure is TEMPORARY
 		init(db, flat);

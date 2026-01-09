@@ -58,6 +58,6 @@ public class OrValidator extends MetaValidator implements DataValidator {
 		if (lastException != null)
 			throw lastException;
 		else
-			throw new ValidatorException(R.string.vldt_failed, new Object[]{datum.getKey()});
+			throw new ValidatorException(R.string.validator_failed, new Object[]{datum.getKey()});
 	}
 }

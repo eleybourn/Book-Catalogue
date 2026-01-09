@@ -23,6 +23,7 @@
     <!-- Displayed when any write operation to the sd card fails -->
     <string name="alert_please_check_sd_writable">Please check that the storage is writable, and has sufficient space.</string>
     <string name="alert_problem_starting_import_arg">There was a problem starting the import: %1$s</string>
+    <string name="alert_select_min_1_field">Select at least one field to update</string>
     <string name="alert_unexpected_error">An unexpected error has occurred, please send the details to support using the \'Help\' option from the main menu</string>
 
     <string name="anthology_confirm">Please confirm that these anthology titles are (mostly) correct</string>
@@ -72,6 +73,7 @@
     <string name="button_returned">Returned</string>
     <string name="button_save">Save</string>
     <string name="button_send_info">Send Information</string>
+    <string name="button_update">Update</string>
 
     <string name="bytes">%.0f bytes</string>
 
@@ -99,7 +101,6 @@
 
     <string name="confirm_add_bs">Add Bookshelf</string>
     <string name="confirm_save_bs">Save Bookshelf</string>
-    <string name="button_update">Update</string>
 
     <string name="contact1">eleybourn@gmail.com</string>
 
@@ -152,6 +153,8 @@
     <string name="description_book_details_blurb">The details of the books themselves</string>
     <!-- Brief description -->
     <string name="description_cover_images_blurb">Cover images for all selected books. Will make the export much larger.</string>
+    <string name="description_displaying_n_books">(displaying %1$s books)</string>
+    <string name="description_displaying_n_books_in_m_entries">(displaying %1$s books, in %2$s entries)</string>
     <!-- Explanatory note for 'advanced export' option -->
     <string name="description_export_advanced_blurb">Select what will be exported to the archive.</string>
     <!-- Explanatory note for export date (not yet implemented) -->
@@ -168,13 +171,12 @@
     <!-- Description of the 'import new & changed' option -->
     <string name="description_new_and_changed_books_blurb">Only import books that are new, or which have been updated more recently in the archive. This is useful when synchronizing two devices.</string>
     <string name="description_no_bookshelves">You have not created any bookshelves yet. Please add some using the add icon at the top of this screen.</string>
+    <string name="description_overwrite_thumbnail">This will update the selected fields as shown, but Thumbnails can optionally be downloaded for ALL books.\n\nDo you want to overwrite all existing thumbnails? Warning, this may take a long time. </string>
     <!-- Brief description -->
     <string name="description_preferences_blurb">Preferences and user-defined list styles</string>
+    <string name="description_select_fields_to_update_help">Selected fields will be updated from the internet. Unselected fields will remain unchanged.</string>
 
     <string name="details_have_changed">Details Have Changed</string>
-
-    <string name="description_displaying_n_books">(displaying %1$s books)</string>
-    <string name="description_displaying_n_books_in_m_entries">(displaying %1$s books, in %2$s entries)</string>
 
     <string name="do_not_show_again">Do not show again</string>
 
@@ -385,8 +387,6 @@
     <string name="label_search_description">Find a book in your catalogue</string>
     <string name="label_search_for_books">Search for Books</string>
     <string name="label_search_internet">Search Internet</string>
-    <string name="label_sync">Online Backup</string>
-    <string name="label_sync_description">Never lose your book catalogue</string>
     <string name="label_select_bookshelves">Select Bookshelves</string>
     <string name="label_series">Series</string>
     <string name="label_series_num">#</string>
@@ -398,6 +398,8 @@
     <string name="label_sourcecode">Source Code:</string>
     <!-- Heading in 'about' dialog -->
     <string name="label_special_thanks">Special Thanks</string>
+    <string name="label_sync">Online Backup</string>
+    <string name="label_sync_description">Never lose your book catalogue</string>
     <string name="label_thumbnail">Cover Thumbnail</string>
     <string name="label_title">Title</string>
     <!-- Name of the new style grouping (needs to be short). -->
@@ -408,6 +410,7 @@
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="label_update_year">Update Year</string>
     <string name="label_updated">Updated</string>
+    <string name="label_user_interface">User Interface</string>
     <string name="label_version_number">Version Number:</string>
     <string name="label_webpage">Webpage:</string>
     <string name="label_year">Year</string>
@@ -736,6 +739,9 @@
     <string name="option_show_book_under_primary_thing">Under primary %1$s only</string>
     <string name="option_show_first_level_and_book_count">Show first level heading and number of books</string>
     <string name="option_smaller">Smaller</string>
+    <string name="option_usage_add_extra">Appends extra data</string>
+    <string name="option_usage_copy_if_blank">Copy if blank</string>
+    <string name="option_usage_overwrite">Overwrites existing data</string>
     <string name="option_use_background_thread">Use background thread (lists scroll faster, images may be delayed)</string>
     <string name="option_use_default_setting">Use default setting</string>
     <string name="option_yes">Yes</string>
@@ -745,14 +751,13 @@
     <!-- Preference VALUE, displayed in a preference activity -->
     <string name="option_zxing_scanner">Zxing Scanner</string>
 
-    <string name="description_overwrite_thumbnail">This will update the selected fields as shown, but Thumbnails can optionally be downloaded for ALL books.\n\nDo you want to overwrite all existing thumbnails? Warning, this may take a long time. </string>
-
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="para_archive_complete_details">A %3$s file called %2$s was created in the selected directory.
         \n\nYou should manually copy it elsewhere to protect the data in case your device is damaged, lost,
         or stolen.</string>
     <string name="para_cleanup_files">Purgeable files currently use %s of storage. Log files and other data are saved at each upgrade, when you backup the database, or when the application crashes. Click the button below to purge these files from your storage. If you have been experiencing crashing or other errors, please consider using the \'Send Information\' button first.</string>
     <string name="para_donate">If you would like to support the development of this application, please donate using a my Amazon Wishlist or the paypal button below. Being in Australia means I cannot publish a paid version. :-) </string>
+    <string name="para_enhance_search">Would you like to help other Book Catalogue users? \\n\\n\nBy clicking \'Yes\', you agree to allow public details from your book records (like ISBNs and Titles)\nto be used to improve search results for everyone.\\n\\n\nPrivate notes and personal details remain secure.\\n\\n\nYou can change this at any time in the Settings.</string>
     <string name="para_help_click_here">Please click here to access the online help pages</string>
     <string name="para_immediate_global_changes">NOTE: All saved changes apply instantly and globally</string>
     <string name="para_isbn_name_search_help">Adding books by ISBN is much more accurate than adding by author and title and is generally preferred. Please remember you can sometimes find the correct barcode on the inside front cover. \n\n</string>
@@ -850,9 +855,6 @@
     <string name="select_an_action">Select an action</string>
     <string name="select_based_on_read_status">Select based on \'Read\' status</string>
     <string name="select_cover">Select Cover</string>
-    <string name="title_select_fields_to_update">Select Fields to Update</string>
-    <string name="description_select_fields_to_update_help">Selected fields will be updated from the internet. Unselected fields will remain unchanged.</string>
-    <string name="alert_select_min_1_field">Select at least one field to update</string>
     <string name="select_style">Select Style</string>
 
     <string name="selected_dir_wrong_name">The selected directory is not called \'%1$s\' and does not seem to contain a directory of that name. Are you sure that this is the correct location?</string>
@@ -908,6 +910,7 @@
     <string name="title_edit_bookshelf">Edit Bookshelf</string>
     <string name="title_edit_library_styles">Edit Library Styles</string>
     <string name="title_edit_style_colon_name">Edit style: %1$s</string>
+    <string name="title_enhance_search">Enhance Community Search</string>
     <string name="title_hint">Tip</string>
     <string name="title_isbn_search">ISBN Search</string>
     <string name="title_library">My Library</string>
@@ -916,6 +919,7 @@
     <string name="title_manage_fields">Manage Field Visibility</string>
     <string name="title_other_preferences">Other Preferences</string>
     <string name="title_required">A non-blank title must be specified</string>
+    <string name="title_select_fields_to_update">Select Fields to Update</string>
     <string name="title_settings">Settings</string>
 
     <string name="unable_to_find_book">Unable to find the specified book</string>
@@ -944,28 +948,21 @@
     <string name="url_sourcecode">https://github.com/eleybourn/Book-Catalogue</string>
     <string name="url_webpage">http://book-catalogue.com/</string>
 
-    <string name="option_usage_add_extra">Appends extra data</string>
-    <string name="option_usage_copy_if_blank">Copy if blank</string>
-    <string name="option_usage_overwrite">Overwrites existing data</string>
-
     <string name="user_defined">User-defined</string>
-    <string name="label_user_interface">User Interface</string>
 
-    <string name="vldt_blank_required">Empty value required for \'%s\'</string>
-    <string name="vldt_boolean_expected">Expected a boolean value (0,1,t,f,true,false) for \'%s\'</string>
-    <string name="vldt_date_expected">Expected a date for \'%s\'</string>
-    <string name="vldt_failed">Validation failed for \'%s\'</string>
-    <string name="vldt_integer_expected">Expected an integer value for \'%s\'</string>
-    <string name="vldt_nonblank_required">Non-empty value required for \'%s\'</string>
-    <string name="vldt_read_start_after_end">The date reading started is after the end date</string>
-    <string name="vldt_real_expected">Expected a real number for \'%s\'</string>
-    <string name="vldt_unable_to_get_value">Unable to get value for \'%s\'</string>
+    <string name="validator_blank_required">Empty value required for \'%s\'</string>
+    <string name="validator_boolean_expected">Expected a boolean value (0,1,t,f,true,false) for \'%s\'</string>
+    <string name="validator_date_expected">Expected a date for \'%s\'</string>
+    <string name="validator_failed">Validation failed for \'%s\'</string>
+    <string name="validator_integer_expected">Expected an integer value for \'%s\'</string>
+    <string name="validator_nonblank_required">Non-empty value required for \'%s\'</string>
+    <string name="validator_read_start_after_end">The date reading started is after the end date</string>
+    <string name="validator_real_expected">Expected a real number for \'%s\'</string>
+    <string name="validator_unable_to_get_value">Unable to get value for \'%s\'</string>
 
     <string name="x_is_not_a_valid_isbn">%1$s is not a valid ISBN</string>
     <string name="x_is_not_a_valid_isbn_or_asin">%1$s is not a valid ISBN or ASIN</string>
     <string name="x_of_y">%1$d of %2$d</string>
 
     <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
-    <string name="title_enhance_search">Enhance Community Search</string>
-    <string name="para_enhance_search">Would you like to help other Book Catalogue users? \\n\\n\nBy clicking \'Yes\', you agree to allow public details from your book records (like ISBNs and Titles)\nto be used to improve search results for everyone.\\n\\n\nPrivate notes and personal details remain secure.\\n\\n\nYou can change this at any time in the Settings.</string>
 </resources>

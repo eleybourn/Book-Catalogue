@@ -52,7 +52,7 @@ public class DateValidator extends DefaultFieldValidator {
 			java.util.Date d = Utils.parseDate(data.getString(datum));
 			data.putString(datum, Utils.toSqlDateTime(d));
 		} catch (Exception e) {
-			throw new ValidatorException(R.string.vldt_date_expected, new Object[]{datum.getKey()});					
+			throw new ValidatorException(R.string.validator_date_expected, new Object[]{datum.getKey()});
 		}
     }
 }

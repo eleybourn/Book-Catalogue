@@ -105,12 +105,12 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS_FTS;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_AUTHOR;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_BOOKSHELF;
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_LIST_DEFN;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_LIST_DEF;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOK_SERIES;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_LOAN;
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_NAVIGATOR_DEFN;
-import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_NAVIGATOR_FLATTENED_DEFN;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_NAVIGATOR_DEF;
+import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_ROW_NAVIGATOR_FLATTENED_DEF;
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_SERIES;
 
 import android.database.Cursor;
@@ -266,11 +266,11 @@ public class LibraryBuilder {
 
         // Clone the temp. table definitions and append the ID to make new names in case
         // more than one view is open.
-        mListTable = TBL_BOOK_LIST_DEFN.clone();
+        mListTable = TBL_BOOK_LIST_DEF.clone();
         mListTable.setName(mListTable.getName() + "_" + getId());
         mListTable.setType(TableTypes.Temporary); //RELEASE Make sure is TEMPORARY
 
-        mNavTable = TBL_ROW_NAVIGATOR_DEFN.clone()
+        mNavTable = TBL_ROW_NAVIGATOR_DEF.clone()
                 .addReference(mListTable, DOM_REAL_ROW_ID)
         ;
         mNavTable.setName(mNavTable.getName() + "_" + getId());
@@ -323,7 +323,7 @@ public class LibraryBuilder {
         synchronized (sFlatNavLock) {
             flatId = mFlatNavCounter++;
         }
-        TableDefinition flat = TBL_ROW_NAVIGATOR_FLATTENED_DEFN.clone();
+        TableDefinition flat = TBL_ROW_NAVIGATOR_FLATTENED_DEF.clone();
         flat.setName(flat.getName() + "_" + flatId);
         flat.setType(TableTypes.Temporary); //RELEASE Make sure is TEMPORARY
         flat.create(mDb, true);
@@ -519,12 +519,12 @@ public class LibraryBuilder {
             }
 
             // Rebuild the main table definition
-            mListTable = TBL_BOOK_LIST_DEFN.clone();
+            mListTable = TBL_BOOK_LIST_DEF.clone();
             mListTable.setName(mListTable.getName() + "_" + getId());
             mListTable.setType(TableTypes.Temporary); // RELEASE Make sure is TEMPORARY
 
             // Rebuild the navigation table definition
-            mNavTable = TBL_ROW_NAVIGATOR_DEFN.clone()
+            mNavTable = TBL_ROW_NAVIGATOR_DEF.clone()
                     .addReference(mListTable, DOM_REAL_ROW_ID)
             ;
             mNavTable.setName(mNavTable.getName() + "_" + getId());

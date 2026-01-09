@@ -59,7 +59,7 @@ public class DefaultFieldValidator implements DataValidator {
 				data.putString(datum, mDefault);
 			}
         } catch (Exception e) {
-			throw new ValidatorException(R.string.vldt_unable_to_get_value, new Object[]{datum.getKey()});
+			throw new ValidatorException(R.string.validator_unable_to_get_value, new Object[]{datum.getKey()});
 		}
 	}
 }

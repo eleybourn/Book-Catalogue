@@ -14,12 +14,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
@@ -37,7 +35,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.eleybourn.bookcatalogue.CoverBrowser.OnImageSelectedListener;
 import com.eleybourn.bookcatalogue.Fields.Field;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
@@ -74,8 +71,6 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     private static final int CONTEXT_ID_ROTATE_THUMB_CCW = 32;
     private static final int CONTEXT_ID_ROTATE_THUMB_180 = 33;
 
-    private CoverBrowser mCoverBrowser = null;
-
     /**
      * Counter used to prevent images being reused accidentally
      */
@@ -95,26 +90,6 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
      * Zoom size is minimum of MAX_ZOOM_THUMBNAIL_SIZE and largest screen dimension.
      */
     protected Integer mThumbZoomSize;
-
-    /**
-     * Handler to process a cover selected from the CoverBrowser.
-     */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private final OnImageSelectedListener mOnImageSelectedListener = fileSpec -> {
-        if (mCoverBrowser != null && fileSpec != null) {
-            // Get the current file
-            File bookFile = getCoverFile(mEditManager.getBookData().getRowId());
-            // Get the new file
-            File newFile = new File(fileSpec);
-            // Overwrite with new file
-            newFile.renameTo(bookFile);
-            // update current activity
-            setCoverImage();
-        }
-        if (mCoverBrowser != null)
-            mCoverBrowser.dismiss();
-        mCoverBrowser = null;
-    };
 
     ActivityResultLauncher<String[]> mCameraPermissionsLauncher = registerForActivityResult(
             new RequestMultiplePermissions(),
@@ -197,45 +172,19 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         if (selectedImageUri == null) return;
 
         // Use the original BC code for anything that has a 'content' scheme and if pre-KitKat
-        if (Build.VERSION.SDK_INT < 19 && "content".equalsIgnoreCase(selectedImageUri.getScheme())) {
-            String[] projection = {MediaStore.Images.Media.DATA};
-            assert this.getActivity() != null;
-            try (Cursor cursor = this.getActivity().getContentResolver().query(selectedImageUri, projection, null, null, null)) {
-                int column_index = (cursor != null) ? cursor.getColumnIndex(MediaStore.Images.Media.DATA) : -1;
-                if (cursor == null || column_index < 0 || !cursor.moveToFirst()) {
-                    Logger.logError(new RuntimeException("Add from gallery failed (col = " + column_index + "), name = " + MediaStore.Images.Media.DATA));
-                    String s = getResources().getString(R.string.no_image_found) + ". " + getResources().getString(R.string.alert_if_the_problem_persists);
-                    Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
-                } else {
-                    String selectedImagePath = cursor.getString(column_index);
-                    File thumb = new File(selectedImagePath);
-                    File real = getCoverFile(mEditManager.getBookData().getRowId());
-                    try {
-                        Utils.copyFile(thumb, real);
-                        setCoverImage();
-                    } catch (IOException e) {
-                        Logger.logError(e, "copyImage failed in add from gallery");
-                        showCopyErrorToast();
-                    }
-                }
-            } catch (Exception e) {
-                Logger.logError(e);
-            }
+        // Modern approach / content resolver
+        boolean imageOk = false;
+        assert getActivity() != null;
+        try (InputStream in = getActivity().getContentResolver().openInputStream(selectedImageUri)) {
+            assert in != null;
+            imageOk = Utils.saveInputToFile(in, getCoverFile(mEditManager.getBookData().getRowId()));
+        } catch (IOException e) {
+            Logger.logError(e, "Unable to copy content to file");
+        }
+        if (imageOk) {
+            setCoverImage();
         } else {
-            // Modern approach / content resolver
-            boolean imageOk = false;
-            assert getActivity() != null;
-            try (InputStream in = getActivity().getContentResolver().openInputStream(selectedImageUri)) {
-                assert in != null;
-                imageOk = Utils.saveInputToFile(in, getCoverFile(mEditManager.getBookData().getRowId()));
-            } catch (IOException e) {
-                Logger.logError(e, "Unable to copy content to file");
-            }
-            if (imageOk) {
-                setCoverImage();
-            } else {
-                showCopyErrorToast();
-            }
+            showCopyErrorToast();
         }
     }
 
@@ -311,12 +260,6 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     public void onPause() {
         Tracker.enterOnPause(this);
         super.onPause();
-
-        // Close down the cover browser.
-        if (mCoverBrowser != null) {
-            mCoverBrowser.dismiss();
-            mCoverBrowser = null;
-        }
         Tracker.exitOnPause(this);
     }
 

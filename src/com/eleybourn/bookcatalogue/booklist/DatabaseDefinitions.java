@@ -62,16 +62,16 @@ public class DatabaseDefinitions {
 	 * UNIQUE table aliases to use for each table. They are collected here so checking uniqueness is
 	 * as simple as possible.
 	 */
-	private static final String ALIAS_BOOK_BOOKSHELF = "bbsh";
+	private static final String ALIAS_BOOK_BOOKSHELF = "b_bsh";
 	private static final String ALIAS_BOOKSHELF = "bsh";
-	private static final String ALIAS_BOOK_LIST_NODE_SETTINGS = "blns";
+	private static final String ALIAS_BOOK_LIST_NODE_SETTINGS = "bl_ns";
 	private static final String ALIAS_BOOK_LIST_STYLES = "bls";
 	private static final String ALIAS_BOOK_SERIES = "bs";
 	private static final String ALIAS_SERIES = "s";
 	private static final String ALIAS_BOOKS = "b";
 	private static final String ALIAS_BOOK_LIST = "bl";
-	private static final String ALIAS_BOOK_LIST_ROW_POSITION = "blrp";
-	private static final String ALIAS_BOOK_LIST_ROW_POSITION_FLATTENED = "blrpf";
+	private static final String ALIAS_BOOK_LIST_ROW_POSITION = "bl_rp";
+	private static final String ALIAS_BOOK_LIST_ROW_POSITION_FLATTENED = "bl_rpf";
 	private static final String ALIAS_AUTHORS = "a";
 	private static final String ALIAS_ANTHOLOGY = "an";
 	private static final String ALIAS_BOOK_AUTHOR = "ba";
@@ -150,7 +150,7 @@ public class DatabaseDefinitions {
 					.setType(TableTypes.FTS3);
 
 	/** Temporary table used to store flattened bok lists */
-	public static final TableDefinition TBL_BOOK_LIST_DEFN = new TableDefinition(TBL_BOOK_LIST_NAME, DOM_ID, DOM_LEVEL, DOM_KIND, 
+	public static final TableDefinition TBL_BOOK_LIST_DEF = new TableDefinition(TBL_BOOK_LIST_NAME, DOM_ID, DOM_LEVEL, DOM_KIND,
 			// Many others...this is a temp table created at runtime.
 			DOM_BOOK_COUNT, DOM_PRIMARY_SERIES_COUNT)
 					.setType(TableTypes.Temporary)
@@ -224,15 +224,15 @@ public class DatabaseDefinitions {
 	;
 
 	/** Definition of ROW_NAVIGATOR temp table */
-	public static final TableDefinition TBL_ROW_NAVIGATOR_DEFN = new TableDefinition(TBL_BOOK_LIST_NAME + "_row_pos", 
+	public static final TableDefinition TBL_ROW_NAVIGATOR_DEF = new TableDefinition(TBL_BOOK_LIST_NAME + "_row_pos",
 			DOM_ID, DOM_REAL_ROW_ID, DOM_LEVEL, DOM_VISIBLE, DOM_EXPANDED, DOM_ROOT_KEY)
 		.setType(TableTypes.Temporary)
-		.addReference(TBL_BOOK_LIST_DEFN, DOM_REAL_ROW_ID)
+		.addReference(TBL_BOOK_LIST_DEF, DOM_REAL_ROW_ID)
 		.setAlias(ALIAS_BOOK_LIST_ROW_POSITION)
 	;
 
 	/** Definition of ROW_NAVIGATOR_FLATTENED temp table */
-	public static final TableDefinition TBL_ROW_NAVIGATOR_FLATTENED_DEFN = new TableDefinition(TBL_BOOK_LIST_NAME + "_row_pos_flattened", 
+	public static final TableDefinition TBL_ROW_NAVIGATOR_FLATTENED_DEF = new TableDefinition(TBL_BOOK_LIST_NAME + "_row_pos_flattened",
 			DOM_ID, DOM_BOOK)
 		.setType(TableTypes.Temporary)
 		.setAlias(ALIAS_BOOK_LIST_ROW_POSITION_FLATTENED)
@@ -245,7 +245,7 @@ public class DatabaseDefinitions {
 		.addIndex("ROOT_KIND", true, DOM_ROOT_KEY, DOM_KIND)
 		.addIndex("KIND_ROOT", true, DOM_KIND, DOM_ROOT_KEY);
 
-    /** Definition for the custom boooklist styles table */
+    /** Definition for the custom booklist styles table */
 	public static final TableDefinition TBL_BOOK_LIST_STYLES = new TableDefinition("book_list_styles",
 			DOM_ID, DOM_STYLE)
 		.setAlias(ALIAS_BOOK_LIST_STYLES)

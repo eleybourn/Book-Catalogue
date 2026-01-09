@@ -60,7 +60,7 @@ public class BooleanValidator extends DefaultFieldValidator {
 			}
 			data.putBoolean(datum, v);
         } catch (Exception e) {
-			throw new ValidatorException(R.string.vldt_boolean_expected, new Object[]{datum.getKey()});
+			throw new ValidatorException(R.string.validator_boolean_expected, new Object[]{datum.getKey()});
 		}
 	}
 }

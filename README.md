@@ -279,7 +279,7 @@ New in v3.6 / v3.6.1
 * Fixed bug in moving to SD Card
 
 New in v3.5.6
-* Fixed bug in moving to SDcard (2.2 and above only)
+* Fixed bug in moving to SD Card (2.2 and above only)
 * Fixed defect in the "All Books" bookshelf (French version only)
 
 New in v3.5.5

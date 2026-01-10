@@ -118,6 +118,95 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/p_lg"
                 tools:text="Last backup: 15 Jan 2026" />
+        </LinearLayout>
+
+        <!-- Local View -->
+        <LinearLayout
+            android:id="@+id/local_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/p_xl"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingVertical="@dimen/p_md"
+                android:layout_marginTop="@dimen/p_xl"
+                android:layout_marginBottom="@dimen/p_md"
+                android:text="@string/title_local_backup"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold"
+                android:textColor="@color/theme_onSecondary"
+                android:background="@color/theme_secondary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/p_md"
+                android:gravity="center"
+                android:orientation="horizontal"
+                >
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/export_csv_locally"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="@dimen/p_md"
+                    android:textColor="@color/theme_onSecondary"
+                    android:backgroundTint="@color/theme_secondary"
+                    android:text="@string/label_export_to_csv"
+                    app:icon="@drawable/ic_menu_spreadsheet" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/import_csv_locally"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="@dimen/p_md"
+                    android:textColor="@color/theme_onSecondary"
+                    android:backgroundTint="@color/theme_secondary"
+                    android:text="@string/label_import_from_csv"
+                    app:icon="@drawable/ic_menu_spreadsheet" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/p_md"
+                android:gravity="center"
+                android:orientation="horizontal"
+                >
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/backup_locally"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="@dimen/p_md"
+                    android:textColor="@color/theme_onSecondary"
+                    android:backgroundTint="@color/theme_secondary"
+                    android:text="@string/label_backup_to_archive"
+                    app:icon="@drawable/ic_menu_save" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/import_locally"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="@dimen/p_md"
+                    android:textColor="@color/theme_onSecondary"
+                    android:backgroundTint="@color/theme_secondary"
+                    android:text="@string/label_import_from_archive"
+                    app:icon="@drawable/ic_menu_save" />
+
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/field_api_token"

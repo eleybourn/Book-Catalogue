@@ -48,13 +48,6 @@
                 android:drawablePadding="@dimen/p_lg"
                 android:text="@string/title_library_preferences" />
 
-            <TextView
-                android:id="@+id/backupSyncLabel"
-                style="@style/layout_menu_list"
-                app:drawableLeftCompat="@drawable/ic_menu_upload"
-                android:drawablePadding="@dimen/p_lg"
-                android:text="@string/title_backup_preferences" />
-
             <!-- Edit Styles -->
 
             <TextView
@@ -73,39 +66,49 @@
                 android:drawablePadding="@dimen/p_lg"
                 android:text="@string/title_other_preferences" />
 
-            <!-- DATA IMPORT/EXPORT -->
-
             <TextView
                 style="@style/layout_heading"
                 android:text="@string/label_data_import_export" />
+
+            <!-- DATA IMPORT/EXPORT -->
+            <TextView
+                android:id="@+id/backupSyncLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_upload"
+                android:drawablePadding="@dimen/p_lg"
+                android:text="@string/title_backup_preferences" />
 
             <TextView
                 android:id="@+id/backupCatalogueLabel"
                 style="@style/layout_menu_list"
                 android:text="@string/label_backup_to_archive"
                 app:drawableLeftCompat="@drawable/ic_menu_save"
-                android:drawablePadding="@dimen/p_lg" />
+                android:drawablePadding="@dimen/p_lg"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/restoreCatalogueLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_upload"
                 android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_import_from_archive" />
+                android:text="@string/label_import_from_archive"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/exportLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_spreadsheet"
                 android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_export_to_csv" />
+                android:text="@string/label_export_to_csv"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/importLabel"
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_upload"
                 android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_import_from_csv" />
+                android:text="@string/label_import_from_csv"
+                android:visibility="gone"/>
 
             <!-- UPDATE FIELDS -->
             <TextView
@@ -159,7 +162,7 @@
                 app:drawableLeftCompat="@drawable/ic_menu_settings"
                 android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_background_events"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/backgroundTasksLabel"
@@ -167,7 +170,7 @@
                 app:drawableLeftCompat="@drawable/ic_menu_settings"
                 android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_background_tasks"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

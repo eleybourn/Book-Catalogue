@@ -28,9 +28,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts.CreateDocument;
-import androidx.activity.result.contract.ActivityResultContracts.OpenDocument;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
@@ -46,7 +43,6 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.google.android.material.appbar.MaterialToolbar;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -62,30 +58,6 @@ public class MainAdministration extends ActivityWithTasks
         OnImportTypeSelectionDialogResultListener,
         OnExportTypeSelectionDialogResultListener {
     public static final String DO_AUTO = "do_auto";
-    private final ActivityResultLauncher<String> mCsvExportPickerLauncher = registerForActivityResult(
-            new CreateDocument("*/*"),
-            result -> {
-                if (result != null) {
-                    DocumentFile f = DocumentFile.fromSingleUri(MainAdministration.this, result);
-                    if (f != null) {
-                        mBackupFile = f;
-                        exportData(f);
-                    }
-                }
-            }
-    );
-    ActivityResultLauncher<String[]> mCsvImportPickerLauncher = registerForActivityResult(
-            new OpenDocument(),
-            result -> {
-                if (result != null) {
-                    DocumentFile f = DocumentFile.fromSingleUri(MainAdministration.this, result);
-                    if (f != null) {
-                        mBackupFile = f;
-                        importData(f);
-                    }
-                }
-            }
-    );
     private CatalogueDBAdapter mDbHelper;
     private boolean finish_after = false;
 
@@ -178,50 +150,6 @@ public class MainAdministration extends ActivityWithTasks
             Intent i = new Intent(MainAdministration.this, AdminOtherPreferences.class);
             startActivity(i);
         });
-        {
-            /* Backup Catalogue Link */
-            View backup = findViewById(R.id.backupCatalogueLabel);
-            // Make line flash when clicked.
-            backup.setBackgroundResource(android.R.drawable.list_selector_background);
-            backup.setOnClickListener(v -> launchBackupExport());
-        }
-
-        {
-            /* Restore Catalogue Link */
-            View restore = findViewById(R.id.restoreCatalogueLabel);
-            // Make line flash when clicked.
-            restore.setBackgroundResource(android.R.drawable.list_selector_background);
-            restore.setOnClickListener(v -> launchBackupImport());
-        }
-
-        /* Export Link */
-        View export = findViewById(R.id.exportLabel);
-        // Make line flash when clicked.
-        export.setBackgroundResource(android.R.drawable.list_selector_background);
-        export.setOnClickListener(v -> launchCsvExportPicker());
-
-        /* Import Link */
-        View imports = findViewById(R.id.importLabel);
-        // Make line flash when clicked.
-        imports.setBackgroundResource(android.R.drawable.list_selector_background);
-        imports.setOnClickListener(
-                v -> {
-                    // Verify - this can be a dangerous operation
-                    AlertDialog alertDialog = new AlertDialog.Builder(MainAdministration.this).setMessage(R.string.alert_import).create();
-                    alertDialog.setTitle(R.string.label_import_books);
-                    alertDialog.setIcon(R.drawable.ic_menu_upload);
-                    alertDialog.setButton(
-                            AlertDialog.BUTTON_POSITIVE,
-                            MainAdministration.this.getResources().getString(R.string.button_ok),
-                            (dialog, which) -> launchCsvImportPicker());
-                    alertDialog.setButton(
-                            AlertDialog.BUTTON_NEGATIVE,
-                            MainAdministration.this.getResources().getString(R.string.button_cancel),
-                            (dialog, which) -> {
-                                //do nothing
-                            });
-                    alertDialog.show();
-                });
 
         {
             /* Update Fields Link */
@@ -319,29 +247,6 @@ public class MainAdministration extends ActivityWithTasks
         startActivity(i);
     }
 
-    /**
-     * Export all data to a CSV file
-     */
-    private void exportData(DocumentFile file) {
-        ExportThread thread = new ExportThread(getTaskManager(), file);
-        thread.start();
-    }
-
-    /**
-     * Import all data from the passed CSV file spec
-     */
-    private void importData(DocumentFile f) {
-        ImportThread thread;
-        try {
-            thread = new ImportThread(getTaskManager(), f);
-        } catch (IOException e) {
-            Logger.logError(e);
-            Toast.makeText(this, getString(R.string.alert_problem_starting_import_arg, e.getMessage()), Toast.LENGTH_LONG).show();
-            return;
-        }
-        thread.start();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -437,20 +342,6 @@ public class MainAdministration extends ActivityWithTasks
     private void updateThumbnails() {
         Intent i = new Intent(this, AdminUpdateFromInternet.class);
         startActivity(i);
-    }
-
-    /**
-     * Call the input picker.
-     */
-    private void launchCsvImportPicker() {
-        mCsvImportPickerLauncher.launch(new String[]{"*/*"});
-    }
-
-    /**
-     * Call the output picker.
-     */
-    private void launchCsvExportPicker() {
-        mCsvExportPickerLauncher.launch("Export.csv");
     }
 
     @Override

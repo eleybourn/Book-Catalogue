@@ -966,10 +966,11 @@
     <string name="x_of_y">%1$d of %2$d</string>
 
     <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
-    <string name="title_backup_preferences"><![CDATA[Backup & Sync Preferences]]></string>
+    <string name="title_backup_preferences"><![CDATA[Backup & Sync]]></string>
     <string name="button_login_with_google">Login with Google</string>
     <string name="para_backup_logged_out_message">Log in with your Google account to automatically back up your book catalogue. This will keep your data safe and allow you to restore it on any device.</string>
     <string name="para_backup_logged_in_as">You are logged in and your data is being backed up as:</string>
     <string name="button_logout">Logout</string>
     <string name="button_backup_now">Backup Now</string>
+    <string name="title_local_backup">Export and Backup Locally</string>
 </resources>

@@ -47,6 +47,8 @@ public class BookCatalogueAPI implements SimpleTask {
     private static boolean mOptIn;
     private static String mApiToken;
     private static BookCataloguePreferences mPrefs;
+    // Add a static field to hold the currently active listener.
+    private static ApiListener sActiveListener;
     private final Context mContext;
     private final String mRequest;
     private int mSuccessCount = 0;
@@ -58,12 +60,18 @@ public class BookCatalogueAPI implements SimpleTask {
         this.mContext = context;
         this.mRequest = request;
         this.mListener = listener;
+        sActiveListener = listener;
         mPrefs = new BookCataloguePreferences();
         mEmail = mPrefs.getAccountEmail();
         mOptIn = mPrefs.getAccountOptIn();
         mApiToken = mPrefs.getAccountApiToken();
 
         mSyncQueue.enqueue(this);
+    }
+
+    // Add a static method to update the listener.
+    public static void setActiveListener(ApiListener listener) {
+        sActiveListener = listener;
     }
 
     private static String getDate(Cursor c, String columnName) {
@@ -230,14 +238,27 @@ public class BookCatalogueAPI implements SimpleTask {
      * Helper to notify progress safely on UI thread
      */
     private void notifyProgress(int current, int total) {
-        if (mListener != null) {
-            // We need a handler to jump to main thread,
-            // but SimpleTaskQueue doesn't expose one easily inside 'run'.
-            // In standard Android, we can use the Main Looper:
-            new android.os.Handler(android.os.Looper.getMainLooper()).post(() ->
-                    mListener.onApiProgress(REQUEST_FULL_BACKUP, current, total)
-            );
-        }
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (sActiveListener != null) {
+                sActiveListener.onApiProgress(mRequest, current, total);
+            }
+        });
+    }
+
+    private void notifyComplete(String message) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (sActiveListener != null) {
+                sActiveListener.onApiComplete(mRequest, message);
+            }
+        });
+    }
+
+    private void notifyError(String error) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (sActiveListener != null) {
+                sActiveListener.onApiError(mRequest, error);
+            }
+        });
     }
 
     /**
@@ -357,23 +378,15 @@ public class BookCatalogueAPI implements SimpleTask {
             if (json != null && json.has("count")) {
                 // Retrieve the count from the JSON response.
                 String bookCount = json.getString("count");
-                if (mListener != null) {
-                    new Handler(Looper.getMainLooper()).post(() ->
-                            mListener.onApiComplete(REQUEST_COUNT, bookCount)
-                    );
-                }
+                notifyComplete(bookCount);
             } else {
                 // Handle cases where the JSON is null or doesn't have the "count" key
                 throw new Exception("Invalid response from /books/count endpoint. JSON: " + json);
             }
         } catch (Exception e) {
             Log.e("BookCatalogueAPI", "API failed", e);
-            if (mListener != null) {
-                final String errorMessage = e.getMessage();
-                new Handler(Looper.getMainLooper()).post(() ->
-                        mListener.onApiError(REQUEST_COUNT, errorMessage)
-                );
-            }
+            final String errorMessage = e.getMessage();
+            notifyError(errorMessage);
         }
     }
 
@@ -390,24 +403,15 @@ public class BookCatalogueAPI implements SimpleTask {
             if (json != null && json.has("last_backup")) {
                 // Retrieve the last_backup from the JSON response.
                 String lastBackup = json.getString("last_backup");
-                if (mListener != null) {
-                    // Use a handler to post the result back to the UI thread
-                    new Handler(Looper.getMainLooper()).post(() ->
-                            mListener.onApiComplete(REQUEST_LAST_BACKUP, lastBackup)
-                    );
-                }
+                notifyComplete(lastBackup);
             } else {
                 // Handle cases where the JSON is null or doesn't have the "last_backup" key
                 throw new Exception("Invalid response from /books/last_backup endpoint. JSON: " + json);
             }
         } catch (Exception e) {
             Log.e("BookCatalogueAPI", "API failed", e);
-            if (mListener != null) {
-                final String errorMessage = e.getMessage();
-                new Handler(Looper.getMainLooper()).post(() ->
-                        mListener.onApiError(REQUEST_LAST_BACKUP, errorMessage)
-                );
-            }
+            final String errorMessage = e.getMessage();
+            notifyError(errorMessage);
         }
     }
 

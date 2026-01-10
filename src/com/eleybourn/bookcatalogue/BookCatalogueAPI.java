@@ -1,6 +1,5 @@
 package com.eleybourn.bookcatalogue;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Looper;
@@ -49,18 +48,12 @@ public class BookCatalogueAPI implements SimpleTask {
     private static BookCataloguePreferences mPrefs;
     // Add a static field to hold the currently active listener.
     private static ApiListener sActiveListener;
-    private final Context mContext;
     private final String mRequest;
-    private int mSuccessCount = 0;
-    private int mErrorCount = 0;
     private SimpleTaskContext mTaskContext;
-    private ApiListener mListener;
     private boolean retry = true;
 
-    public BookCatalogueAPI(String request, Context context, ApiListener listener) {
-        this.mContext = context;
+    public BookCatalogueAPI(String request, ApiListener listener) {
         this.mRequest = request;
-        this.mListener = listener;
         sActiveListener = listener;
         mPrefs = new BookCataloguePreferences();
         mEmail = mPrefs.getAccountEmail();
@@ -110,14 +103,6 @@ public class BookCatalogueAPI implements SimpleTask {
             return c.getInt(index);
         }
         return 0;
-    }
-
-    private static float getFloat(Cursor c, String columnName) {
-        int index = c.getColumnIndex(columnName);
-        if (index > -1 && !c.isNull(index)) {
-            return c.getFloat(index);
-        }
-        return 0.0f;
     }
 
     private static void addFormField(PrintWriter writer, String boundary, String name, String value) {
@@ -218,11 +203,9 @@ public class BookCatalogueAPI implements SimpleTask {
 
                         // Upload
                         backupBook(bookId, bookCursor, authors, bookshelves, series, anthology, thumbFile);
-                        mSuccessCount++;
                     } catch (Exception e) {
                         // Log the specific error for this book, but continue the loop
                         System.err.println("Error syncing book index " + count + ": " + e.getMessage());
-                        mErrorCount++;
                     }
                     count++;
 
@@ -266,11 +249,11 @@ public class BookCatalogueAPI implements SimpleTask {
     /**
      * Executes the API Sync Logic in background
      */
-    public boolean backupBook(int bookId, Cursor bookCursor,
-                              ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves,
-                              ArrayList<Series> series, ArrayList<AnthologyTitle> anthology,
-                              File thumbnailFile) throws Exception {
-        String title = "";
+    public void backupBook(int bookId, Cursor bookCursor,
+                           ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves,
+                           ArrayList<Series> series, ArrayList<AnthologyTitle> anthology,
+                           File thumbnailFile) throws Exception {
+        String title;
         if (mApiToken.isEmpty()) {
             // It might be better to try a login() call here, but for now, we'll error out.
             throw new Exception("No API Token set for runFullBackup");
@@ -362,7 +345,7 @@ public class BookCatalogueAPI implements SimpleTask {
 
         JSONObject json = connection("/book", fields, values, thumbnailFile);
         if (json != null && json.has("id")) {
-            return true;
+            return;
         }
         throw new Exception("Upload failed for book ID " + bookId + " (" + title + "): ");
     }

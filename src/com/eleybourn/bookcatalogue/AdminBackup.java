@@ -162,8 +162,8 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             if (!apiToken.isEmpty()) {
                 token.setText(apiToken);
             }
-            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_COUNT, this, mApiListener);
-            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LAST_BACKUP, this, mApiListener);
+            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_COUNT, mApiListener);
+            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LAST_BACKUP, mApiListener);
         }
 
         /* Login */
@@ -252,7 +252,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
     public void backup() {
         // Create a new API task to get the count. This will automatically run in the background.
-        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_FULL_BACKUP, this, mApiListener);
+        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_FULL_BACKUP, mApiListener);
     }
 
     private void reload() {
@@ -263,7 +263,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
     @Override
     public void onCredentialReceived() {
-        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LOGIN, this, mApiListener);
+        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LOGIN, mApiListener);
     }
 
     @Override
@@ -330,8 +330,8 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 activity.mLastBackupDateField.setText(statsText);
             } else if (request.equals(BookCatalogueAPI.REQUEST_FULL_BACKUP)) {
                 // Reload stats after full backup completes
-                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_COUNT, activity, this);
-                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LAST_BACKUP, activity, this);
+                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_COUNT, this);
+                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LAST_BACKUP, this);
             } else if (request.equals(BookCatalogueAPI.REQUEST_LOGIN)) {
                 activity.reload();
             }

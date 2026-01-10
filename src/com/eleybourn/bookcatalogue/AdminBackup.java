@@ -34,6 +34,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
+import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.ExportSettings;
+import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.OnExportTypeSelectionDialogResultListener;
+import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment;
+import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment.OnImportTypeSelectionDialogResultListener;
 import com.eleybourn.bookcatalogue.BookCatalogueAPI.ApiListener;
 import com.eleybourn.bookcatalogue.BookCatalogueAPICredentials.CredentialListener;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -45,80 +50,17 @@ import java.lang.ref.WeakReference;
 /*
  * A book catalogue application that integrates with Google Books.
  */
-public class AdminBackup extends ActivityWithTasks implements CredentialListener {
+public class AdminBackup extends ActivityWithTasks implements CredentialListener,
+        OnImportTypeSelectionDialogResultListener,
+        OnExportTypeSelectionDialogResultListener {
     private BookCatalogueAPICredentials mApiCredentials;
     private ProgressBar mSyncProgressBar;
     private TextView mBackupStatsField;
     private TextView mLastBackupDateField;
     private ApiListener mApiListener;
+    private ActivityResultLauncher<String[]> mCsvImportPickerLauncher;
+    private ActivityResultLauncher<String> mCsvExportPickerLauncher;
 
-    // Define the listener as a static inner class
-    private static class StaticApiListener implements ApiListener {
-        private final WeakReference<AdminBackup> activityReference;
-
-        StaticApiListener(AdminBackup activity) {
-            // Use a WeakReference to avoid memory leaks
-            this.activityReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void onApiProgress(String request, int current, int total) {
-            AdminBackup activity = activityReference.get();
-            // Only update UI if the activity is still alive
-            if (activity == null || activity.isFinishing()) {
-                return;
-            }
-
-            if (request.equals(BookCatalogueAPI.REQUEST_FULL_BACKUP)) {
-                String statsText = current + " of " + total + " books backed up";
-                activity.mBackupStatsField.setText(statsText);
-                activity.mSyncProgressBar.setMax(total);
-                activity.mSyncProgressBar.setProgress(current);
-                activity.mSyncProgressBar.setVisibility(View.VISIBLE);
-            }
-        }
-
-        @Override
-        public void onApiComplete(String request, String message) {
-            AdminBackup activity = activityReference.get();
-            if (activity == null || activity.isFinishing()) {
-                return;
-            }
-
-            if (request.equals(BookCatalogueAPI.REQUEST_COUNT)) {
-                int totalLocalBooks = CatalogueDBAdapter.countBooks();
-                String statsText = message + " of " + totalLocalBooks + " books backed up";
-                activity.mBackupStatsField.setText(statsText);
-            } else if (request.equals(BookCatalogueAPI.REQUEST_LAST_BACKUP)) {
-                String statsText = "Last Backup: " + message;
-                activity.mLastBackupDateField.setText(statsText);
-            } else if (request.equals(BookCatalogueAPI.REQUEST_FULL_BACKUP)) {
-                // Reload stats after full backup completes
-                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_COUNT, activity, this);
-                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LAST_BACKUP, activity, this);
-            }
-
-            // Hide progress bar on completion of any task except count/last_backup
-            if (!request.equals(BookCatalogueAPI.REQUEST_COUNT) && !request.equals(BookCatalogueAPI.REQUEST_LAST_BACKUP)) {
-                activity.mSyncProgressBar.setVisibility(View.GONE);
-            }
-        }
-
-        @Override
-        public void onApiError(String request, String error) {
-            AdminBackup activity = activityReference.get();
-            if (activity == null || activity.isFinishing()) {
-                return;
-            }
-
-            // Show an error message to the user on the UI thread
-            if (request.equals(BookCatalogueAPI.REQUEST_COUNT) || request.equals(BookCatalogueAPI.REQUEST_LAST_BACKUP)) {
-                activity.mBackupStatsField.setText("Could not load backup statistics.");
-                Toast.makeText(activity, "Error: " + error, Toast.LENGTH_LONG).show();
-            }
-            activity.mSyncProgressBar.setVisibility(View.GONE);
-        }
-    }
 
     @Override
     protected RequiredPermission[] getRequiredPermissions() {
@@ -137,17 +79,40 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         topAppBar.setTitle(R.string.title_backup_preferences);
         topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        {
-            /* Backup Catalogue Link */
-            View backup = findViewById(R.id.backup_locally);
-            backup.setOnClickListener(v -> launchBackupExport());
-        }
+        registerBackupExportPickerLauncher(ID.DIALOG_OPEN_IMPORT_TYPE);
+        registerBackupImportPickerLauncher();
+        mCsvImportPickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.OpenDocument(),
+                result -> {
+                    if (result != null) {
+                        DocumentFile f = DocumentFile.fromSingleUri(this, result);
+                        if (f != null) {
+                            mBackupFile = f;
+                            importData(f);
+                        }
+                    }
+                }
+        );
 
-        {
-            /* Restore Catalogue Link */
-            View restore = findViewById(R.id.import_locally);
-            restore.setOnClickListener(v -> launchBackupImport());
-        }
+        mCsvExportPickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.CreateDocument("*/*"),
+                result -> {
+                    if (result != null) {
+                        DocumentFile f = DocumentFile.fromSingleUri(this, result);
+                        if (f != null) {
+                            mBackupFile = f;
+                            exportData(f);
+                        }
+                    }
+                }
+        );
+        /* Backup Catalogue Link */
+        View backup = findViewById(R.id.backup_locally);
+        backup.setOnClickListener(v -> launchBackupExport());
+
+        /* Restore Catalogue Link */
+        View restore = findViewById(R.id.import_locally);
+        restore.setOnClickListener(v -> launchBackupImport());
 
         /* Export Link */
         View export = findViewById(R.id.export_csv_locally);
@@ -236,18 +201,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
      * Call the input picker.
      */
     private void launchCsvImportPicker() {
-        ActivityResultLauncher<String[]> mCsvImportPickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.OpenDocument(),
-                result -> {
-                    if (result != null) {
-                        DocumentFile f = DocumentFile.fromSingleUri(this, result);
-                        if (f != null) {
-                            mBackupFile = f;
-                            importData(f);
-                        }
-                    }
-                }
-        );
+        // 3. Just LAUNCH the already-registered launcher. Do not register again.
         mCsvImportPickerLauncher.launch(new String[]{"*/*"});
     }
 
@@ -255,18 +209,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
      * Call the output picker.
      */
     private void launchCsvExportPicker() {
-        ActivityResultLauncher<String> mCsvExportPickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.CreateDocument("*/*"),
-                result -> {
-                    if (result != null) {
-                        DocumentFile f = DocumentFile.fromSingleUri(this, result);
-                        if (f != null) {
-                            mBackupFile = f;
-                            exportData(f);
-                        }
-                    }
-                }
-        );
+        // 3. Just LAUNCH the already-registered launcher. Do not register again.
         mCsvExportPickerLauncher.launch("Export.csv");
     }
 
@@ -320,12 +263,99 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
     @Override
     public void onCredentialReceived() {
-        reload();
+        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LOGIN, this, mApiListener);
     }
 
     @Override
     public void onCredentialError(String errorMessage) {
 
+    }
+
+    /**
+     * Pass on the event to the relevant handler.
+     *
+     * @param dialogId As passed to us
+     * @param dialog   As passed to us
+     * @param settings As passed to us
+     */
+    @Override
+    public void onExportTypeSelectionDialogResult(int dialogId, BookCatalogueDialogFragment dialog, ExportSettings settings) {
+        mBackupExportManager.onExportTypeSelectionDialogResult(dialogId, dialog, settings);
+    }
+
+    @Override
+    public void onImportTypeSelectionDialogResult(int dialogId, ImportTypeSelectionDialogFragment dialog, int rowId, DocumentFile file) {
+        mBackupImportManager.onImportTypeSelectionDialogResult(dialogId, dialog, rowId, file);
+    }
+
+    // Define the listener as a static inner class
+    private static class StaticApiListener implements ApiListener {
+        private final WeakReference<AdminBackup> activityReference;
+
+        StaticApiListener(AdminBackup activity) {
+            // Use a WeakReference to avoid memory leaks
+            this.activityReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void onApiProgress(String request, int current, int total) {
+            AdminBackup activity = activityReference.get();
+            // Only update UI if the activity is still alive
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+
+            if (request.equals(BookCatalogueAPI.REQUEST_FULL_BACKUP)) {
+                String statsText = current + " of " + total + " books backed up";
+                activity.mBackupStatsField.setText(statsText);
+                activity.mSyncProgressBar.setMax(total);
+                activity.mSyncProgressBar.setProgress(current);
+                activity.mSyncProgressBar.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        public void onApiComplete(String request, String message) {
+            AdminBackup activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+
+            if (request.equals(BookCatalogueAPI.REQUEST_COUNT)) {
+                int totalLocalBooks = CatalogueDBAdapter.countBooks();
+                String statsText = message + " of " + totalLocalBooks + " books backed up";
+                activity.mBackupStatsField.setText(statsText);
+            } else if (request.equals(BookCatalogueAPI.REQUEST_LAST_BACKUP)) {
+                String statsText = "Last Backup: " + message;
+                activity.mLastBackupDateField.setText(statsText);
+            } else if (request.equals(BookCatalogueAPI.REQUEST_FULL_BACKUP)) {
+                // Reload stats after full backup completes
+                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_COUNT, activity, this);
+                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LAST_BACKUP, activity, this);
+            } else if (request.equals(BookCatalogueAPI.REQUEST_LOGIN)) {
+                activity.reload();
+            }
+
+            // Hide progress bar on completion of any task except count/last_backup
+            if (!request.equals(BookCatalogueAPI.REQUEST_COUNT) && !request.equals(BookCatalogueAPI.REQUEST_LAST_BACKUP)) {
+                activity.mSyncProgressBar.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void onApiError(String request, String error) {
+            AdminBackup activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+
+            // Show an error message to the user on the UI thread
+            if (request.equals(BookCatalogueAPI.REQUEST_COUNT) || request.equals(BookCatalogueAPI.REQUEST_LAST_BACKUP)) {
+                activity.mBackupStatsField.setText("Could not load backup statistics.");
+                Toast.makeText(activity, "Error: " + error, Toast.LENGTH_LONG).show();
+            }
+            activity.mSyncProgressBar.setVisibility(View.GONE);
+        }
     }
 
 }

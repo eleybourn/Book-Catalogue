@@ -181,14 +181,18 @@ public class CsvExporter implements Exporter {
 						Cursor bookshelves = db.fetchAllBookshelvesByBook(id);
 						StringBuilder bookshelves_id_text = new StringBuilder();
 						StringBuilder bookshelves_name_text = new StringBuilder();
-						while (bookshelves.moveToNext()) {
-                            int id_col = bookshelves.getInt(bookshelves.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROW_ID));
-                            if (id_col > 0) {
-                                bookshelves_id_text.append(bookshelves.getString(id_col)).append(BookEditFields.BOOKSHELF_SEPARATOR);
+                        int idColIndex = bookshelves.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROW_ID);
+                        int nameColIndex = bookshelves.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF);
+
+                        while (bookshelves.moveToNext()) {
+                            int bookshelfId = bookshelves.getInt(idColIndex);
+                            if (bookshelfId > 0) {
+                                // Append the ID itself, not a string from an invalid index
+                                bookshelves_id_text.append(bookshelfId).append(BookEditFields.BOOKSHELF_SEPARATOR);
                             }
-                            int bookshelf_col = bookshelves.getInt(bookshelves.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF));
-                            if (bookshelf_col > 0) {
-                                bookshelves_name_text.append(Utils.encodeListItem(bookshelves.getString(bookshelf_col), BookEditFields.BOOKSHELF_SEPARATOR)).append(BookEditFields.BOOKSHELF_SEPARATOR);
+                            String bookshelfName = bookshelves.getString(nameColIndex);
+                            if (bookshelfName != null && !bookshelfName.isEmpty()) {
+                                bookshelves_name_text.append(Utils.encodeListItem(bookshelfName, BookEditFields.BOOKSHELF_SEPARATOR)).append(BookEditFields.BOOKSHELF_SEPARATOR);
                             }
 						}
 						bookshelves.close();

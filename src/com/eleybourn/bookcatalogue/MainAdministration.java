@@ -31,11 +31,6 @@ import android.widget.Toast;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
-import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
-import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.ExportSettings;
-import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.OnExportTypeSelectionDialogResultListener;
-import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment;
-import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment.OnImportTypeSelectionDialogResultListener;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -46,7 +41,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 import java.util.ArrayList;
 
 /**
- *
  * This is the Administration page. It contains details about the app, links
  * to my website and email, functions to export and import books and functions to
  * manage bookshelves.
@@ -54,9 +48,7 @@ import java.util.ArrayList;
  * @author Evan Leybourn
  */
 public class MainAdministration extends ActivityWithTasks
-        implements OnMessageDialogResultListener,
-        OnImportTypeSelectionDialogResultListener,
-        OnExportTypeSelectionDialogResultListener {
+        implements OnMessageDialogResultListener {
     public static final String DO_AUTO = "do_auto";
     private CatalogueDBAdapter mDbHelper;
     private boolean finish_after = false;
@@ -72,8 +64,6 @@ public class MainAdministration extends ActivityWithTasks
     @Override
     public void onCreate(Bundle savedInstanceState) {
         registerOldFilesTreeCopyLauncher();
-        registerBackupExportPickerLauncher(ID.DIALOG_OPEN_IMPORT_TYPE);
-        registerBackupImportPickerLauncher();
         try {
             super.onCreate(savedInstanceState);
             mDbHelper = new CatalogueDBAdapter(this);
@@ -342,23 +332,6 @@ public class MainAdministration extends ActivityWithTasks
     private void updateThumbnails() {
         Intent i = new Intent(this, AdminUpdateFromInternet.class);
         startActivity(i);
-    }
-
-    @Override
-    public void onImportTypeSelectionDialogResult(int dialogId, ImportTypeSelectionDialogFragment dialog, int rowId, DocumentFile file) {
-        mBackupImportManager.onImportTypeSelectionDialogResult(dialogId, dialog, rowId, file);
-    }
-
-    /**
-     * Pass on the event to the relevant handler.
-     *
-     * @param dialogId As passed to us
-     * @param dialog   As passed to us
-     * @param settings As passed to us
-     */
-    @Override
-    public void onExportTypeSelectionDialogResult(int dialogId, BookCatalogueDialogFragment dialog, ExportSettings settings) {
-        mBackupExportManager.onExportTypeSelectionDialogResult(dialogId, dialog, settings);
     }
 
     /**

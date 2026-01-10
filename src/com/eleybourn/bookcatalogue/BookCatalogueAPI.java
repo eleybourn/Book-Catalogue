@@ -55,6 +55,7 @@ public class BookCatalogueAPI implements SimpleTask {
     private int mErrorCount = 0;
     private SimpleTaskContext mTaskContext;
     private ApiListener mListener;
+    private boolean retry = true;
 
     public BookCatalogueAPI(String request, Context context, ApiListener listener) {
         this.mContext = context;
@@ -182,6 +183,7 @@ public class BookCatalogueAPI implements SimpleTask {
             if (json.has("api_token")) {
                 mApiToken = json.getString("api_token");
                 mPrefs.setAccountApiToken(mApiToken);
+                notifyComplete("Login successful");
             }
         } catch (Exception e) {
             Log.e("BookCatalogueAPI", "Login failed", e);
@@ -445,6 +447,7 @@ public class BookCatalogueAPI implements SimpleTask {
             conn.setRequestProperty("Accept", "application/json");
             conn.setReadTimeout(15000); // 15 seconds
             conn.setConnectTimeout(15000); // 15 seconds
+            Log.d("BookCatalogueAPI", "Authorization: " + mApiToken);
             if (mApiToken != null && !mApiToken.isEmpty()) {
                 conn.setRequestProperty("Authorization", "Bearer " + mApiToken);
             }
@@ -479,6 +482,10 @@ public class BookCatalogueAPI implements SimpleTask {
                 response = readStream(conn.getInputStream());
                 if (response.isEmpty()) return null; // Handle empty success response
                 return new JSONObject(response);
+            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && retry) {
+                login();
+                retry = false;
+                return connection(urlEndPoint, fields, values, thumbnailFile);
             } else {
                 // If it's an error, read the error stream.
                 response = readStream(conn.getErrorStream());
@@ -500,7 +507,7 @@ public class BookCatalogueAPI implements SimpleTask {
     public void run(SimpleTaskContext taskContext) throws Exception {
         this.mTaskContext = taskContext;
 
-        if (mApiToken.isEmpty()) {
+        if (mRequest.equals(REQUEST_LOGIN) || mApiToken.isEmpty()) {
             login();
             // After login, re-check if the token was successfully retrieved.
             if (mApiToken.isEmpty()) {

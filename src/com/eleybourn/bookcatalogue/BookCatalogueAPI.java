@@ -439,15 +439,12 @@ public class BookCatalogueAPI implements SimpleTask {
         try {
             String boundary = UUID.randomUUID().toString();
             String urlString = BASE_URL + urlEndPoint;
-            // TODO: DELETE Log.d
-            Log.d("BookCatalogueAPI", "URL: " + urlString);
 
             conn = (HttpURLConnection) new URL(urlString).openConnection();
             conn.setRequestMethod(method);
             conn.setRequestProperty("Accept", "application/json");
             conn.setReadTimeout(15000); // 15 seconds
             conn.setConnectTimeout(15000); // 15 seconds
-            Log.d("BookCatalogueAPI", "Authorization: " + mApiToken);
             if (mApiToken != null && !mApiToken.isEmpty()) {
                 conn.setRequestProperty("Authorization", "Bearer " + mApiToken);
             }
@@ -476,7 +473,6 @@ public class BookCatalogueAPI implements SimpleTask {
             }
 
             int responseCode = conn.getResponseCode();
-            Log.d("BookCatalogueAPI", "responseCode: " + responseCode);
             String response;
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 response = readStream(conn.getInputStream());

@@ -48,6 +48,13 @@
                 android:drawablePadding="@dimen/p_lg"
                 android:text="@string/title_library_preferences" />
 
+            <TextView
+                android:id="@+id/backupSyncLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_upload"
+                android:drawablePadding="@dimen/p_lg"
+                android:text="@string/title_backup_preferences" />
+
             <!-- Edit Styles -->
 
             <TextView
@@ -152,7 +159,7 @@
                 app:drawableLeftCompat="@drawable/ic_menu_settings"
                 android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_background_events"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/backgroundTasksLabel"
@@ -160,7 +167,17 @@
                 app:drawableLeftCompat="@drawable/ic_menu_settings"
                 android:drawablePadding="@dimen/p_lg"
                 android:text="@string/label_background_tasks"
-                android:visibility="gone" />
+                android:visibility="visible" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/syncProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        android:max="100" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

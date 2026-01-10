@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/layout_body">
+    <!-- Root -->
+
+    <include layout="@layout/layout_header" />
+
+    <include layout="@layout/layout_background" />
+
+    <LinearLayout
+        android:id="@+id/root"
+        style="@style/layout_main"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- Logged-out View -->
+        <!-- This group is shown when the user is not logged in. -->
+        <LinearLayout
+            android:id="@+id/logged_out_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                style="@style/layout_paragraph"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/para_backup_logged_out_message" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/log_in_button"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_login_with_google"
+                app:icon="@drawable/googleg_standard_color_18" />
+
+        </LinearLayout>
+
+        <!-- Logged-in View -->
+        <!-- This group is shown when the user is successfully logged in. -->
+        <LinearLayout
+            android:id="@+id/logged_in_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/logged_in_status"
+                style="@style/layout_paragraph"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="0dp"
+                android:text="@string/para_backup_logged_in_as" />
+
+            <TextView
+                android:id="@+id/field_user_email"
+                style="@style/layout_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                tools:text="user@example.com" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                >
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/backup_now"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/p_md"
+                    android:text="@string/button_backup_now"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/log_out_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/p_md"
+                    android:text="@string/button_logout" />
+
+            </LinearLayout>
+
+
+            <CheckBox
+                android:id="@+id/field_opt_in"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:paddingVertical="@dimen/p_xl"
+                android:paddingHorizontal="@dimen/p_md"
+                android:layout_marginHorizontal="@dimen/p_xl"
+                android:text="@string/label_enhance_search" />
+
+            <TextView
+                android:id="@+id/field_backup_stats"
+                style="@style/TextAppearance.Material3.BodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/p_lg"
+                tools:text="125 of 150 books backed up" />
+
+            <TextView
+                android:id="@+id/field_last_backup_date"
+                style="@style/TextAppearance.Material3.BodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/p_lg"
+                tools:text="Last backup: 15 Jan 2026" />
+
+            <TextView
+                android:id="@+id/field_api_token"
+                style="@style/TextAppearance.Material3.BodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/p_lg"
+                android:visibility="gone"
+                tools:text="TOKEN" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/syncProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        android:max="100" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -124,6 +124,10 @@
             android:label="@string/title_manage_bookshelves"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".AdminBackup"
+            android:label="@string/title_backup_preferences"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".AdminBookshelfEdit"
             android:label="@string/title_edit_bookshelf"
             android:windowSoftInputMode="adjustResize" />

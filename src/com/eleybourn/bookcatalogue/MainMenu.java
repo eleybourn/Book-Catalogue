@@ -22,20 +22,8 @@ package com.eleybourn.bookcatalogue;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.credentials.Credential;
-import androidx.credentials.CredentialManager;
-import androidx.credentials.GetCredentialRequest;
-import androidx.credentials.GetCredentialResponse;
-import androidx.credentials.CustomCredential;
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialogResultListener;
@@ -45,8 +33,6 @@ import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Implement the 'Main Menu' for BookCatalogue. This is one of two possible start screens.
@@ -64,13 +50,6 @@ import java.util.concurrent.Executors;
  */
 public class MainMenu extends BookCatalogueActivity implements OnMessageDialogResultListener {
 
-    private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
-
-    // 1. Declare Credential Manager
-    private CredentialManager mCredentialManager;
-
-    private ProgressBar mSyncProgressBar;
-
     @Override
     protected RequiredPermission[] getRequiredPermissions() {
         return new RequiredPermission[0];
@@ -83,14 +62,12 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
 
         // If we get here, we're meant to be in this activity.
         setContentView(R.layout.main_menu);
-        mCredentialManager = CredentialManager.create(this);
+
         setTitle(R.string.app_name);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         topAppBar.setLogo(R.drawable.ic_launcher4);
         topAppBar.setNavigationIcon(null);
-
-        mSyncProgressBar = findViewById(R.id.syncProgressBar);
 
         // Setup handlers for items. It's just a menu after all.
         setOnClickListener(R.id.cardLibrary, mBrowseHandler);
@@ -122,149 +99,11 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
             CatalogueDBAdapter.dumpInstances();
 
     }
-    /**
-     * Sync Menu Handler (UPDATED FOR CREDENTIAL MANAGER)
-     */
+
     private final OnClickListener mSyncHandler = v -> {
-        // Build the Google ID Option
-        // GOOGLE_OAUTH_CLIENT_ID should be stored in local.properties
-        GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(false)
-                .setServerClientId(BuildConfig.GOOGLE_OAUTH_CLIENT_ID)
-                .setAutoSelectEnabled(true)
-                .build();
-
-        GetCredentialRequest request = new GetCredentialRequest.Builder()
-                .addCredentialOption(googleIdOption)
-                .build();
-
-        // Launch the flow asynchronously
-        mCredentialManager.getCredentialAsync(
-                this,
-                request,
-                null, // CancellationSignal
-                mExecutor, // Execute on background executor or Context.getMainExecutor(this)
-                new androidx.credentials.CredentialManagerCallback<>() {
-                    @Override
-                    public void onResult(GetCredentialResponse result) {
-                        handleSignInSuccess(result);
-                    }
-
-                    @Override
-                    public void onError(@NonNull androidx.credentials.exceptions.GetCredentialException e) {
-                        if (e instanceof androidx.credentials.exceptions.NoCredentialException) {
-                            // This specific error usually means:
-                            // 1. No Google Account on phone
-                            // 2. Or SHA-1 mismatch in Cloud Console
-                            Log.e("MainMenu", "No credentials available. Check SHA-1 in Console.", e);
-                            runOnUiThread(() -> Toast.makeText(MainMenu.this, "Configuration Error: Check Logcat for details", Toast.LENGTH_LONG).show());
-                        } else {
-                            Log.e("MainMenu", "Sign-in failed", e);
-                            runOnUiThread(() -> Toast.makeText(MainMenu.this, "Sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-                        }
-                    }
-                }
-        );
+        Intent i = new Intent(MainMenu.this, AdminBackup.class);
+        startActivity(i);
     };
-
-    private void handleSignInSuccess(GetCredentialResponse result) {
-        Credential credential = result.getCredential();
-
-        if (credential instanceof CustomCredential) {
-            CustomCredential customCredential = (CustomCredential) credential;
-            try {
-                GoogleIdTokenCredential googleId = GoogleIdTokenCredential.createFrom(customCredential.getData());
-                String email = googleId.getId(); // Or extract email if distinct from ID
-
-                runOnUiThread(() -> {
-                    Toast.makeText(MainMenu.this, "Signed in as: " + email, Toast.LENGTH_SHORT).show();
-                    // Show the Opt-In Dialog instead of syncing immediately
-                    String savedEmail = new BookCataloguePreferences().getAccountEmail();
-                    if (savedEmail.isEmpty()) {
-                        showOptInDialog(email);
-                    } else {
-                        Toast.makeText(this, "Starting Cloud Backup...", Toast.LENGTH_SHORT).show();
-                        BookCatalogueAPI.performCloudSync(email, new BookCataloguePreferences().getAccountOptIn(), new BookCatalogueAPITask.SyncListener() {
-                            @Override
-                            public void onSyncProgress(int current, int total) {
-                                mSyncProgressBar.setMax(total);
-                                mSyncProgressBar.setProgress(current);
-                                mSyncProgressBar.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            public void onSyncComplete(String message) {
-                                mSyncProgressBar.setVisibility(View.GONE);
-                                Toast.makeText(MainMenu.this, message, Toast.LENGTH_LONG).show();
-                            }
-
-                            @Override
-                            public void onSyncError(String error) {
-                                mSyncProgressBar.setVisibility(View.GONE);
-                                Toast.makeText(MainMenu.this, "Backup Failed: " + error, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                });
-
-            } catch (Exception e) {
-                Log.e("MainMenu", "Invalid credential data", e);
-                runOnUiThread(() -> Toast.makeText(MainMenu.this, "Invalid credential data", Toast.LENGTH_SHORT).show());
-            }
-        } else {
-            Log.e("MainMenu", "Unexpected credential type: " + credential.getClass().getName());
-        }
-    }
-
-    /**
-     * Shows a dialog asking the user to opt-in to sharing data.
-     */
-    private void showOptInDialog(final String email) {
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle(R.string.title_enhance_search)
-                .setMessage(R.string.para_enhance_search)
-                .setPositiveButton("Yes, I'll help", (dialog, which) -> savePreferencesAndSync(email, true))
-                .setNegativeButton("No, keep private", (dialog, which) -> savePreferencesAndSync(email, false))
-                .setCancelable(false) // Force them to choose
-                .show();
-    }
-
-    /**
-     * Saves the user's choice and email, then triggers the sync.
-     */
-    private void savePreferencesAndSync(String email, boolean optIn) {
-        // Save to Preferences
-        BookCataloguePreferences prefs = new BookCataloguePreferences();
-        prefs.setAccountEmail(email);
-        prefs.setAccountOptIn(optIn);
-
-        // Notify user
-        String status = optIn ? "Opted In" : "Opted Out";
-        Toast.makeText(this, "Preferences Saved: " + status, Toast.LENGTH_SHORT).show();
-
-        // Pass the optIn boolean to the sync method so it sends the correct flag to the API
-        Toast.makeText(this, "Starting Cloud Backup...", Toast.LENGTH_SHORT).show();
-        BookCatalogueAPI.performCloudSync(email, optIn, new BookCatalogueAPITask.SyncListener() {
-            @Override
-            public void onSyncProgress(int current, int total) {
-                mSyncProgressBar.setMax(total);
-                mSyncProgressBar.setProgress(current);
-                mSyncProgressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onSyncComplete(String message) {
-                mSyncProgressBar.setVisibility(View.GONE);
-                Toast.makeText(MainMenu.this, message, Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onSyncError(String error) {
-                mSyncProgressBar.setVisibility(View.GONE);
-                Toast.makeText(MainMenu.this, "Backup Failed: " + error, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
 
     /**
      * Add Book Menu Handler

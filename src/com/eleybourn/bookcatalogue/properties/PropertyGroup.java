@@ -60,7 +60,6 @@ public class PropertyGroup {
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_THUMBNAILS = mGroups.addGroup(GRP_THUMBNAILS_ID, R.string.thumbnails, 40);
 	/** Global PropertyGroup definition */
-    public static final PropertyGroup GRP_SYNC = mGroups.addGroup(GRP_SYNC_ID, R.string.label_sync, 30);
 	public static final PropertyGroup GRP_USER_INTERFACE = mGroups.addGroup(GRP_USER_INTERFACE_ID, R.string.label_user_interface, 35);
 	/** Global PropertyGroup definition */
 	public static final PropertyGroup GRP_SCANNER = mGroups.addGroup(GRP_SCANNER_ID, R.string.scanning, 70);

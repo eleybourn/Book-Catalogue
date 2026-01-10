@@ -183,13 +183,4 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-    <ProgressBar
-        android:id="@+id/syncProgressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:visibility="gone"
-        android:max="100" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -156,6 +156,12 @@ public class MainAdministration extends ActivityWithTasks
         blPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
         blPrefs.setOnClickListener(v -> BookCatalogueApp.startPreferencesActivity(MainAdministration.this));
 
+        /* Book List Preferences Link */
+        View blBackupPrefs = findViewById(R.id.backupSyncLabel);
+        // Make line flash when clicked.
+        blBackupPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
+        blBackupPrefs.setOnClickListener(v -> manageBackup());
+
         // Edit Book list styles
         {
             View lbl = findViewById(R.id.editStylesLabel);
@@ -302,6 +308,14 @@ public class MainAdministration extends ActivityWithTasks
      */
     private void manageFields() {
         Intent i = new Intent(this, AdminFieldVisibility.class);
+        startActivity(i);
+    }
+
+    /**
+     * Load the Manage Field Visibility Activity
+     */
+    private void manageBackup() {
+        Intent i = new Intent(this, AdminBackup.class);
         startActivity(i);
     }
 

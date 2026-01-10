@@ -63,13 +63,6 @@ public class AdminOtherPreferences extends PreferencesBase {
 	
 	private static final Properties mProperties = new Properties()
 
-        .add(new BooleanProperty(BookCataloguePreferences.PREF_ACCOUNT_OPT_IN)
-            .setDefaultValue(false)
-            .setPreferenceKey(BookCataloguePreferences.PREF_ACCOUNT_OPT_IN)
-            .setGlobal(true)
-            .setNameResourceId(R.string.title_enhance_search)
-            .setGroup(PropertyGroup.GRP_SYNC))
-
         //.add(new StringProperty(BookCataloguePreferences.PREF_ACCOUNT_EMAIL, PropertyGroup.GRP_SYNC, R.string.label_email_address)
         //    .setPreferenceKey(BookCataloguePreferences.PREF_ACCOUNT_EMAIL)
         //    .setGlobal(true)

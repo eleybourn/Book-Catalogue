@@ -757,7 +757,8 @@
         or stolen.</string>
     <string name="para_cleanup_files">Purgeable files currently use %s of storage. Log files and other data are saved at each upgrade, when you backup the database, or when the application crashes. Click the button below to purge these files from your storage. If you have been experiencing crashing or other errors, please consider using the \'Send Information\' button first.</string>
     <string name="para_donate">If you would like to support the development of this application, please donate using a my Amazon Wishlist or the paypal button below. Being in Australia means I cannot publish a paid version. :-) </string>
-    <string name="para_enhance_search">Would you like to help other Book Catalogue users? \\n\\n\nBy clicking \'Yes\', you agree to allow public details from your book records (like ISBNs and Titles)\nto be used to improve search results for everyone.\\n\\n\nPrivate notes and personal details remain secure.\\n\\n\nYou can change this at any time in the Settings.</string>
+    <string name="label_enhance_search">Do you agree to allow public details from your book records (like ISBNs and Titles) to be used to improve search results for everyone.</string>
+    <string name="para_enhance_search">Would you like to help other Book Catalogue users? \n\nBy clicking \'Yes\', you agree to allow public details from your book records (like ISBNs and Titles) to be used to improve search results for everyone.\n\nPrivate notes and personal details remain secure.\n\nYou can change this at any time in the Settings.</string>
     <string name="para_help_click_here">Please click here to access the online help pages</string>
     <string name="para_immediate_global_changes">NOTE: All saved changes apply instantly and globally</string>
     <string name="para_isbn_name_search_help">Adding books by ISBN is much more accurate than adding by author and title and is generally preferred. Please remember you can sometimes find the correct barcode on the inside front cover. \n\n</string>
@@ -965,4 +966,10 @@
     <string name="x_of_y">%1$d of %2$d</string>
 
     <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
+    <string name="title_backup_preferences"><![CDATA[Backup & Sync Preferences]]></string>
+    <string name="button_login_with_google">Login with Google</string>
+    <string name="para_backup_logged_out_message">Log in with your Google account to automatically back up your book catalogue. This will keep your data safe and allow you to restore it on any device.</string>
+    <string name="para_backup_logged_in_as">You are logged in and your data is being backed up as:</string>
+    <string name="button_logout">Logout</string>
+    <string name="button_backup_now">Backup Now</string>
 </resources>

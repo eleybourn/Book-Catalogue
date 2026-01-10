@@ -166,7 +166,10 @@ public class CatalogueDBAdapter {
 	public static final String KEY_SIGNED = "signed";
 	public static final String KEY_DESCRIPTION = "description";
 	public static final String KEY_GENRE = "genre";
+    public static final String KEY_LANGUAGE = "language";
 	public static final String KEY_DATE_ADDED = "date_added";
+    public static final String KEY_LAST_UPDATE_DATE = "last_update_date";
+    public static final String KEY_BOOK_UUID = "book_uuid";
 	
 	public static final String KEY_AUTHOR_FORMATTED = "author_formatted";
 	public static final String KEY_AUTHOR_FORMATTED_GIVEN_FIRST = "author_formatted_given_first";
@@ -1986,7 +1989,7 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @return int The number of books
 	 */
-	public int countBooks() {
+	public static int countBooks() {
 		int result = 0;
 		String sql = "SELECT count(*) as count FROM " + DB_TB_BOOKS + " b ";
 		Cursor count = null;

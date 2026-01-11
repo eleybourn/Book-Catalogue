@@ -25,8 +25,6 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.os.Parcel;
-
 import androidx.annotation.NonNull;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
@@ -97,13 +95,7 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 		id = source.id;    	
     }
 
-    private Series(Parcel in) {
-    	name = in.readString();
-    	num = in.readString();
-    	id = in.readLong();
-    }
-
-	@Override
+    @Override
 	public long fixupId(CatalogueDBAdapter db) {
 		this.id = db.lookupSeriesId(this);
 		return this.id;

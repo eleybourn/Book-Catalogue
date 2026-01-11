@@ -54,7 +54,7 @@ public class DataManager {
 	/** The last validator exception caught by this object */
 	private final ArrayList<ValidatorException> mValidationExceptions = new ArrayList<>();
 	/** A list of cross-validators to apply if all fields pass simple validation. */
-	private final ArrayList<DataCrossValidator> mCrossValidators = new ArrayList<DataCrossValidator>();
+	private final ArrayList<DataCrossValidator> mCrossValidators = new ArrayList<>();
 
 	/**
 	 * Erase everything in this instance
@@ -307,7 +307,7 @@ public class DataManager {
 	 * @return		The data
 	 */
 	public Object getSerializable(String key) {
-		return mData.get(key).getSerializable(this, mBundle);
+		return mData.get(key).getSerializable(mBundle);
 	}
 
 	/**
@@ -318,7 +318,7 @@ public class DataManager {
      * @param value The serializable object
      */
 	public void putSerializable(String key, Serializable value) {
-		mData.get(key).putSerializable(this, mBundle, value);
+		mData.get(key).putSerializable(mBundle, value);
     }
 
 	/**

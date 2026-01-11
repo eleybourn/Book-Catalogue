@@ -10,10 +10,14 @@ import com.eleybourn.bookcatalogue.data.AnthologyTitle;
 import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.data.Bookshelf;
 import com.eleybourn.bookcatalogue.data.Series;
+import com.eleybourn.bookcatalogue.database.DbSync;
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -42,6 +46,7 @@ public class BookCatalogueAPI implements SimpleTask {
     public static String REQUEST_COUNT = "count";
     public static String REQUEST_LAST_BACKUP = "last_backup";
     public static String REQUEST_FULL_BACKUP = "full_backup";
+    public static String REQUEST_FULL_RESTORE = "restore";
     private static String mEmail;
     private static boolean mOptIn;
     private static String mApiToken;
@@ -260,7 +265,7 @@ public class BookCatalogueAPI implements SimpleTask {
         }
         ArrayList<String> fields = new ArrayList<>();
         ArrayList<String> values = new ArrayList<>();
-        fields.add("book_id");
+        fields.add("bcid");
         values.add(String.valueOf(bookId));
         // authors[]:<comma separated string - ID, family, given>
         if (authors != null) {
@@ -350,6 +355,229 @@ public class BookCatalogueAPI implements SimpleTask {
         throw new Exception("Upload failed for book ID " + bookId + " (" + title + "): ");
     }
 
+    /**
+     * Helper to safely get a string from a JSONObject, returning an empty string if the key
+     * doesn't exist or is null.
+     */
+    private String getStringOrEmpty(JSONObject obj, String key) {
+        if (obj.isNull(key)) {
+            return "";
+        }
+        return obj.optString(key, "");
+    }
+
+    public void runFullRestore() {
+        if (mApiToken.isEmpty()) {
+            notifyError("No API Token set for runFullRestore");
+            return;
+        }
+        CatalogueDBAdapter db = null;
+        DbSync.Synchronizer.SyncLock txLock = null;
+
+        try {
+            notifyProgress(0, 1); // Indicate that the process has started
+            JSONArray books = connection("/books");
+            if (books == null) {
+                throw new Exception("Failed to fetch books from the server.");
+            }
+
+            db = mTaskContext.getDb();
+            db.open(); // Ensure DB is open
+
+            int total = books.length();
+            Log.d("BookCatalogueAPI", "Importing " + total + " books");
+            final int NOTIFY_INTERVAL = 10; // Update UI thread every 50 books
+            final int BATCH_SIZE = 50;      // Commit transaction every 100 books
+            txLock = db.startTransaction(true);
+
+            for (int i = 0; i < total; i++) {
+                if (mTaskContext.isTerminating()) break;
+
+                if (i > 0 && i % BATCH_SIZE == 0) {
+                    Log.d("BookCatalogueAPI", "Committing batch at book " + i);
+                    db.setTransactionSuccessful();
+                    db.endTransaction(txLock);
+                    txLock = db.startTransaction(true);
+                }
+
+                JSONObject bookJson = books.getJSONObject(i);
+                BookData values = new BookData();
+
+                long bcid = bookJson.getLong("bcid");
+                String uuid = getStringOrEmpty(bookJson, "book_uuid");
+                String title = getStringOrEmpty(bookJson, "title");
+                // Only log every Nth book to reduce logcat spam
+                if (i % NOTIFY_INTERVAL == 0) {
+                    Log.d("BookCatalogueAPI", "Importing book " + (i + 1) + "/" + total + ": " + title);
+                }
+
+                values.putLong(CatalogueDBAdapter.KEY_ROW_ID, bcid);
+                values.putString(CatalogueDBAdapter.KEY_TITLE, title);
+                values.putString(CatalogueDBAdapter.KEY_ISBN, getStringOrEmpty(bookJson, "isbn"));
+                values.putString(CatalogueDBAdapter.KEY_PUBLISHER, getStringOrEmpty(bookJson, "publisher"));
+                values.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, getStringOrEmpty(bookJson, "date_published"));
+                values.putString(CatalogueDBAdapter.KEY_RATING, getStringOrEmpty(bookJson, "rating"));
+                values.putInt(CatalogueDBAdapter.KEY_READ, bookJson.optInt("read", 0));
+                values.putString(CatalogueDBAdapter.KEY_PAGES, getStringOrEmpty(bookJson, "pages"));
+                values.putString(CatalogueDBAdapter.KEY_NOTES, getStringOrEmpty(bookJson, "notes"));
+                values.putString(CatalogueDBAdapter.KEY_LIST_PRICE, getStringOrEmpty(bookJson, "list_price"));
+                values.putString(CatalogueDBAdapter.KEY_LOCATION, getStringOrEmpty(bookJson, "location"));
+                values.putString(CatalogueDBAdapter.KEY_READ_START, getStringOrEmpty(bookJson, "read_start"));
+                values.putString(CatalogueDBAdapter.KEY_READ_END, getStringOrEmpty(bookJson, "read_end"));
+                values.putString(CatalogueDBAdapter.KEY_FORMAT, getStringOrEmpty(bookJson, "format"));
+                values.putInt(CatalogueDBAdapter.KEY_SIGNED, bookJson.optInt("signed", 0));
+                values.putString(CatalogueDBAdapter.KEY_DESCRIPTION, getStringOrEmpty(bookJson, "description"));
+                values.putString(CatalogueDBAdapter.KEY_GENRE, getStringOrEmpty(bookJson, "genre"));
+                values.putString(CatalogueDBAdapter.KEY_LANGUAGE, getStringOrEmpty(bookJson, "language"));
+                values.putString(CatalogueDBAdapter.KEY_DATE_ADDED, getStringOrEmpty(bookJson, "date_added"));
+                values.putString(CatalogueDBAdapter.KEY_LAST_UPDATE_DATE, getStringOrEmpty(bookJson, "last_update_date"));
+                values.putString(CatalogueDBAdapter.KEY_BOOK_UUID, uuid);
+                values.putString(CatalogueDBAdapter.KEY_LOANED_TO, getStringOrEmpty(bookJson, "loaned_to"));
+                values.putInt(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK, bookJson.optInt("anthology", 0));
+
+                JSONArray authorsJson = bookJson.optJSONArray("authors");
+                if (authorsJson == null || authorsJson.length() == 0) {
+                    continue;
+                }
+                ArrayList<Author> authors = new ArrayList<>();
+                for (int author_i = 0; author_i < authorsJson.length(); author_i++) {
+                    try {
+                        JSONObject authorJson = authorsJson.getJSONObject(author_i);
+                        Author author = new Author(authorJson.optLong("bcid", 0), getStringOrEmpty(authorJson, "family_name"), getStringOrEmpty(authorJson, "given_names"));
+                        authors.add(author);
+                    } catch (Exception e) {
+                        Log.e("BookCatalogueAPI", "Failed to parse or insert author for book " + title, e);
+                    }
+                }
+                values.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, authors);
+
+                JSONArray seriesJson = bookJson.optJSONArray("series");
+                if (seriesJson != null) {
+                    ArrayList<Series> series = new ArrayList<>();
+                    for (int series_i = 0; series_i < seriesJson.length(); series_i++) {
+                        try {
+                            JSONObject seriesEntryJson = seriesJson.getJSONObject(series_i);
+                            Series seriesEntry = new Series(seriesEntryJson.optLong("bcid", 0), getStringOrEmpty(seriesEntryJson, "series_name"), getStringOrEmpty(seriesEntryJson, "series_num"));
+                            series.add(seriesEntry);
+                        } catch (Exception e) {
+                            Log.e("BookCatalogueAPI", "Failed to parse or insert series for book " + title, e);
+                        }
+                    }
+                    Utils.pruneSeriesList(series);
+                    Utils.pruneList(db, series);
+                    values.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, series);
+                }
+
+                JSONArray bookshelvesJson = bookJson.optJSONArray("bookshelves");
+                if (bookshelvesJson != null) {
+                    StringBuilder bookshelves_list = new StringBuilder();
+                    for (int bookshelf_i = 0; bookshelf_i < bookshelvesJson.length(); bookshelf_i++) {
+                        try {
+                            JSONObject bookshelfJson = bookshelvesJson.getJSONObject(bookshelf_i);
+                            String name = getStringOrEmpty(bookshelfJson, "bookshelf");
+                            String encoded_name = Utils.encodeListItem(name, BookAbstract.BOOKSHELF_SEPARATOR);
+                            if (bookshelves_list.length() == 0) {
+                                bookshelves_list = new StringBuilder(encoded_name);
+                            } else {
+                                bookshelves_list.append(BookAbstract.BOOKSHELF_SEPARATOR).append(encoded_name);
+                            }
+
+                        } catch (Exception e) {
+                            Log.e("BookCatalogueAPI", "Failed to parse or insert bookshelf for book " + title, e);
+                        }
+                    }
+                    values.setBookshelfList(bookshelves_list.toString());
+                }
+
+                String backup_filename = getStringOrEmpty(bookJson, "thumbnail");
+                if (!backup_filename.isEmpty()) {
+                    String filename = Utils.saveThumbnailFromUrl(backup_filename, "");
+                    if (!filename.isEmpty()) {
+                        values.putString(CatalogueDBAdapter.KEY_THUMBNAIL, filename);
+                    }
+                }
+
+                try {
+                    boolean doUpdate = true;
+                    boolean exists = false;
+                    if (bcid > 0) {
+                        exists = db.checkBookExists(bcid);
+                    }
+                    if (exists) {
+                        db.updateBook(bcid, values, CatalogueDBAdapter.BOOK_UPDATE_SKIP_PURGE_REFERENCES | CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
+                    } else {
+                        // Always import empty IDs...even if they are duplicates.
+                        if (bcid > 0) {
+                            bcid = db.createBook(bcid, values, CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
+                        } else {
+                            bcid = db.createBook(values, CatalogueDBAdapter.BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT);
+                        }
+                    }
+                    values.putString(CatalogueDBAdapter.KEY_ROW_ID, Long.toString(bcid));
+
+                    if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
+                        db.deleteLoan(bcid, false);
+                        db.createLoan(values, false);
+                    }
+
+                    if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK)) {
+                        int anthology;
+                        try {
+                            anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK));
+                        } catch (Exception e) {
+                            anthology = 0;
+                        }
+                        if (anthology != 0) {
+                            int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROW_ID));
+                            // We have anthology details, delete the current details.
+                            db.deleteAnthologyTitles(id, false);
+                            int oldi = 0;
+                            String anthology_titles = values.getString("anthology_titles");
+                            try {
+                                int anthology_i = anthology_titles.indexOf("|", oldi);
+                                while (anthology_i > -1) {
+                                    String extracted_title = anthology_titles.substring(oldi, anthology_i).trim();
+
+                                    int anthology_j = extracted_title.indexOf("*");
+                                    if (anthology_j > -1) {
+                                        String anthology_title = extracted_title.substring(0, anthology_j).trim();
+                                        String anthology_author = extracted_title.substring((anthology_j + 1)).trim();
+                                        db.createAnthologyTitle(id, anthology_author, anthology_title, true, false);
+                                    }
+                                    oldi = anthology_i + 1;
+                                    anthology_i = anthology_titles.indexOf("|", oldi);
+                                }
+                            } catch (NullPointerException e) {
+                                //do nothing. There are no anthology titles
+                            }
+                        }
+                    }
+
+                } catch (Exception e) {
+                    Logger.logError(e, "Import at row " + i);
+                }
+                // Throttle UI updates to prevent ANR
+                if ((i + 1) % NOTIFY_INTERVAL == 0 || (i + 1) == total) {
+                    notifyProgress(i + 1, total);
+                }
+            }
+            // Commit the final batch
+            Log.d("BookCatalogueAPI", "Committing final batch.");
+            db.setTransactionSuccessful();
+            notifyComplete("Restore completed successfully.");
+        } catch (Exception e) {
+            Log.e("BookCatalogueAPI", "Restore failed", e);
+            notifyError("Restore failed: " + e.getMessage());
+        } finally {
+            // --- ROBUST FINALLY BLOCK ---
+            // This ensures the transaction is always closed, even on error.
+            if (db != null && txLock != null) {
+                Log.d("BookCatalogueAPI", "Executing finally block: Ending transaction.");
+                db.endTransaction(txLock);
+            }
+        }
+    }
+
     public void getTotalBooks() {
         try {
             if (mApiToken.isEmpty()) {
@@ -400,6 +628,32 @@ public class BookCatalogueAPI implements SimpleTask {
         }
     }
 
+    /**
+     * Overloaded connection method for GET requests that return a JSONArray.
+     */
+    private JSONArray connection(String urlEndPoint) throws Exception {
+        String urlString = BASE_URL + urlEndPoint;
+        HttpURLConnection conn = (HttpURLConnection) new URL(urlString).openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setReadTimeout(15000); // 15 seconds
+        conn.setConnectTimeout(15000); // 15 seconds
+        conn.setRequestProperty("Authorization", "Bearer " + mApiToken);
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            String response = readStream(conn.getInputStream());
+            return new JSONArray(response);
+        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && retry) {
+            login();
+            retry = false;
+            return connection(urlEndPoint);
+        } else {
+            String error = readStream(conn.getErrorStream());
+            throw new IOException("Server returned non-OK status: " + responseCode + " " + error);
+        }
+    }
+
     public JSONObject connection(String urlEndPoint, ArrayList<String> fields, ArrayList<String> values) {
         File thumbnailFile = null;
         return connection(urlEndPoint, fields, values, thumbnailFile);
@@ -412,6 +666,7 @@ public class BookCatalogueAPI implements SimpleTask {
             case "/book":
                 method = "POST";
                 break;
+            case "/books":
             case "/books/last_backup":
             case "/books/count":
             default:
@@ -504,6 +759,10 @@ public class BookCatalogueAPI implements SimpleTask {
 
         if (mRequest.equals(REQUEST_FULL_BACKUP)) {
             runFullBackup();
+        }
+
+        if (mRequest.equals(REQUEST_FULL_RESTORE)) {
+            runFullRestore();
         }
 
     }

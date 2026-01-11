@@ -33,9 +33,9 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  */
 public class Datum {
 	/** True if data should be visible */
-	private boolean mIsVisible = true;
+	private boolean mIsVisible;
 	/** Validator for this Datum */
-	private DataValidator mValidator = null;
+	private DataValidator mValidator;
 	/** Accessor for this Datum (eg. the datum might be a bit in a mask field, or a composite read-only value */
 	private DataAccessor mAccessor = null;
 	/** Key of this datum */
@@ -242,21 +242,18 @@ public class Datum {
 		return objectToDouble(o);
 	}
 	/**
-	 * Store the data in the DataManager, using Accessor as necessary.
-	 * 
-	 * @param data		Parent collection
-	 * @param bundle	Raw data
-	 * 
-	 * @return			This Datum, for chaining
-	 */
-	public Datum putDouble(DataManager data, Bundle bundle, double value) {
+     * Store the data in the DataManager, using Accessor as necessary.
+     *
+     * @param data   Parent collection
+     * @param bundle Raw data
+     */
+	public void putDouble(DataManager data, Bundle bundle, double value) {
 		if (mAccessor == null) {
 			bundle.putDouble(mKey, value);
 		} else {
 			mAccessor.set(data, this, bundle, value);
 		}
-		return this;
-	}
+    }
 
 	/**
 	 * Retrieve the data from the DataManager, translating and using Accessor as necessary.
@@ -276,21 +273,18 @@ public class Datum {
 		return (float) objectToDouble(o);
 	}
 	/**
-	 * Store the data in the DataManager, using Accessor as necessary.
-	 * 
-	 * @param data		Parent collection
-	 * @param bundle	Raw data
-	 * 
-	 * @return			This Datum, for chaining
-	 */
-	public Datum putFloat(DataManager data, Bundle bundle, float value) {
+     * Store the data in the DataManager, using Accessor as necessary.
+     *
+     * @param data   Parent collection
+     * @param bundle Raw data
+     */
+	public void putFloat(DataManager data, Bundle bundle, float value) {
 		if (mAccessor == null) {
 			bundle.putFloat(mKey, value);
 		} else {
 			mAccessor.set(data, this, bundle, value);
 		}
-		return this;
-	}
+    }
 
 	/**
 	 * Retrieve the data from the DataManager, translating and using Accessor as necessary.
@@ -331,12 +325,11 @@ public class Datum {
 	 * We currently do not use a Datum for special access.
 	 * TODO: Consider how to use an accessor
 	 * 
-	 * @param data		Parent DataManager
 	 * @param bundle	Raw data Bundle
 	 * 
 	 * @return		The data
 	 */
-	public Serializable getSerializable(DataManager data, Bundle bundle) {
+	public Serializable getSerializable(Bundle bundle) {
 		if (mAccessor == null) {
 			return bundle.getSerializable(mKey);			
 		} else {
@@ -345,24 +338,20 @@ public class Datum {
 	}
 
 	/**
-	 * Set the serializable object in the collection.
-	 * We currently do not use a Datum for special access.
-	 * TODO: Consider how to use an accessor
-	 * 
-	 * @param data		Parent DataManager
-	 * @param bundle	Raw data Bundle
-	 * @param value		The serializable object
-	 * 
-	 * @return		The data manager for chaining
-	 */
-	public Datum putSerializable(DataManager data, Bundle bundle, Serializable value) {
+     * Set the serializable object in the collection.
+     * We currently do not use a Datum for special access.
+     * TODO: Consider how to use an accessor
+     *
+     * @param bundle Raw data Bundle
+     * @param value  The serializable object
+     */
+	public void putSerializable(Bundle bundle, Serializable value) {
 		if (mAccessor == null) {
 			bundle.putSerializable(mKey, value);			
 		} else {
 			throw new RuntimeException("Accessor not supported for serializable objects");
 		}
-		return this;
-	}
+    }
 
 	/**
 	 * Translate the passed object to a String value
@@ -395,7 +384,7 @@ public class Datum {
 			return (Long) o;
 		} catch (ClassCastException e) {
 			final String s = o.toString();
-			if (s.equals(""))
+			if (s.isEmpty())
 				return 0;
 			else
 				try {
@@ -424,7 +413,7 @@ public class Datum {
 			return (Double) o;
 		} catch (ClassCastException e) {
 			final String s = o.toString();
-			if (s.equals(""))
+			if (s.isEmpty())
 				return 0;
 			else
 				return Double.parseDouble(s);

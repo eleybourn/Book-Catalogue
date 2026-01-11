@@ -23,8 +23,6 @@ package com.eleybourn.bookcatalogue.data;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import android.os.Parcel;
-
 import androidx.annotation.NonNull;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
@@ -131,15 +129,6 @@ public class Author implements Serializable, Utils.ItemWithIdFixup {
 		familyName = source.familyName;
 		givenNames = source.givenNames;
 		id = source.id;    	
-    }
-
-    /**
-     * Constructor using a Parcel.
-     */
-    private Author(Parcel in) {
-    	familyName = in.readString();
-    	givenNames = in.readString();
-    	id = in.readLong();
     }
 
 	@Override

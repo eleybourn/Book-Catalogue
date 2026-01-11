@@ -178,6 +178,9 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         /* Backup Now */
         Button backupNow = findViewById(R.id.backup_now);
         backupNow.setOnClickListener(v -> backup());
+        /* Restore Now */
+        Button restoreNow = findViewById(R.id.restore_now);
+        restoreNow.setOnClickListener(v -> restore());
     }
 
     @Override
@@ -255,6 +258,11 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         new BookCatalogueAPI(BookCatalogueAPI.REQUEST_FULL_BACKUP, mApiListener);
     }
 
+    public void restore() {
+        // Create a new API task to get the count. This will automatically run in the background.
+        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_FULL_RESTORE, mApiListener);
+    }
+
     private void reload() {
         Intent intent = new Intent(this, AdminBackup.class);
         startActivity(intent);
@@ -307,6 +315,14 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
             if (request.equals(BookCatalogueAPI.REQUEST_FULL_BACKUP)) {
                 String statsText = current + " of " + total + " books backed up";
+                activity.mBackupStatsField.setText(statsText);
+                activity.mSyncProgressBar.setMax(total);
+                activity.mSyncProgressBar.setProgress(current);
+                activity.mSyncProgressBar.setVisibility(View.VISIBLE);
+            }
+
+            if (request.equals(BookCatalogueAPI.REQUEST_FULL_RESTORE)) {
+                String statsText = current + " of " + total + " books restored";
                 activity.mBackupStatsField.setText(statsText);
                 activity.mSyncProgressBar.setMax(total);
                 activity.mSyncProgressBar.setProgress(current);

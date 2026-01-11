@@ -973,4 +973,5 @@
     <string name="button_logout">Logout</string>
     <string name="button_backup_now">Backup Now</string>
     <string name="title_local_backup">Export and Backup Locally</string>
+    <string name="button_restore_now">Restore From Backup</string>
 </resources>

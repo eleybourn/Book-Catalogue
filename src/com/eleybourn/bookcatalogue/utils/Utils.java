@@ -486,12 +486,9 @@ public class Utils {
 			return "";
 		}
 		// Turn the URL into an InputStream
-		InputStream in;
+		InputStream in = null;
 		try {
-            HttpGet httpRequest;
-
-			httpRequest = new HttpGet(u.toURI());
-
+            HttpGet httpRequest = new HttpGet(u.toURI());
             HttpClient httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(httpRequest);
 
@@ -499,17 +496,27 @@ public class Utils {
             BufferedHttpEntity bufHttpEntity = new BufferedHttpEntity(entity);
             in = bufHttpEntity.getContent();
 
+            // Get the output file
+            File file = CatalogueDBAdapter.getTempThumbnail(filenameSuffix);
+            // Save to file
+            saveInputToFile(in, file);
+            // Return new file path
+            return file.getAbsolutePath();
+
         } catch (IOException | URISyntaxException e) {
 			Logger.logError(e);
 			return "";
-		}
-
-        // Get the output file
-		File file = CatalogueDBAdapter.getTempThumbnail(filenameSuffix);
-		// Save to file
-		saveInputToFile(in, file);
-		// Return new file path
-		return file.getAbsolutePath();
+        } finally {
+            // Ensure the InputStream is always closed.
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // Log error on close, but don't re-throw as we are cleaning up.
+                    Logger.logError(e, "Failed to close input stream in saveThumbnailFromUrl");
+                }
+            }
+        }
 	}
 
 	/**
@@ -1713,6 +1720,7 @@ public class Utils {
 			return (Boolean)o;
 		}
 		if (o instanceof Integer || o instanceof Long) {
+            assert o instanceof Long;
             return (Long)o != 0;
 		}
 		try {
@@ -1775,10 +1783,12 @@ public class Utils {
 	}
 
 	public static void copyFile(File src, File dst) throws IOException {
-		FileInputStream fis = new FileInputStream(src);
-		FileOutputStream fos = new FileOutputStream(dst);
+        try (FileInputStream fis = new FileInputStream(src);
+             FileOutputStream fos = new FileOutputStream(dst);
+             FileChannel inChannel = fis.getChannel();
+             FileChannel outChannel = fos.getChannel()) {
 
-        try (fis; fos; FileChannel inChannel = fis.getChannel(); FileChannel outChannel = fos.getChannel()) {
+            // The transfer operation remains the same.
             inChannel.transferTo(0, inChannel.size(), outChannel);
         }
 	}

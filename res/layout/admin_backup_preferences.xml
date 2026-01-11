@@ -78,19 +78,27 @@
                 >
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/backup_now"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_marginHorizontal="@dimen/p_md"
                     android:text="@string/button_backup_now"/>
-
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/log_out_button"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/restore_now"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_marginHorizontal="@dimen/p_md"
-                    android:text="@string/button_logout" />
+                    android:text="@string/button_restore_now"/>
 
             </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/log_out_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/p_md"
+                android:text="@string/button_logout" />
+
 
 
             <CheckBox

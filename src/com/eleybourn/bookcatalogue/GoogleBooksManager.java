@@ -70,7 +70,6 @@ public class GoogleBooksManager {
 				parser = factory.newSAXParser();
 				parser.parse(Utils.getInputStream(url), entryHandler);
 			}
-			return;
 		} catch (Exception e) {
 			Logger.logError(e);
 		}

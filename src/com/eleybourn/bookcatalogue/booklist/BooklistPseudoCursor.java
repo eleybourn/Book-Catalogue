@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
@@ -357,8 +358,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 
 		mActiveCursor = null;
 
-		for(int i = 0 ; i < mMruList.length; i++)
-			mMruList[i] = -1;
+        Arrays.fill(mMruList, -1);
 	}
 
 	/**

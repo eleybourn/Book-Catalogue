@@ -281,11 +281,11 @@ public class StartupActivity
             // See http://code.google.com/p/android/issues/detail?id=3953
             if (!isFinishing()) {
                 try {
-                    LinearLayout spinnerLayout = (LinearLayout) mProgress.findViewById(R.id.spinner_layout);
-                    LinearLayout horizontalLayout = (LinearLayout) mProgress.findViewById(R.id.horizontal_layout);
+                    LinearLayout spinnerLayout = mProgress.findViewById(R.id.spinner_layout);
+                    LinearLayout horizontalLayout = mProgress.findViewById(R.id.horizontal_layout);
                     spinnerLayout.setVisibility(View.VISIBLE);
                     horizontalLayout.setVisibility(View.GONE);
-                    TextView messageView = (TextView) mProgress.findViewById(R.id.spinner_message);
+                    TextView messageView = mProgress.findViewById(R.id.spinner_message);
                     messageView.setText(message);
                     if (!mProgress.isShowing())
                         mProgress.show();

@@ -238,22 +238,22 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
             mProgressDialog.getWindow().getDecorView().setTag(wantDet ? "determinate" : "indeterminate");
         }
 
-        LinearLayout spinnerLayout = (LinearLayout) mProgressDialog.findViewById(R.id.spinner_layout);
-        LinearLayout horizontalLayout = (LinearLayout) mProgressDialog.findViewById(R.id.horizontal_layout);
+        LinearLayout spinnerLayout = mProgressDialog.findViewById(R.id.spinner_layout);
+        LinearLayout horizontalLayout = mProgressDialog.findViewById(R.id.horizontal_layout);
 
         // Set style
         if (wantDet) {
             spinnerLayout.setVisibility(View.GONE);
             horizontalLayout.setVisibility(View.VISIBLE);
-            ProgressBar progressBar = (ProgressBar) mProgressDialog.findViewById(R.id.progress_horizontal);
+            ProgressBar progressBar = mProgressDialog.findViewById(R.id.progress_horizontal);
             progressBar.setMax(mProgressMax);
             progressBar.setProgress(mProgressCount);
-            TextView messageView = (TextView) mProgressDialog.findViewById(R.id.horizontal_message);
+            TextView messageView = mProgressDialog.findViewById(R.id.horizontal_message);
             messageView.setText(mProgressMessage);
         } else {
             horizontalLayout.setVisibility(View.GONE);
             spinnerLayout.setVisibility(View.VISIBLE);
-            TextView messageView = (TextView) mProgressDialog.findViewById(R.id.spinner_message);
+            TextView messageView = mProgressDialog.findViewById(R.id.spinner_message);
             messageView.setText(mProgressMessage);
         }
 
@@ -261,9 +261,9 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
         if (mTaskManager.isCancelling()) {
             TextView messageView;
             if (wantDet) {
-                messageView = (TextView) mProgressDialog.findViewById(R.id.horizontal_message);
+                messageView = mProgressDialog.findViewById(R.id.horizontal_message);
             } else {
-                messageView = (TextView) mProgressDialog.findViewById(R.id.spinner_message);
+                messageView = mProgressDialog.findViewById(R.id.spinner_message);
             }
             messageView.setText(getString(R.string.cancelling));
         }

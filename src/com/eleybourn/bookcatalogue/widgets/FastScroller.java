@@ -222,6 +222,7 @@ public class FastScroller {
         TypedArray ta = context.getTheme().obtainStyledAttributes(new int[]{
                 android.R.attr.textColorPrimary});
         ColorStateList textColor = ta.getColorStateList(ta.getIndex(0));
+        assert textColor != null;
         int textColorNormal = textColor.getDefaultColor();
         mPaint.setColor(textColorNormal);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);

@@ -4718,6 +4718,7 @@ public class CatalogueDBAdapter {
          * @param oldVersion The current version number of the database
          * @param newVersion The new version number of the database
          */
+        @SuppressWarnings("UnusedAssignment")
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             mDbWasCreated = false;

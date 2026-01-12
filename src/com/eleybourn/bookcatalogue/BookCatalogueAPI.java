@@ -46,6 +46,7 @@ public class BookCatalogueAPI implements SimpleTask {
     public static String REQUEST_COUNT = "count";
     public static String REQUEST_LAST_BACKUP = "last_backup";
     public static String REQUEST_FULL_BACKUP = "full_backup";
+    public static String REQUEST_BACKUP_BOOK = "backup_book";
     public static String REQUEST_FULL_RESTORE = "restore";
     private static String mEmail;
     private static boolean mOptIn;
@@ -56,6 +57,19 @@ public class BookCatalogueAPI implements SimpleTask {
     private final String mRequest;
     private SimpleTaskContext mTaskContext;
     private boolean retry = true;
+    private long mBookId;
+
+    public BookCatalogueAPI(String request, long book_id, ApiListener listener) {
+        mBookId = book_id;
+        this.mRequest = request;
+        sActiveListener = listener;
+        mPrefs = new BookCataloguePreferences();
+        mEmail = mPrefs.getAccountEmail();
+        mOptIn = mPrefs.getAccountOptIn();
+        mApiToken = mPrefs.getAccountApiToken();
+
+        mSyncQueue.enqueue(this);
+    }
 
     public BookCatalogueAPI(String request, ApiListener listener) {
         this.mRequest = request;
@@ -180,48 +194,63 @@ public class BookCatalogueAPI implements SimpleTask {
         }
     }
 
+    public void runBackupBook() {
+        CatalogueDBAdapter db = mTaskContext.getDb();
+        // Query all books.
+        // Note: Using the raw cursor from the adapter provided by SimpleTaskContext
+        try (Cursor bookCursor = db.fetchBookById(mBookId)) {
+            runBackup(bookCursor, db);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public void runFullBackup() {
         CatalogueDBAdapter db = mTaskContext.getDb();
         // Query all books.
         // Note: Using the raw cursor from the adapter provided by SimpleTaskContext
         try (Cursor bookCursor = db.fetchAllBooks()) {
-            if (bookCursor != null && bookCursor.moveToFirst()) {
-                int total = bookCursor.getCount();
-                int count = 0;
-
-                // Get column indices
-                int idIndex = bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROW_ID);
-                int uuidIndex = bookCursor.getColumnIndexOrThrow(DatabaseDefinitions.DOM_BOOK_UUID.name);
-
-                do {
-                    // Check if queue is killing us
-                    if (mTaskContext.isTerminating()) break;
-
-                    try {
-                        int bookId = bookCursor.getInt(idIndex);
-                        String uuid = bookCursor.getString(uuidIndex);
-                        File thumbFile = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
-                        ArrayList<Author> authors = db.getBookAuthorList(bookId);
-                        ArrayList<Bookshelf> bookshelves = db.getBookBookshelfList(bookId);
-                        ArrayList<Series> series = db.getBookSeriesList(bookId);
-                        ArrayList<AnthologyTitle> anthology = db.getBookAnthologyTitleList(bookId);
-
-                        // Upload
-                        backupBook(bookId, bookCursor, authors, bookshelves, series, anthology, thumbFile);
-                    } catch (Exception e) {
-                        // Log the specific error for this book, but continue the loop
-                        System.err.println("Error syncing book index " + count + ": " + e.getMessage());
-                    }
-                    count++;
-
-                    notifyProgress(count, total);
-
-                } while (bookCursor.moveToNext());
-            }
+            runBackup(bookCursor, db);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
 
+    private void runBackup(Cursor bookCursor, CatalogueDBAdapter db) {
+        if (bookCursor != null && bookCursor.moveToFirst()) {
+            int total = bookCursor.getCount();
+            int count = 0;
+
+            // Get column indices
+            int idIndex = bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROW_ID);
+            int uuidIndex = bookCursor.getColumnIndexOrThrow(DatabaseDefinitions.DOM_BOOK_UUID.name);
+
+            do {
+                // Check if queue is killing us
+                if (mTaskContext.isTerminating()) break;
+
+                try {
+                    int bookId = bookCursor.getInt(idIndex);
+                    String uuid = bookCursor.getString(uuidIndex);
+                    File thumbFile = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
+                    ArrayList<Author> authors = db.getBookAuthorList(bookId);
+                    ArrayList<Bookshelf> bookshelves = db.getBookBookshelfList(bookId);
+                    ArrayList<Series> series = db.getBookSeriesList(bookId);
+                    ArrayList<AnthologyTitle> anthology = db.getBookAnthologyTitleList(bookId);
+
+                    // Upload
+                    backupBook(bookId, bookCursor, authors, bookshelves, series, anthology, thumbFile);
+                } catch (Exception e) {
+                    // Log the specific error for this book, but continue the loop
+                    System.err.println("Error syncing book index " + count + ": " + e.getMessage());
+                }
+                count++;
+
+                notifyProgress(count, total);
+
+            } while (bookCursor.moveToNext());
+        }
     }
 
     /**
@@ -498,7 +527,6 @@ public class BookCatalogueAPI implements SimpleTask {
                 }
 
                 try {
-                    boolean doUpdate = true;
                     boolean exists = false;
                     if (bcid > 0) {
                         exists = db.checkBookExists(bcid);
@@ -632,6 +660,7 @@ public class BookCatalogueAPI implements SimpleTask {
      * Overloaded connection method for GET requests that return a JSONArray.
      */
     private JSONArray connection(String urlEndPoint) throws Exception {
+        Log.d("BookCatalogueAPI", "API " + urlEndPoint);
         String urlString = BASE_URL + urlEndPoint;
         HttpURLConnection conn = (HttpURLConnection) new URL(urlString).openConnection();
         conn.setRequestMethod("GET");
@@ -660,6 +689,7 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public JSONObject connection(String urlEndPoint, ArrayList<String> fields, ArrayList<String> values, File thumbnailFile) {
+        Log.d("BookCatalogueAPI", "API " + urlEndPoint);
         String method;
         switch (urlEndPoint) {
             case "/login":
@@ -763,6 +793,10 @@ public class BookCatalogueAPI implements SimpleTask {
 
         if (mRequest.equals(REQUEST_FULL_RESTORE)) {
             runFullRestore();
+        }
+
+        if (mRequest.equals(REQUEST_BACKUP_BOOK)) {
+            runBackupBook();
         }
 
     }

@@ -20,8 +20,6 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,12 +32,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.BookEditObjectList;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
+
+import java.util.ArrayList;
 
 /**
  * Activity to edit the list of styles and enable/disable their presence in the
@@ -48,9 +48,13 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * @author Philip Warner
  */
 public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
-    /** Database connection */
-    private CatalogueDBAdapter mDb ;
-    /** The row being edited. Set when an individual style is edited */
+    /**
+     * Database connection
+     */
+    private CatalogueDBAdapter mDb;
+    /**
+     * The row being edited. Set when an individual style is edited
+     */
     private int mEditedRow;
 
     // Modern Activity Result Launcher
@@ -80,7 +84,7 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
                         // Only handle the result if the result code was OK (or handle cancelled if needed)
-                        // The legacy logic for UniqueId.ACTIVITY_BOOKLIST_STYLE didn't check RESULT_OK explicitly,
+                        // The legacy logic didn't check RESULT_OK explicitly,
                         // but handleStyleResult checks for null data.
                         handleStyleResult(result.getData());
                     }
@@ -117,7 +121,7 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
     protected ArrayList<LibraryStyle> getList() {
         ArrayList<LibraryStyle> styles = new ArrayList<>();
         // get the preferred styles first
-        for(LibraryStyle s: BooklistStyles.getAllStyles(mDb)) {
+        for (LibraryStyle s : BooklistStyles.getAllStyles(mDb)) {
             styles.add(s);
         }
         return styles;
@@ -128,19 +132,6 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
      */
     @Override
     protected void onAdd(View v) {
-    }
-
-    /**
-     * Holder pattern object for list items
-     *
-     * @author Philip Warner
-     */
-    private static class Holder {
-        LibraryStyle style;
-        TextView name;
-        TextView groups;
-        TextView kind;
-        ImageView preferred;
     }
 
     @Override
@@ -195,55 +186,6 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
     }
 
     /**
-     * Class used for an item in the pseudo-context menu.
-     * Context menus don't seem to work for EditObject subclasses, perhaps because we consume click events.
-     *
-     * @author Philip Warner
-     */
-    private class ContextItem implements CharSequence {
-        /** String for this item */
-        private final String mString;
-        /** ID of this item */
-        private final int mId;
-        /**
-         * Constructor
-         *
-         * @param stringId	ID of String for this item
-         * @param id		ID of this item
-         */
-        ContextItem(int stringId, int id) {
-            mString = getString(stringId);
-            mId = id;
-        }
-
-        /** Return the associated string */
-        @NonNull
-        public String toString() {
-            return mString;
-        }
-        /** Get the ID */
-        public int getId() {
-            return mId;
-        }
-        /** Use the string object to provide the CharSequence implementation */
-        @Override
-        public char charAt(int index) {
-            return mString.charAt(index);
-        }
-        /** Use the string object to provide the CharSequence implementation */
-        @Override
-        public int length() {
-            return mString.length();
-        }
-        /** Use the string object to provide the CharSequence implementation */
-        @NonNull
-        @Override
-        public CharSequence subSequence(int start, int end) {
-            return mString.subSequence(start, end);
-        }
-    }
-
-    /**
      * Use the RowClick ti present a pseudo context menu.
      */
     @Override
@@ -258,25 +200,23 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
 
         // Turn the list into an array
         CharSequence[] csa = new CharSequence[items.size()];
-        for(int i = 0 ; i < items.size(); i++)
+        for (int i = 0; i < items.size(); i++)
             csa[i] = items.get(i);
 
         // Show the dialog
         final AlertDialog dialog = new AlertDialog.Builder(getLayoutInflater().getContext()).setItems(csa, (dialog1, which) -> {
-            switch(items.get(which).getId()) {
-                case R.id.MENU_DELETE_STYLE:
-                    style.deleteFromDb(mDb);
-                    // Refresh the list
-                    setList(getList());
-                    dialog1.dismiss();
-                    return;
-                case R.id.MENU_EDIT_STYLE:
-                    editStyle(position, style, false);
-                    dialog1.dismiss();
-                    return;
-                case R.id.MENU_CLONE_STYLE:
-                    editStyle(position, style, true);
-                    dialog1.dismiss();
+            int id = items.get(which).getId();
+            if (id == R.id.MENU_DELETE_STYLE) {
+                style.deleteFromDb(mDb);
+                // Refresh the list
+                setList(getList());
+                dialog1.dismiss();
+            } else if (id == R.id.MENU_EDIT_STYLE) {
+                editStyle(position, style, false);
+                dialog1.dismiss();
+            } else if (id == R.id.MENU_CLONE_STYLE) {
+                editStyle(position, style, true);
+                dialog1.dismiss();
             }
         }).create();
 
@@ -286,9 +226,9 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
     /**
      * Edit the passed style, saving its details locally. Optionally for a clone.
      *
-     * @param position		Position in list
-     * @param style			Actual style
-     * @param alwaysClone	Force a clone, even if its already user-defined
+     * @param position    Position in list
+     * @param style       Actual style
+     * @param alwaysClone Force a clone, even if its already user-defined
      */
     private void editStyle(int position, LibraryStyle style, boolean alwaysClone) {
         Intent i = new Intent(this, BooklistStylePropertiesActivity.class);
@@ -320,7 +260,7 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
     /**
      * Called after a style has been edited.
      *
-     * @param data		Data passed from the Result API
+     * @param data Data passed from the Result API
      */
     private void handleStyleResult(Intent data) {
         // Make sure we have a style. If not, the user must have cancelled.
@@ -378,5 +318,86 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
         super.onDestroy();
         if (mDb != null)
             mDb.close();
+    }
+
+    /**
+     * Holder pattern object for list items
+     *
+     * @author Philip Warner
+     */
+    private static class Holder {
+        LibraryStyle style;
+        TextView name;
+        TextView groups;
+        TextView kind;
+        ImageView preferred;
+    }
+
+    /**
+     * Class used for an item in the pseudo-context menu.
+     * Context menus don't seem to work for EditObject subclasses, perhaps because we consume click events.
+     *
+     * @author Philip Warner
+     */
+    private class ContextItem implements CharSequence {
+        /**
+         * String for this item
+         */
+        private final String mString;
+        /**
+         * ID of this item
+         */
+        private final int mId;
+
+        /**
+         * Constructor
+         *
+         * @param stringId ID of String for this item
+         * @param id       ID of this item
+         */
+        ContextItem(int stringId, int id) {
+            mString = getString(stringId);
+            mId = id;
+        }
+
+        /**
+         * Return the associated string
+         */
+        @NonNull
+        public String toString() {
+            return mString;
+        }
+
+        /**
+         * Get the ID
+         */
+        public int getId() {
+            return mId;
+        }
+
+        /**
+         * Use the string object to provide the CharSequence implementation
+         */
+        @Override
+        public char charAt(int index) {
+            return mString.charAt(index);
+        }
+
+        /**
+         * Use the string object to provide the CharSequence implementation
+         */
+        @Override
+        public int length() {
+            return mString.length();
+        }
+
+        /**
+         * Use the string object to provide the CharSequence implementation
+         */
+        @NonNull
+        @Override
+        public CharSequence subSequence(int start, int end) {
+            return mString.subSequence(start, end);
+        }
     }
 }

@@ -367,7 +367,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
             // Show an error message to the user on the UI thread
             if (request.equals(BookCatalogueAPI.REQUEST_INFO_COUNT) || request.equals(BookCatalogueAPI.REQUEST_INFO_LAST)) {
-                activity.mBackupStatsField.setText("Could not load backup statistics.");
+                activity.mBackupStatsField.setText(R.string.alert_could_not_load_backup_statistics);
                 Toast.makeText(activity, "Error: " + error, Toast.LENGTH_LONG).show();
             }
             activity.mSyncProgressBar.setVisibility(View.GONE);

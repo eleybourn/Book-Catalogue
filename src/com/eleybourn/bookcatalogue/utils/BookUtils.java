@@ -53,7 +53,7 @@ public class BookUtils {
 	 * Saved book (original of duplicating) is defined by its row _id in database.
 	 * @param rowId The id of the book to copy fields
 	 */
-	public static void duplicateBook(Activity activity, CatalogueDBAdapter db, Long rowId){
+	public static void duplicateBook(Activity activity, Long rowId){
 		if (rowId == null || rowId == 0) {
 			Toast.makeText(activity, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
 		}
@@ -89,14 +89,12 @@ public class BookUtils {
 			Toast.makeText(context, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
 			return;
 		}
-		int res = StandardDialogs.deleteBookAlert(context, dbHelper, rowId, new Runnable() {
-			@Override
-			public void run() {
-				dbHelper.purgeAuthors();
-				dbHelper.purgeSeries();
-				if (runnable != null)
-					runnable.run();
-			}});
+		int res = StandardDialogs.deleteBookAlert(context, dbHelper, rowId, () -> {
+            dbHelper.purgeAuthors();
+            dbHelper.purgeSeries();
+            if (runnable != null)
+                runnable.run();
+        });
 		if (res != 0) {
 			Toast.makeText(context, res, Toast.LENGTH_LONG).show();
 		}
@@ -116,14 +114,18 @@ public class BookUtils {
 		
 		Cursor thisBook = dbHelper.fetchBookById(rowId);
 		thisBook.moveToFirst();
-		String title = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE));
-		double rating = thisBook.getDouble(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING));
+        int titleId = thisBook.getColumnIndex(CatalogueDBAdapter.KEY_TITLE);
+		String title = thisBook.getString(titleId);
+        int ratingId = thisBook.getColumnIndex(CatalogueDBAdapter.KEY_RATING);
+		double rating = thisBook.getDouble(ratingId);
 		String ratingString = "";
-		String author = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST));
-		String series = thisBook.getString(thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_FORMATTED));
+        int authorId = thisBook.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED_GIVEN_FIRST);
+		String author = thisBook.getString(authorId);
+        int seriesId = thisBook.getColumnIndex(CatalogueDBAdapter.KEY_SERIES_FORMATTED);
+		String series = thisBook.getString(seriesId);
 		File image = CatalogueDBAdapter.fetchThumbnailByUuid(dbHelper.getBookUuid(rowId));
 
-		if (series.length() > 0) {
+		if (!series.isEmpty()) {
 			series = " (" + series + ")";
 		}
 		//remove trailing 0's
@@ -137,7 +139,7 @@ public class BookUtils {
 			}
 		}
 		
-		if (ratingString.length() > 0){
+		if (!ratingString.isEmpty()){
 			ratingString = "(" + ratingString + ")";
 		}
 

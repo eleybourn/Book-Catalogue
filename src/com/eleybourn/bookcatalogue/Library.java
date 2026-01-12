@@ -46,7 +46,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -143,7 +142,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
      * ProgressDialog used to display "Getting books...". Needed here so we can dismiss it on close.
      */
     private android.widget.ProgressBar mProgressBar;
-    private ProgressBar mSyncProgressBar;
     /**
      * A book ID used for keeping/updating current list position, eg. when a book is edited.
      */
@@ -165,7 +163,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             registerForActivityResult(
                     new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
                     result -> {
-                        // This replaces the logic in onActivityResult for ACTIVITY_BOOKLIST_STYLE_PROPERTIES
                         if (result.getResultCode() == RESULT_OK) {
                             Intent intent = result.getData();
                             if (intent != null && intent.hasExtra(BooklistStylePropertiesActivity.KEY_STYLE)) {
@@ -243,7 +240,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             topAppBar.setTitle(R.string.title_library);
             topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
             mProgressBar = findViewById(R.id.loading_progress);
-            mSyncProgressBar = findViewById(R.id.syncProgressBar);
 
             if (savedInstanceState == null)
                 // Get preferred booklist state to use from preferences; default to always expanded (MUCH faster than 'preserve' with lots of books)

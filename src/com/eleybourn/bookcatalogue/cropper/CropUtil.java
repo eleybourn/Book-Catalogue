@@ -17,17 +17,14 @@ package com.eleybourn.bookcatalogue.cropper;
  */
 
 import java.io.Closeable;
+import java.util.Objects;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Handler;
-import android.os.ParcelFileDescriptor;
-import android.view.View;
-import android.view.View.OnClickListener;
 
 /**
  * Collection of utility functions used in this package.
@@ -35,33 +32,10 @@ import android.view.View.OnClickListener;
 public class CropUtil {
 	// private static final String TAG = "db.CropUtil";
 
-	private static OnClickListener sNullOnClickListener;
-
-	private CropUtil() {
+    private CropUtil() {
 	}
 
-	// Rotates the bitmap by the specified degree.
-	// If a new bitmap is created, the original bitmap is recycled.
-	public static Bitmap rotate(Bitmap b, int degrees) {
-		if (degrees != 0 && b != null) {
-			Matrix m = new Matrix();
-			m.setRotate(degrees, (float) b.getWidth() / 2,
-					(float) b.getHeight() / 2);
-			try {
-				Bitmap b2 = Bitmap.createBitmap(b, 0, 0, b.getWidth(),
-						b.getHeight(), m, true);
-				if (b != b2) {
-					b.recycle();
-					b = b2;
-				}
-			} catch (OutOfMemoryError ex) {
-				// We have no memory to rotate. Return the original bitmap.
-			}
-		}
-		return b;
-	}
-
-	/*
+    /*
 	 * Compute the sample size as a function of minSideLength and
 	 * maxNumOfPixels. minSideLength is used to specify that minimal width or
 	 * height of a bitmap. maxNumOfPixels is used to specify the maximal size in
@@ -107,25 +81,21 @@ public class CropUtil {
 		float bitmapAspect = bitmapWidthF / bitmapHeightF;
 		float viewAspect = (float) targetWidth / targetHeight;
 
-		if (bitmapAspect > viewAspect) {
-			float scale = targetHeight / bitmapHeightF;
-			if (scale < .9F || scale > 1F) {
-				scaler.setScale(scale, scale);
-			} else {
-				scaler = null;
-			}
-		} else {
-			float scale = targetWidth / bitmapWidthF;
-			if (scale < .9F || scale > 1F) {
-				scaler.setScale(scale, scale);
-			} else {
-				scaler = null;
-			}
-		}
+        float scale;
+        if (bitmapAspect > viewAspect) {
+            scale = targetHeight / bitmapHeightF;
+        } else {
+            scale = targetWidth / bitmapWidthF;
+        }
+        if (scale < .9F || scale > 1F) {
+            scaler.setScale(scale, scale);
+        } else {
+            scaler = null;
+        }
 
-		Bitmap b1;
+        Bitmap b1;
 		if (scaler != null) {
-			// this is used for minithumb and crop, so we want to filter here.
+			// this is used for mini thumb and crop, so we want to filter here.
 			b1 = Bitmap.createBitmap(source, 0, 0, source.getWidth(),
 					source.getHeight(), scaler, true);
 		} else {
@@ -145,72 +115,7 @@ public class CropUtil {
 		return b2;
 	}
 
-	/**
-	 * Creates a centered bitmap of the desired size. Recycles the input.
-	 * 
-	 * @param source
-	 */
-	public static Bitmap extractMiniThumb(Bitmap source, int width, int height) {
-		return CropUtil.extractMiniThumb(source, width, height, true);
-	}
-
-	public static Bitmap extractMiniThumb(Bitmap source, int width, int height,
-			boolean recycle) {
-		if (source == null) {
-			return null;
-		}
-
-		float scale;
-		if (source.getWidth() < source.getHeight()) {
-			scale = width / (float) source.getWidth();
-		} else {
-			scale = height / (float) source.getHeight();
-		}
-		Matrix matrix = new Matrix();
-		matrix.setScale(scale, scale);
-		Bitmap miniThumbnail = transform(matrix, source, width, height, false);
-
-		if (recycle && miniThumbnail != source) {
-			source.recycle();
-		}
-		return miniThumbnail;
-	}
-
-	/**
-	 * Creates a byte[] for a given bitmap of the desired size. Recycles the
-	 * input bitmap.
-	 */
-
-	/**
-	 * Create a video thumbnail for a video. May return null if the video is
-	 * corrupt.
-	 * 
-	 * @param filePath
-	 */
-	public static Bitmap createVideoThumbnail(String filePath) {
-		Bitmap bitmap = null;
-		/*
-		 * MediaMetadataRetriever retriever = new MediaMetadataRetriever(); try
-		 * { retriever.setMode(MediaMetadataRetriever.MODE_CAPTURE_FRAME_ONLY);
-		 * retriever.setDataSource(filePath); bitmap = retriever.captureFrame();
-		 * } catch (IllegalArgumentException ex) { // Assume this is a corrupt
-		 * video file } catch (RuntimeException ex) { // Assume this is a
-		 * corrupt video file. } finally { try { retriever.release(); } catch
-		 * (RuntimeException ex) { // Ignore failures while cleaning up. } }
-		 */
-		return bitmap;
-	}
-
-	public static <T> int indexOf(T[] array, T s) {
-		for (int i = 0; i < array.length; i++) {
-			if (array[i].equals(s)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	public static void closeSilently(Closeable c) {
+    public static void closeSilently(Closeable c) {
 		if (c == null)
 			return;
 		try {
@@ -220,35 +125,9 @@ public class CropUtil {
 		}
 	}
 
-	public static void closeSilently(ParcelFileDescriptor c) {
-		if (c == null)
-			return;
-		try {
-			c.close();
-		} catch (Throwable t) {
-			// do nothing
-		}
-	}
-
-	public static synchronized OnClickListener getNullOnClickListener() {
-		if (sNullOnClickListener == null) {
-			sNullOnClickListener = new OnClickListener() {
-				public void onClick(View v) {
-				}
-			};
-		}
-		return sNullOnClickListener;
-	}
-
-	public static void Assert(boolean cond) {
-		if (!cond) {
-			throw new AssertionError();
-		}
-	}
-
-	public static boolean equals(String a, String b) {
+    public static boolean equals(String a, String b) {
 		// return true if both string are null or the content equals
-		return a == b || a.equals(b);
+		return Objects.equals(a, b);
 	}
 
 	private static class BackgroundJob extends
@@ -304,17 +183,11 @@ public class CropUtil {
 
 	public static void startBackgroundJob(CropMonitoredActivity activity,
 			String title, String message, Runnable job, Handler handler) {
-		// Make the progress dialog uncancelable, so that we can gurantee
+		// Make the progress dialog uncancelable, so that we can guarantee
 		// the thread will be done before the activity getting destroyed.
 		ProgressDialog dialog = ProgressDialog.show(activity, title, message,
 				true, false);
 		new Thread(new BackgroundJob(activity, job, dialog, handler)).start();
 	}
 
-	// Returns Options that set the puregeable flag for Bitmap decode.
-	public static BitmapFactory.Options createNativeAllocOptions() {
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		// options.inNativeAlloc = true;
-		return options;
-	}
 }

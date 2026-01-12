@@ -1,39 +1,37 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <item name="TAG_POSITION" type="id"></item>
-    <item name="fieldCheckbox" type="id"></item>
-    <item name="TAG_EVENT" type="id"></item>
-    <item name="TAG_HOLDER" type="id"></item>
-    <item name="TAG_TASK" type="id"></item>
-    <item name="TAG_BOOK_EVENT_HOLDER" type="id"></item>
-    <item name="TAG_TASK_HOLDER" type="id"></item>
-    <item name="TAG_PROPERTY" type="id"></item>
-    <item name="TAG_DIALOG_ITEM" type="id"></item>
-
-    <item name="NOTIFICATION" type="id"></item>
-    <item name="TAG_GET_THUMBNAIL_TASK" type="id"></item>
-
-    <item name="MENU_DELETE_BOOK" type="id"/>
-    <item name="MENU_DUPLICATE_BOOK" type="id"/>
-    <item name="MENU_SHARE" type="id"/>
-    <item name="MENU_EDIT_BOOK" type="id"/>
-    <item name="MENU_EDIT_BOOK_NOTES" type="id"/>
-    <item name="MENU_EDIT_BOOK_FRIENDS" type="id"/>
-    <item name="MENU_SEND_BOOK_TO_GR" type="id"/>
-    <item name="MENU_EDIT_AUTHOR" type="id"/>
-    <item name="MENU_EDIT_FORMAT" type="id"/>
-    <item name="MENU_DELETE_SERIES" type="id"/>
-    <item name="MENU_EDIT_SERIES" type="id"/>
-    <item name="MENU_DELETE_STYLE" type="id"/>
-    <item name="MENU_EDIT_STYLE" type="id"/>
-    <item name="MENU_CLONE_STYLE" type="id"/>
-    <item name="MENU_MARK_AS_READ" type="id"/>
-    <item name="MENU_MARK_AS_UNREAD" type="id"/>
-
-    <item name="MENU_THUMBNAIL_OPTIONS" type="id"/>
-
-    <item name="MENU_AMAZON_BOOKS_IN_SERIES" type="id"/>
     <item name="MENU_AMAZON_BOOKS_BY_AUTHOR" type="id"/>
     <item name="MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES" type="id"/>
+    <item name="MENU_AMAZON_BOOKS_IN_SERIES" type="id"/>
+    <item name="MENU_CLONE_STYLE" type="id"/>
+    <item name="MENU_DELETE_BOOK" type="id"/>
+    <item name="MENU_DELETE_SERIES" type="id"/>
+    <item name="MENU_DELETE_STYLE" type="id"/>
+    <item name="MENU_DUPLICATE_BOOK" type="id"/>
+    <item name="MENU_EDIT_AUTHOR" type="id"/>
+    <item name="MENU_EDIT_BOOK" type="id"/>
+    <item name="MENU_EDIT_BOOK_FRIENDS" type="id"/>
+    <item name="MENU_EDIT_BOOK_NOTES" type="id"/>
+    <item name="MENU_EDIT_FORMAT" type="id"/>
+    <item name="MENU_EDIT_SERIES" type="id"/>
+    <item name="MENU_EDIT_STYLE" type="id"/>
+    <item name="MENU_MARK_AS_READ" type="id"/>
+    <item name="MENU_MARK_AS_UNREAD" type="id"/>
+    <item name="MENU_SEND_BOOK_TO_GR" type="id"/>
+    <item name="MENU_SHARE" type="id"/>
+    <item name="MENU_THUMBNAIL_OPTIONS" type="id"/>
 
+    <item name="NOTIFICATION" type="id"/>
+
+    <item name="TAG_BOOK_EVENT_HOLDER" type="id"/>
+    <item name="TAG_DIALOG_ITEM" type="id"/>
+    <item name="TAG_EVENT" type="id"/>
+    <item name="TAG_GET_THUMBNAIL_TASK" type="id"/>
+    <item name="TAG_HOLDER" type="id"/>
+    <item name="TAG_POSITION" type="id"/>
+    <item name="TAG_PROPERTY" type="id"/>
+    <item name="TAG_TASK" type="id"/>
+    <item name="TAG_TASK_HOLDER" type="id"/>
+
+    <item name="fieldCheckbox" type="id"/>
 </resources>

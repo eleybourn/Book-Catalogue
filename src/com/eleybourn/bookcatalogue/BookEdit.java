@@ -572,7 +572,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                             this::finish);
                     return true;
                 } else if (id == R.id.MENU_DUPLICATE_BOOK) {
-                    BookUtils.duplicateBook(this, mDbHelper, mRowId);
+                    BookUtils.duplicateBook(this, mRowId);
                     return true;
                 } else if (id == R.id.MENU_EDIT_BOOK) {
                     BookEdit.editBook(this, mRowId, BookEdit.TAB_EDIT);
@@ -704,7 +704,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      * book. Minor modifications will be made to the strings: - Titles will be
      * rewords so 'a', 'the', 'an' will be moved to the end of the string (this
      * is only done for NEW books)
-     * - Date published will be converted froma date to a string
+     * - Date published will be converted from a date to a string
      * <p>
      * Thumbnails will also be saved to the correct location
      * It will check if the book already exists (isbn search) if you are

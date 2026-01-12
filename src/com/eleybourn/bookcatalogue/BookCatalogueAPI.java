@@ -593,13 +593,13 @@ public class BookCatalogueAPI implements SimpleTask {
                     values.setBookshelfList(bookshelves_list.toString());
                 }
 
-                //String backup_filename = getStringOrEmpty(bookJson, "thumbnail");
-                //if (!backup_filename.isEmpty()) {
-                //    String filename = Utils.saveThumbnailFromUrl(backup_filename, "");
-                //    if (!filename.isEmpty()) {
-                //        values.putString(CatalogueDBAdapter.KEY_THUMBNAIL, filename);
-                //    }
-                //}
+                String backup_filename = getStringOrEmpty(bookJson, "thumbnail");
+                if (!backup_filename.isEmpty()) {
+                    String filename = Utils.saveThumbnailFromUrl(backup_filename, "");
+                    if (!filename.isEmpty()) {
+                        values.putString(CatalogueDBAdapter.KEY_THUMBNAIL, filename);
+                    }
+                }
 
                 try {
                     boolean exists = false;

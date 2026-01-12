@@ -1,7 +1,7 @@
 /*
  * @copyright 2013 Philip Warner
  * @license GNU General Public License
- * 
+ *
  * This file is part of Book Catalogue.
  *
  * Book Catalogue is free software: you can redistribute it and/or modify
@@ -28,37 +28,38 @@ import androidx.annotation.NonNull;
 
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 
-import java.util.Objects;
-
 /**
  * Fragment wrapper for the PartialDatePicker dialog
- * 
+ *
  * @author pjw
  */
 public class TextFieldEditorFragment extends BookCatalogueDialogFragment {
-	private int mDialogId;
+    private int mDialogId;
+    /**
+     * Object to handle changes to a description field.
+     */
+    private final TextFieldEditor.OnEditListener mEditListener = new TextFieldEditor.OnEditListener() {
+        @Override
+        public void onSaved(TextFieldEditor dialog, String newText) {
+            ((OnTextFieldEditorListener) requireActivity()).onTextFieldEditorSave(mDialogId, TextFieldEditorFragment.this, newText);
+        }
 
-	/**
-	 * Listener interface to receive notifications when dialog is closed by any means.
-	 * 
-	 * @author pjw
-	 */
-	public interface OnTextFieldEditorListener {
-		void onTextFieldEditorSave(int dialogId, TextFieldEditorFragment dialog, String newText);
-		void onTextFieldEditorCancel(int dialogId, TextFieldEditorFragment dialog);
-	}
+        @Override
+        public void onCancel(TextFieldEditor dialog) {
+            ((OnTextFieldEditorListener) requireActivity()).onTextFieldEditorCancel(mDialogId, TextFieldEditorFragment.this);
+        }
+    };
 
-	/**
-	 * Constructor
-	 * 
-	 * @param dialogId	ID passed by caller. Can be 0, will be passed back in event
-	 * @param titleId	Title to display
-	 * @param text		Text to edit
-	 *
-	 * @return			Created fragment
-	 */
-	public static TextFieldEditorFragment newInstance(int dialogId, int titleId, String text) {
-    	TextFieldEditorFragment frag = new TextFieldEditorFragment();
+    /**
+     * Constructor
+     *
+     * @param dialogId ID passed by caller. Can be 0, will be passed back in event
+     * @param titleId  Title to display
+     * @param text     Text to edit
+     * @return            Created fragment
+     */
+    public static TextFieldEditorFragment newInstance(int dialogId, int titleId, String text) {
+        TextFieldEditorFragment frag = new TextFieldEditorFragment();
         Bundle args = new Bundle();
         args.putString("text", text);
         args.putInt("title", titleId);
@@ -67,28 +68,28 @@ public class TextFieldEditorFragment extends BookCatalogueDialogFragment {
         return frag;
     }
 
-	/**
-	 * Ensure activity supports event
-	 */
-	@Override
-    public void onAttach (@NonNull Context context) {
+    /**
+     * Ensure activity supports event
+     */
+    @Override
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         Activity a = null;
-        if (context instanceof Activity){
-            a=(Activity) context;
+        if (context instanceof Activity) {
+            a = (Activity) context;
         }
 
-		if (! (a instanceof OnTextFieldEditorListener)) {
+        if (!(a instanceof OnTextFieldEditorListener)) {
             assert a != null;
             throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnTextFieldEditorListener");
         }
-		
-	}
 
-	/**
-	 * Create the underlying dialog
-	 */
+    }
+
+    /**
+     * Create the underlying dialog
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -103,18 +104,15 @@ public class TextFieldEditorFragment extends BookCatalogueDialogFragment {
         editor.setOnEditListener(mEditListener);
         return editor;
     }
-    
-	/**
-	 * Object to handle changes to a description field.
-	 */
-	private final TextFieldEditor.OnEditListener mEditListener = new TextFieldEditor.OnEditListener(){
-		@Override
-		public void onSaved(TextFieldEditor dialog, String newText) {
-			((OnTextFieldEditorListener) requireActivity()).onTextFieldEditorSave(mDialogId, TextFieldEditorFragment.this, newText);
-		}
-		@Override
-		public void onCancel(TextFieldEditor dialog) {
-			((OnTextFieldEditorListener) requireActivity()).onTextFieldEditorCancel(mDialogId, TextFieldEditorFragment.this);
-		}
-	};
+
+    /**
+     * Listener interface to receive notifications when dialog is closed by any means.
+     *
+     * @author pjw
+     */
+    public interface OnTextFieldEditorListener {
+        void onTextFieldEditorSave(int dialogId, TextFieldEditorFragment dialog, String newText);
+
+        void onTextFieldEditorCancel(int dialogId, TextFieldEditorFragment dialog);
+    }
 }

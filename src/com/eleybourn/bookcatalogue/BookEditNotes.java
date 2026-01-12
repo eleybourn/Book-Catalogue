@@ -20,9 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -42,18 +39,21 @@ import com.eleybourn.bookcatalogue.dialogs.PartialDatePickerFragment.OnPartialDa
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 /*
  * A book catalogue application that integrates with Google Books.
  */
 public class BookEditNotes extends BookEditFragmentAbstract implements OnPartialDatePickerListener {
 
-	/**
-	 * Returns a unique list of all locations in the database
-	 *
-	 * @return The list
-	 */
-	protected ArrayList<String> getLocations() {
-		ArrayList<String> location_list = new ArrayList<>();
+    /**
+     * Returns a unique list of all locations in the database
+     *
+     * @return The list
+     */
+    protected ArrayList<String> getLocations() {
+        ArrayList<String> location_list = new ArrayList<>();
         try (Cursor location_cur = mDbHelper.fetchAllLocations()) {
             while (location_cur.moveToNext()) {
                 String location = location_cur.getString(location_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_LOCATION));
@@ -66,49 +66,49 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
                 }
             }
         }
-		return location_list;
-	}
+        return location_list;
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         return inflater.inflate(R.layout.book_edit_notes, container, false);
-	}
+    }
 
-	@Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-		Tracker.enterOnCreate(this);
-		try {
+        Tracker.enterOnCreate(this);
+        try {
             super.onViewCreated(view, savedInstanceState);
 
-			if (savedInstanceState != null) {
-				mEditManager.setDirty(savedInstanceState.getBoolean("Dirty"));
-			}
+            if (savedInstanceState != null) {
+                mEditManager.setDirty(savedInstanceState.getBoolean("Dirty"));
+            }
 
-			Field f;
+            Field f;
 
-			//FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
-			FieldFormatter dateFormatter = new Fields.DateFieldFormatter();
+            //FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
+            FieldFormatter dateFormatter = new Fields.DateFieldFormatter();
 
-			mFields.add(R.id.field_rating, CatalogueDBAdapter.KEY_RATING, null);
-			mFields.add(R.id.label_rating, "",  CatalogueDBAdapter.KEY_RATING, null);
-			mFields.add(R.id.field_read, CatalogueDBAdapter.KEY_READ, null);
-			mFields.add(R.id.field_notes, CatalogueDBAdapter.KEY_NOTES, null);
+            mFields.add(R.id.field_rating, CatalogueDBAdapter.KEY_RATING, null);
+            mFields.add(R.id.label_rating, "", CatalogueDBAdapter.KEY_RATING, null);
+            mFields.add(R.id.field_read, CatalogueDBAdapter.KEY_READ, null);
+            mFields.add(R.id.field_notes, CatalogueDBAdapter.KEY_NOTES, null);
 
-			ArrayAdapter<String> location_adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_dropdown_item_1line, getLocations());
-			mFields.add(R.id.field_location, CatalogueDBAdapter.KEY_LOCATION, null);
-			mFields.setAdapter(R.id.field_location, location_adapter);
+            ArrayAdapter<String> location_adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_dropdown_item_1line, getLocations());
+            mFields.add(R.id.field_location, CatalogueDBAdapter.KEY_LOCATION, null);
+            mFields.setAdapter(R.id.field_location, location_adapter);
 
-			// ENHANCE: Add a partial date validator. Or not.
-			f = mFields.add(R.id.field_read_start, CatalogueDBAdapter.KEY_READ_START, null, dateFormatter);
-			f.getView().setOnClickListener(view1 -> BookEditNotes.this.showReadStartDialog());
+            // ENHANCE: Add a partial date validator. Or not.
+            f = mFields.add(R.id.field_read_start, CatalogueDBAdapter.KEY_READ_START, null, dateFormatter);
+            f.getView().setOnClickListener(view1 -> BookEditNotes.this.showReadStartDialog());
 
-			f = mFields.add(R.id.field_read_end, CatalogueDBAdapter.KEY_READ_END, null, dateFormatter);
-			f.getView().setOnClickListener(view2 -> BookEditNotes.this.showReadEndDialog());
+            f = mFields.add(R.id.field_read_end, CatalogueDBAdapter.KEY_READ_END, null, dateFormatter);
+            f.getView().setOnClickListener(view2 -> BookEditNotes.this.showReadEndDialog());
 
-			mFields.add(R.id.field_signed, CatalogueDBAdapter.KEY_SIGNED,  null);
+            mFields.add(R.id.field_signed, CatalogueDBAdapter.KEY_SIGNED, null);
 
-			mFields.addCrossValidator((fields, values) -> {
+            mFields.addCrossValidator((fields, values) -> {
                 String start = values.getString(CatalogueDBAdapter.KEY_READ_START);
                 if (start == null || start.isEmpty())
                     return;
@@ -116,102 +116,102 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
                 if (end == null || end.isEmpty())
                     return;
                 if (start.compareToIgnoreCase(end) > 0)
-                    throw new ValidatorException(R.string.validator_read_start_after_end,new Object[]{});
+                    throw new ValidatorException(R.string.validator_read_start_after_end, new Object[]{});
             });
 
-			try {
-				Utils.fixFocusSettings(getView());				
-			} catch (Exception e) {
-				// Log, but ignore. This is a non-critical feature that prevents crashes when the
-				// 'next' key is pressed and some views have been hidden.
-				Logger.logError(e);
-			}
+            try {
+                Utils.fixFocusSettings(getView());
+            } catch (Exception e) {
+                // Log, but ignore. This is a non-critical feature that prevents crashes when the
+                // 'next' key is pressed and some views have been hidden.
+                Logger.logError(e);
+            }
 
-			mFields.setAfterFieldChangeListener((field, newValue) -> mEditManager.setDirty(true));
-			
-		} catch (Exception e) {
-			Logger.logError(e);
-		}
-		Tracker.exitOnCreate(this);
-	}
+            mFields.setAfterFieldChangeListener((field, newValue) -> mEditManager.setDirty(true));
 
-	private void showReadStartDialog() {
-		PartialDatePickerFragment frag = PartialDatePickerFragment.newInstance();
-		
-		frag.setTitle(R.string.label_read_start);
-		frag.setDialogId(R.id.field_read_start); // Set to the destination field ID
-		try {
-			String dateString;
-			Object o = mFields.getField(R.id.field_read_start).getValue();
-			if (o == null || o.toString().isEmpty()) {
-				dateString = Utils.toSqlDateTime(new Date());
-			} else {
-				dateString = o.toString();
-			}
-			Utils.prepareDateDialogFragment(frag, dateString);
-		} catch (Exception e) {
-			// use the default date
-		}
+        } catch (Exception e) {
+            Logger.logError(e);
+        }
+        Tracker.exitOnCreate(this);
+    }
+
+    private void showReadStartDialog() {
+        PartialDatePickerFragment frag = PartialDatePickerFragment.newInstance();
+
+        frag.setTitle(R.string.label_read_start);
+        frag.setDialogId(R.id.field_read_start); // Set to the destination field ID
+        try {
+            String dateString;
+            Object o = mFields.getField(R.id.field_read_start).getValue();
+            if (o == null || o.toString().isEmpty()) {
+                dateString = Utils.toSqlDateTime(new Date());
+            } else {
+                dateString = o.toString();
+            }
+            Utils.prepareDateDialogFragment(frag, dateString);
+        } catch (Exception e) {
+            // use the default date
+        }
 
         frag.show(getParentFragmentManager(), null);
-	}
+    }
 
-	private void showReadEndDialog() {
-		PartialDatePickerFragment frag = PartialDatePickerFragment.newInstance();
-		
-		frag.setTitle(R.string.label_read_end);
-		frag.setDialogId(R.id.field_read_end); // Set to the destination field ID
+    private void showReadEndDialog() {
+        PartialDatePickerFragment frag = PartialDatePickerFragment.newInstance();
 
-		try {
-			String dateString;
-			Object o = mFields.getField(R.id.field_read_end).getValue();
-			if (o == null || o.toString().isEmpty()) {
-				dateString = Utils.toSqlDateTime(new Date());
-			} else {
-				dateString = o.toString();
-			}
-			Utils.prepareDateDialogFragment(frag, dateString);
-		} catch (Exception e) {
-			// use the default date
-		}
+        frag.setTitle(R.string.label_read_end);
+        frag.setDialogId(R.id.field_read_end); // Set to the destination field ID
+
+        try {
+            String dateString;
+            Object o = mFields.getField(R.id.field_read_end).getValue();
+            if (o == null || o.toString().isEmpty()) {
+                dateString = Utils.toSqlDateTime(new Date());
+            } else {
+                dateString = o.toString();
+            }
+            Utils.prepareDateDialogFragment(frag, dateString);
+        } catch (Exception e) {
+            // use the default date
+        }
         frag.show(getParentFragmentManager(), null);
-	}
+    }
 
-	/**
-	 *  The callback received when the user "sets" the date in the dialog.
-	 *  Build a full or partial date in SQL format
-	 */
-	@Override
-	public void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day) {
-		String value = Utils.buildPartialDate(year, month, day);
-		mFields.getField(dialogId).setValue(value);
-		dialog.dismiss();
-	}
+    /**
+     * The callback received when the user "sets" the date in the dialog.
+     * Build a full or partial date in SQL format
+     */
+    @Override
+    public void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day) {
+        String value = Utils.buildPartialDate(year, month, day);
+        mFields.getField(dialogId).setValue(value);
+        dialog.dismiss();
+    }
 
-	/**
-	 *  The callback received when the user "cancels" the date in the dialog.
-	 *  Dismiss it.
-	 */
-	@Override
-	public void onPartialDatePickerCancel(int dialogId, PartialDatePickerFragment dialog) {
-		dialog.dismiss();
-	}
+    /**
+     * The callback received when the user "cancels" the date in the dialog.
+     * Dismiss it.
+     */
+    @Override
+    public void onPartialDatePickerCancel(int dialogId, PartialDatePickerFragment dialog) {
+        dialog.dismiss();
+    }
 
-	@Override
-	public void onPause() {
-		Tracker.enterOnPause(this);
-		BookData book = mEditManager.getBookData();
-		mFields.getAll(book);
-		super.onPause();
-		Tracker.exitOnPause(this);
-	}
+    @Override
+    public void onPause() {
+        Tracker.enterOnPause(this);
+        BookData book = mEditManager.getBookData();
+        mFields.getAll(book);
+        super.onPause();
+        Tracker.exitOnPause(this);
+    }
 
-	@Override
-	protected void onLoadBookDetails(BookData book) {
+    @Override
+    protected void onLoadBookDetails(BookData book) {
         mFields.setAll(book);
-		// No special handling required; the setAll() done by the caller is enough
-		// Restore default visibility and hide unused/unwanted and empty fields
-		showHideFields(false);
-	}
+        // No special handling required; the setAll() done by the caller is enough
+        // Restore default visibility and hide unused/unwanted and empty fields
+        showHideFields(false);
+    }
 
 }

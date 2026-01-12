@@ -1,7 +1,7 @@
 /*
  * @copyright 2012 Philip Warner
  * @license GNU General Public License
- * 
+ *
  * This file is part of Book Catalogue.
  *
  * Book Catalogue is free software: you can redistribute it and/or modify
@@ -44,250 +44,68 @@ import java.util.ArrayList;
 
 /**
  * Fragment Class to wrap a trivial progress dialog around (generally) a single task.
- * 
+ *
  * @author pjw
  */
 public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment {
-	/** The underlying task queue */
-	private final SimpleTaskQueue mQueue;
-	/** Handler so we can detect UI thread */
-	private final Handler mHandler = new Handler();
-    /** Flag indicating dialog was cancelled */
-	private boolean mWasCancelled = false;
-	
-	/** Max value of progress (for determinate progress) */
-	private String mMessage = null;
-	/** Max value of progress (for determinate progress) */
-	private int mMax;
-	/** Current value of progress (for determinate progress) */
-	private int mProgress = 0;
+    /**
+     * The underlying task queue
+     */
+    private final SimpleTaskQueue mQueue;
+    /**
+     * Handler so we can detect UI thread
+     */
+    private final Handler mHandler = new Handler();
+    /**
+     * List of messages to be sent to the underlying activity, but not yet sent
+     */
+    private final ArrayList<TaskMessage> mTaskMessages = new ArrayList<>();
+    /**
+     * Flag indicating dialog was cancelled
+     */
+    private boolean mWasCancelled = false;
+    /**
+     * Max value of progress (for determinate progress)
+     */
+    private String mMessage = null;
+    /**
+     * Max value of progress (for determinate progress)
+     */
+    private int mMax;
+    /**
+     * Current value of progress (for determinate progress)
+     */
+    private int mProgress = 0;
+    /**
+     * Flag indicating underlying field has changed so that progress dialog will be updated
+     */
+    private boolean mMessageChanged = false;
+    /**
+     * Flag indicating underlying field has changed so that progress dialog will be updated
+     */
+    private boolean mProgressChanged = false;
+    /**
+     * Flag indicating underlying field has changed so that progress dialog will be updated
+     */
+    private boolean mMaxChanged = false;
+    /**
+     * Unique ID for this task. Can be used like menu or activity IDs
+     */
+    private int mTaskId;
+    /**
+     * Flag, defaults to true, that can be set by tasks and is passed to listeners
+     */
+    private boolean mSuccess = true;
+    /**
+     * Flag indicating a Refresher has been posted but not run yet
+     */
+    private boolean mRefresherQueued = false;
 
-	/** Flag indicating underlying field has changed so that progress dialog will be updated */
-	private boolean mMessageChanged = false;
-	/** Flag indicating underlying field has changed so that progress dialog will be updated */
-	private boolean mProgressChanged = false;
-	/** Flag indicating underlying field has changed so that progress dialog will be updated */
-	private boolean mMaxChanged = false;
-
-	/** Unique ID for this task. Can be used like menu or activity IDs */
-	private int mTaskId;
-
-	/** Flag, defaults to true, that can be set by tasks and is passed to listeners */
-	private boolean mSuccess = true;
-	
-	/** List of messages to be sent to the underlying activity, but not yet sent */
-	private final ArrayList<TaskMessage> mTaskMessages = new ArrayList<>();
-
-	/** Each message has a single method to deliver it and will only be called
-	 * when the underlying Activity is actually present.
-	 */
-	private interface TaskMessage {
-		void deliver(Activity a);
-	}
-
-	/** Listener for OnTaskFinished messages */
-	public interface OnTaskFinishedListener {
-		void onTaskFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled, FragmentTask task);
-	}
-
-	/** Listener for OnAllTasksFinished messages */
-	public interface OnAllTasksFinishedListener {
-		void onAllTasksFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled);
-	}
-
-	/**
-	 * TaskFinished message.
-	 * We only deliver onFinish() to the FragmentTask when the activity is present.
-	 */
-	private class TaskFinishedMessage implements TaskMessage {
-		FragmentTask mTask;
-		Exception mException;
-
-		public TaskFinishedMessage(FragmentTask task, Exception e) {
-			mTask = task;
-			mException = e;
-		}
-		
-		@Override
-		public void deliver(Activity a) {
-			try {
-				mTask.onFinish(SimpleTaskQueueProgressFragment.this, mException);				
-			} catch (Exception e) {
-				Logger.logError(e);
-			}
-			try {
-				if (a instanceof OnTaskFinishedListener) {
-					((OnTaskFinishedListener)a).onTaskFinished(SimpleTaskQueueProgressFragment.this, mTaskId, mSuccess, mWasCancelled, mTask);
-				}
-			} catch (Exception e) {
-				Logger.logError(e);
-			}
-
-		}
-		
-	}
-
-	/**
-	 * AllTasksFinished message.
-	 */
-	private class AllTasksFinishedMessage implements TaskMessage {
-		
-		public AllTasksFinishedMessage() {
-		}
-		
-		@Override
-		public void deliver(Activity a) {
-			if (a instanceof OnAllTasksFinishedListener) {
-				((OnAllTasksFinishedListener)a).onAllTasksFinished(SimpleTaskQueueProgressFragment.this, mTaskId, mSuccess, mWasCancelled);
-			}
-			dismiss();
-		}
-		
-	}
-
-	/**
-	 * Queue a TaskMessage and then try to process the queue.
-	 */
-	private void queueMessage(TaskMessage m) {
-
-		synchronized(mTaskMessages) {
-			mTaskMessages.add(m);
-		}
-		deliverMessages();
-	}
-
-	/**
-	 * Queue a TaskFinished message
-	 */
-	private void queueTaskFinished(FragmentTask t, Exception e) {
-		queueMessage(new TaskFinishedMessage(t, e));
-	}
-	
-	/**
-	 * Queue an AllTasksFinished message
-	 */
-	private void queueAllTasksFinished() {
-		queueMessage(new AllTasksFinishedMessage());
-	}
-
-	/**
-	 * If we have an Activity, deliver the current queue.
-	 */
-	private void deliverMessages() {
-		Activity a = getActivity();
-		if (a != null) {
-			ArrayList<TaskMessage> toDeliver = new ArrayList<>();
-			int count;
-			do {
-				synchronized(mTaskMessages) {
-					toDeliver.addAll(mTaskMessages);
-					mTaskMessages.clear();
-				}
-				count = toDeliver.size();
-				for(TaskMessage m: toDeliver) {
-					try {
-						m.deliver(a);						
-					} catch (Exception e) {
-						Logger.logError(e);
-					}
-				}				
-				toDeliver.clear();
-			} while (count > 0);			
-		}
-	}
-
-	/**
-	 * Convenience routine to show a dialog fragment and start the task
-	 * 
-	 * @param fm		FragmentManager to use
-	 * @param message	Message to display
-	 * @param task		Task to run
-	 */
-	public static SimpleTaskQueueProgressFragment runTaskWithProgress(
-			final FragmentManager fm, int message, FragmentTask task, boolean isIndeterminate, int taskId)
-	{
-		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.newInstance(message, isIndeterminate, taskId);
-		frag.enqueue(task);
-		frag.show(fm, null);
-		return frag;
-	}
-
-	/**
-	 * Interface for 'FragmentTask' objects. Closely based on SimpleTask, but takes the fragment as a parameter
-	 * to all calls.
-	 * 
-	 * @author pjw
-	 */
-	public interface FragmentTask {
-		/** Run the task in it's own thread 
-		 * @throws Exception Called method can throw exceptions to terminate process. They will be passed to the onFinish()
-		 */
-		void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) throws Exception;
-		/** Called in UI thread after task complete 
-		 * @param exception TODO*/
-		void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception);
-	}
-	
-	/**
-	 * Trivial implementation of FragmentTask that never calls onFinish(). The setState()/getState()
-	 * calls can be used to store state info by a caller, eg. if they override requiresOnFinish() etc.
-	 * 
-	 * @author pjw
-	 */
-	public abstract static class FragmentTaskAbstract implements FragmentTask {
-		private int mState = 0;
-
-		@Override
-		public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
-			if (exception != null) {
-				Logger.logError(exception);
-				Toast.makeText(fragment.getActivity(), R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
-			}
-		}
-
-		public void setState(int state) {
-			mState = state;
-		}
-
-		public int getState() {
-			return mState;
-		}
-	}
-
-	/**
-	 * A SimpleTask wrapper for a FragmentTask.
-	 * 
-	 * @author pjw
-	 */
-	private class FragmentTaskWrapper implements SimpleTask {
-		private final FragmentTask mInnerTask;
-
-		public FragmentTaskWrapper(FragmentTask task) {
-			mInnerTask = task;
-		}
-
-		@Override
-		public void run(SimpleTaskContext taskContext) throws Exception {
-			try {
-				mInnerTask.run(SimpleTaskQueueProgressFragment.this, taskContext);				
-			} catch (Exception e) {
-				mSuccess = false;
-				throw e;
-			}
-		}
-
-		@Override
-		public void onFinish(Exception e) {
-			SimpleTaskQueueProgressFragment.this.queueTaskFinished(mInnerTask, e);
-		}
-
-	}
-
-	/**
-	 * Constructor
-	 */
-	public SimpleTaskQueueProgressFragment() {
-		mQueue = new SimpleTaskQueue("FragmentQueue");
+    /**
+     * Constructor
+     */
+    public SimpleTaskQueueProgressFragment() {
+        mQueue = new SimpleTaskQueue("FragmentQueue");
         // If there are no more tasks, close this dialog
         SimpleTaskQueue.OnTaskFinishListener mTaskFinishListener = (task, e) -> {
             // If there are no more tasks, close this dialog
@@ -296,104 +114,170 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
             }
         };
         mQueue.setTaskFinishListener(mTaskFinishListener);
-	}
+    }
 
     /**
-	 * Post a runnable to the UI thread
-	 * 
-	 * @param r	Runnable to execute in main thread at a later time
-	 */
-	public void post(Runnable r) {
-		mHandler.post(r);
-	}
+     * Convenience routine to show a dialog fragment and start the task
+     *
+     * @param fm      FragmentManager to use
+     * @param message Message to display
+     * @param task    Task to run
+     */
+    public static SimpleTaskQueueProgressFragment runTaskWithProgress(
+            final FragmentManager fm, int message, FragmentTask task, boolean isIndeterminate, int taskId) {
+        SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.newInstance(message, isIndeterminate, taskId);
+        frag.enqueue(task);
+        frag.show(fm, null);
+        return frag;
+    }
 
-	/**
-	 * Enqueue a task for this fragment
-	 * 
-	 * @param task	The task to enqueue
-	 */
-	public void enqueue(FragmentTask task) {
-		mQueue.enqueue(new FragmentTaskWrapper(task));
-	}
-
-	public static SimpleTaskQueueProgressFragment newInstance(int title, boolean isIndeterminate, int taskId) {
-		SimpleTaskQueueProgressFragment frag = new SimpleTaskQueueProgressFragment();
+    public static SimpleTaskQueueProgressFragment newInstance(int title, boolean isIndeterminate, int taskId) {
+        SimpleTaskQueueProgressFragment frag = new SimpleTaskQueueProgressFragment();
         Bundle args = new Bundle();
         args.putInt("title", title);
         args.putInt("taskId", taskId);
         args.putBoolean("isIndeterminate", isIndeterminate);
         frag.setArguments(args);
         return frag;
-	}
-
-	/**
-	 * Ensure activity supports event
-	 */
-	@Override
-	public void onAttach(@NonNull Context a) {
-		super.onAttach(a);
     }
 
-	@Override
-	public void onStart() { // TODO: Decide if/how to use ViewModelProvider !!!
-		super.onStart();
+    /**
+     * Queue a TaskMessage and then try to process the queue.
+     */
+    private void queueMessage(TaskMessage m) {
+
+        synchronized (mTaskMessages) {
+            mTaskMessages.add(m);
+        }
+        deliverMessages();
+    }
+
+    /**
+     * Queue a TaskFinished message
+     */
+    private void queueTaskFinished(FragmentTask t, Exception e) {
+        queueMessage(new TaskFinishedMessage(t, e));
+    }
+
+    /**
+     * Queue an AllTasksFinished message
+     */
+    private void queueAllTasksFinished() {
+        queueMessage(new AllTasksFinishedMessage());
+    }
+
+    /**
+     * If we have an Activity, deliver the current queue.
+     */
+    private void deliverMessages() {
+        Activity a = getActivity();
+        if (a != null) {
+            ArrayList<TaskMessage> toDeliver = new ArrayList<>();
+            int count;
+            do {
+                synchronized (mTaskMessages) {
+                    toDeliver.addAll(mTaskMessages);
+                    mTaskMessages.clear();
+                }
+                count = toDeliver.size();
+                for (TaskMessage m : toDeliver) {
+                    try {
+                        m.deliver(a);
+                    } catch (Exception e) {
+                        Logger.logError(e);
+                    }
+                }
+                toDeliver.clear();
+            } while (count > 0);
+        }
+    }
+
+    /**
+     * Post a runnable to the UI thread
+     *
+     * @param r Runnable to execute in main thread at a later time
+     */
+    public void post(Runnable r) {
+        mHandler.post(r);
+    }
+
+    /**
+     * Enqueue a task for this fragment
+     *
+     * @param task The task to enqueue
+     */
+    public void enqueue(FragmentTask task) {
+        mQueue.enqueue(new FragmentTaskWrapper(task));
+    }
+
+    /**
+     * Ensure activity supports event
+     */
+    @Override
+    public void onAttach(@NonNull Context a) {
+        super.onAttach(a);
     }
 
     @Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		// VERY IMPORTANT. We do not want this destroyed!
-		setRetainInstance(true);
+    public void onStart() { // TODO: Decide if/how to use ViewModelProvider !!!
+        super.onStart();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // VERY IMPORTANT. We do not want this destroyed!
+        setRetainInstance(true);
         assert getArguments() != null;
         mTaskId = getArguments().getInt("taskId");
-	}
+    }
 
     //public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     //    super.onViewCreated(view, savedInstanceState);
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-		// Deliver any outstanding messages
-		deliverMessages();
-		
-		// If no tasks left, exit
-		if (!mQueue.hasActiveTasks()) {
-			System.out.println("Simple Task Queue: Tasks finished while activity absent, closing");
-			dismiss();
-		}
-	}
+        // Deliver any outstanding messages
+        deliverMessages();
 
-	/**
-	 * Create the underlying dialog
-	 */
-	@NonNull
+        // If no tasks left, exit
+        if (!mQueue.hasActiveTasks()) {
+            System.out.println("Simple Task Queue: Tasks finished while activity absent, closing");
+            dismiss();
+        }
+    }
+
+    /**
+     * Create the underlying dialog
+     */
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-		// This is ESSENTIAL; setting this on the dialog is insufficient.
-		// Further, without this the 'back' key is used to dismiss the dialog (and fragment)
-		// making the calling activity unavailable.
-		//
-		// We therefor catch keystrokes to look for the 'back' key, and then cancel
-		// tasks as appropriate. When all tasks are finished, the dialog is dismissed.
-		setCancelable(false);
+        // This is ESSENTIAL; setting this on the dialog is insufficient.
+        // Further, without this the 'back' key is used to dismiss the dialog (and fragment)
+        // making the calling activity unavailable.
+        //
+        // We therefor catch keystrokes to look for the 'back' key, and then cancel
+        // tasks as appropriate. When all tasks are finished, the dialog is dismissed.
+        setCancelable(false);
 
-		final Dialog dialog = new Dialog(requireActivity());
-		dialog.setContentView(R.layout.progress_dialog);
-		dialog.setCancelable(true);
-		dialog.setCanceledOnTouchOutside(false);
+        final Dialog dialog = new Dialog(requireActivity());
+        dialog.setContentView(R.layout.progress_dialog);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(false);
 
         assert getArguments() != null;
         int msg = getArguments().getInt("title");
-		if (msg != 0) {
-			dialog.setTitle(msg);
+        if (msg != 0) {
+            dialog.setTitle(msg);
         }
 
-		final boolean isIndeterminate = getArguments().getBoolean("isIndeterminate");
+        final boolean isIndeterminate = getArguments().getBoolean("isIndeterminate");
         LinearLayout spinnerLayout = dialog.findViewById(R.id.spinner_layout);
         LinearLayout horizontalLayout = dialog.findViewById(R.id.horizontal_layout);
 
-		if (isIndeterminate) {
+        if (isIndeterminate) {
             horizontalLayout.setVisibility(View.GONE);
             spinnerLayout.setVisibility(View.VISIBLE);
             TextView messageView = dialog.findViewById(R.id.spinner_message);
@@ -402,22 +286,22 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
             } else if (msg != 0) {
                 messageView.setText(requireActivity().getString(msg));
             }
-		} else {
+        } else {
             spinnerLayout.setVisibility(View.GONE);
             horizontalLayout.setVisibility(View.VISIBLE);
             ProgressBar progressBar = dialog.findViewById(R.id.progress_horizontal);
-			progressBar.setMax(mMax);
-			progressBar.setProgress(mProgress);
+            progressBar.setMax(mMax);
+            progressBar.setProgress(mProgress);
 
             TextView messageView = dialog.findViewById(R.id.horizontal_message);
-			if (mMessage != null) {
-				messageView.setText(mMessage);
+            if (mMessage != null) {
+                messageView.setText(mMessage);
             } else if (msg != 0) {
                 messageView.setText(requireActivity().getString(msg));
             }
-		}
+        }
 
-		dialog.setOnKeyListener((dialog1, keyCode, event) -> {
+        dialog.setOnKeyListener((dialog1, keyCode, event) -> {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 if (event.getAction() == KeyEvent.ACTION_UP) {
                     mWasCancelled = true;
@@ -427,162 +311,313 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
             return false;
         });
 
-		return dialog;
-	}
-
-	@Override
-	public void onCancel(@NonNull DialogInterface dialog) {
-		super.onCancel(dialog);
-		cancel();
-	}
-
-	@Override
-    public void onResume()
-    {
-        super.onResume();
-        // If task finished, dismiss.
-		if (!mQueue.hasActiveTasks())
-			dismiss();
+        return dialog;
     }
 
-    /** Accessor */
-	public boolean isCancelled() {
-		return mWasCancelled;
-	}
-	public void cancel() {
-		mWasCancelled = true;
-		//mQueue.finish();
-	}
+    @Override
+    public void onCancel(@NonNull DialogInterface dialog) {
+        super.onCancel(dialog);
+        cancel();
+    }
 
-	/** Accessor */
-	public boolean getSuccess() {
-		return mSuccess;
-	}
-	/** Accessor */
-	public void setSuccess(boolean success) {
-		mSuccess = success;
-	}
+    @Override
+    public void onResume() {
+        super.onResume();
+        // If task finished, dismiss.
+        if (!mQueue.hasActiveTasks())
+            dismiss();
+    }
 
-	/** Flag indicating a Refresher has been posted but not run yet */
-	private boolean mRefresherQueued = false;
-	/**
-	 * Runnable object to refresh the dialog
-	 */
-	private final Runnable mRefresher = new Runnable() {
-		@Override
-		public void run() {
-			synchronized(mRefresher) {
-				mRefresherQueued = false;
-				updateProgress();				
-			}
-		}
-	};
+    /**
+     * Accessor
+     */
+    public boolean isCancelled() {
+        return mWasCancelled;
+    }
 
-	/**
-	 * Refresh the dialog, or post a refresh to the UI thread
-	 */
-	private void requestUpdateProgress() {
-		System.out.println("Simple Task Queue: " + mMessage + " (" + mProgress + "/" + mMax + ")");
-		if (Thread.currentThread() == mHandler.getLooper().getThread()) {
-			updateProgress();
-		} else {
-			synchronized(mRefresher) {
-				if (!mRefresherQueued) {
-					mHandler.post(mRefresher);
-					mRefresherQueued = true;					
-				}
-			}
-		}		
-	}
+    public void cancel() {
+        mWasCancelled = true;
+        //mQueue.finish();
+    }
 
-	/**
-	 * Convenience method to step the progress by 1.
-	 */
-	public void step(String message) {
-		step(message, 1);
-	}
-	
-	/**
-	 * Convenience method to step the progress by the passed delta
-	 */
-	public void step(String message, int delta) {
-		synchronized(this) {
-			if (message != null) {
-				mMessage = message;
-				mMessageChanged = true;
-			}
-			mProgress += delta;			
-			mProgressChanged = true;
-		}	
-		requestUpdateProgress();
-	}
+    /**
+     * Accessor
+     */
+    public boolean getSuccess() {
+        return mSuccess;
+    }
 
-	/**
-	 * Direct update of message and progress value
-	 */
-	public void onProgress(String message, int progress) {
+    /**
+     * Accessor
+     */
+    public void setSuccess(boolean success) {
+        mSuccess = success;
+    }
 
-		synchronized(this) {
-			if (message != null) {
-				mMessage = message;
-				mMessageChanged = true;
-			}
-			mProgress = progress;			
-			mProgressChanged = true;
-		}
+    /**
+     * Refresh the dialog, or post a refresh to the UI thread
+     */
+    private void requestUpdateProgress() {
+        System.out.println("Simple Task Queue: " + mMessage + " (" + mProgress + "/" + mMax + ")");
+        if (Thread.currentThread() == mHandler.getLooper().getThread()) {
+            updateProgress();
+        } else {
+            synchronized (mRefresher) {
+                if (!mRefresherQueued) {
+                    mHandler.post(mRefresher);
+                    mRefresherQueued = true;
+                }
+            }
+        }
+    }
 
-		requestUpdateProgress();
-	}
+    /**
+     * Convenience method to step the progress by 1.
+     */
+    public void step(String message) {
+        step(message, 1);
+    }
 
-	/**
-	 * Method, run in the UI thread, that updates the various dialog fields.
-	 */
-	private void updateProgress() {
-		Dialog d = getDialog();
-		if (d != null) {
+    /**
+     * Convenience method to step the progress by the passed delta
+     */
+    public void step(String message, int delta) {
+        synchronized (this) {
+            if (message != null) {
+                mMessage = message;
+                mMessageChanged = true;
+            }
+            mProgress += delta;
+            mProgressChanged = true;
+        }
+        requestUpdateProgress();
+    }
+
+    /**
+     * Direct update of message and progress value
+     */
+    public void onProgress(String message, int progress) {
+
+        synchronized (this) {
+            if (message != null) {
+                mMessage = message;
+                mMessageChanged = true;
+            }
+            mProgress = progress;
+            mProgressChanged = true;
+        }
+
+        requestUpdateProgress();
+    }
+
+    /**
+     * Method, run in the UI thread, that updates the various dialog fields.
+     */
+    private void updateProgress() {
+        Dialog d = getDialog();
+        if (d != null) {
             ProgressBar progressBar = d.findViewById(R.id.progress_horizontal);
             TextView messageView = d.findViewById(R.id.horizontal_message);
             TextView spinnerMessageView = d.findViewById(R.id.spinner_message);
 
-			synchronized(this) {
-				if (mMaxChanged) {
+            synchronized (this) {
+                if (mMaxChanged) {
                     progressBar.setMax(mMax);
-					mMaxChanged = false;
-				}
-				if (mMessageChanged) {
+                    mMaxChanged = false;
+                }
+                if (mMessageChanged) {
                     messageView.setText(mMessage);
                     spinnerMessageView.setText(mMessage);
-					mMessageChanged = false;
-				}				
+                    mMessageChanged = false;
+                }
 
-				if (mProgressChanged) {
+                if (mProgressChanged) {
                     progressBar.setProgress(mProgress);
-					mProgressChanged = false;
-				}
-				
-			}
-		}		
-	}
+                    mProgressChanged = false;
+                }
 
+            }
+        }
+    }
 
-
-	/**
-	 * Set the progress max value
-	 */
-	public void setMax(int max) {
-		mMax = max;
-		mMaxChanged = true;
-		requestUpdateProgress();
-	}
-	
-	/**
-     * Work-around for bug in compatibility library:
-     *     <a href="http://code.google.com/p/android/issues/detail?id=17423">...</a>
+    /**
+     * Set the progress max value
      */
-	@Override
-	 public void onDestroyView() {
-	     if (getDialog() != null && getRetainInstance())
-	         getDialog().setDismissMessage(null);
-		 super.onDestroyView();
-	 }
+    public void setMax(int max) {
+        mMax = max;
+        mMaxChanged = true;
+        requestUpdateProgress();
+    }
+
+    /**
+     * Work-around for bug in compatibility library:
+     * <a href="http://code.google.com/p/android/issues/detail?id=17423">...</a>
+     */
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null && getRetainInstance())
+            getDialog().setDismissMessage(null);
+        super.onDestroyView();
+    }
+
+    /**
+     * Each message has a single method to deliver it and will only be called
+     * when the underlying Activity is actually present.
+     */
+    private interface TaskMessage {
+        void deliver(Activity a);
+    }
+    /**
+     * Listener for OnTaskFinished messages
+     */
+    public interface OnTaskFinishedListener {
+        void onTaskFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled, FragmentTask task);
+    }    /**
+     * Runnable object to refresh the dialog
+     */
+    private final Runnable mRefresher = new Runnable() {
+        @Override
+        public void run() {
+            synchronized (mRefresher) {
+                mRefresherQueued = false;
+                updateProgress();
+            }
+        }
+    };
+
+    /**
+     * Listener for OnAllTasksFinished messages
+     */
+    public interface OnAllTasksFinishedListener {
+        void onAllTasksFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled);
+    }
+
+    /**
+     * Interface for 'FragmentTask' objects. Closely based on SimpleTask, but takes the fragment as a parameter
+     * to all calls.
+     *
+     * @author pjw
+     */
+    public interface FragmentTask {
+        /**
+         * Run the task in it's own thread
+         *
+         * @throws Exception Called method can throw exceptions to terminate process. They will be passed to the onFinish()
+         */
+        void run(SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) throws Exception;
+
+        /**
+         * Called in UI thread after task complete
+         *
+         * @param exception TODO
+         */
+        void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception);
+    }
+
+    /**
+     * Trivial implementation of FragmentTask that never calls onFinish(). The setState()/getState()
+     * calls can be used to store state info by a caller, eg. if they override requiresOnFinish() etc.
+     *
+     * @author pjw
+     */
+    public abstract static class FragmentTaskAbstract implements FragmentTask {
+        private int mState = 0;
+
+        @Override
+        public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
+            if (exception != null) {
+                Logger.logError(exception);
+                Toast.makeText(fragment.getActivity(), R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
+            }
+        }
+
+        public int getState() {
+            return mState;
+        }
+
+        public void setState(int state) {
+            mState = state;
+        }
+    }
+
+    /**
+     * TaskFinished message.
+     * We only deliver onFinish() to the FragmentTask when the activity is present.
+     */
+    private class TaskFinishedMessage implements TaskMessage {
+        FragmentTask mTask;
+        Exception mException;
+
+        public TaskFinishedMessage(FragmentTask task, Exception e) {
+            mTask = task;
+            mException = e;
+        }
+
+        @Override
+        public void deliver(Activity a) {
+            try {
+                mTask.onFinish(SimpleTaskQueueProgressFragment.this, mException);
+            } catch (Exception e) {
+                Logger.logError(e);
+            }
+            try {
+                if (a instanceof OnTaskFinishedListener) {
+                    ((OnTaskFinishedListener) a).onTaskFinished(SimpleTaskQueueProgressFragment.this, mTaskId, mSuccess, mWasCancelled, mTask);
+                }
+            } catch (Exception e) {
+                Logger.logError(e);
+            }
+
+        }
+
+    }
+
+    /**
+     * AllTasksFinished message.
+     */
+    private class AllTasksFinishedMessage implements TaskMessage {
+
+        public AllTasksFinishedMessage() {
+        }
+
+        @Override
+        public void deliver(Activity a) {
+            if (a instanceof OnAllTasksFinishedListener) {
+                ((OnAllTasksFinishedListener) a).onAllTasksFinished(SimpleTaskQueueProgressFragment.this, mTaskId, mSuccess, mWasCancelled);
+            }
+            dismiss();
+        }
+
+    }
+
+    /**
+     * A SimpleTask wrapper for a FragmentTask.
+     *
+     * @author pjw
+     */
+    private class FragmentTaskWrapper implements SimpleTask {
+        private final FragmentTask mInnerTask;
+
+        public FragmentTaskWrapper(FragmentTask task) {
+            mInnerTask = task;
+        }
+
+        @Override
+        public void run(SimpleTaskContext taskContext) throws Exception {
+            try {
+                mInnerTask.run(SimpleTaskQueueProgressFragment.this, taskContext);
+            } catch (Exception e) {
+                mSuccess = false;
+                throw e;
+            }
+        }
+
+        @Override
+        public void onFinish(Exception e) {
+            SimpleTaskQueueProgressFragment.this.queueTaskFinished(mInnerTask, e);
+        }
+
+    }
+
+
 }

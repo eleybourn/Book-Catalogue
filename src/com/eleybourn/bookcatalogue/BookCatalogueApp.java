@@ -191,7 +191,7 @@ public class BookCatalogueApp extends Application {
      * UNICODE collation became CS. We now use a LOCALIZED Collation, but still check if CI.
      *
      * @param db Any sqlite database connection
-     * @return    Flag indicating 'Collate <our-collation>' is broken.
+     * @return Flag indicating 'Collate <our-collation>' is broken.
      */
     public static boolean isCollationCaseSensitive(SQLiteDatabase db) {
         if (mCollationCaseSensitive == null)
@@ -203,7 +203,7 @@ public class BookCatalogueApp extends Application {
      * Wrapper to reduce explicit use of the 'context' member.
      *
      * @param resId Resource ID
-     * @return            Localized resource string
+     * @return Localized resource string
      */
     public static String getResourceString(int resId) {
         return context.getString(resId);
@@ -213,7 +213,7 @@ public class BookCatalogueApp extends Application {
      * Wrapper to reduce explicit use of the 'context' member.
      *
      * @param resId Resource ID
-     * @return            Localized resource string
+     * @return Localized resource string
      */
     public static String getResourceString(int resId, Object... objects) {
         return context.getString(resId, objects);
@@ -222,7 +222,7 @@ public class BookCatalogueApp extends Application {
     /**
      * Utility routine to return as BookCataloguePreferences object.
      *
-     * @return    Application preferences object.
+     * @return Application preferences object.
      */
     public static BookCataloguePreferences getAppPreferences() {
         return new BookCataloguePreferences();

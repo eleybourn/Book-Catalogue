@@ -1,7 +1,7 @@
 /*
  * @copyright 2010 Evan Leybourn
  * @license GNU General Public License
- * 
+ *
  * This file is part of Book Catalogue.
  *
  * Book Catalogue is free software: you can redistribute it and/or modify
@@ -35,20 +35,20 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 public class AdminBookshelfEdit extends BookCatalogueActivity {
 
-	private EditText mBookshelfText;
+    private EditText mBookshelfText;
     private Long mRowId;
     private BookshelfViewModel mViewModel;
 
 
     @Override
-	protected RequiredPermission[] getRequiredPermissions() {
-		return new RequiredPermission[0];
-	}
+    protected RequiredPermission[] getRequiredPermissions() {
+        return new RequiredPermission[0];
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		try {
-			super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        try {
+            super.onCreate(savedInstanceState);
 
             // Initialize ViewModel
             mViewModel = new ViewModelProvider(this).get(BookshelfViewModel.class);
@@ -59,17 +59,17 @@ public class AdminBookshelfEdit extends BookCatalogueActivity {
             topAppBar.setTitle(R.string.title_edit_bookshelf);
             topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-			mBookshelfText = findViewById(R.id.field_bookshelf);
+            mBookshelfText = findViewById(R.id.field_bookshelf);
             Button mConfirmButton = findViewById(R.id.button_confirm);
             Button mCancelButton = findViewById(R.id.button_cancel);
 
 
             // Get ID from Intent
-			mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROW_ID) : null;
-			if (mRowId == null) {
-				Bundle extras = getIntent().getExtras();
-				mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROW_ID) : null;
-			}
+            mRowId = savedInstanceState != null ? savedInstanceState.getLong(CatalogueDBAdapter.KEY_ROW_ID) : null;
+            if (mRowId == null) {
+                Bundle extras = getIntent().getExtras();
+                mRowId = extras != null ? extras.getLong(CatalogueDBAdapter.KEY_ROW_ID) : null;
+            }
 
             // Populate Fields
             if (mRowId != null && mRowId > 0) {
@@ -86,34 +86,34 @@ public class AdminBookshelfEdit extends BookCatalogueActivity {
                 mConfirmButton.setText(R.string.confirm_add_bs);
             }
 
-			mConfirmButton.setOnClickListener(view -> {
+            mConfirmButton.setOnClickListener(view -> {
                 saveState();
                 setResult(RESULT_OK);
                 finish();
             });
-			
-			mCancelButton.setOnClickListener(view -> {
+
+            mCancelButton.setOnClickListener(view -> {
                 setResult(RESULT_OK);
                 finish();
             });
-			
-		} catch (Exception e) {
-			Logger.logError(e);
-		}
-	}
 
-	@Override
-	protected void onSaveInstanceState(@NonNull Bundle outState) {
-		super.onSaveInstanceState(outState);
-		try {
-			outState.putLong(CatalogueDBAdapter.KEY_ROW_ID, mRowId);
-		} catch (Exception e) {
-			//do nothing
-		}
-	}
+        } catch (Exception e) {
+            Logger.logError(e);
+        }
+    }
 
-	private void saveState() {
-		String name = mBookshelfText.getText().toString().trim();
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        try {
+            outState.putLong(CatalogueDBAdapter.KEY_ROW_ID, mRowId);
+        } catch (Exception e) {
+            //do nothing
+        }
+    }
+
+    private void saveState() {
+        String name = mBookshelfText.getText().toString().trim();
         // Prevent saving empty names
         if (name.isEmpty()) return;
 
@@ -129,5 +129,5 @@ public class AdminBookshelfEdit extends BookCatalogueActivity {
             mViewModel.insert(bookshelf);
         }
 
-	}
+    }
 }

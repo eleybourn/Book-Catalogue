@@ -1,7 +1,7 @@
 /*
  * @copyright 2012 Philip Warner
  * @license GNU General Public License
- * 
+ *
  * This file is part of Book Catalogue.
  *
  * Book Catalogue is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 package com.eleybourn.bookcatalogue.database;
 
 /*
- * This code is based on the SQLiteOpenHelper from Android 2.2 so that 
+ * This code is based on the SQLiteOpenHelper from Android 2.2 so that
  * similar functionality can be made available to create databases on the
  * sdcard for android 1.6+.
- * 
+ *
  * Because we do not have access to SQLiteDatabase private methods, we can
  * not use the .lock() method. So we use our own local version. This
  * is less secure than the original code, but works for cooperating helpers.
- * 
+ *
  * Copyright (C) 2007 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,29 +44,29 @@ package com.eleybourn.bookcatalogue.database;
  * limitations under the License.
  */
 
-import java.util.concurrent.locks.ReentrantLock;
-
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * Based on SQLiteOpenHelper this class allows Android versions prior to 2.2 to
  * have SQLiteOpenHelper functionality when creating databases on other locations.
- * 
+ *
  * @author Philip Warner
  */
 public abstract class GenericOpenHelper {
-	/**
-	 * A helper class to manage database creation and version management.
-	 * You create a subclass implementing {@link #onCreate}, {@link #onUpgrade} and
-	 * optionally {@link #onOpen}, and this class takes care of opening the database
-	 * if it exists, creating it if it does not, and upgrading it as necessary.
-	 * Transactions are used to make sure the database is always in a sensible state.
-	 * <p>For an example, see the NotePadProvider class in the NotePad sample application,
-	 * in the <em>samples/</em> directory of the SDK.</p>
-	 */
+    /**
+     * A helper class to manage database creation and version management.
+     * You create a subclass implementing {@link #onCreate}, {@link #onUpgrade} and
+     * optionally {@link #onOpen}, and this class takes care of opening the database
+     * if it exists, creating it if it does not, and upgrading it as necessary.
+     * Transactions are used to make sure the database is always in a sensible state.
+     * <p>For an example, see the NotePadProvider class in the NotePad sample application,
+     * in the <em>samples/</em> directory of the SDK.</p>
+     */
     private static final String TAG = GenericOpenHelper.class.getSimpleName();
 
     private final ReentrantLock mLock = new ReentrantLock(true);
@@ -83,9 +83,9 @@ public abstract class GenericOpenHelper {
      * {@link #getWritableDatabase} or {@link #getReadableDatabase} is called.
      *
      * @param dbFilePath of the database file, or null for an in-memory database
-     * @param factory to use for creating cursor objects, or null for the default
-     * @param version number of the database (starting at 1); if the database is older,
-     *     {@link #onUpgrade} will be used to upgrade the database
+     * @param factory    to use for creating cursor objects, or null for the default
+     * @param version    number of the database (starting at 1); if the database is older,
+     *                   {@link #onUpgrade} will be used to upgrade the database
      */
     public GenericOpenHelper(String dbFilePath, CursorFactory factory, int version) {
         if (version < 1) throw new IllegalArgumentException("Version must be >= 1, was " + version);
@@ -104,8 +104,8 @@ public abstract class GenericOpenHelper {
      * <p>Errors such as bad permissions or a full disk may cause this operation
      * to fail, but future attempts may succeed if the problem is fixed.</p>
      *
-     * @throws SQLiteException if the database cannot be opened for writing
      * @return a read/write database object valid until {@link #close} is called
+     * @throws SQLiteException if the database cannot be opened for writing
      */
     public synchronized SQLiteDatabase getWritableDatabase() {
         if (mDatabase != null && mDatabase.isOpen() && !mDatabase.isReadOnly()) {
@@ -126,8 +126,8 @@ public abstract class GenericOpenHelper {
         SQLiteDatabase db = null;
         boolean doUnlock = false;
         if (mDatabase != null) {
-        	doUnlock = true;
-        	mLock.lock();
+            doUnlock = true;
+            mLock.lock();
         }
         try {
             mIsInitializing = true;
@@ -160,14 +160,17 @@ public abstract class GenericOpenHelper {
             mIsInitializing = false;
             if (success) {
                 if (mDatabase != null) {
-                    try { mDatabase.close(); } catch (Exception e) { }
+                    try {
+                        mDatabase.close();
+                    } catch (Exception e) {
+                    }
                 }
                 if (doUnlock)
-	                mLock.unlock();
+                    mLock.unlock();
                 mDatabase = db;
             } else {
-            	if (doUnlock)
-	                mLock.unlock();
+                if (doUnlock)
+                    mLock.unlock();
                 if (db != null) db.close();
             }
         }
@@ -182,9 +185,9 @@ public abstract class GenericOpenHelper {
      * database object will be closed and the read/write object will be returned
      * in the future.
      *
-     * @throws SQLiteException if the database cannot be opened
      * @return a database object valid until {@link #getWritableDatabase}
-     *     or {@link #close} is called.
+     * or {@link #close} is called.
+     * @throws SQLiteException if the database cannot be opened
      */
     public synchronized SQLiteDatabase getReadableDatabase() {
         if (mDatabase != null && mDatabase.isOpen()) {
@@ -252,7 +255,7 @@ public abstract class GenericOpenHelper {
      * you can use ALTER TABLE to rename the old table, then create the new table and then
      * populate the new table with the contents of the old table.
      *
-     * @param db The database.
+     * @param db         The database.
      * @param oldVersion The old database version.
      * @param newVersion The new database version.
      */
@@ -265,6 +268,7 @@ public abstract class GenericOpenHelper {
      *
      * @param db The database.
      */
-    public void onOpen(SQLiteDatabase db) {}
+    public void onOpen(SQLiteDatabase db) {
+    }
 
 }

@@ -108,8 +108,8 @@ public class Utils {
     private static final ArrayList<SimpleDateFormat> mParseDateFormats = new ArrayList<>();
     // Used for formatting dates for sql; everything is assumed to be UTC, or converted to UTC since
     // UTC is the default SQLite TZ.
-    static TimeZone tzUtc = TimeZone.getTimeZone("UTC");
-    static DateFormat mDateDisplaySdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+    static final TimeZone tzUtc = TimeZone.getTimeZone("UTC");
+    static final DateFormat mDateDisplaySdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
     private static ArrayUtils<Author> mAuthorUtils = null;
     private static ArrayUtils<Series> mSeriesUtils = null;
     /**
@@ -1730,7 +1730,7 @@ public class Utils {
 
     static public class ArrayUtils<T> {
 
-        Factory<T> mFactory;
+        final Factory<T> mFactory;
 
         ArrayUtils(Factory<T> factory) {
             mFactory = factory;

@@ -77,8 +77,8 @@ public class UpgradeMessageManager {
 	 * @author pjw
 	 */
 	private static class UpgradeMessage {
-		int version;
-		int messageId;
+		final int version;
+		final int messageId;
 		UpgradeMessage(int version, int messageId) {
 			this.version = version;
 			this.messageId = messageId;

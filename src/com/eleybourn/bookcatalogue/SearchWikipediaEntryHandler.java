@@ -42,14 +42,14 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 	private String this_title = "";
 	public ArrayList<String> titles = new ArrayList<>();
 	
-	public static String DIV = "div";
-	public static String LIST1 = "ul";
-	public static String LIST2 = "ol";
-	public static String ENTRY = "li";
-	public static String LINK1 = "a"; //optional
-	public static String LINK2 = "i"; //optional
-	public static String LINK3 = "b"; //optional
-	public static String TOC_TABLE = "table";
+	public static final String DIV = "div";
+	public static final String LIST1 = "ul";
+	public static final String LIST2 = "ol";
+	public static final String ENTRY = "li";
+	public static final String LINK1 = "a"; //optional
+	public static final String LINK2 = "i"; //optional
+	public static final String LINK3 = "b"; //optional
+	public static final String TOC_TABLE = "table";
 	
 	public ArrayList<String> getList(){
 		return titles;

@@ -164,10 +164,10 @@ public class SimpleTaskQueue {
 		private static final Object mCounterSync = new Object();
 		private static long mCounter = 0L;
 		private final SimpleTaskQueue mOwner;
-		public SimpleTask task;
+		public final SimpleTask task;
 		public Exception exception;
 		public boolean finishRequested = true;
-		public long id;
+		public final long id;
 		public SimpleTaskQueueThread activeThread = null;
 		SimpleTaskWrapper(SimpleTaskQueue owner, SimpleTask task) {
 			mOwner = owner;

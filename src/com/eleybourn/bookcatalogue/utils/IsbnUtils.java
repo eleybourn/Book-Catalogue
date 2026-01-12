@@ -114,10 +114,10 @@ public class IsbnUtils {
     }
 
     private static class IsbnInfo {
-        public int[] digits;
+        public final int[] digits;
         public int size;
         public boolean foundX;
-        public boolean isValid;
+        public final boolean isValid;
 
         public IsbnInfo(String isbn) {
             foundX = false;

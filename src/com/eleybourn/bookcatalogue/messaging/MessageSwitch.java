@@ -277,9 +277,9 @@ public class MessageSwitch<T,U> {
 	 */
 	private class MessageRoutingSlip implements RoutingSlip {
 		/** Destination queue (sender ID) */
-		long destination;
+        final long destination;
 		/** Message to deliver */
-		Message<T> message;
+        final Message<T> message;
 
 		/** Constructor */
 		public MessageRoutingSlip(long destination, Message<T> message) {

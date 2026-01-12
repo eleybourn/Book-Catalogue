@@ -546,7 +546,7 @@ public class StartupActivity
     }
 
     public class CheckCoversTask implements SimpleTask {
-        BookCataloguePreferences mPrefs = BookCatalogueApp.getAppPreferences();
+        final BookCataloguePreferences mPrefs = BookCatalogueApp.getAppPreferences();
         boolean mNeedsWarning = false;
 
         @Override

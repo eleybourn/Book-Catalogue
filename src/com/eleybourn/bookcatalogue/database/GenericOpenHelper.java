@@ -162,7 +162,7 @@ public abstract class GenericOpenHelper {
                 if (mDatabase != null) {
                     try {
                         mDatabase.close();
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 }
                 if (doUnlock)

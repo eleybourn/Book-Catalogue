@@ -114,7 +114,7 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 	 */
 	public static class ItemEntry<T> {
 		/** Actual value */
-		T value;
+        final T value;
 		/** Test description of the meaning of that value */
 		int textId;
         Object[] textArgs;
@@ -161,7 +161,7 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 	 * @param <T>		Underlying list item data type.
 	 */
 	public static class ItemEntries<T> implements Iterable<ItemEntry<T>> {
-		ArrayList<ItemEntry<T>> mList = new ArrayList<>();
+		final ArrayList<ItemEntry<T>> mList = new ArrayList<>();
 
 		/**
 		 * Utility to make adding items easier.
@@ -199,8 +199,8 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 	 * @param <T>
 	 */
 	private static class Holder<T> {
-		ItemEntry<T> item;
-		View baseView;
+		final ItemEntry<T> item;
+		final View baseView;
 		public Holder(ItemEntry<T> item, View baseView) {
 			this.item = item;
 			this.baseView = baseView;

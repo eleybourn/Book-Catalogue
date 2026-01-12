@@ -70,9 +70,9 @@ public class TarBackupContainer implements BackupContainer {
 	private final DocumentFile mDocFile;
 
 	/** UNICODE stream type for read/write text files */
-	public static String UTF8 = "utf8";
+	public static final String UTF8 = "utf8";
 	/** Buffer size for buffered streams */
-	public static int BUFFER_SIZE = 32768;
+	public static final int BUFFER_SIZE = 32768;
 
 	/**
 	 * Constructor

@@ -57,11 +57,11 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
     private static final int ACTIVITY_IMPORT_OLD_FILES = -666;
     private static final int ACTIVITY_REALLY_IMPORT_OLD_FILES = -667;
     private static final String LEGACY_NAME = "bookCatalogue";
-    public static RequiredPermission[] mScannerPermissions = new RequiredPermission[]{
+    public static final RequiredPermission[] mScannerPermissions = new RequiredPermission[]{
             new RequiredPermission(permission.CAMERA, R.string.perm_camera),
     };
     protected static RequiredPermission[] mMinimumPermissions;
-    protected static RequiredPermission[] mInternetPermissions = new RequiredPermission[]{
+    protected static final RequiredPermission[] mInternetPermissions = new RequiredPermission[]{
             new RequiredPermission(permission.INTERNET, R.string.perm_internet),
             new RequiredPermission(permission.ACCESS_NETWORK_STATE, R.string.perm_network_state),
             new RequiredPermission(permission.ACCESS_WIFI_STATE, R.string.perm_network_state),
@@ -416,8 +416,8 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
     }
 
     public static class RequiredPermission {
-        String permission;
-        int reason;
+        final String permission;
+        final int reason;
 
         public RequiredPermission(String permission, int reason) {
             this.permission = permission;

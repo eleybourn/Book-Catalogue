@@ -118,8 +118,8 @@ public class Fields extends ArrayList<Fields.Field> {
     // Java likes this
     private static final long serialVersionUID = 1L;
     // Used for date parsing
-    static java.text.SimpleDateFormat mDateSqlSdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-    static java.text.DateFormat mDateDisplaySdf = java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+    static final java.text.SimpleDateFormat mDateSqlSdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+    static final java.text.DateFormat mDateDisplaySdf = java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
     // The activity and preferences related to this object.
     private final FieldsContext mContext;
     // The last validator exception caught by this object
@@ -1137,15 +1137,15 @@ public class Fields extends ArrayList<Fields.Field> {
         /**
          * Layout ID
          */
-        public int id;
+        public final int id;
         /**
          * database column name (can be blank)
          */
-        public String column;
+        public final String column;
         /**
          * Visibility group name. Used in conjunction with preferences to show/hide Views
          */
-        public String group;
+        public final String group;
         /**
          * FieldFormatter to use (can be null)
          */
@@ -1153,7 +1153,7 @@ public class Fields extends ArrayList<Fields.Field> {
         /**
          * Validator to use (can be null)
          */
-        public FieldValidator validator;
+        public final FieldValidator validator;
         /**
          * Has the field been set to invisible
          **/
@@ -1166,7 +1166,7 @@ public class Fields extends ArrayList<Fields.Field> {
         /**
          * Owning collection
          */
-        WeakReference<Fields> mFields;
+        final WeakReference<Fields> mFields;
         /**
          * Accessor to use (automatically defined)
          */

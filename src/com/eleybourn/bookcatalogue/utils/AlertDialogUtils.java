@@ -23,7 +23,6 @@ import java.util.ArrayList;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 
 /**
  * Utilities related to building an AlertDialog that is just a list of clickable options.
@@ -39,8 +38,8 @@ public class AlertDialogUtils {
 	 *
 	 */
 	public static class AlertDialogItem implements CharSequence {
-		public String name;
-		public Runnable handler;
+		public final String name;
+		public final Runnable handler;
 		public AlertDialogItem(String name, Runnable handler ) {
 			this.name = name;
 			this.handler = handler;

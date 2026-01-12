@@ -81,7 +81,7 @@ public class SqlStatementManager {
 			for(SynchronizedStatement s : mStatements.values()) {
 				try {
 					s.close();
-				} catch (Exception e)
+				} catch (Exception ignored)
 				{}
             }
 			mStatements.clear();

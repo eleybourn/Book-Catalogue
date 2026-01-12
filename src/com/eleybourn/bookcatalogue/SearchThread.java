@@ -30,9 +30,9 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 abstract public class SearchThread extends ManagedTask {
-	protected String mAuthor;
-	protected String mTitle;
-	protected String mIsbn;
+	protected final String mAuthor;
+	protected final String mTitle;
+	protected final String mIsbn;
 	protected static boolean mFetchThumbnail;
 
 	public enum DataSource {
@@ -55,8 +55,8 @@ abstract public class SearchThread extends ManagedTask {
 	}
 
 	public static class BookSearchResults {
-		public DataSource source;
-		public Bundle data;
+		public final DataSource source;
+		public final Bundle data;
 		public BookSearchResults(DataSource source, Bundle data) {
 			this.source = source;
 			this.data = data;
@@ -64,7 +64,7 @@ abstract public class SearchThread extends ManagedTask {
 	}
 
 	// Accumulated book info.
-	protected ArrayList<BookSearchResults> mResults = new ArrayList<>();
+	protected final ArrayList<BookSearchResults> mResults = new ArrayList<>();
 
 	/**
 	 * Constructor. Will search according to passed parameters. If an ISBN

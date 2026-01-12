@@ -65,7 +65,7 @@ public class BookISBNSearch extends ActivityWithTasks {
     // Object managing current search.
     long mSearchManagerId = 0;
     // A list of author names we have already searched for in this session
-    ArrayList<String> mAuthorNames = new ArrayList<>();
+    final ArrayList<String> mAuthorNames = new ArrayList<>();
     private boolean mScannerStarted = false;
     private EditText mIsbnText;
     private EditText mTitleText;

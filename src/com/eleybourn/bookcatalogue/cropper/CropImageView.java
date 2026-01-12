@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 public class CropImageView extends CropImageViewTouchBase {
-	ArrayList<CropHighlightView> mHighlightViews = new ArrayList<>();
+	final ArrayList<CropHighlightView> mHighlightViews = new ArrayList<>();
 	CropHighlightView mMotionHighlightView = null;
 	float mLastX, mLastY;
 	int mMotionEdge;

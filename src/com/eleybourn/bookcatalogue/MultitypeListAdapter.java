@@ -38,8 +38,8 @@ import com.eleybourn.bookcatalogue.widgets.FastScroller.SectionIndexerV2;
  */
 public class MultitypeListAdapter extends CursorAdapter implements SectionIndexerV2 {
 
-	LayoutInflater mInflater;
-	MultitypeListHandler mHandler;
+	final LayoutInflater mInflater;
+	final MultitypeListHandler mHandler;
 
 	public MultitypeListAdapter(Context context, Cursor c, MultitypeListHandler handler) {
 		super(context, c, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);

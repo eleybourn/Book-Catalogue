@@ -21,7 +21,6 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;

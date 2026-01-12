@@ -42,18 +42,18 @@ public class BookCatalogueAPI implements SimpleTask {
 
     private static final SimpleTaskQueue mSyncQueue = new SimpleTaskQueue("BookCatalogueSyncQueue");
     private static final String BASE_URL = "https://book-catalogue.com/api";
-    public static String REQUEST_LOGIN = "login";
-    public static String REQUEST_INFO_COUNT = "count";
-    public static String REQUEST_INFO_LAST = "last_backup";
-    public static String REQUEST_BACKUP_ALL = "full_backup";
-    public static String REQUEST_BACKUP_BOOK = "backup_book";
-    public static String REQUEST_RESTORE_ALL = "restore";
+    public static final String REQUEST_LOGIN = "login";
+    public static final String REQUEST_INFO_COUNT = "count";
+    public static final String REQUEST_INFO_LAST = "last_backup";
+    public static final String REQUEST_BACKUP_ALL = "full_backup";
+    public static final String REQUEST_BACKUP_BOOK = "backup_book";
+    public static final String REQUEST_RESTORE_ALL = "restore";
     public static String REQUEST_GET_BOOKS = "get_books";
     public static String REQUEST_GET_BOOK = "get_book";
-    public static String REQUEST_DELETE_BOOK = "delete_book";
-    public static String METHOD_POST = "POST";
-    public static String METHOD_GET = "GET";
-    public static String METHOD_DEL = "DELETE";
+    public static final String REQUEST_DELETE_BOOK = "delete_book";
+    public static final String METHOD_POST = "POST";
+    public static final String METHOD_GET = "GET";
+    public static final String METHOD_DEL = "DELETE";
     public static String METHOD_PUT = "PUT";
     private static String mEmail;
     private static boolean mOptIn;

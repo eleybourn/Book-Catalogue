@@ -33,10 +33,10 @@ public class Tracker {
 		Running
 	}
 	private static class Event {
-		public String activityClass;
-		public String action;
-		public States state;
-		public Date date;
+		public final String activityClass;
+		public final String action;
+		public final States state;
+		public final Date date;
 		public Event(Object a, String action, States state) {
 			activityClass = a.getClass().getSimpleName();
 			this.action = action;
@@ -60,14 +60,7 @@ public class Tracker {
 		handleEvent(a,"OnActivityCreated (" + a.toString() + ")", States.Exit);				
 	}
 
-	public static void enterOnActivityResult(Object a, int requestCode, int resultCode) {
-		handleEvent(a,"OnActivityResult[" + requestCode + "," + resultCode + "] (" + a.toString() + ")", States.Enter);				
-	}
-	public static void exitOnActivityResult(Object a, int requestCode, int resultCode) {
-		handleEvent(a,"OnActivityResult[" + requestCode + "," + resultCode + "] (" + a.toString() + ")", States.Exit);				
-	}
-
-	public static void enterOnCreate(Object a) {
+    public static void enterOnCreate(Object a) {
 		handleEvent(a,"OnCreate (" + a.toString() + ")", States.Enter);
 	}
 	public static void exitOnCreate(Object a) {
@@ -103,14 +96,8 @@ public class Tracker {
 	public static void exitOnSaveInstanceState(Object a) {
 		handleEvent(a,"OnSaveInstanceState", States.Exit);
 	}
-	public static void enterOnRestoreInstanceState(Object a) {
-		handleEvent(a,"OnRestoreInstanceState", States.Enter);		
-	}
-	public static void exitOnRestoreInstanceState(Object a) {
-		handleEvent(a,"OnRestoreInstanceState", States.Exit);		
-	}
-	
-	public static void handleEvent(Object o, String name, States type) {
+
+    public static void handleEvent(Object o, String name, States type) {
 		Event e = new Event(o, name, type);
 		mEventBuffer[mNextEventBufferPos] = e;
 		ErrorReporter.getInstance().putCustomData("History-" + mNextEventBufferPos, e.getInfo());

@@ -38,7 +38,7 @@ import com.eleybourn.bookcatalogue.R;
 class CropHighlightView {
 	@SuppressWarnings("unused")
 	private static final String TAG = "HighlightView";
-	View mContext; // The View displaying the image.
+	final View mContext; // The View displaying the image.
 
 	public static final int GROW_NONE = (1 << 0);
 	public static final int GROW_LEFT_EDGE = (1 << 1);

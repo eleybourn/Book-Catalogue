@@ -106,7 +106,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      * Listener to handle 'fling' events; we could handle others but need to be
      * careful about possible clicks and scrolling.
      */
-    GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
+    final GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
 
         @Override
         public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {

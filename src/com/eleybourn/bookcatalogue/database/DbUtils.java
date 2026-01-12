@@ -60,10 +60,10 @@ public class DbUtils {
      * @author Philip Warner
      */
     public static class DomainDefinition {
-        public String name;
-        public String type;
-        public String extra;
-        public String constraint;
+        public final String name;
+        public final String type;
+        public final String extra;
+        public final String constraint;
 
         public DomainDefinition(String name, String type, String extra, String constraint) {
             this.name = name;
@@ -227,7 +227,7 @@ public class DbUtils {
         /**
          * List of index definitions for this table
          */
-        Hashtable<String, IndexDefinition> mIndexes = new Hashtable<>();
+        final Hashtable<String, IndexDefinition> mIndexes = new Hashtable<>();
         /**
          * Table name
          */
@@ -835,15 +835,15 @@ public class DbUtils {
             /**
              * Owner of primary key in FK reference
              */
-            TableDefinition parent;
+            final TableDefinition parent;
             /**
              * Table owning FK
              */
-            TableDefinition child;
+            final TableDefinition child;
             /**
              * Domains in the FK that reference the parent PK
              */
-            ArrayList<DomainDefinition> domains;
+            final ArrayList<DomainDefinition> domains;
 
             /**
              * Constructor.

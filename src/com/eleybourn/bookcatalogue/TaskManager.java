@@ -172,11 +172,11 @@ public class TaskManager {
 	private boolean mIsClosing = false;
 
 	// List of tasks being managed by this object
-	ArrayList<TaskInfo> mTasks = new ArrayList<>();
+    final ArrayList<TaskInfo> mTasks = new ArrayList<>();
 
 	// Task info for each ManagedTask object
 	private class TaskInfo {
-		ManagedTask 		task;
+		final ManagedTask 		task;
 		String				progressMessage;
 		int					progressMax;
 		int					progressCurrent;

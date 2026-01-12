@@ -751,7 +751,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
      */
     private static class GetBookExtrasTask implements SimpleTask {
 
-        public static int EXTRAS_HANDLED = LibraryStyle.EXTRAS_AUTHOR | LibraryStyle.EXTRAS_LOCATION | LibraryStyle.EXTRAS_PUBLISHER | LibraryStyle.EXTRAS_BOOKSHELVES;
+        public static final int EXTRAS_HANDLED = LibraryStyle.EXTRAS_AUTHOR | LibraryStyle.EXTRAS_LOCATION | LibraryStyle.EXTRAS_PUBLISHER | LibraryStyle.EXTRAS_BOOKSHELVES;
         /**
          * Location resource string
          */

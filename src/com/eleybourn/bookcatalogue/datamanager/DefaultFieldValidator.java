@@ -28,7 +28,7 @@ import com.eleybourn.bookcatalogue.R;
  *
  */
 public class DefaultFieldValidator implements DataValidator {
-	protected String mDefault;
+	protected final String mDefault;
 	/**
 	 * Allow for no default value.
 	 */

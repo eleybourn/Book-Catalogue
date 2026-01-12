@@ -435,7 +435,7 @@ public class CatalogueDBAdapter {
     /**
      * DEBUG ONLY. Set to true to enable logging of instances of this class.
      */
-    public static boolean DEBUG_INSTANCES = false;
+    public static final boolean DEBUG_INSTANCES = false;
     public static String message = "";
     /**
      * Debug counter
@@ -4390,7 +4390,7 @@ public class CatalogueDBAdapter {
             if (books != null)
                 try {
                     books.close();
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             if (l != null)
                 mDb.endTransaction(l);
@@ -4423,7 +4423,7 @@ public class CatalogueDBAdapter {
             if (books != null)
                 try {
                     books.close();
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             if (l != null)
                 mDb.endTransaction(l);
@@ -4488,12 +4488,12 @@ public class CatalogueDBAdapter {
             if (c != null)
                 try {
                     c.close();
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             if (insert != null)
                 try {
                     insert.close();
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             if (l != null)
                 mDb.endTransaction(l);
@@ -4817,12 +4817,6 @@ public class CatalogueDBAdapter {
                     Logger.logError(e);
                     throw new RuntimeException("Failed to upgrade database", e);
                 }
-                try {
-                    //createIndices(db); // All createIndices prior to the latest have been removed
-                } catch (Exception e) {
-                    Logger.logError(e);
-                    throw new RuntimeException("Failed to upgrade database", e);
-                }
             }
             if (curVersion == 25) {
                 //do nothing
@@ -4878,12 +4872,6 @@ public class CatalogueDBAdapter {
                 curVersion++;
                 try {
                     db.execSQL(DATABASE_CREATE_ANTHOLOGY);
-                } catch (Exception e) {
-                    Logger.logError(e);
-                    throw new RuntimeException("Failed to upgrade database", e);
-                }
-                try {
-                    //createIndices(db); // All createIndices prior to the latest have been removed
                 } catch (Exception e) {
                     Logger.logError(e);
                     throw new RuntimeException("Failed to upgrade database", e);

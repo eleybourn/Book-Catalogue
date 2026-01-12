@@ -151,11 +151,11 @@ public class LocalCoverFinder implements Importer.CoverFinder {
 			try {
 				if (in != null)
 					in.close();
-			} catch (Exception e) {}
+			} catch (Exception ignored) {}
             try {
 				if (out != null)
 					out.close();
-			} catch (Exception e) {}
+			} catch (Exception ignored) {}
         }
 	}
 

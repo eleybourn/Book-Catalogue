@@ -43,7 +43,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
 import androidx.core.content.FileProvider;
-import android.view.View;
+
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -173,7 +173,7 @@ public class CropCropImage extends CropMonitoredActivity {
 		try {
 			in = mContentResolver.openInputStream(uri);
 			return BitmapFactory.decodeStream(in);
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException ignored) {
 		}
 		return null;
 	}
@@ -388,7 +388,7 @@ latch.countDown();
 			mBitmap.recycle();
 	}
 
-	Runnable mRunFaceDetection = new Runnable() {
+	final Runnable mRunFaceDetection = new Runnable() {
 		float mScale = 1F;
 		Matrix mImageMatrix;
 		final FaceDetector.Face[] mFaces = new FaceDetector.Face[3];

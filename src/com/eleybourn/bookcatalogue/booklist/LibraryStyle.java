@@ -152,9 +152,9 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	 */
 	public static class CompoundKey {
 		/** Unique prefix used to represent a key in the hierarchy */
-		String prefix;
+        final String prefix;
 		/** List of domains in key */
-		DomainDefinition[] domains;
+        final DomainDefinition[] domains;
 		/** Constructor */
 		CompoundKey(String prefix, DomainDefinition...domains) {
 			this.prefix = prefix;

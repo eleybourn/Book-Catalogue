@@ -188,7 +188,7 @@ public class DbSync {
                     // Probably happens because thread was interrupted. Just die.
                     try {
                         mLock.unlock();
-                    } catch (Exception e2) {
+                    } catch (Exception ignored) {
                     }
                     throw new RuntimeException("Unable to get exclusive lock", e);
                 }

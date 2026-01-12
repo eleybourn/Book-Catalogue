@@ -21,7 +21,6 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -54,7 +53,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  */
 public class LibraryThingManager {
 	/** App context (for prefs) */
-	Context mAppContext;
+    final Context mAppContext;
 
 	/** Name of preference that contains the dev key for the user */
 	public static final String LT_DEVKEY_PREF_NAME = "lt_devkey";
@@ -65,22 +64,22 @@ public class LibraryThingManager {
 
 	// Words in XML
 	public static String ID = "id";
-	public static String AUTHOR = "author";
-	public static String RESPONSE = "response";
-	public static String FIELD = "field";
-	public static String ISBN = "isbn";
-	public static String ITEM = "item";
-	public static String FACT = "fact";
-	public static String CANONICAL_TITLE = "canonicaltitle";
-	public static String SERIES = "series";
-	public static String PLACES = "placesmentioned";
-	public static String CHARACTERS = "characternames";
+	public static final String AUTHOR = "author";
+	public static final String RESPONSE = "response";
+	public static final String FIELD = "field";
+	public static final String ISBN = "isbn";
+	public static final String ITEM = "item";
+	public static final String FACT = "fact";
+	public static final String CANONICAL_TITLE = "canonicaltitle";
+	public static final String SERIES = "series";
+	public static final String PLACES = "placesmentioned";
+	public static final String CHARACTERS = "characternames";
 
-	public static String COVER_URL_LARGE = "https://covers.librarything.com/devkey/%1$s/large/isbn/%2$s";
-	public static String COVER_URL_MEDIUM = "https://covers.librarything.com/devkey/%1$s/medium/isbn/%2$s";
-	public static String COVER_URL_SMALL = "https://covers.librarything.com/devkey/%1$s/small/isbn/%2$s";
-	public static String DETAIL_URL = "https://www.librarything.com/services/rest/1.1/?method=librarything.ck.getwork&apikey=%1$s&isbn=%2$s";
-	public static String EDITIONS_URL = "https://www.librarything.com/api/thingISBN/%s";
+	public static final String COVER_URL_LARGE = "https://covers.librarything.com/devkey/%1$s/large/isbn/%2$s";
+	public static final String COVER_URL_MEDIUM = "https://covers.librarything.com/devkey/%1$s/medium/isbn/%2$s";
+	public static final String COVER_URL_SMALL = "https://covers.librarything.com/devkey/%1$s/small/isbn/%2$s";
+	public static final String DETAIL_URL = "https://www.librarything.com/services/rest/1.1/?method=librarything.ck.getwork&apikey=%1$s&isbn=%2$s";
+	public static final String EDITIONS_URL = "https://www.librarything.com/api/thingISBN/%s";
 
 	// Field types we are interested in.
 	private enum FieldTypes{ NONE, AUTHOR, TITLE, SERIES, PLACES, CHARACTERS, OTHER }
@@ -118,7 +117,7 @@ public class LibraryThingManager {
 		if (wait > 0) {
 			try {
 			Thread.sleep(wait);
-			} catch (InterruptedException e) {
+			} catch (InterruptedException ignored) {
 			}
 		}
 	}
@@ -440,11 +439,11 @@ public class LibraryThingManager {
 			// Dont bother catching general exceptions, they will be caught by the caller.
 		} catch (IOException | ParserConfigurationException e) {
 			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {}
+			try { s = e.getMessage(); } catch (Exception ignored) {}
             Logger.logError(e, s);
 		} catch (SAXException e) {
 			String s = e.getMessage(); // "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {}
+			try { s = e.getMessage(); } catch (Exception ignored) {}
             Logger.logError(e, s);
 		}
 

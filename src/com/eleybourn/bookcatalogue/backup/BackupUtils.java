@@ -37,8 +37,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.utils.XmlFilter;
-import com.eleybourn.bookcatalogue.utils.XmlFilter.ElementContext;
-import com.eleybourn.bookcatalogue.utils.XmlFilter.XmlHandler;
 import com.eleybourn.bookcatalogue.utils.XmlResponseParser;
 import com.eleybourn.bookcatalogue.utils.Base64;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -73,7 +71,7 @@ public class BackupUtils {
 	 *
 	 */
 	private static class BundleAccessor implements CollectionAccessor<String> {
-		Bundle mBundle;
+		final Bundle mBundle;
 		public BundleAccessor(Bundle b) {
 			mBundle = b;
 		}
@@ -121,8 +119,8 @@ public class BackupUtils {
 	 *
 	 */
 	private static class PreferencesAccessor implements CollectionAccessor<String> {
-		SharedPreferences mPrefs;
-		Map<String,?> mMap;
+		final SharedPreferences mPrefs;
+		final Map<String,?> mMap;
 		Editor mEditor;
 
 		public PreferencesAccessor(SharedPreferences p) {

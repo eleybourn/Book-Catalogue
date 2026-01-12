@@ -185,27 +185,27 @@ public class SearchAmazonHandler extends DefaultHandler {
 	
 	/* The XML element names */
 	public static String ID = "id";
-	public static String TOTALRESULTS = "TotalResults";
-	public static String ENTRY = "Item";
-	public static String AUTHOR = "Author";
-	public static String TITLE = "Title";
-	public static String ISBN = "EAN";
-	public static String EISBN = "EISBN";
-	public static String ISBNOLD = "ISBN";
-	public static String DATE_PUBLISHED = "PublicationDate";
-	public static String PUBLISHER = "Publisher";
-	public static String PAGES = "NumberOfPages";
-	public static String THUMBNAIL = "URL";
-	public static String SMALLIMAGE = "SmallImage";
-	public static String MEDIUMIMAGE = "MediumImage";
-	public static String LARGEIMAGE = "LargeImage";
-	public static String DESCRIPTION = "Content";
-	public static String BINDING = "Binding";
-	public static String LANGUAGE = "Language";
-	public static String NAME = "Name";
-	public static String LIST_PRICE = "ListPrice";
-	public static String CURRENCY_CODE = "CurrencyCode";
-	public static String AMOUNT = "Amount";
+	public static final String TOTALRESULTS = "TotalResults";
+	public static final String ENTRY = "Item";
+	public static final String AUTHOR = "Author";
+	public static final String TITLE = "Title";
+	public static final String ISBN = "EAN";
+	public static final String EISBN = "EISBN";
+	public static final String ISBNOLD = "ISBN";
+	public static final String DATE_PUBLISHED = "PublicationDate";
+	public static final String PUBLISHER = "Publisher";
+	public static final String PAGES = "NumberOfPages";
+	public static final String THUMBNAIL = "URL";
+	public static final String SMALLIMAGE = "SmallImage";
+	public static final String MEDIUMIMAGE = "MediumImage";
+	public static final String LARGEIMAGE = "LargeImage";
+	public static final String DESCRIPTION = "Content";
+	public static final String BINDING = "Binding";
+	public static final String LANGUAGE = "Language";
+	public static final String NAME = "Name";
+	public static final String LIST_PRICE = "ListPrice";
+	public static final String CURRENCY_CODE = "CurrencyCode";
+	public static final String AMOUNT = "Amount";
 
 	SearchAmazonHandler(Bundle bookData, boolean fetchThumbnail) {
 		mBookData = bookData;

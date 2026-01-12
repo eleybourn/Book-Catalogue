@@ -39,11 +39,11 @@ import java.util.Set;
  */
 public class DataManager {
     // Generic validators; if field-specific defaults are needed, create a new one.
-    protected static DataValidator integerValidator = new IntegerValidator("0");
-    protected static DataValidator nonBlankValidator = new NonBlankValidator();
-    protected static DataValidator blankOrIntegerValidator = new OrValidator(new BlankValidator(),
+    protected static final DataValidator integerValidator = new IntegerValidator("0");
+    protected static final DataValidator nonBlankValidator = new NonBlankValidator();
+    protected static final DataValidator blankOrIntegerValidator = new OrValidator(new BlankValidator(),
             new IntegerValidator("0"));
-    protected static DataValidator blankOrFloatValidator = new OrValidator(new BlankValidator(),
+    protected static final DataValidator blankOrFloatValidator = new OrValidator(new BlankValidator(),
             new FloatValidator("0.00"));
 
     /**

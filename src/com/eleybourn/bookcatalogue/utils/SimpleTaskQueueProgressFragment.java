@@ -545,8 +545,8 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
      * We only deliver onFinish() to the FragmentTask when the activity is present.
      */
     private class TaskFinishedMessage implements TaskMessage {
-        FragmentTask mTask;
-        Exception mException;
+        final FragmentTask mTask;
+        final Exception mException;
 
         public TaskFinishedMessage(FragmentTask task, Exception e) {
             mTask = task;

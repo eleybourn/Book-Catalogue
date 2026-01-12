@@ -91,7 +91,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
      */
     protected Integer mThumbZoomSize;
 
-    ActivityResultLauncher<String[]> mCameraPermissionsLauncher = registerForActivityResult(
+    final ActivityResultLauncher<String[]> mCameraPermissionsLauncher = registerForActivityResult(
             new RequestMultiplePermissions(),
             result -> {
                 for (Entry<String, Boolean> e : result.entrySet()) {

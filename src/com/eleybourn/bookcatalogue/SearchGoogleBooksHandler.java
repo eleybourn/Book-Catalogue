@@ -125,9 +125,9 @@ public class SearchGoogleBooksHandler extends DefaultHandler {
 	private boolean entry = false;
 	private boolean done = false;
 	
-	public static String ID = "id";
-	public static String TOTALRESULTS = "totalResults";
-	public static String ENTRY = "entry";
+	public static final String ID = "id";
+	public static final String TOTALRESULTS = "totalResults";
+	public static final String ENTRY = "entry";
 	
 	/**
 	 * Return the id of the first book found

@@ -36,11 +36,11 @@ import org.xml.sax.Attributes;
  */
 public class XmlFilter {
 	/** The tag for this specific filter */
-	String mTagName;
+    final String mTagName;
 	/** A hashtable to ensure that there are no more than one sub-filter per tag at a given level */
-	Hashtable<String, XmlFilter> mSubFilterHash = new Hashtable<>();
+    final Hashtable<String, XmlFilter> mSubFilterHash = new Hashtable<>();
 	/** List of sub-filters for this filter */
-	ArrayList<XmlFilter> mSubFilters = new ArrayList<>();
+    final ArrayList<XmlFilter> mSubFilters = new ArrayList<>();
 	/** Action to perform, if any, when the associated tag is started */
 	XmlHandler mStartAction = null;
 	/** Optional parameter put in context before action is called */
@@ -63,11 +63,11 @@ public class XmlFilter {
 	 *
 	 */
 	public static class ElementContext {
-		public String uri;
-		public String localName;
-		public String name;
-		public Attributes attributes;
-		public String preText;
+		public final String uri;
+		public final String localName;
+		public final String name;
+		public final Attributes attributes;
+		public final String preText;
 		public String body;
 		public XmlFilter filter;
 		public ElementContext(String uri, String localName, String name, Attributes attributes, String preText) {

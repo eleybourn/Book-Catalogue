@@ -73,7 +73,7 @@ public class BooklistStyleGroupsActivity extends BookEditObjectList<GroupWrapper
 	public static class GroupWrapper implements Serializable {
 		private static final long serialVersionUID = 3108094089675884238L;
 		/** The actual group */
-		LibraryGroup group;
+        final LibraryGroup group;
 		/** Whether this groups is present in the style */
 		boolean present;
 		/** Constructor */

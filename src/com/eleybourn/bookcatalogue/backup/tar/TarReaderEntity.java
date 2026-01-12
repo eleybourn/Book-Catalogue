@@ -33,8 +33,8 @@ import com.eleybourn.bookcatalogue.backup.ReaderEntityAbstract;
  * @author pjw
  */
 public class TarReaderEntity extends ReaderEntityAbstract {
-	protected TarBackupReader mReader;
-	protected TarArchiveEntry mEntry;
+	protected final TarBackupReader mReader;
+	protected final TarArchiveEntry mEntry;
 	private final BackupEntityType mType;
 
 	/**

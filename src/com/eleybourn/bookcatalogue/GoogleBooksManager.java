@@ -1,7 +1,6 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;

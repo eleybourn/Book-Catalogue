@@ -686,10 +686,10 @@ public class Base64
             throw e;
         }   // end catch
         finally {
-            try{ oos.close();   } catch( Exception e ){}
-            try{ gzos.close();  } catch( Exception e ){}
-            try{ b64os.close(); } catch( Exception e ){}
-            try{ baos.close();  } catch( Exception e ){}
+            try{ oos.close();   } catch( Exception ignored){}
+            try{ gzos.close();  } catch( Exception ignored){}
+            try{ b64os.close(); } catch( Exception ignored){}
+            try{ baos.close();  } catch( Exception ignored){}
         }   // end finally
         
         // Return value according to relevant encoding.
@@ -928,9 +928,9 @@ public class Base64
                 throw e;
             }   // end catch
             finally {
-                try{ gzos.close();  } catch( Exception e ){}
-                try{ b64os.close(); } catch( Exception e ){}
-                try{ baos.close();  } catch( Exception e ){}
+                try{ gzos.close();  } catch( Exception ignored){}
+                try{ b64os.close(); } catch( Exception ignored){}
+                try{ baos.close();  } catch( Exception ignored){}
             }   // end finally
 
             return baos.toByteArray();
@@ -1289,9 +1289,9 @@ public class Base64
                     // Just return originally-decoded bytes
                 }   // end catch
                 finally {
-                    try{ baos.close(); } catch( Exception e ){}
-                    try{ gzis.close(); } catch( Exception e ){}
-                    try{ bais.close(); } catch( Exception e ){}
+                    try{ baos.close(); } catch( Exception ignored){}
+                    try{ gzis.close(); } catch( Exception ignored){}
+                    try{ bais.close(); } catch( Exception ignored){}
                 }   // end finally
 
             }   // end if: gzipped
@@ -1379,8 +1379,8 @@ public class Base64
         }   // end catch
         // end catch
         finally {
-            try{ bais.close(); } catch( Exception e ){}
-            try{ ois.close();  } catch( Exception e ){}
+            try{ bais.close(); } catch( Exception ignored){}
+            try{ ois.close();  } catch( Exception ignored){}
         }   // end finally
         
         return obj;
@@ -1416,7 +1416,7 @@ public class Base64
             } catch (java.io.IOException e) {
                 throw e; // Catch and throw to execute finally{} block
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         
     }   // end encodeToFile
@@ -1445,7 +1445,7 @@ public class Base64
             } catch (java.io.IOException e) {
                 throw e; // Catch and throw to execute finally{} block
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         
     }   // end decodeToFile
@@ -1506,7 +1506,7 @@ public class Base64
             throw e; // Catch and release to execute finally{}
         }   // end catch: java.io.IOException
         finally {
-            try{ bis.close(); } catch( Exception e) {}
+            try{ bis.close(); } catch( Exception ignored) {}
         }   // end finally
         
         return decodedData;
@@ -1559,7 +1559,7 @@ public class Base64
             throw e; // Catch and release to execute finally{}
         }   // end catch: java.io.IOException
         finally {
-            try{ bis.close(); } catch( Exception e) {}
+            try{ bis.close(); } catch( Exception ignored) {}
         }   // end finally
         
         return encodedData;
@@ -1584,7 +1584,7 @@ public class Base64
             } catch (java.io.IOException e) {
                 throw e; // Catch and release to execute finally{}
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
     }   // end encodeFileToFile
 
@@ -1608,7 +1608,7 @@ public class Base64
             } catch (java.io.IOException e) {
                 throw e; // Catch and release to execute finally{}
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
     }   // end decodeFileToFile
     

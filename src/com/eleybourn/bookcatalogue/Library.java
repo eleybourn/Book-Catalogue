@@ -1221,8 +1221,8 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
      * @author Philip Warner
      */
     private class ListViewHolder {
-        TextView level1Text;
-        TextView level2Text;
+        final TextView level1Text;
+        final TextView level2Text;
 
         public ListViewHolder() {
             level1Text = findViewById(R.id.label_level_1);

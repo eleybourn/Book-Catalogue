@@ -19,8 +19,6 @@
  */
 package com.eleybourn.bookcatalogue.datamanager;
 
-import java.util.Iterator;
-
 /**
  * 'Meta' Validator to evaluate a list of validators; ALL validators must be true.
  * 

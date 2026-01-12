@@ -33,8 +33,8 @@ public class CollationCaseSensitive {
 			try { 
 				if (c != null)
 					c.close();
-			} catch (Exception e) {}
-			try { db.execSQL("Drop Table If Exists collation_cs_check"); } catch (Exception e) {}
+			} catch (Exception ignored) {}
+			try { db.execSQL("Drop Table If Exists collation_cs_check"); } catch (Exception ignored) {}
 		}
 	}
 }

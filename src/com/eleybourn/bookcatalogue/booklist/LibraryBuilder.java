@@ -1839,8 +1839,8 @@ public class LibraryBuilder {
     }
 
     public static class SortedDomainInfo {
-        DomainDefinition domain;
-        boolean isDescending;
+        final DomainDefinition domain;
+        final boolean isDescending;
 
         SortedDomainInfo(DomainDefinition domain, boolean isDescending) {
             this.domain = domain;
@@ -1869,8 +1869,8 @@ public class LibraryBuilder {
      * @author Philip Warner
      */
     public static class BookRowInfo {
-        public int absolutePosition;
-        public boolean visible;
+        public final int absolutePosition;
+        public final boolean visible;
         public int listPosition;
 
         BookRowInfo(int absPos, int listPos, int vis) {

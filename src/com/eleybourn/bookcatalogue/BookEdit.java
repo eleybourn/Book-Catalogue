@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,8 +41,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.eleybourn.bookcatalogue.booklist.LibraryBuilder;
+import com.eleybourn.bookcatalogue.BookCatalogueAPI.ApiListener;
 import com.eleybourn.bookcatalogue.booklist.FlattenedBooklist;
+import com.eleybourn.bookcatalogue.booklist.LibraryBuilder;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.data.Series;
@@ -63,6 +65,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -98,6 +101,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     private long mRowId;
     private BookData mBookData;
     private boolean mIsReadOnly;
+    private ApiListener mApiListener;
     /**
      * Listener to handle 'fling' events; we could handle others but need to be
      * careful about possible clicks and scrolling.
@@ -210,6 +214,8 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     public void onCreate(Bundle savedInstanceState) {
         Tracker.enterOnCreate(this);
         super.onCreate(savedInstanceState);
+
+        mApiListener = new StaticApiListener(this);
 
         // Register the back press callback
         getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
@@ -332,6 +338,14 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
         Tracker.exitOnCreate(this);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // When the activity becomes active, set it as the current listener.
+        // Any running background task will now send updates to this activity.
+        BookCatalogueAPI.setActiveListener(mApiListener);
     }
 
     public void setAnthologyVisibility(boolean visible) {
@@ -461,6 +475,9 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             }
         }
         super.onPause();
+        // When the activity is no longer in the foreground, clear the listener
+        // to prevent updates from being sent to it while it's paused.
+        BookCatalogueAPI.setActiveListener(null);
     }
 
     @Override
@@ -687,7 +704,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      * book. Minor modifications will be made to the strings: - Titles will be
      * rewords so 'a', 'the', 'an' will be moved to the end of the string (this
      * is only done for NEW books)
-     * - Date published will be converted from a date to a string
+     * - Date published will be converted froma date to a string
      * <p>
      * Thumbnails will also be saved to the correct location
      * It will check if the book already exists (isbn search) if you are
@@ -766,9 +783,11 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                 File thumb = CatalogueDBAdapter.getTempThumbnail();
                 File real = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));
                 thumb.renameTo(real);
+                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
             }
         } else {
             mDbHelper.updateBook(mRowId, mBookData, 0);
+            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
         }
 
         /*
@@ -990,6 +1009,44 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         void success();
 
         void failure();
+    }
+
+    // Define the listener as a static inner class
+    private static class StaticApiListener implements ApiListener {
+        private final WeakReference<BookEdit> activityReference;
+
+        StaticApiListener(BookEdit activity) {
+            // Use a WeakReference to avoid memory leaks
+            this.activityReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void onApiProgress(String request, int current, int total) {
+            BookEdit activity = activityReference.get();
+            // Only update UI if the activity is still alive
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+            Log.d("BookEdit", "API Progress for " + request + ": " + current + "/" + total);
+        }
+
+        @Override
+        public void onApiComplete(String request, String message) {
+            BookEdit activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+            Log.d("BookEdit", "API Complete for " + request + ": " + message);
+        }
+
+        @Override
+        public void onApiError(String request, String error) {
+            BookEdit activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+            Log.e("BookEdit", "API Error for " + request + ": " + error);
+        }
     }
 
     private class SaveAlert extends AlertDialog {

@@ -48,6 +48,13 @@ public class BookCatalogueAPI implements SimpleTask {
     public static String REQUEST_FULL_BACKUP = "full_backup";
     public static String REQUEST_BACKUP_BOOK = "backup_book";
     public static String REQUEST_FULL_RESTORE = "restore";
+    public static String REQUEST_GET_BOOKS = "get_books";
+    public static String REQUEST_GET_BOOK = "get_book";
+    public static String REQUEST_DELETE_BOOK = "delete_book";
+    public static String METHOD_POST = "POST";
+    public static String METHOD_GET = "GET";
+    public static String METHOD_DEL = "DEL";
+    public static String METHOD_PUT = "PUT";
     private static String mEmail;
     private static boolean mOptIn;
     private static String mApiToken;
@@ -183,7 +190,8 @@ public class BookCatalogueAPI implements SimpleTask {
             values.add(mEmail);
             values.add(mOptIn ? "1" : "0");
 
-            JSONObject json = connection("/login", fields, values);
+            String response = connection("/login", METHOD_POST, fields, values);
+            JSONObject json = new JSONObject(response);
             if (json.has("api_token")) {
                 mApiToken = json.getString("api_token");
                 mPrefs.setAccountApiToken(mApiToken);
@@ -377,8 +385,9 @@ public class BookCatalogueAPI implements SimpleTask {
         fields.add("book_uuid");
         values.add(getString(bookCursor, CatalogueDBAdapter.KEY_BOOK_UUID));
 
-        JSONObject json = connection("/book", fields, values, thumbnailFile);
-        if (json != null && json.has("id")) {
+        String response = connection("/book", METHOD_POST, fields, values, thumbnailFile);
+        JSONObject json = new JSONObject(response);
+        if (json.has("id")) {
             return;
         }
         throw new Exception("Upload failed for book ID " + bookId + " (" + title + "): ");
@@ -395,20 +404,86 @@ public class BookCatalogueAPI implements SimpleTask {
         return obj.optString(key, "");
     }
 
-    public void runFullRestore() {
-        if (mApiToken.isEmpty()) {
-            notifyError("No API Token set for runFullRestore");
-            return;
+    public void deleteBook() {
+        try {
+            if (mApiToken.isEmpty()) {
+                throw new Exception("No API Token set for deleteBook");
+            }
+            String urlEndPoint = "/book/" + mBookId;
+            String response = connection(urlEndPoint, METHOD_DEL);
+            JSONObject book = new JSONObject(response);
+            if (book.has("deleted_book_id")) {
+                // Retrieve the count from the JSON response.
+                String bcid = book.getString("deleted_book_id");
+                notifyComplete("Deleted book " + bcid);
+                Log.d("BookCatalogueAPI", "Deleted book " + bcid);
+            } else {
+                // Handle cases where the JSON is null or doesn't have the "count" key
+                throw new Exception("Invalid response from /book/<id> endpoint. JSON: " + book);
+            }
+        } catch (Exception e) {
+            Log.e("BookCatalogueAPI", "API failed", e);
+            final String errorMessage = e.getMessage();
+            notifyError(errorMessage);
         }
+    }
+
+    public JSONObject getBook(boolean notifyComplete) {
+        JSONObject book = null;
+        try {
+            if (mApiToken.isEmpty()) {
+                throw new Exception("No API Token set for getAllBooks");
+            }
+            String urlEndPoint = "/book/" + mBookId;
+            String response = connection(urlEndPoint, METHOD_GET);
+            book = new JSONObject(response);
+            if (book.has("bcid")) {
+                // Retrieve the count from the JSON response.
+                String bcid = book.getString("bcid");
+                if (notifyComplete) {
+                    notifyComplete(bcid);
+                }
+                Log.d("BookCatalogueAPI", "Found book " + bcid);
+            } else {
+                // Handle cases where the JSON is null or doesn't have the "count" key
+                throw new Exception("Invalid response from /books/count endpoint. JSON: " + book);
+            }
+        } catch (Exception e) {
+            Log.e("BookCatalogueAPI", "API failed", e);
+            final String errorMessage = e.getMessage();
+            notifyError(errorMessage);
+        }
+        return book;
+    }
+
+    public JSONArray getAllBooks(boolean notifyComplete) {
+        JSONArray books = null;
+        try {
+            if (mApiToken.isEmpty()) {
+                throw new Exception("No API Token set for getAllBooks");
+            }
+            String response = connection("/books", METHOD_GET);
+            books = new JSONArray(response);
+            int total = books.length();
+            Log.d("BookCatalogueAPI", "Found " + total + " books");
+            if (notifyComplete) {
+                notifyComplete(String.valueOf(total));
+            }
+        } catch (Exception e) {
+            Log.e("BookCatalogueAPI", "API failed", e);
+            final String errorMessage = e.getMessage();
+            notifyError(errorMessage);
+        }
+        return books;
+    }
+
+    public void runFullRestore() {
         CatalogueDBAdapter db = null;
         DbSync.Synchronizer.SyncLock txLock = null;
 
         try {
             notifyProgress(0, 1); // Indicate that the process has started
-            JSONArray books = connection("/books");
-            if (books == null) {
-                throw new Exception("Failed to fetch books from the server.");
-            }
+            JSONArray books = getAllBooks(false);
 
             db = mTaskContext.getDb();
             db.open(); // Ensure DB is open
@@ -612,11 +687,9 @@ public class BookCatalogueAPI implements SimpleTask {
                 // It might be better to try a login() call here, but for now, we'll error out.
                 throw new Exception("No API Token set for getTotalBooks");
             }
-            ArrayList<String> fields = new ArrayList<>();
-            ArrayList<String> values = new ArrayList<>();
-
-            JSONObject json = connection("/books/count", fields, values);
-            if (json != null && json.has("count")) {
+            String response = connection("/books/count", METHOD_GET);
+            JSONObject json = new JSONObject(response);
+            if (json.has("count")) {
                 // Retrieve the count from the JSON response.
                 String bookCount = json.getString("count");
                 notifyComplete(bookCount);
@@ -637,11 +710,9 @@ public class BookCatalogueAPI implements SimpleTask {
                 // It might be better to try a login() call here, but for now, we'll error out.
                 throw new Exception("No API Token set for getTotalBooks");
             }
-            ArrayList<String> fields = new ArrayList<>();
-            ArrayList<String> values = new ArrayList<>();
-
-            JSONObject json = connection("/books/last_backup", fields, values);
-            if (json != null && json.has("last_backup")) {
+            String response = connection("/books/last_backup", METHOD_GET);
+            JSONObject json = new JSONObject(response);
+            if (json.has("last_backup")) {
                 // Retrieve the last_backup from the JSON response.
                 String lastBackup = json.getString("last_backup");
                 notifyComplete(lastBackup);
@@ -656,53 +727,20 @@ public class BookCatalogueAPI implements SimpleTask {
         }
     }
 
-    /**
-     * Overloaded connection method for GET requests that return a JSONArray.
-     */
-    private JSONArray connection(String urlEndPoint) throws Exception {
-        Log.d("BookCatalogueAPI", "API " + urlEndPoint);
-        String urlString = BASE_URL + urlEndPoint;
-        HttpURLConnection conn = (HttpURLConnection) new URL(urlString).openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setReadTimeout(15000); // 15 seconds
-        conn.setConnectTimeout(15000); // 15 seconds
-        conn.setRequestProperty("Authorization", "Bearer " + mApiToken);
-
-        int responseCode = conn.getResponseCode();
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            String response = readStream(conn.getInputStream());
-            return new JSONArray(response);
-        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && retry) {
-            login();
-            retry = false;
-            return connection(urlEndPoint);
-        } else {
-            String error = readStream(conn.getErrorStream());
-            throw new IOException("Server returned non-OK status: " + responseCode + " " + error);
-        }
-    }
-
-    public JSONObject connection(String urlEndPoint, ArrayList<String> fields, ArrayList<String> values) {
+    public String connection(String urlEndPoint, String method) {
         File thumbnailFile = null;
-        return connection(urlEndPoint, fields, values, thumbnailFile);
+        ArrayList<String> fields = new ArrayList<>();
+        ArrayList<String> values = new ArrayList<>();
+        return connection(urlEndPoint, method, fields, values, thumbnailFile);
     }
 
-    public JSONObject connection(String urlEndPoint, ArrayList<String> fields, ArrayList<String> values, File thumbnailFile) {
+    public String connection(String urlEndPoint, String method, ArrayList<String> fields, ArrayList<String> values) {
+        File thumbnailFile = null;
+        return connection(urlEndPoint, method, fields, values, thumbnailFile);
+    }
+
+    public String connection(String urlEndPoint, String method, ArrayList<String> fields, ArrayList<String> values, File thumbnailFile) {
         Log.d("BookCatalogueAPI", "API " + urlEndPoint);
-        String method;
-        switch (urlEndPoint) {
-            case "/login":
-            case "/book":
-                method = "POST";
-                break;
-            case "/books":
-            case "/books/last_backup":
-            case "/books/count":
-            default:
-                method = "GET";
-                break;
-        }
         HttpURLConnection conn = null;
         try {
             String boundary = UUID.randomUUID().toString();
@@ -745,11 +783,11 @@ public class BookCatalogueAPI implements SimpleTask {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 response = readStream(conn.getInputStream());
                 if (response.isEmpty()) return null; // Handle empty success response
-                return new JSONObject(response);
+                return response;
             } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && retry) {
                 login();
                 retry = false;
-                return connection(urlEndPoint, fields, values, thumbnailFile);
+                return connection(urlEndPoint, method, fields, values, thumbnailFile);
             } else {
                 // If it's an error, read the error stream.
                 response = readStream(conn.getErrorStream());
@@ -770,9 +808,17 @@ public class BookCatalogueAPI implements SimpleTask {
     @Override
     public void run(SimpleTaskContext taskContext) throws Exception {
         this.mTaskContext = taskContext;
+        if (mEmail.isEmpty()) {
+            Log.d("BookCatalogueAPI", "No email address set");
+            return;
+        }
 
         if (mRequest.equals(REQUEST_LOGIN) || mApiToken.isEmpty()) {
-            login();
+            try {
+                login();
+            } catch (Exception e) {
+                return;
+            }
             // After login, re-check if the token was successfully retrieved.
             if (mApiToken.isEmpty()) {
                 throw new Exception("Login required, but failed to get API token.");

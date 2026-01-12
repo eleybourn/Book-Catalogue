@@ -19,17 +19,18 @@
  */
 package com.eleybourn.bookcatalogue.utils;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.core.content.FileProvider;
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.content.FileProvider;
+
+import com.eleybourn.bookcatalogue.BookCatalogueAPI;
 import com.eleybourn.bookcatalogue.BookData;
 import com.eleybourn.bookcatalogue.BookEdit;
 import com.eleybourn.bookcatalogue.BuildConfig;
@@ -37,6 +38,9 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.UniqueId;
 import com.eleybourn.bookcatalogue.dialogs.StandardDialogs;
+
+import java.io.File;
+import java.lang.ref.WeakReference;
 
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_UUID;
 
@@ -46,6 +50,8 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_BOOK_
  * @author pjw
  */
 public class BookUtils {
+	private static StaticApiListener mApiListener;
+
 	/**
 	 * Open a new book editing activity with fields copied from saved book.
 	 * Saved book (original of duplicating) is defined by its row _id in database.
@@ -83,6 +89,7 @@ public class BookUtils {
 	 * @param rowId The database id of the book for deleting
 	 */
 	public static void deleteBook(Context context, final CatalogueDBAdapter dbHelper, Long rowId, final Runnable runnable){
+		mApiListener = new StaticApiListener(context);
 		if (rowId == null || rowId == 0) {
 			Toast.makeText(context, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
 			return;
@@ -92,6 +99,7 @@ public class BookUtils {
 			public void run() {
 				dbHelper.purgeAuthors();
 				dbHelper.purgeSeries();
+				new BookCatalogueAPI(BookCatalogueAPI.REQUEST_DELETE_BOOK, rowId, mApiListener);
 				if (runnable != null)
 					runnable.run();
 			}});
@@ -108,7 +116,7 @@ public class BookUtils {
 	 */
 	public static void shareBook(Context context, final CatalogueDBAdapter dbHelper, Long rowId){
 		if (rowId == null || rowId == 0) {
-			Toast.makeText(context, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+			Toast.makeText(context, R.string.this_option_is_not_available_until_the_book_is_.saved, Toast.LENGTH_LONG).show();
 			return;
 		}
 		
@@ -156,5 +164,42 @@ public class BookUtils {
         context.startActivity(Intent.createChooser(share, "Share"));
 	}
 
+	// Define the listener as a static inner class
+	private static class StaticApiListener implements BookCatalogueAPI.ApiListener {
+		private final WeakReference<Context> contextReference;
+
+		StaticApiListener(Context context) {
+			// Use a WeakReference to avoid memory leaks
+			this.contextReference = new WeakReference<>(context);
+		}
+
+		@Override
+		public void onApiProgress(String request, int current, int total) {
+			Context context = contextReference.get();
+			// Only update UI if the activity is still alive
+			if (context == null) {
+				return;
+			}
+			Log.d("BookUtils", "API Progress for " + request + ": " + current + "/" + total);
+		}
+
+		@Override
+		public void onApiComplete(String request, String message) {
+			Context context = contextReference.get();
+			if (context == null) {
+				return;
+			}
+			Log.d("BookUtils", "API Complete for " + request + ": " + message);
+		}
+
+		@Override
+		public void onApiError(String request, String error) {
+			Context context = contextReference.get();
+			if (context == null) {
+				return;
+			}
+			Log.e("BookUtils", "API Error for " + request + ": " + error);
+		}
+	}
 
 }

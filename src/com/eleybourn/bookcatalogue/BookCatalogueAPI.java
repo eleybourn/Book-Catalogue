@@ -43,11 +43,11 @@ public class BookCatalogueAPI implements SimpleTask {
     private static final SimpleTaskQueue mSyncQueue = new SimpleTaskQueue("BookCatalogueSyncQueue");
     private static final String BASE_URL = "https://book-catalogue.com/api";
     public static String REQUEST_LOGIN = "login";
-    public static String REQUEST_COUNT = "count";
-    public static String REQUEST_LAST_BACKUP = "last_backup";
-    public static String REQUEST_FULL_BACKUP = "full_backup";
+    public static String REQUEST_INFO_COUNT = "count";
+    public static String REQUEST_INFO_LAST = "last_backup";
+    public static String REQUEST_BACKUP_ALL = "full_backup";
     public static String REQUEST_BACKUP_BOOK = "backup_book";
-    public static String REQUEST_FULL_RESTORE = "restore";
+    public static String REQUEST_RESTORE_ALL = "restore";
     public static String REQUEST_GET_BOOKS = "get_books";
     public static String REQUEST_GET_BOOK = "get_book";
     public static String REQUEST_DELETE_BOOK = "delete_book";
@@ -67,6 +67,7 @@ public class BookCatalogueAPI implements SimpleTask {
     private long mBookId;
 
     public BookCatalogueAPI(String request, long book_id, ApiListener listener) {
+        Log.d("BookCatalogueAPI", "BookCatalogueAPI");
         mBookId = book_id;
         this.mRequest = request;
         sActiveListener = listener;
@@ -79,6 +80,7 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public BookCatalogueAPI(String request, ApiListener listener) {
+        Log.d("BookCatalogueAPI", "BookCatalogueAPI");
         this.mRequest = request;
         sActiveListener = listener;
         mPrefs = new BookCataloguePreferences();
@@ -291,10 +293,7 @@ public class BookCatalogueAPI implements SimpleTask {
     /**
      * Executes the API Sync Logic in background
      */
-    public void backupBook(int bookId, Cursor bookCursor,
-                           ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves,
-                           ArrayList<Series> series, ArrayList<AnthologyTitle> anthology,
-                           File thumbnailFile) throws Exception {
+    public void backupBook(int bookId, Cursor bookCursor, ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves, ArrayList<Series> series, ArrayList<AnthologyTitle> anthology, File thumbnailFile) throws Exception {
         String title;
         if (mApiToken.isEmpty()) {
             // It might be better to try a login() call here, but for now, we'll error out.
@@ -404,10 +403,11 @@ public class BookCatalogueAPI implements SimpleTask {
         return obj.optString(key, "");
     }
 
-    public void deleteBook() {
+    public void runDeleteBook() {
+        Log.d("BookCatalogueAPI", "runDeleteBook");
         try {
             if (mApiToken.isEmpty()) {
-                throw new Exception("No API Token set for deleteBook");
+                throw new Exception("No API Token set for runDeleteBook");
             }
             String urlEndPoint = "/book/" + mBookId;
             String response = connection(urlEndPoint, METHOD_DEL);
@@ -477,7 +477,7 @@ public class BookCatalogueAPI implements SimpleTask {
         return books;
     }
 
-    public void runFullRestore() {
+    public void runRestoreAll() {
         CatalogueDBAdapter db = null;
         DbSync.Synchronizer.SyncLock txLock = null;
 
@@ -593,13 +593,13 @@ public class BookCatalogueAPI implements SimpleTask {
                     values.setBookshelfList(bookshelves_list.toString());
                 }
 
-                String backup_filename = getStringOrEmpty(bookJson, "thumbnail");
-                if (!backup_filename.isEmpty()) {
-                    String filename = Utils.saveThumbnailFromUrl(backup_filename, "");
-                    if (!filename.isEmpty()) {
-                        values.putString(CatalogueDBAdapter.KEY_THUMBNAIL, filename);
-                    }
-                }
+                //String backup_filename = getStringOrEmpty(bookJson, "thumbnail");
+                //if (!backup_filename.isEmpty()) {
+                //    String filename = Utils.saveThumbnailFromUrl(backup_filename, "");
+                //    if (!filename.isEmpty()) {
+                //        values.putString(CatalogueDBAdapter.KEY_THUMBNAIL, filename);
+                //    }
+                //}
 
                 try {
                     boolean exists = false;
@@ -681,11 +681,11 @@ public class BookCatalogueAPI implements SimpleTask {
         }
     }
 
-    public void getTotalBooks() {
+    public void runInfoCount() {
         try {
             if (mApiToken.isEmpty()) {
                 // It might be better to try a login() call here, but for now, we'll error out.
-                throw new Exception("No API Token set for getTotalBooks");
+                throw new Exception("No API Token set for runInfoCount");
             }
             String response = connection("/books/count", METHOD_GET);
             JSONObject json = new JSONObject(response);
@@ -704,11 +704,11 @@ public class BookCatalogueAPI implements SimpleTask {
         }
     }
 
-    public void getLastBackup() {
+    public void runInfoLast() {
         try {
             if (mApiToken.isEmpty()) {
                 // It might be better to try a login() call here, but for now, we'll error out.
-                throw new Exception("No API Token set for getTotalBooks");
+                throw new Exception("No API Token set for runInfoCount");
             }
             String response = connection("/books/last_backup", METHOD_GET);
             JSONObject json = new JSONObject(response);
@@ -758,8 +758,7 @@ public class BookCatalogueAPI implements SimpleTask {
             if (method.equals("POST")) {
                 conn.setDoOutput(true); // Allow sending a body for POST
                 conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-                try (OutputStream os = conn.getOutputStream();
-                     PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8), true)) {
+                try (OutputStream os = conn.getOutputStream(); PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8), true)) {
 
                     if (fields != null && values != null) {
                         for (int i = 0; i < fields.size(); i++) {
@@ -825,24 +824,28 @@ public class BookCatalogueAPI implements SimpleTask {
             }
         }
 
-        if (mRequest.equals(REQUEST_COUNT)) {
-            getTotalBooks();
+        if (mRequest.equals(REQUEST_INFO_COUNT)) {
+            runInfoCount();
         }
 
-        if (mRequest.equals(REQUEST_LAST_BACKUP)) {
-            getLastBackup();
+        if (mRequest.equals(REQUEST_INFO_LAST)) {
+            runInfoLast();
         }
 
-        if (mRequest.equals(REQUEST_FULL_BACKUP)) {
+        if (mRequest.equals(REQUEST_BACKUP_ALL)) {
             runFullBackup();
         }
 
-        if (mRequest.equals(REQUEST_FULL_RESTORE)) {
-            runFullRestore();
+        if (mRequest.equals(REQUEST_RESTORE_ALL)) {
+            runRestoreAll();
         }
 
         if (mRequest.equals(REQUEST_BACKUP_BOOK)) {
             runBackupBook();
+        }
+
+        if (mRequest.equals(REQUEST_DELETE_BOOK)) {
+            runDeleteBook();
         }
 
     }

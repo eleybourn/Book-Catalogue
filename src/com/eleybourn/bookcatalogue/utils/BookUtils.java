@@ -116,7 +116,7 @@ public class BookUtils {
 	 */
 	public static void shareBook(Context context, final CatalogueDBAdapter dbHelper, Long rowId){
 		if (rowId == null || rowId == 0) {
-			Toast.makeText(context, R.string.this_option_is_not_available_until_the_book_is_.saved, Toast.LENGTH_LONG).show();
+			Toast.makeText(context, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
 			return;
 		}
 		

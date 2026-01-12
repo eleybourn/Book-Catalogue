@@ -162,8 +162,8 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             if (!apiToken.isEmpty()) {
                 token.setText(apiToken);
             }
-            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_COUNT, mApiListener);
-            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LAST_BACKUP, mApiListener);
+            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_COUNT, mApiListener);
+            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_LAST, mApiListener);
         }
 
         /* Login */
@@ -255,12 +255,12 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
     public void backup() {
         // Create a new API task to get the count. This will automatically run in the background.
-        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_FULL_BACKUP, mApiListener);
+        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_ALL, mApiListener);
     }
 
     public void restore() {
         // Create a new API task to get the count. This will automatically run in the background.
-        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_FULL_RESTORE, mApiListener);
+        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_RESTORE_ALL, mApiListener);
     }
 
     private void reload() {
@@ -313,7 +313,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 return;
             }
 
-            if (request.equals(BookCatalogueAPI.REQUEST_FULL_BACKUP)) {
+            if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL)) {
                 String statsText = current + " of " + total + " books backed up";
                 activity.mBackupStatsField.setText(statsText);
                 activity.mSyncProgressBar.setMax(total);
@@ -321,7 +321,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 activity.mSyncProgressBar.setVisibility(View.VISIBLE);
             }
 
-            if (request.equals(BookCatalogueAPI.REQUEST_FULL_RESTORE)) {
+            if (request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
                 String statsText = current + " of " + total + " books restored";
                 activity.mBackupStatsField.setText(statsText);
                 activity.mSyncProgressBar.setMax(total);
@@ -337,23 +337,23 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 return;
             }
 
-            if (request.equals(BookCatalogueAPI.REQUEST_COUNT)) {
+            if (request.equals(BookCatalogueAPI.REQUEST_INFO_COUNT)) {
                 int totalLocalBooks = CatalogueDBAdapter.countBooks();
                 String statsText = message + " of " + totalLocalBooks + " books backed up";
                 activity.mBackupStatsField.setText(statsText);
-            } else if (request.equals(BookCatalogueAPI.REQUEST_LAST_BACKUP)) {
+            } else if (request.equals(BookCatalogueAPI.REQUEST_INFO_LAST)) {
                 String statsText = "Last Backup: " + message;
                 activity.mLastBackupDateField.setText(statsText);
-            } else if (request.equals(BookCatalogueAPI.REQUEST_FULL_BACKUP)) {
+            } else if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL)) {
                 // Reload stats after full backup completes
-                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_COUNT, this);
-                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LAST_BACKUP, this);
+                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_COUNT, this);
+                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_LAST, this);
             } else if (request.equals(BookCatalogueAPI.REQUEST_LOGIN)) {
                 activity.reload();
             }
 
             // Hide progress bar on completion of any task except count/last_backup
-            if (!request.equals(BookCatalogueAPI.REQUEST_COUNT) && !request.equals(BookCatalogueAPI.REQUEST_LAST_BACKUP)) {
+            if (!request.equals(BookCatalogueAPI.REQUEST_INFO_COUNT) && !request.equals(BookCatalogueAPI.REQUEST_INFO_LAST)) {
                 activity.mSyncProgressBar.setVisibility(View.GONE);
             }
         }
@@ -366,7 +366,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             }
 
             // Show an error message to the user on the UI thread
-            if (request.equals(BookCatalogueAPI.REQUEST_COUNT) || request.equals(BookCatalogueAPI.REQUEST_LAST_BACKUP)) {
+            if (request.equals(BookCatalogueAPI.REQUEST_INFO_COUNT) || request.equals(BookCatalogueAPI.REQUEST_INFO_LAST)) {
                 activity.mBackupStatsField.setText("Could not load backup statistics.");
                 Toast.makeText(activity, "Error: " + error, Toast.LENGTH_LONG).show();
             }

@@ -19,16 +19,19 @@
  */
 package com.eleybourn.bookcatalogue.utils;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -37,14 +40,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.view.KeyEvent;
-import android.widget.Toast;
-
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
+
+import java.util.ArrayList;
 
 /**
  * Fragment Class to wrap a trivial progress dialog around (generally) a single task.
@@ -74,11 +76,6 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	private boolean mProgressChanged = false;
 	/** Flag indicating underlying field has changed so that progress dialog will be updated */
 	private boolean mMaxChanged = false;
-	/** Flag indicating underlying field has changed so that progress dialog will be updated */
-	private boolean mNumberFormatChanged = false;
-
-	/** Format of number part of dialog */
-	private String mNumberFormat = null;
 
 	/** Unique ID for this task. Can be used like menu or activity IDs */
 	private int mTaskId;
@@ -453,29 +450,44 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		// We therefor catch keystrokes to look for the 'back' key, and then cancel
 		// tasks as appropriate. When all tasks are finished, the dialog is dismissed.
 		setCancelable(false);
-		ProgressDialog dialog = new ProgressDialog(getActivity());
+
+		final Dialog dialog = new Dialog(getActivity());
+		dialog.setContentView(R.layout.progress_dialog);
 		dialog.setCancelable(true);
 		dialog.setCanceledOnTouchOutside(false);
 
         assert getArguments() != null;
         int msg = getArguments().getInt("title");
-		if (msg != 0)
-			dialog.setMessage(requireActivity().getString(msg));
-		final boolean isIndeterminate = getArguments().getBoolean("isIndeterminate");
-		dialog.setIndeterminate(isIndeterminate);
-		if (isIndeterminate) {
-			dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		} else {
-			dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);			
-		}
+		if (msg != 0) {
+			dialog.setTitle(msg);
+        }
 
-		// We can't use "this.requestUpdateProgress()" because getDialog() will still return null
-		if (!isIndeterminate) {
-			dialog.setMax(mMax);
-			dialog.setProgress(mProgress);
-			if (mMessage != null)
-				dialog.setMessage(mMessage);
-			setDialogNumberFormat(dialog);
+		final boolean isIndeterminate = getArguments().getBoolean("isIndeterminate");
+        LinearLayout spinnerLayout = (LinearLayout) dialog.findViewById(R.id.spinner_layout);
+        LinearLayout horizontalLayout = (LinearLayout) dialog.findViewById(R.id.horizontal_layout);
+
+		if (isIndeterminate) {
+            horizontalLayout.setVisibility(View.GONE);
+            spinnerLayout.setVisibility(View.VISIBLE);
+            TextView messageView = (TextView) dialog.findViewById(R.id.spinner_message);
+            if (mMessage != null) {
+                messageView.setText(mMessage);
+            } else if (msg != 0) {
+                messageView.setText(requireActivity().getString(msg));
+            }
+		} else {
+            spinnerLayout.setVisibility(View.GONE);
+            horizontalLayout.setVisibility(View.VISIBLE);
+            ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.progress_horizontal);
+			progressBar.setMax(mMax);
+			progressBar.setProgress(mProgress);
+
+            TextView messageView = (TextView) dialog.findViewById(R.id.horizontal_message);
+			if (mMessage != null) {
+				messageView.setText(mMessage);
+            } else if (msg != 0) {
+                messageView.setText(requireActivity().getString(msg));
+            }
 		}
 
 		dialog.setOnKeyListener((dialog1, keyCode, event) -> {
@@ -599,25 +611,25 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	 * Method, run in the UI thread, that updates the various dialog fields.
 	 */
 	private void updateProgress() {
-		ProgressDialog d = (ProgressDialog)getDialog();
+		Dialog d = getDialog();
 		if (d != null) {
+            ProgressBar progressBar = (ProgressBar) d.findViewById(R.id.progress_horizontal);
+            TextView messageView = (TextView) d.findViewById(R.id.horizontal_message);
+            TextView spinnerMessageView = (TextView) d.findViewById(R.id.spinner_message);
+
 			synchronized(this) {
 				if (mMaxChanged) {
-					d.setMax(mMax);
+                    progressBar.setMax(mMax);
 					mMaxChanged = false;
 				}
-				if (mNumberFormatChanged) {
-                    // Called in a separate function so we can set API attributes
-                    setDialogNumberFormat(d);
-                    mNumberFormatChanged = false;
-				}
 				if (mMessageChanged) {
-					d.setMessage(mMessage);
+                    messageView.setText(mMessage);
+                    spinnerMessageView.setText(mMessage);
 					mMessageChanged = false;
 				}				
 
 				if (mProgressChanged) {
-					d.setProgress(mProgress);
+                    progressBar.setProgress(mProgress);
 					mProgressChanged = false;
 				}
 				
@@ -625,18 +637,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		}		
 	}
 
-	/**
-	 * Set the number format on API >= 11
-	 */
-	private void setDialogNumberFormat(ProgressDialog d) {
-        try {
-            d.setProgressNumberFormat(mNumberFormat);
-        } catch (Exception e) {
-// Ignore and log; Android 3.2 seems not to like NULL format despite docs,
-// and this is a non-critical feature
-            Logger.logError(e);
-        }
-    }
+
 
 	/**
 	 * Set the progress max value
@@ -646,19 +647,6 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		mMaxChanged = true;
 		requestUpdateProgress();
 	}
-
-	/**
-	 * Set the progress number format, if the API will support it
-	 * 
-	 * @param format	Number format to use
-	 */
-	public void setNumberFormat(String format) {
-        synchronized (this) {
-            mNumberFormat = format;
-            mNumberFormatChanged = true;
-        }
-        requestUpdateProgress();
-    }
 	
 	/**
      * Work-around for bug in compatibility library:

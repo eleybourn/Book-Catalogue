@@ -209,7 +209,6 @@ public class BackupManager {
 
 		};
 		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.runTaskWithProgress(context.getSupportFragmentManager(), R.string.backing_up_ellipsis, task, false, taskId);
-		frag.setNumberFormat(null);
 		return resultingFile;
 	}
 
@@ -257,6 +256,5 @@ public class BackupManager {
 		};
 		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.runTaskWithProgress(context.getSupportFragmentManager(),
 				R.string.importing_ellipsis, task, false, taskId);
-		frag.setNumberFormat(null);
 	}
 }

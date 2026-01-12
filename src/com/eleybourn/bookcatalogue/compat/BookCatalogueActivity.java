@@ -214,7 +214,6 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                 }
             };
             SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.runTaskWithProgress(fm, R.string.copying_files, task, false, 0);
-            frag.setNumberFormat(null);
         }
     }
 

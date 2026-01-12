@@ -20,13 +20,16 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.ProgressDialog;
-import android.content.Context;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerController;
@@ -57,7 +60,7 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 	/** Associated TaskManager */
 	private TaskManager mTaskManager = null;
 	/** ProgressDialog for this activity */
-	protected ProgressBase mProgressDialog = null;
+	protected Dialog mProgressDialog = null;
 	/** Max value for ProgressDialog */
 	private int mProgressMax = 0;
 	/** Current value for ProgressDialog */
@@ -74,47 +77,6 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 			mTaskManagerId = savedInstanceState.getLong("TaskManagerId");
 		}
     }
-
-	/**
-	 * Trivial internal class to implement our base progress object
-	 * 
-	 * @author pjw
-	 */
-	private class ProgressBase extends ProgressDialog {
-		public ProgressBase(Context context) {
-			super(context);
-			this.setCancelable(false);
-			this.setCanceledOnTouchOutside(false);
-		}
-	}
-
-	/**
-	 * ProgressDialog for Indeterminate states.
-	 * 
-	 * @author pjw
-	 */
-	private class ProgressIndet extends ProgressBase {
-
-		public ProgressIndet(Context context) {
-			super(context);
-			this.setIndeterminate(true);
-			this.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		}
-	}
-
-    /**
-	 * ProgressDialog for Determinate states.
-	 * 
-	 * @author pjw
-	 */
-	private class ProgressDet extends ProgressBase {
-
-		public ProgressDet(Context context) {
-			super(context);
-			this.setIndeterminate(false);
-			this.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		}
-	}
 
     /**
 	 * Utility routine to get the task manager for his activity
@@ -253,7 +215,8 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 		boolean wantDet = wantDeterminateProgress();
 		
 		if (mProgressDialog != null) {
-			if ((wantDet && mProgressDialog instanceof ProgressIndet) || (!wantDet && mProgressDialog instanceof ProgressDet)) {
+            Object tag = mProgressDialog.getWindow().getDecorView().getTag();
+			if ((wantDet && "indeterminate".equals(tag)) || (!wantDet && "determinate".equals(tag))) {
 				mProgressDialog.dismiss();
 				mProgressDialog = null;
 			}			
@@ -261,23 +224,41 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 
 		// Create dialog if necessary
 		if (mProgressDialog == null) {
-			if (wantDet) {
-				mProgressDialog = new ProgressDet(ActivityWithTasks.this);
-			} else {
-				mProgressDialog = new ProgressIndet(ActivityWithTasks.this);
-			}
+            mProgressDialog = new Dialog(this);
+            mProgressDialog.setContentView(R.layout.progress_dialog);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setCanceledOnTouchOutside(false);
+            mProgressDialog.getWindow().getDecorView().setTag(wantDet ? "determinate" : "indeterminate");
 		}
 
+        LinearLayout spinnerLayout = (LinearLayout) mProgressDialog.findViewById(R.id.spinner_layout);
+        LinearLayout horizontalLayout = (LinearLayout) mProgressDialog.findViewById(R.id.horizontal_layout);
+
 		// Set style
-		if (mProgressMax > 0) {
-			mProgressDialog.setMax(mProgressMax);
-		}
+		if (wantDet) {
+            spinnerLayout.setVisibility(View.GONE);
+            horizontalLayout.setVisibility(View.VISIBLE);
+            ProgressBar progressBar = (ProgressBar) mProgressDialog.findViewById(R.id.progress_horizontal);
+			progressBar.setMax(mProgressMax);
+            progressBar.setProgress(mProgressCount);
+            TextView messageView = (TextView) mProgressDialog.findViewById(R.id.horizontal_message);
+            messageView.setText(mProgressMessage);
+		} else {
+            horizontalLayout.setVisibility(View.GONE);
+            spinnerLayout.setVisibility(View.VISIBLE);
+            TextView messageView = (TextView) mProgressDialog.findViewById(R.id.spinner_message);
+            messageView.setText(mProgressMessage);
+        }
 
 		// Set message; if we are cancelling we override the message
 		if (mTaskManager.isCancelling()) {
-			mProgressDialog.setMessage(getString(R.string.cancelling));
-		} else {
-			mProgressDialog.setMessage(mProgressMessage);
+            TextView messageView;
+            if (wantDet) {
+                messageView = (TextView) mProgressDialog.findViewById(R.id.horizontal_message);
+            } else {
+                messageView = (TextView) mProgressDialog.findViewById(R.id.spinner_message);
+            }
+			messageView.setText(getString(R.string.cancelling));
 		}
 		
 		// Set other attrs
@@ -285,7 +266,6 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 		mProgressDialog.setOnCancelListener(mCancelHandler);
 		// Show it if necessary
 		mProgressDialog.show();
-		mProgressDialog.setProgress(mProgressCount);
 	}
 
 	/**

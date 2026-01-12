@@ -21,13 +21,16 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDoneException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
@@ -114,7 +117,7 @@ public class StartupActivity
     /**
      * Progress Dialog for startup tasks
      */
-    private ProgressDialog mProgress = null;
+    private Dialog mProgress = null;
     /**
      * Flag indicating THIS instance was really the startup instance
      */
@@ -187,11 +190,15 @@ public class StartupActivity
         mUiThread = Thread.currentThread();
 
         // Create a progress dialog; we may not use it...but we need it to be created in the UI thread.
-        mProgress = ProgressDialog.show(this, getString(R.string.book_catalogue_startup), getString(R.string.starting_up), true, true,
-                dialog -> {
-                    // Cancelling the list cancels the activity.
-                    StartupActivity.this.finish();
-                });
+        mProgress = new Dialog(this);
+        mProgress.setContentView(R.layout.progress_dialog);
+        mProgress.setTitle(R.string.book_catalogue_startup);
+        mProgress.setCancelable(true);
+        mProgress.setOnCancelListener(dialog -> {
+            // Cancelling the list cancels the activity.
+            StartupActivity.this.finish();
+        });
+        updateProgress(R.string.starting_up);
 
         mWasReallyStartup = mIsReallyStartup;
 
@@ -274,7 +281,12 @@ public class StartupActivity
             // See http://code.google.com/p/android/issues/detail?id=3953
             if (!isFinishing()) {
                 try {
-                    mProgress.setMessage(message);
+                    LinearLayout spinnerLayout = (LinearLayout) mProgress.findViewById(R.id.spinner_layout);
+                    LinearLayout horizontalLayout = (LinearLayout) mProgress.findViewById(R.id.horizontal_layout);
+                    spinnerLayout.setVisibility(View.VISIBLE);
+                    horizontalLayout.setVisibility(View.GONE);
+                    TextView messageView = (TextView) mProgress.findViewById(R.id.spinner_message);
+                    messageView.setText(message);
                     if (!mProgress.isShowing())
                         mProgress.show();
                 } catch (Exception e) {

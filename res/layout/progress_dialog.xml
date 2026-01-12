@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@android:drawable/dialog_holo_light_frame"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/progress_title"
+        style="@style/layout_title"
+        android:paddingVertical="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/progress_message"
+        android:paddingVertical="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout 
+        android:id="@+id/spinner_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            android:id="@+id/progress_spinner"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/spinner_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:textAppearance="?android:attr/textAppearance"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+
+    <LinearLayout 
+        android:id="@+id/horizontal_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="240dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/horizontal_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:textAppearance="?android:attr/textAppearance"
+            android:textColor="@android:color/black" />
+        
+        <ProgressBar
+            android:id="@+id/progress_horizontal"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:indeterminate="false" />
+    </LinearLayout>
+</LinearLayout>

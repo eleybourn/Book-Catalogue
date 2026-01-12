@@ -57,8 +57,7 @@ public class LibraryEditFormatDialog {
 
 		Button saveButton = dialog.findViewById(R.id.button_confirm);
 		saveButton.setOnClickListener(v -> {
-            AutoCompleteTextView nameView1 = dialog.findViewById(R.id.field_name);
-            String newName = nameView1.getText().toString().trim();
+            String newName = nameView.getText().toString().trim();
             if (newName.isEmpty()) {
                 Toast.makeText(mContext, R.string.name_can_not_be_blank, Toast.LENGTH_LONG).show();
                 return;

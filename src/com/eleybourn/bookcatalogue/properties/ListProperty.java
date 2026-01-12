@@ -44,7 +44,7 @@ import java.util.Iterator;
  *
  * @param <T>		Base type of list items
  */
-public abstract class ListProperty<T extends Object> extends ValuePropertyWithGlobalDefault<T> {
+public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> {
 	/** List of valid values */
 	protected ItemEntries<T> mList = null;
 
@@ -121,7 +121,7 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 	 *
 	 * @param <T>		Type of underlying list item
 	 */
-	public static class ItemEntry<T extends Object> {
+	public static class ItemEntry<T> {
 		/** Actual value */
 		T value;
 		/** Test description of the meaning of that value */
@@ -207,7 +207,7 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 	 *
 	 * @param <T>
 	 */
-	private static class Holder<T extends Object> {
+	private static class Holder<T> {
 		ItemEntry<T> item;
 		View baseView;
 		public Holder(ItemEntry<T> item, View baseView) {

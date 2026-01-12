@@ -139,7 +139,8 @@ public class BookData extends DataManager {
         try (Cursor bookshelves = db.fetchAllBookshelvesByBook(getRowId())) {
             StringBuilder bookshelves_list = new StringBuilder();
             while (bookshelves.moveToNext()) {
-                String name = bookshelves.getString(bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF));
+                int nameCol = bookshelves.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF);
+                String name = bookshelves.getString(nameCol);
                 String encoded_name = Utils.encodeListItem(name, BookAbstract.BOOKSHELF_SEPARATOR);
                 if (bookshelves_list.length() == 0) {
                     bookshelves_list = new StringBuilder(encoded_name);

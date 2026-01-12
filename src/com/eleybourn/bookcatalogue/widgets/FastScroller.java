@@ -84,6 +84,8 @@ import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.SectionIndexer;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.eleybourn.bookcatalogue.R;
 
 /**
@@ -220,10 +222,10 @@ public class FastScroller {
     private void init(Context context) {
         // Get both the scrollbar states drawables
         final Resources res = context.getResources();
-        useThumbDrawable(res.getDrawable( R.drawable.scrollbar_handle_accelerated_anim2));
-        
-        mOverlayDrawable = res.getDrawable( R.drawable.menu_submenu_background);
-        
+        useThumbDrawable(ResourcesCompat.getDrawable(res, R.drawable.scrollbar_handle_accelerated_anim2, null));
+
+        mOverlayDrawable = ResourcesCompat.getDrawable(res, R.drawable.menu_submenu_background, null);
+
         mScrollCompleted = true;
 
         getSections();
@@ -468,7 +470,7 @@ public class FastScroller {
 			}
 		}
 
-		if ( (mSectionTextV2 != null ) || (mSectionTextV1 != null && mSectionTextV1.length() > 0)) {
+		if ( (mSectionTextV2 != null ) || (mSectionTextV1 != null && !mSectionTextV1.isEmpty())) {
 			mDrawOverlay = true; //(mSectionText.length() != 1 || mSectionText.charAt(0) != ' ')
             //&& sectionIndex < sections.length;
 		} else {

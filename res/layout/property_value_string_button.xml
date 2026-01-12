@@ -17,7 +17,7 @@
         android:id="@+id/field_name"
         style="@style/layout_paragraph"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@id/edit_button"
+        android:layout_toStartOf="@id/edit_button"
         android:paddingTop="@dimen/p_md"
         android:paddingBottom="0dp" />
 
@@ -26,8 +26,8 @@
         style="@style/layout_paragraph"
         android:layout_below="@id/field_name"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@id/edit_button"
-        android:paddingLeft="@dimen/p_md"
+        android:layout_toStartOf="@id/edit_button"
+        android:paddingStart="@dimen/p_md"
         android:paddingBottom="0dp"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 

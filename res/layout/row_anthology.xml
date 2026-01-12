@@ -18,10 +18,11 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
+        android:contentDescription="@string/move_down"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:gravity="right"
-        android:paddingRight="@dimen/p_md"
+        android:gravity="end"
+        android:paddingEnd="@dimen/p_md"
         android:src="@drawable/ic_button_down" />
 
     <ImageView
@@ -30,11 +31,12 @@
         android:layout_height="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@id/row_down"
+        android:contentDescription="@string/move_up"
+        android:layout_toStartOf="@id/row_down"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:gravity="right"
-        android:paddingRight="@dimen/p_md"
+        android:gravity="end"
+        android:paddingEnd="@dimen/p_md"
         android:src="@drawable/ic_button_up" />
 
     <TextView
@@ -44,19 +46,19 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:gravity="left"
-        android:paddingRight="@dimen/p_md" />
+        android:gravity="start"
+        android:paddingEnd="@dimen/p_md" />
 
     <TextView
         android:id="@+id/row_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@id/row_up"
-        android:layout_toRightOf="@id/row_position"
+        android:layout_toStartOf="@id/row_up"
+        android:layout_toEndOf="@id/row_position"
         android:ellipsize="marquee"
-        android:gravity="left"
-        android:paddingRight="@dimen/p_md"
+        android:gravity="start"
+        android:paddingEnd="@dimen/p_md"
         android:singleLine="true" />
 
     <TextView
@@ -65,10 +67,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_below="@id/row_title"
-        android:layout_toRightOf="@id/row_position"
+        android:layout_toEndOf="@id/row_position"
         android:ellipsize="marquee"
-        android:gravity="left"
-        android:paddingRight="@dimen/p_md"
+        android:gravity="start"
+        android:paddingEnd="@dimen/p_md"
         android:singleLine="true" />
 
 </RelativeLayout>

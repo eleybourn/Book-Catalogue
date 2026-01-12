@@ -975,4 +975,6 @@
     <string name="title_local_backup">Export and Backup Locally</string>
     <string name="button_restore_now">Restore From Backup</string>
     <string name="alert_could_not_load_backup_statistics">Could not load backup statistics.</string>
+    <string name="move_down">Move Down</string>
+    <string name="move_up">Move Up</string>
 </resources>

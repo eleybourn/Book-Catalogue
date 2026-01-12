@@ -152,18 +152,18 @@ public class UpdateThumbnailsThread extends ManagedTask {
 								// We should never have a book with no authors, but lets be paranoid
 								if (mOrigData.containsKey(usage.fieldName)) {
 									ArrayList<Author> origAuthors = Utils.getAuthorsFromBundle(mOrigData);
-									if (origAuthors == null || origAuthors.size() == 0)
+									if (origAuthors == null || origAuthors.isEmpty())
 										mCurrFieldUsages.put(usage);
 								}
 							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 								if (mOrigData.containsKey(usage.fieldName)) {
 									ArrayList<Series> origSeries = Utils.getSeriesFromBundle(mOrigData);
-									if (origSeries == null || origSeries.size() == 0)
+									if (origSeries == null || origSeries.isEmpty())
 										mCurrFieldUsages.put(usage);
 								}
 							} else {
 								// If the original was blank, add to list
-								if (!mOrigData.containsKey(usage.fieldName) || mOrigData.getString(usage.fieldName) == null || mOrigData.getString(usage.fieldName).length() == 0 )
+								if (!mOrigData.containsKey(usage.fieldName) || mOrigData.getString(usage.fieldName) == null || mOrigData.getString(usage.fieldName).isEmpty())
 									mCurrFieldUsages.put(usage);
 							}
 							break;
@@ -187,11 +187,11 @@ public class UpdateThumbnailsThread extends ManagedTask {
 				// Use this to flag if we actually need a search.
 				boolean wantSearch = false;
 				// Update the progress appropriately
-				if (mCurrFieldUsages.size() == 0 || isbn.equals("") && (author.equals("") || title.equals(""))) {
+				if (mCurrFieldUsages.isEmpty() || isbn.equals("") && (author.equals("") || title.equals(""))) {
 					mManager.doProgress(String.format(getString(R.string.skip_title), title));
 				} else {
 					wantSearch = true;
-					if (title.length() > 0)
+					if (!title.isEmpty())
 						mManager.doProgress(title);
 					else
 						mManager.doProgress(isbn);
@@ -314,18 +314,18 @@ public class UpdateThumbnailsThread extends ManagedTask {
 						if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
 							if (origData.containsKey(usage.fieldName)) {
 								ArrayList<Author> origAuthors = Utils.getAuthorsFromBundle(origData);
-								if (origAuthors != null && origAuthors.size() > 0)
+								if (origAuthors != null && !origAuthors.isEmpty())
 									newData.remove(usage.fieldName);								
 							}
 						} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
 							if (origData.containsKey(usage.fieldName)) {
 								ArrayList<Series> origSeries = Utils.getSeriesFromBundle(origData);
-								if (origSeries != null && origSeries.size() > 0)
+								if (origSeries != null && !origSeries.isEmpty())
 									newData.remove(usage.fieldName);								
 							}
 						} else {
 							// If the original was non-blank, erase from list
-							if (origData.containsKey(usage.fieldName) && origData.getString(usage.fieldName) != null && origData.getString(usage.fieldName).length() > 0 )
+							if (origData.containsKey(usage.fieldName) && origData.getString(usage.fieldName) != null && !origData.getString(usage.fieldName).isEmpty())
 								newData.remove(usage.fieldName);
 						}
 						break;
@@ -347,7 +347,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 		}
 
 		// Update
-		if (newData.size() > 0) {
+		if (!newData.isEmpty()) {
 			mDbHelper.updateBook(bookId, new BookData(newData), 0);
 		}
 		

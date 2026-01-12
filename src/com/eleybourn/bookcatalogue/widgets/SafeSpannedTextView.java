@@ -17,7 +17,7 @@ import android.widget.TextView;
  * @author pjw
  *
  */
-public class SafeSpannedTextView extends TextView {
+public class SafeSpannedTextView extends androidx.appcompat.widget.AppCompatTextView {
 
 	public SafeSpannedTextView(Context context) {
 		super(context);

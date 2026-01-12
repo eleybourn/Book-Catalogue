@@ -487,7 +487,7 @@ public class LibraryThingManager {
 		 * @param key	Key for data to add
 		 */
 		private void addIfNotPresent(String key) {
-			if (!mBookData.containsKey(key) || mBookData.getString(key).length() == 0) {
+			if (!mBookData.containsKey(key) || mBookData.getString(key).isEmpty()) {
 				mBookData.putString(key, mBuilder.toString());
 			}		
 		}
@@ -618,7 +618,7 @@ public class LibraryThingManager {
 		
 		// Save it with an _LT suffix
 		String filename = Utils.saveThumbnailFromUrl(url, "_LT_" + size + "_" + isbn);
-		if (filename.length() > 0 && bookData != null)
+		if (!filename.isEmpty() && bookData != null)
 			Utils.appendOrAdd(bookData, "__thumbnail", filename);
 		return filename;
 	}
@@ -695,7 +695,7 @@ public class LibraryThingManager {
 	}
 
 	public boolean isAvailable() {
-		return getDevKey().length() > 0;
+		return !getDevKey().isEmpty();
 	}
 
 	private String getDevKey() {

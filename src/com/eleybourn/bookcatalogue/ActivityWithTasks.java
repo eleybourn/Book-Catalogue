@@ -165,7 +165,7 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 			mProgressMessage = message;
 
 			// If empty, close any dialog
-			if ((mProgressMessage == null || mProgressMessage.trim().length() == 0) && mProgressMax == mProgressCount) {
+			if ((mProgressMessage == null || mProgressMessage.trim().isEmpty()) && mProgressMax == mProgressCount) {
 				if (mProgressDialog != null) {
 					mProgressDialog.dismiss();
 					mProgressDialog = null;

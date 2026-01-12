@@ -8,7 +8,8 @@
         android:id="@+id/field_name"
         style="@style/layout_paragraph"
         android:paddingTop="5sp"
-        android:paddingBottom="0dp" />
+        android:paddingBottom="0dp"
+        android:labelFor="@+id/value"/>
 
     <EditText
         android:id="@+id/value"
@@ -17,7 +18,7 @@
         android:layout_weight="1"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:paddingLeft="@dimen/p_md" />
+        android:paddingStart="@dimen/p_md" />
 
     <View style="@style/layout_divider" />
 

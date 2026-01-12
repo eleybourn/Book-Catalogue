@@ -27,7 +27,7 @@ package com.eleybourn.bookcatalogue.properties;
  *
  * @param <T>
  */
-public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends Property {
+public abstract class ValuePropertyWithGlobalDefault<T> extends Property {
 	/** Underlying value */
 	private T mValue;
 	/** Key in preferences for default value */

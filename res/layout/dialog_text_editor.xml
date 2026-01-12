@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/layout_dialog" >
 
     <LinearLayout
@@ -12,7 +13,8 @@
             android:ems="10"
             android:gravity="top"
             android:inputType="textMultiLine"
-            android:labelFor="@string/label_description">
+            android:labelFor="@string/label_description"
+            tools:ignore="LabelFor">
             <requestFocus />
         </EditText>
     </LinearLayout>

@@ -70,7 +70,7 @@ public class AlertDialogUtils {
 	 * @param items		Items to display
 	 */
 	public static void showContextDialogue(Context context, String title, ArrayList<AlertDialogItem> items) {
-		if (items.size() > 0) {
+		if (!items.isEmpty()) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
 			builder.setTitle(title);
 

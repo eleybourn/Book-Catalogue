@@ -30,7 +30,7 @@ import android.widget.TextView;
  * 
  * @author pjw
  */
-public class CapitalizedTextView extends TextView {// implements ViewTreeObserver.OnPreDrawListener {
+public class CapitalizedTextView extends androidx.appcompat.widget.AppCompatTextView {// implements ViewTreeObserver.OnPreDrawListener {
 
 	/**
 	 * Constructor
@@ -54,7 +54,7 @@ public class CapitalizedTextView extends TextView {// implements ViewTreeObserve
     }
 
     /**
-     * Override setText to capitalise the scring before passing it to parent class.
+     * Override setText to capitalise the string before passing it to parent class.
      */
     @Override
     public void setText(CharSequence text, BufferType type) {

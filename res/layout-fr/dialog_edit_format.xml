@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@color/theme_surface"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/p_md" >
+    android:paddingStart="@dimen/p_md" >
 
     <AutoCompleteTextView
         android:id="@+id/field_name"
@@ -13,7 +13,7 @@
         android:completionThreshold="2"
         android:hint="@string/label_format"
         android:inputType="textCapSentences"
-        android:paddingLeft="@dimen/p_md" />
+        android:paddingStart="@dimen/p_md" />
 
     <LinearLayout
         android:id="@+id/bottom_buttons"

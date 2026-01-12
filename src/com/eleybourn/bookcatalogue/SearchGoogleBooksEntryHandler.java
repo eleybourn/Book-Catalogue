@@ -138,7 +138,7 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	}
 
 	private void addIfNotPresent(String key) {
-		if (!mValues.containsKey(key) || mValues.getString(key).length() == 0) {
+		if (!mValues.containsKey(key) || mValues.getString(key).isEmpty()) {
 			mValues.putString(key, builder.toString());
 		}		
 	}
@@ -197,7 +197,7 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 			if (attributes.getValue("", "rel").equals("http://schemas.google.com/books/2008/thumbnail")) {
 				String thumbnail = attributes.getValue("", "href");
 				String filename = Utils.saveThumbnailFromUrl(thumbnail, "_GB");
-				if (filename.length() > 0)
+				if (!filename.isEmpty())
 					Utils.appendOrAdd(mValues, THUMBNAIL_KEY, filename);
 			}
 		}

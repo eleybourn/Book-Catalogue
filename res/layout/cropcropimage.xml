@@ -38,8 +38,8 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/p_md"
-            android:paddingRight="@dimen/p_md"
+            android:paddingStart="@dimen/p_md"
+            android:paddingEnd="@dimen/p_md"
             android:paddingTop="20dip" >
 
             <Button

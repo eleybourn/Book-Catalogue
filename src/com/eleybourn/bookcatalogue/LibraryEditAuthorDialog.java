@@ -50,14 +50,12 @@ public class LibraryEditAuthorDialog {
 
 		Button saveButton = dialog.findViewById(R.id.button_confirm);
 		saveButton.setOnClickListener(v -> {
-            EditText familyView1 = dialog.findViewById(R.id.field_family_name);
-            EditText givenView1 = dialog.findViewById(R.id.field_given_names);
-            String newFamily = familyView1.getText().toString().trim();
+            String newFamily = familyView.getText().toString().trim();
             if (newFamily.isEmpty()) {
                 Toast.makeText(mContext, R.string.author_is_blank, Toast.LENGTH_LONG).show();
                 return;
             }
-            String newGiven = givenView1.getText().toString();
+            String newGiven = givenView.getText().toString();
             Author newAuthor = new Author(newFamily, newGiven);
             dialog.dismiss();
             confirmEdit(author, newAuthor);

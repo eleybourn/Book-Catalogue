@@ -16,6 +16,8 @@
 
 package com.eleybourn.bookcatalogue.cropper;
 
+import androidx.core.content.res.ResourcesCompat;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -26,10 +28,12 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.eleybourn.bookcatalogue.R;
 
 // This class is used by CropImage to display a highlighted cropping rectangle
-// overlayed with the image. There are two coordinate spaces in use. One is
+// overlaid with the image. There are two coordinate spaces in use. One is
 // image, another is screen. computeLayout() uses mMatrix to map from image
 // space to screen space.
 class CropHighlightView {
@@ -49,13 +53,10 @@ class CropHighlightView {
 	}
 
 	private void init() {
-		android.content.res.Resources resources = mContext.getResources();
-		mResizeDrawableWidth = resources
-				.getDrawable(R.drawable.ic_button_crop_width);
-		mResizeDrawableHeight = resources
-				.getDrawable(R.drawable.ic_button_crop_height);
-		mResizeDrawableDiagonal = resources
-				.getDrawable(R.drawable.ic_button_crop);
+		Resources resources = mContext.getResources();
+		mResizeDrawableWidth = ResourcesCompat.getDrawable(resources, R.drawable.ic_button_crop_width, null);
+		mResizeDrawableHeight = ResourcesCompat.getDrawable(resources, R.drawable.ic_button_crop_height, null);
+		mResizeDrawableDiagonal = ResourcesCompat.getDrawable(resources, R.drawable.ic_button_crop, null);
 	}
 
 	boolean mIsFocused;

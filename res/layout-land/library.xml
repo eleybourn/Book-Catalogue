@@ -84,6 +84,14 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <ProgressBar
+                    android:id="@+id/loading_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    style="?android:attr/progressBarStyleLarge" />
+
                 <com.eleybourn.bookcatalogue.widgets.FastScrollListView
                     android:id="@+id/list"
                     android:layout_width="match_parent"
@@ -101,13 +109,4 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-    <ProgressBar
-        android:id="@+id/syncProgressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:visibility="gone"
-        android:max="100" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

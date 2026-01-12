@@ -319,7 +319,8 @@ public class Fields extends ArrayList<Fields.Field> {
 	static public class StringDataAccessor implements FieldDataAccessor {
 		private String mLocalValue = "";
 		public void set(Field field, Cursor c) {
-			set(field, c.getString(c.getColumnIndex(field.column)));
+            int column = c.getColumnIndex(field.column);
+			set(field, c.getString(column));
 		}
 		public void set(Field field, Bundle b) {
 			set(field, b.getString(field.column));
@@ -358,7 +359,8 @@ public class Fields extends ArrayList<Fields.Field> {
 			mFormatHtml = formatHtml;
 		}
 		public void set(Field field, Cursor c) {
-			set(field, c.getString(c.getColumnIndex(field.column)));
+            int column = c.getColumnIndex(field.column);
+            set(field, c.getString(column));
 		}
 		public void set(Field field, Bundle b) {
 			set(field, b.getString(field.column));
@@ -443,7 +445,8 @@ public class Fields extends ArrayList<Fields.Field> {
 		private boolean mIsSetting = false;
 
 		public void set(Field field, Cursor c) {
-			set(field, c.getString(c.getColumnIndex(field.column)));
+            int column = c.getColumnIndex(field.column);
+            set(field, c.getString(column));
 		}
 		public void set(Field field, Bundle b) {
 			set(field, b.getString(field.column));
@@ -527,7 +530,8 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	static public class CheckBoxAccessor implements FieldDataAccessor {
 		public void set(Field field, Cursor c) {
-			set(field, c.getString(c.getColumnIndex(field.column)));
+            int column = c.getColumnIndex(field.column);
+            set(field, c.getString(column));
 		}
 		public void set(Field field, Bundle b) {
 			set(field, b.getString(field.column));
@@ -580,10 +584,12 @@ public class Fields extends ArrayList<Fields.Field> {
 	static public class RatingBarAccessor implements FieldDataAccessor {
 		public void set(Field field, Cursor c) {
 			RatingBar v = (RatingBar) field.getView();
-			if (field.formatter != null)
-				v.setRating(Float.parseFloat(field.formatter.format(field, c.getString(c.getColumnIndex(field.column)))));
-			else
-				v.setRating(c.getFloat(c.getColumnIndex(field.column)));
+            int column = c.getColumnIndex(field.column);
+			if (field.formatter != null) {
+                v.setRating(Float.parseFloat(field.formatter.format(field, c.getString(column))));
+            } else {
+                v.setRating(c.getFloat(column));
+            }
 		}
 		public void set(Field field, Bundle b) {
 			set(field, b.getString(field.column));
@@ -631,7 +637,8 @@ public class Fields extends ArrayList<Fields.Field> {
 	 */
 	static public class SpinnerAccessor implements FieldDataAccessor {
 		public void set(Field field, Cursor c) {
-			set(field, c.getString(c.getColumnIndex(field.column)));
+            int column = c.getColumnIndex(field.column);
+			set(field, c.getString(column));
 		}
 		public void set(Field field, Bundle b) {
 			set(field, b.getString(field.column));

@@ -110,11 +110,11 @@ public class TextFieldEditorFragment extends BookCatalogueDialogFragment {
 	private final TextFieldEditor.OnEditListener mEditListener = new TextFieldEditor.OnEditListener(){
 		@Override
 		public void onSaved(TextFieldEditor dialog, String newText) {
-			((OnTextFieldEditorListener) Objects.requireNonNull(getActivity())).onTextFieldEditorSave(mDialogId, TextFieldEditorFragment.this, newText);
+			((OnTextFieldEditorListener) requireActivity()).onTextFieldEditorSave(mDialogId, TextFieldEditorFragment.this, newText);
 		}
 		@Override
 		public void onCancel(TextFieldEditor dialog) {
-			((OnTextFieldEditorListener) Objects.requireNonNull(getActivity())).onTextFieldEditorCancel(mDialogId, TextFieldEditorFragment.this);
+			((OnTextFieldEditorListener) requireActivity()).onTextFieldEditorCancel(mDialogId, TextFieldEditorFragment.this);
 		}
 	};
 }

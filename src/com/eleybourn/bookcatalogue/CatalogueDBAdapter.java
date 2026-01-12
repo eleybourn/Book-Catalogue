@@ -451,7 +451,7 @@ public class CatalogueDBAdapter {
 
     private static String getAuthorFields(String alias, String idName) {
 			String sql;
-			if (idName != null && idName.length() > 0) {
+			if (idName != null && !idName.isEmpty()) {
 				sql = " " + alias + "." + KEY_ROW_ID + " as " + idName + ", ";
 			} else {
 				sql = " ";
@@ -469,7 +469,7 @@ public class CatalogueDBAdapter {
 
     private static String getBookFields(String alias, String idName) {
 			String sql;
-			if (idName != null && idName.length() > 0) {
+			if (idName != null && !idName.isEmpty()) {
 				sql = alias + "." + KEY_ROW_ID + " as " + idName + ", ";
 			} else {
 				sql = "";
@@ -1743,7 +1743,7 @@ public class CatalogueDBAdapter {
 	private String authorFormattedSource(String alias) {
 		if (alias == null)
 			alias = "";
-		else if (alias.length() > 0)
+		else if (!alias.isEmpty())
 			alias += ".";
 
 		return alias + KEY_FAMILY_NAME + "||', '||" + KEY_GIVEN_NAMES;
@@ -2205,15 +2205,15 @@ public class CatalogueDBAdapter {
 	public String fetchAllBooksInnerSql(String order, String bookshelf, String authorWhere, String bookWhere, String searchText, String loaned_to, String seriesName) {
 		String where = "";
 
-		if (bookWhere.length() > 0) {
-			if (where.length() > 0)
+		if (!bookWhere.isEmpty()) {
+			if (!where.isEmpty())
 				where += " and";
 			where += " (" + bookWhere + ")";
 		}
 
-		if (searchText.length() > 0) {
+		if (!searchText.isEmpty()) {
 			searchText = encodeString(searchText);
-			if (where.length() > 0)
+			if (!where.isEmpty())
 				where += " and";
 			where += "( (" + bookSearchPredicate(searchText) + ") "
 			+ " OR Exists(Select NULL From " + DB_TB_BOOK_AUTHOR + " ba"
@@ -2222,8 +2222,8 @@ public class CatalogueDBAdapter {
 			+ ")";
 		}
 
-		if (authorWhere.length() > 0) {
-			if (where.length() > 0)
+		if (!authorWhere.isEmpty()) {
+			if (!where.isEmpty())
 				where += " and";
 			where += " Exists(Select NULL From " + DB_TB_AUTHORS + " a "
 					+ " Join " + DB_TB_BOOK_AUTHOR + " ba "
@@ -2232,16 +2232,16 @@ public class CatalogueDBAdapter {
 					+ ")";
 		}
 
-		if (loaned_to.length() > 0) {
-			if (where.length() > 0)
+		if (!loaned_to.isEmpty()) {
+			if (!where.isEmpty())
 				where += " and";
 			where += " Exists(Select NULL From " + DB_TB_LOAN + " l Where "
 					+ " l." + KEY_BOOK + "=b." + KEY_ROW_ID
 					+ " And " + makeTextTerm("l." + KEY_LOANED_TO, "=", loaned_to) + ")";
 		}
 
-		if (seriesName.length() > 0 && seriesName.equals(META_EMPTY_SERIES)) {
-			if (where.length() > 0)
+		if (!seriesName.isEmpty() && seriesName.equals(META_EMPTY_SERIES)) {
+			if (!where.isEmpty())
 				where += " and";
 			where += " Not Exists(Select NULL From " + DB_TB_BOOK_SERIES + " bs Where "
 					+ " bs." + KEY_BOOK + "=b." + KEY_ROW_ID + ")";
@@ -2249,25 +2249,25 @@ public class CatalogueDBAdapter {
 
 		String sql = " FROM " + DB_TB_BOOKS + " b";
 
-		if (!bookshelf.equals("") && bookshelf.trim().length() > 0) {
+		if (!bookshelf.equals("") && !bookshelf.trim().isEmpty()) {
 			// Join with specific bookshelf
 			sql += " Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bb_sx On bb_sx." + KEY_BOOK + " = b." + KEY_ROW_ID;
 			sql += " Join " + DB_TB_BOOKSHELF + " b_sx On b_sx." + KEY_ROW_ID + " = bb_sx." + KEY_BOOKSHELF
 					+ " and " + makeTextTerm("b_sx." + KEY_BOOKSHELF, "=", bookshelf);
 		}
 
-		if (seriesName.length() > 0 && !seriesName.equals(META_EMPTY_SERIES))
+		if (!seriesName.isEmpty() && !seriesName.equals(META_EMPTY_SERIES))
 			sql += " Join " + DB_TB_BOOK_SERIES + " bs On (bs." + KEY_BOOK + " = b." + KEY_ROW_ID + ")"
 					+ " Join " + DB_TB_SERIES + " s On (s." + KEY_ROW_ID + " = bs." + KEY_SERIES_ID 
 					+ " and " + makeTextTerm("s." + KEY_SERIES_NAME, "=", seriesName) + ")";
 
 
-		if (where.length() > 0)
+		if (!where.isEmpty())
 			sql += " WHERE " + where;
 
 		// NULL order suppresses order-by
 		if (order != null) {
-			if (order.length() > 0)
+			if (!order.isEmpty())
 				// TODO Assess if ORDER is used and how
 				sql += " ORDER BY " + order;
 			else
@@ -2326,7 +2326,7 @@ public class CatalogueDBAdapter {
 			+ "    On ba." + KEY_AUTHOR_ID + " = a." + KEY_ROW_ID + ") a "
 			+ " On a." + KEY_BOOK + " = b." + KEY_ROW_ID + " and a." + KEY_AUTHOR_ID + " = b." + KEY_AUTHOR_ID;
 
-		if (seriesName.length() > 0 && !seriesName.equals(META_EMPTY_SERIES)) {
+		if (!seriesName.isEmpty() && !seriesName.equals(META_EMPTY_SERIES)) {
 			// Get the specified series...
 			fullSql += " Left Outer Join (Select " 
 				+ KEY_SERIES_ID + ", " 
@@ -2499,7 +2499,7 @@ public class CatalogueDBAdapter {
 	 * @return Cursor over all books
 	 */
 	public BooksCursor fetchAllBooksBySeries(String series, String bookshelf, String search_term) {
-		if (series.length() == 0 || series.equals(META_EMPTY_SERIES)) {
+		if (series.isEmpty() || series.equals(META_EMPTY_SERIES)) {
 			return fetchAllBooks("", bookshelf, "", "", search_term, "", META_EMPTY_SERIES);
 		} else {
 			String order = "substr('0000000000' || s." + KEY_SERIES_NUM + ", -10, 10), b." + KEY_TITLE + " " + COLLATION + " ASC";
@@ -2783,7 +2783,7 @@ public class CatalogueDBAdapter {
 		} else {
 			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROW_ID, false);
 		}
-		if (where != null && where.length() > 0)
+		if (where != null && !where.isEmpty())
 			where = " and " + where;
 
 		String sql = "SELECT count(*) as count FROM " + DB_TB_AUTHORS + " a " +
@@ -2814,7 +2814,7 @@ public class CatalogueDBAdapter {
 		} else {
 			where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROW_ID, false);
 		}
-		if (where != null && where.length() > 0)
+		if (where != null && !where.isEmpty())
 			where = " and " + where;
 
 		String sql = "SELECT count(*) as count FROM " + DB_TB_AUTHORS + " a " +
@@ -2850,7 +2850,7 @@ public class CatalogueDBAdapter {
 	 * @throws SQLException if note could not be found/retrieved
 	 */
 	public BooksCursor fetchBooksByIsbns(ArrayList<String> isbns) throws SQLException {
-		if (isbns.size() == 0)
+		if (isbns.isEmpty())
 			throw new RuntimeException("No ISBNs specified in lookup");
 
 		String where;
@@ -3310,7 +3310,7 @@ public class CatalogueDBAdapter {
 	 * @return				ID of anthology title record
 	 */
 	public long createAnthologyTitle(long book, String author, String title, boolean returnDupId, boolean dirtyBookIfNecessary) {
-		if (title.length() > 0) {
+		if (!title.isEmpty()) {
 			String[] names = processAuthorName(author);
 			long authorId = Long.parseLong(getAuthorIdOrCreate(names));
 			return createAnthologyTitle(book, authorId, title, returnDupId, dirtyBookIfNecessary);
@@ -3330,7 +3330,7 @@ public class CatalogueDBAdapter {
 	 * @return				ID of anthology title record
 	 */
 	public long createAnthologyTitle(long book, long authorId, String title, boolean returnDupId, boolean dirtyBookIfNecessary) {
-		if (title.length() > 0) {
+		if (!title.isEmpty()) {
 			if (dirtyBookIfNecessary)
 				setBookDirty(book);
 
@@ -3449,7 +3449,7 @@ public class CatalogueDBAdapter {
 
 			// Make sure we have an author
 			ArrayList<Author> authors = values.getAuthorList();
-			if (authors == null || authors.size() == 0)
+			if (authors == null || authors.isEmpty())
 				throw new IllegalArgumentException();
 			ContentValues initialValues = filterValues(values, mBooksInfo);
 

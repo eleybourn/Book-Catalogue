@@ -84,9 +84,9 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
         assert getArguments() != null;
         mDialogId = getArguments().getInt("dialogId");
 		Uri uri = Uri.parse(getArguments().getString("fileSpec"));
-    	mFile = DocumentFile.fromSingleUri(Objects.requireNonNull(getContext()), uri);
+    	mFile = DocumentFile.fromSingleUri(requireContext(), uri);
 
-        View v = Objects.requireNonNull(getActivity()).getLayoutInflater().inflate(R.layout.dialog_export_advanced_options, null);
+        View v = requireActivity().getLayoutInflater().inflate(R.layout.dialog_export_advanced_options, null);
 		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.label_advanced_options).create();
 		alertDialog.setIcon(R.drawable.ic_menu_help);
 		alertDialog.setCanceledOnTouchOutside(false);

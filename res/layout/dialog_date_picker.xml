@@ -8,8 +8,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" >
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp" >
 
         <LinearLayout
             android:id="@+id/dateSelector"
@@ -40,11 +40,11 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/label_year"
                     android:layout_alignStart="@+id/field_year"
                     android:layout_alignEnd="@+id/field_year"
-                    android:layout_below="@+id/label_year"
-                    android:text="+" 
-                    tools:ignore="HardcodedText" />
+                    android:text="+"
+                    tools:ignore="HardcodedText,DuplicateSpeakableTextCheck" />
 
                 <EditText
                     android:id="@+id/field_year"
@@ -56,19 +56,19 @@
                     android:minEms="3"
                     android:text="2000"
                     android:textAppearance="?android:attr/textAppearanceMedium" 
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText,LabelFor" />
 
                 <Button
                     android:id="@+id/button_year_minus"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/field_year"
                     android:layout_alignStart="@+id/field_year"
                     android:layout_alignEnd="@+id/field_year"
-                    android:layout_below="@+id/field_year"
                     android:layout_marginTop="-2dip"
-                    android:text="-" 
-                    tools:ignore="HardcodedText" />
+                    android:text="-"
+                    tools:ignore="HardcodedText,DuplicateSpeakableTextCheck" />
             </RelativeLayout>
 
             <RelativeLayout

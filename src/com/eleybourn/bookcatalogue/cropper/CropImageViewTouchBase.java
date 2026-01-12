@@ -29,7 +29,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-abstract class CropImageViewTouchBase extends ImageView {
+abstract class CropImageViewTouchBase extends androidx.appcompat.widget.AppCompatImageView {
 
 	/** Maximum upscaling for a viewed image */
 	private static final float SCALE_LIMIT_MAX = Float.MAX_VALUE;

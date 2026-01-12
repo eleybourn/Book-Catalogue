@@ -231,7 +231,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 * @param key	Key for data to add
 	 */
 	private void addIfNotPresent(String key) {
-		if (!mBookData.containsKey(key) || mBookData.getString(key).length() == 0) {
+		if (!mBookData.containsKey(key) || mBookData.getString(key).isEmpty()) {
 			mBookData.putString(key, mBuilder.toString());
 		}		
 	}
@@ -242,7 +242,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 * @param key	Key for data to add
 	 */
 	private void addIfNotPresent(String key, String value) {
-		if (!mBookData.containsKey(key) || mBookData.getString(key).length() == 0) {
+		if (!mBookData.containsKey(key) || mBookData.getString(key).isEmpty()) {
 			mBookData.putString(key, value);
 		}		
 	}
@@ -254,7 +254,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 * @param value	Value to compare to; if present but equal to this, it will be overwritten
 	 */
 	private void addIfNotPresentOrEqual(String key, String value) {
-		if (!mBookData.containsKey(key) || mBookData.getString(key).length() == 0 || mBookData.getString(key).equals(value)) {
+		if (!mBookData.containsKey(key) || mBookData.getString(key).isEmpty() || mBookData.getString(key).equals(value)) {
 			mBookData.putString(key, mBuilder.toString());
 		}		
 	}
@@ -264,9 +264,9 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 */
 	@Override
 	public void endDocument() {
-		if (mFetchThumbnail && mThumbnailUrl.length() > 0) {
+		if (mFetchThumbnail && !mThumbnailUrl.isEmpty()) {
 			String filename = Utils.saveThumbnailFromUrl(mThumbnailUrl, "_AM");
-			if (filename.length() > 0)
+			if (!filename.isEmpty())
 				Utils.appendOrAdd(mBookData, "__thumbnail", filename);			
 		}		
 	}

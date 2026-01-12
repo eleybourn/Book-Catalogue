@@ -249,7 +249,7 @@ public class TaskManager {
 					break;
 				}
 			}
-			doClose = (mIsClosing && mTasks.size() == 0);
+			doClose = (mIsClosing && mTasks.isEmpty());
 		}
 
 		// Tell all listeners that it has ended.
@@ -316,19 +316,19 @@ public class TaskManager {
 	private void updateProgressDialog() {
 		try {
 			// Start with the base message if present
-			if (mBaseMessage != null && mBaseMessage.length() > 0)
+			if (mBaseMessage != null && !mBaseMessage.isEmpty())
 				mProgressMessage = mBaseMessage;
 			else
 				mProgressMessage = "";
 
 			synchronized(mTasks) {
 				// Append each task message
-				if (mTasks.size() > 0) {
-					if (mProgressMessage.length() > 0)
+				if (!mTasks.isEmpty()) {
+					if (!mProgressMessage.isEmpty())
 						mProgressMessage += "\n";
 					if (mTasks.size() == 1) {
 						String oneMsg = mTasks.get(0).progressMessage;
-						if (oneMsg != null && oneMsg.trim().length() > 0)
+						if (oneMsg != null && !oneMsg.trim().isEmpty())
 							mProgressMessage += oneMsg;						
 					} else {
 						String taskMsgs = "";
@@ -336,7 +336,7 @@ public class TaskManager {
 						// Don't append blank messages; allows tasks to hide.
 						for(int i = 0; i < mTasks.size(); i++) {
 							String oneMsg = mTasks.get(i).progressMessage;
-							if (oneMsg != null && oneMsg.trim().length() > 0) {
+							if (oneMsg != null && !oneMsg.trim().isEmpty()) {
 								if (got)
 									taskMsgs += "\n";
 								else
@@ -344,7 +344,7 @@ public class TaskManager {
 								taskMsgs += " - " + oneMsg;									
 							}
 						}
-						if (taskMsgs.length() > 0)
+						if (!taskMsgs.isEmpty())
 							mProgressMessage += taskMsgs;
 					}
 				}				

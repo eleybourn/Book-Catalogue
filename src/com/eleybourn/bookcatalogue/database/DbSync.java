@@ -207,7 +207,7 @@ public class DbSync {
                 //System.out.println("Lock held by " + mLock.getHoldCount());
                 try {
                     // Simple case -- no locks held, just return and keep the lock
-                    if (mSharedOwners.size() == 0)
+                    if (mSharedOwners.isEmpty())
                         return mExclusiveLock;
                     // Check for one lock, and it being this thread.
                     if (mSharedOwners.size() == 1 && mSharedOwners.containsValue(t)) {
@@ -219,7 +219,7 @@ public class DbSync {
                     mReleased.await();
                 } catch (Exception e) {
                     // Probably happens because thread was interrupted. Just die.
-                    try { mLock.unlock(); } catch(Exception e2) {};
+                    try { mLock.unlock(); } catch(Exception e2) {}
                     throw new RuntimeException("Unable to get exclusive lock", e);
                 }
             }

@@ -53,7 +53,7 @@ public class BookCatalogueAPI implements SimpleTask {
     public static String REQUEST_DELETE_BOOK = "delete_book";
     public static String METHOD_POST = "POST";
     public static String METHOD_GET = "GET";
-    public static String METHOD_DEL = "DEL";
+    public static String METHOD_DEL = "DELETE";
     public static String METHOD_PUT = "PUT";
     private static String mEmail;
     private static boolean mOptIn;

@@ -451,6 +451,8 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
 
             // Update the book into the DB
             dba.updateBook(bookId, mBookData, 0);
+            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_BOOK, bookId, null);
+
         } else if (itemId == R.id.MENU_MARK_AS_UNREAD) {
             // Force the book status to : unread.
 
@@ -463,6 +465,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
 
             // Update the book into the DB
             dba.updateBook(bookId, mBookData, 0);
+            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_BOOK, bookId, null);
         }
         return false;
     }

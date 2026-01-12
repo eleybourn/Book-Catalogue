@@ -20,18 +20,12 @@
 
 package com.eleybourn.bookcatalogue.dialogs;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.database.Cursor;
-
-import androidx.annotation.NonNull;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,15 +33,25 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.eleybourn.bookcatalogue.data.Author;
+import androidx.annotation.NonNull;
+
+import com.eleybourn.bookcatalogue.BookCatalogueAPI;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
+import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Date;
+
 public class StandardDialogs {
+
+	private static StaticApiListener mApiListener;
 
 	/**
 	 * Show a dialog asking if unsaved edits should be ignored. Finish if so.
@@ -95,7 +99,7 @@ public class StandardDialogs {
 	}
 
 	public static int deleteBookAlert(Context context, final CatalogueDBAdapter dbHelper, final long id, final Runnable onDeleted) {
-
+		mApiListener = new StaticApiListener(context);
 		ArrayList<Author> authorList = dbHelper.getBookAuthorList(id);
 
 		String title;
@@ -133,6 +137,7 @@ public class StandardDialogs {
                 .setIcon(R.drawable.ic_menu_info)
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> {
                     dbHelper.deleteBook(id);
+                    new BookCatalogueAPI(BookCatalogueAPI.REQUEST_DELETE_BOOK, id, mApiListener);
                     onDeleted.run();
                 })
                 .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
@@ -236,16 +241,54 @@ public class StandardDialogs {
 		selectItemDialog(inflater, title, items, selectedItem, handler);
 	}
 
+	// Define the listener as a static inner class
+	private static class StaticApiListener implements BookCatalogueAPI.ApiListener {
+		private final WeakReference<Context> contextReference;
+
+		StaticApiListener(Context context) {
+			// Use a WeakReference to avoid memory leaks
+			this.contextReference = new WeakReference<>(context);
+		}
+
+		@Override
+		public void onApiProgress(String request, int current, int total) {
+			Context context = contextReference.get();
+			// Only update UI if the activity is still alive
+			if (context == null) {
+				return;
+			}
+			Log.d("StandardDialogs", "API Progress for " + request + ": " + current + "/" + total);
+		}
+
+		@Override
+		public void onApiComplete(String request, String message) {
+			Context context = contextReference.get();
+			if (context == null) {
+				return;
+			}
+			Log.d("StandardDialogs", "API Complete for " + request + ": " + message);
+		}
+
+		@Override
+		public void onApiError(String request, String error) {
+			Context context = contextReference.get();
+			if (context == null) {
+				return;
+			}
+			Log.e("StandardDialogs", "API Error for " + request + ": " + error);
+		}
+	}
+
 	/**
 	 * Simple item to manage a File object in a list of items.
 	 */
 	public static class SimpleDialogFileItem implements SimpleDialogItem {
-		private final File mFile; 
-		
+		private final File mFile;
+
 		public SimpleDialogFileItem(File file) {
 			mFile = file;
 		}
-		
+
 		public File getFile() {
 			return mFile;
 		}
@@ -281,12 +324,12 @@ public class StandardDialogs {
 	 * Item to manage an Object in a list of items.
 	 */
 	public static class SimpleDialogObjectItem implements SimpleDialogItem {
-		private final Object mObject; 
+		private final Object mObject;
 
 		public SimpleDialogObjectItem(Object object) {
 			mObject = object;
 		}
-		
+
 		public Object getObject() {
 			return mObject;
 		}
@@ -303,7 +346,7 @@ public class StandardDialogs {
 			// Return it
 			return v;
 		}
-		
+
 		public RadioButton getSelector(View v) {
 			return v.findViewById(R.id.selector);
 		}
@@ -317,7 +360,7 @@ public class StandardDialogs {
 			return mObject.toString();
 		}
 	}
-	
+
 	public static class SimpleDialogMenuItem extends SimpleDialogObjectItem {
 		final int mItemId;
 		final int mDrawableId;
@@ -342,5 +385,4 @@ public class StandardDialogs {
 		}
 	}
 
-	
 }

@@ -21,7 +21,6 @@ package com.eleybourn.bookcatalogue.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 /**
  * Prior to API 14 there was no way to get TextView to capitalize all text. So this class 

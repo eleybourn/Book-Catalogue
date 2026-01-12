@@ -88,7 +88,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	 */
 	BooklistPseudoCursor(LibraryBuilder builder) {
 		mBuilder = builder;
-		mCursors = new Hashtable<Integer, BooklistCursor>();
+		mCursors = new Hashtable<>();
 		mMruList = new int[MRU_LIST_SIZE];
 		for(int i = 0; i < MRU_LIST_SIZE; i++)
 			mMruList[i] = -1;
@@ -128,7 +128,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 		if (newPosition < 0 || newPosition >= getCount())
 			return false;
 		// Get the ID we use for the cursor at the new position
-		Integer cursorId = newPosition / CURSOR_SIZE;
+		int cursorId = newPosition / CURSOR_SIZE;
 		// Determine the actual start position
 		int cursorStartPos = cursorId * CURSOR_SIZE;
 
@@ -208,7 +208,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 	 */
 	private void purgeOldCursors(final Integer currentId) {
 		// List of cursors to purge
-		ArrayList<Integer> toPurge = new ArrayList<Integer>();
+		ArrayList<Integer> toPurge = new ArrayList<>();
 		// Scan the hash
 		for(Entry<Integer, BooklistCursor> cursorEntry: mCursors.entrySet()) {
 			// If it is more than 3 'pages' from the current position, it's a candidate

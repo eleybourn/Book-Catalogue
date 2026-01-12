@@ -38,9 +38,9 @@ public class BlankValidator implements DataValidator {
 			return;
 		try {
 			String s = data.getString(datum);
-			if (!s.equals("")) {
+			if (!s.isEmpty()) {
 				s = s.trim();
-				if (!s.equals("")) {
+				if (!s.isEmpty()) {
 					throw new ValidatorException(R.string.validator_blank_required, new Object[]{datum.getKey()});
 				}
 				data.putString(datum, s);

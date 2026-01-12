@@ -56,7 +56,7 @@ public class ZxingScanner implements Scanner {
 	 */
 	private static boolean isIntentAvailable(Context ctx, String action, String packageName) {
 		Intent test = new Intent(ACTION);
-		if (packageName != null && !packageName.equals("")) {
+		if (packageName != null && !packageName.isEmpty()) {
 			test.setPackage(packageName);
 		}
 		return ctx.getPackageManager().resolveActivity(test, 0) != null;

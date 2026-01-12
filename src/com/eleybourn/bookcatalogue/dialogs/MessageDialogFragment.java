@@ -83,25 +83,13 @@ public class MessageDialogFragment extends BookCatalogueDialogFragment {
         alertDialog.setIcon(R.drawable.ic_menu_info);
         alertDialog.setCanceledOnTouchOutside(false);
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(btnPos), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                handleButton(AlertDialog.BUTTON_POSITIVE);
-            }
-        });
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(btnPos), (dialog, which) -> handleButton(AlertDialog.BUTTON_POSITIVE));
 
         if (btnNeg != 0) {
-            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(btnNeg), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    handleButton(AlertDialog.BUTTON_NEGATIVE);
-                }
-            });
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(btnNeg), (dialog, which) -> handleButton(AlertDialog.BUTTON_NEGATIVE));
         }
         if (btnNeut != 0) {
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(btnNeut), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    handleButton(AlertDialog.BUTTON_NEUTRAL);
-                }
-            });
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(btnNeut), (dialog, which) -> handleButton(AlertDialog.BUTTON_NEUTRAL));
         }
 
         return alertDialog;

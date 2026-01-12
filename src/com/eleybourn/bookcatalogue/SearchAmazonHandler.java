@@ -295,7 +295,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 			} else if (localName.equalsIgnoreCase(LANGUAGE)){
 				mInLanguage = false;
 			} else if (localName.equalsIgnoreCase(LIST_PRICE)){
-				if (mCurrencyCode.equalsIgnoreCase("usd") && !mCurrencyAmount.equals("")) {
+				if (mCurrencyCode.equalsIgnoreCase("usd") && !mCurrencyAmount.isEmpty()) {
 					try {
 						Float price = Float.parseFloat(mCurrencyAmount) / 100;
 						addIfNotPresent(CatalogueDBAdapter.KEY_LIST_PRICE, String.format("%.2f", price));

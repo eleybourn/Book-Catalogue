@@ -46,7 +46,7 @@ public class BlockingStack<T> {
 	private final ReentrantLock mPushLock = new ReentrantLock();
 
 	public BlockingStack() {
-		mStack = new Stack<T>();
+		mStack = new Stack<>();
 	}
 
 	/**
@@ -80,11 +80,9 @@ public class BlockingStack<T> {
 	 * iterate etc.
 	 */
 	public Stack<T> getElements() {
-		Stack<T> copy = new Stack<T>();
+		Stack<T> copy = new Stack<>();
 		synchronized(mStack) {
-			for(T o : mStack) {
-				copy.add(o);
-			}
+            copy.addAll(mStack);
 		}
 		return copy;
 	}

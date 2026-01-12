@@ -87,22 +87,30 @@ public class BackupUtils {
 		}	
 		@Override
 		public void putItem(Bundle bundle, String key, String type, String value) throws IOException {
-			if (type.equals(BackupUtils.TYPE_INTEGER)) {
-				mBundle.putInt(key, Integer.parseInt(value));
-			} else if (type.equals(BackupUtils.TYPE_LONG)) {
-				mBundle.putLong(key, Long.parseLong(value));
-			} else if (type.equals(BackupUtils.TYPE_FLOAT)) {
-				mBundle.putFloat(key, Float.parseFloat(value));
-			} else if (type.equals(BackupUtils.TYPE_DOUBLE)) {
-				mBundle.putDouble(key, Double.parseDouble(value));
-			} else if (type.equals(BackupUtils.TYPE_STRING)) {
-				mBundle.putString(key, value);
-			} else if (type.equals(BackupUtils.TYPE_BOOLEAN)) {
-				mBundle.putBoolean(key, Boolean.parseBoolean(value));
-			} else if (type.equals(BackupUtils.TYPE_SERIALIZABLE)) {
-				Serializable s = Base64.decode(value);
-				mBundle.putSerializable(key, s);
-			}
+            switch (type) {
+                case BackupUtils.TYPE_INTEGER:
+                    mBundle.putInt(key, Integer.parseInt(value));
+                    break;
+                case BackupUtils.TYPE_LONG:
+                    mBundle.putLong(key, Long.parseLong(value));
+                    break;
+                case BackupUtils.TYPE_FLOAT:
+                    mBundle.putFloat(key, Float.parseFloat(value));
+                    break;
+                case BackupUtils.TYPE_DOUBLE:
+                    mBundle.putDouble(key, Double.parseDouble(value));
+                    break;
+                case BackupUtils.TYPE_STRING:
+                    mBundle.putString(key, value);
+                    break;
+                case BackupUtils.TYPE_BOOLEAN:
+                    mBundle.putBoolean(key, Boolean.parseBoolean(value));
+                    break;
+                case BackupUtils.TYPE_SERIALIZABLE:
+                    Serializable s = Base64.decode(value);
+                    mBundle.putSerializable(key, s);
+                    break;
+            }
 		}
 	}
 
@@ -142,19 +150,25 @@ public class BackupUtils {
 		}
 		@Override
 		public void putItem(Bundle bundle, String key, String type, String value) throws IOException {
-			if (type.equals(BackupUtils.TYPE_INTEGER)) {
-				mEditor.putInt(key, Integer.parseInt(value));
-			} else if (type.equals(BackupUtils.TYPE_LONG)) {
-				mEditor.putLong(key, Long.parseLong(value));
-			} else if (type.equals(BackupUtils.TYPE_FLOAT)) {
-				mEditor.putFloat(key, Float.parseFloat(value));
-			} else if (type.equals(BackupUtils.TYPE_STRING)) {
-				mEditor.putString(key, value);
-			} else if (type.equals(BackupUtils.TYPE_BOOLEAN)) {
-				mEditor.putBoolean(key, Boolean.parseBoolean(value));
-			} else {
-				throw new RuntimeException("Unable write data of type '" + type + "' to preferences");
-			}
+            switch (type) {
+                case BackupUtils.TYPE_INTEGER:
+                    mEditor.putInt(key, Integer.parseInt(value));
+                    break;
+                case BackupUtils.TYPE_LONG:
+                    mEditor.putLong(key, Long.parseLong(value));
+                    break;
+                case BackupUtils.TYPE_FLOAT:
+                    mEditor.putFloat(key, Float.parseFloat(value));
+                    break;
+                case BackupUtils.TYPE_STRING:
+                    mEditor.putString(key, value);
+                    break;
+                case BackupUtils.TYPE_BOOLEAN:
+                    mEditor.putBoolean(key, Boolean.parseBoolean(value));
+                    break;
+                default:
+                    throw new RuntimeException("Unable write data of type '" + type + "' to preferences");
+            }
 		}
 	}
 
@@ -227,7 +241,7 @@ public class BackupUtils {
 			} else {
 				throw new RuntimeException("Unable write data of type '" + o.getClass().getSimpleName() + "' to XML");
 			}
-			out.append("<item name=\"" + key + "\" type=\"" + type + "\">" + value + "</item>\n");
+			out.append("<item name=\"").append(key).append("\" type=\"").append(type).append("\">").append(value).append("</item>\n");
 		}
 		out.append("</collection>\n");		
 	}
@@ -252,22 +266,18 @@ public class BackupUtils {
 		final ItemInfo info = new ItemInfo();
 
 		XmlFilter.buildFilter(rootFilter, "collection", "item")
-			.setStartAction(new XmlHandler(){
-				@Override
-				public void process(ElementContext context) {
-					info.name = context.attributes.getValue("name");
-					info.type = context.attributes.getValue("type");
-				}}, null)
-			.setEndAction(new XmlHandler(){
-				@Override
-				public void process(ElementContext context) {
-					try {
-						accessor.putItem(bundle, info.name, info.type, context.body);
-					} catch (IOException e) {
-						Logger.logError(e);
-						throw new RuntimeException("Unable to process XML entity " + info.name + " (" + info.type + ")", e);
-					}
-				}}, null);
+			.setStartAction(context -> {
+                info.name = context.attributes.getValue("name");
+                info.type = context.attributes.getValue("type");
+            }, null)
+			.setEndAction(context -> {
+                try {
+                    accessor.putItem(bundle, info.name, info.type, context.body);
+                } catch (IOException e) {
+                    Logger.logError(e);
+                    throw new RuntimeException("Unable to process XML entity " + info.name + " (" + info.type + ")", e);
+                }
+            }, null);
 
 		XmlResponseParser handler = new XmlResponseParser(rootFilter);
 		SAXParserFactory factory = SAXParserFactory.newInstance();

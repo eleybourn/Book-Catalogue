@@ -16,7 +16,6 @@
 
 package com.eleybourn.bookcatalogue.cropper;
 
-import androidx.core.content.res.ResourcesCompat;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Matrix;

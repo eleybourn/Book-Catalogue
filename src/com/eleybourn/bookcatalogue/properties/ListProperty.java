@@ -71,12 +71,7 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 		View v = inflater.inflate(R.layout.property_value_list, null);
 		ViewTagger.setTag(v, R.id.TAG_PROPERTY, this);
 		// Display the list of values when clicked.
-		v.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				handleClick(v, inflater);
-			}
-		});
+		v.setOnClickListener(v1 -> handleClick(v1, inflater));
 
 		// Set the name
 		TextView text = v.findViewById(R.id.field_name);
@@ -104,11 +99,7 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 	private void handleClick(final View base, final LayoutInflater inflater) {
 		final ItemEntries<T> items = getListItems();
 		if (this.hasHint()) {
-			HintManager.displayHint(base.getContext(), this.getHint(), null, new Runnable(){
-				@Override
-				public void run() {
-					displayList(base, inflater, items);
-				}});
+			HintManager.displayHint(base.getContext(), this.getHint(), null, () -> displayList(base, inflater, items));
 		} else {
 			displayList(base, inflater, items);
 		}
@@ -170,7 +161,7 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 	 * @param <T>		Underlying list item data type.
 	 */
 	public static class ItemEntries<T> implements Iterable<ItemEntry<T>> {
-		ArrayList<ItemEntry<T>> mList = new ArrayList<ItemEntry<T>>();
+		ArrayList<ItemEntry<T>> mList = new ArrayList<>();
 
 		/**
 		 * Utility to make adding items easier.
@@ -179,7 +170,7 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 		 * @param stringId	String ID of description
 		 */
 		public ItemEntries<T> add(T value, int stringId, Object... args) {
-			mList.add(new ItemEntry<T>(value, stringId, args));
+			mList.add(new ItemEntry<>(value, stringId, args));
 			return this;
 		}
 //		/**
@@ -253,15 +244,12 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 		final AlertDialog dialog = new AlertDialog.Builder(inflater.getContext()).setView(root).create();
 
 		// Create a listener that responds to any click on the list
-		OnClickListener l = new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-				Holder<T> h = ViewTagger.getTag(v, R.id.TAG_HOLDER);
-				set(h.item.value);
-				setValueInView(h.baseView, h.item);
-			}
-		};
+		OnClickListener l = v -> {
+            dialog.dismiss();
+            Holder<T> h = ViewTagger.getTag(v, R.id.TAG_HOLDER);
+            set(h.item.value);
+            setValueInView(h.baseView, h.item);
+        };
 
 		// Add each entry to the list
 		for(ItemEntry<T> e: items) {
@@ -284,8 +272,8 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 				sel.setOnClickListener(l);
 				v.setOnClickListener(l);
 				// Set the tacks used by the listeners
-				ViewTagger.setTag(v, R.id.TAG_HOLDER, new Holder<T>(e, base));
-				ViewTagger.setTag(sel, R.id.TAG_HOLDER, new Holder<T>(e, base));
+				ViewTagger.setTag(v, R.id.TAG_HOLDER, new Holder<>(e, base));
+				ViewTagger.setTag(sel, R.id.TAG_HOLDER, new Holder<>(e, base));
 				// Add it to the group
 				grp.addView(v);		
 			}

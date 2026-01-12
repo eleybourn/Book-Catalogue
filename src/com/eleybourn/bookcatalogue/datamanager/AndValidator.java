@@ -38,11 +38,9 @@ public class AndValidator extends MetaValidator implements DataValidator {
 
 	@Override
 	public void validate(DataManager data, Datum datum, boolean crossValidating) {
-		Iterator<DataValidator> i = this.iterator();
-		while (i.hasNext()) {
-			DataValidator v = i.next();
-			// Only set the Bundle for the last in the list
-			v.validate(data, datum, crossValidating);
-		}
+        for (DataValidator v : this) {
+            // Only set the Bundle for the last in the list
+            v.validate(data, datum, crossValidating);
+        }
     }
 }

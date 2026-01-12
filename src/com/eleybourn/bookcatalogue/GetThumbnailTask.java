@@ -109,7 +109,7 @@ public class GetThumbnailTask implements SimpleTask {
 	public GetThumbnailTask( final String hash, final ImageView v, int maxWidth, int maxHeight, boolean cacheWasChecked ) {
 		clearOldTaskFromView(v);
 
-		mView = new WeakReference<ImageView>(v);
+		mView = new WeakReference<>(v);
 		mBookHash = hash;
 		mCacheWasChecked = cacheWasChecked;
 		mWidth = maxWidth;

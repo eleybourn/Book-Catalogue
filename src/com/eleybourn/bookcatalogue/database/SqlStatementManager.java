@@ -36,11 +36,11 @@ public class SqlStatementManager {
 	
 	public SqlStatementManager(SynchronizedDb db) {
 		mDb = db;
-		mStatements = new Hashtable<String, SynchronizedStatement>();
+		mStatements = new Hashtable<>();
 	}
 	public SqlStatementManager() {
 		mDb = null;
-		mStatements = new Hashtable<String, SynchronizedStatement>();
+		mStatements = new Hashtable<>();
 	}
 	
 	public SynchronizedStatement add(final SynchronizedDb db, final String name, final String sql) {

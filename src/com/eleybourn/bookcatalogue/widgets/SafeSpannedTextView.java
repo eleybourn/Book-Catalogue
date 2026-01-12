@@ -2,7 +2,6 @@ package com.eleybourn.bookcatalogue.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 /**
  * This subclass of TextView is designed to get around a bug in Android 4.1 and 4.1.1, documented here:

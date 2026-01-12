@@ -142,16 +142,15 @@ public class TarBackupWriter extends BackupWriterAbstract {
 	 * @param in			Stream to be saved
 	 */
 	private void streamToArchive(InputStream in) throws IOException {
-		try {
-			byte[] buffer = new byte[TarBackupContainer.BUFFER_SIZE];
-			while (true) {
-				int cnt = in.read(buffer);
-				if (cnt <= 0)
-					break;
-				mOutput.write(buffer, 0, cnt);
-			}			
-		} finally {
-            in.close();
+        try (in) {
+            byte[] buffer = new byte[TarBackupContainer.BUFFER_SIZE];
+            while (true) {
+                int cnt = in.read(buffer);
+                if (cnt <= 0)
+                    break;
+                mOutput.write(buffer, 0, cnt);
+            }
+        } finally {
             mOutput.closeArchiveEntry();
         }
 		

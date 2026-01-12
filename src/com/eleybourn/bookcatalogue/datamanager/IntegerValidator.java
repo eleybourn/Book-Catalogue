@@ -49,7 +49,7 @@ public class IntegerValidator extends DefaultFieldValidator {
 		Object o = null;
 		try {
 			o = data.get(datum);
-			Integer v;
+			int v;
 			if (o instanceof Integer) {
 				v = (Integer)o;
 			} else {

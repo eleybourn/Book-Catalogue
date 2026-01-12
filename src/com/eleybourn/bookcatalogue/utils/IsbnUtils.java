@@ -124,7 +124,7 @@ public class IsbnUtils {
             digits = new int[13];
             size = 0;
             for (int i = 0; i < isbn.length(); i++) {
-                final Character c = isbn.charAt(i);
+                final char c = isbn.charAt(i);
                 int val;
                 if (Character.isDigit(c)) {
                     // X can only be at end of an ISBN10
@@ -132,7 +132,7 @@ public class IsbnUtils {
                         isValid = false;
                         return;
                     }
-                    val = Integer.parseInt(c.toString());
+                    val = Integer.parseInt(Character.toString(c));
                 } else if (Character.toUpperCase(c) == 'X' && size == 9) {
                     // X can only be at end of an ISBN10
                     if (foundX) {

@@ -298,29 +298,22 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
     }    /**
      * Handler for the user cancelling the progress dialog.
      */
-    private final OnCancelListener mCancelHandler = new OnCancelListener() {
-        public void onCancel(DialogInterface i) {
-            cancelAndUpdateProgress();
-        }
-    };
+    private final OnCancelListener mCancelHandler = i -> cancelAndUpdateProgress();
 
     /**
      * Wait for the 'Back' key and cancel all tasks on keyUp.
      */
-    private final OnKeyListener mDialogKeyListener = new OnKeyListener() {
-        @Override
-        public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-            if (event.getAction() == KeyEvent.ACTION_UP) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    // Toasting a message here makes the app look less responsive, because
-                    // the final 'Cancelled...' message is delayed too much.
-                    //Toast.makeText(ActivityWithTasks.this, R.string.cancelling, Toast.LENGTH_LONG).show();
-                    cancelAndUpdateProgress();
-                    return true;
-                }
+    private final OnKeyListener mDialogKeyListener = (dialog, keyCode, event) -> {
+        if (event.getAction() == KeyEvent.ACTION_UP) {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                // Toasting a message here makes the app look less responsive, because
+                // the final 'Cancelled...' message is delayed too much.
+                //Toast.makeText(ActivityWithTasks.this, R.string.cancelling, Toast.LENGTH_LONG).show();
+                cancelAndUpdateProgress();
+                return true;
             }
-            return false;
         }
+        return false;
     };
 
 

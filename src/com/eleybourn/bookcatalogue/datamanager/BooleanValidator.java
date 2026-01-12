@@ -49,7 +49,7 @@ public class BooleanValidator extends DefaultFieldValidator {
 
 		try {
 			Object o = data.get(datum);
-			Boolean v;
+			boolean v;
 			if (o instanceof Boolean) {
 				v = (Boolean)o;
 			} else if (o instanceof Integer) {

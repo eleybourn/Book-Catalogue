@@ -112,9 +112,7 @@ abstract public class ManagedTask extends Thread {
 
 		try {
 			onRun();			
-		} catch (InterruptedException e) {
-			mCancelFlg = true;
-		} catch (ClosedByInterruptException e) {
+		} catch (InterruptedException | ClosedByInterruptException e) {
 			mCancelFlg = true;
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -125,13 +123,11 @@ abstract public class ManagedTask extends Thread {
 		onThreadFinish();
 
 		// Queue the 'onTaskFinished' message; this should also inform the TaskManager
-		mMessageSwitch.send(mMessageSenderId, new MessageSwitch.Message<TaskListener>() {
-			@Override
-			public boolean deliver(TaskListener listener) {
-				listener.onTaskFinished(ManagedTask.this);
-				return false;
-			}}
-		);
+		mMessageSwitch.send(mMessageSenderId, listener -> {
+            listener.onTaskFinished(ManagedTask.this);
+            return false;
+        }
+        );
 	}
 
 	/**

@@ -134,7 +134,7 @@ public class TaskManager {
 	 * 	STATIC Object for passing messages from background tasks to activities that may be recreated 
 	 *  This object handles all underlying OnTaskEndedListener messages for every instance of this class.
 	 */
-	private static final MessageSwitch<TaskManagerListener, TaskManagerController> mMessageSwitch = new MessageSwitch<TaskManagerListener, TaskManagerController>();
+	private static final MessageSwitch<TaskManagerListener, TaskManagerController> mMessageSwitch = new MessageSwitch<>();
 
 	public static final MessageSwitch<TaskManagerListener, TaskManagerController> getMessageSwitch() {
 		return mMessageSwitch;
@@ -172,7 +172,7 @@ public class TaskManager {
 	private boolean mIsClosing = false;
 
 	// List of tasks being managed by this object
-	ArrayList<TaskInfo> mTasks = new ArrayList<TaskInfo> ();
+	ArrayList<TaskInfo> mTasks = new ArrayList<>();
 
 	// Task info for each ManagedTask object
 	private class TaskInfo {
@@ -220,12 +220,7 @@ public class TaskManager {
 	/**
 	 * Listen for task messages, specifically, task termination
 	 */
-	private final ManagedTask.TaskListener mTaskListener = new ManagedTask.TaskListener() {
-		@Override
-		public void onTaskFinished(ManagedTask t) {
-			TaskManager.this.onTaskFinished(t);
-		}
-	};
+	private final ManagedTask.TaskListener mTaskListener = TaskManager.this::onTaskFinished;
 
 	/**
 	 * Accessor
@@ -331,20 +326,20 @@ public class TaskManager {
 						if (oneMsg != null && !oneMsg.trim().isEmpty())
 							mProgressMessage += oneMsg;						
 					} else {
-						String taskMsgs = "";
+						StringBuilder taskMsgs = new StringBuilder();
 						boolean got = false;
 						// Don't append blank messages; allows tasks to hide.
 						for(int i = 0; i < mTasks.size(); i++) {
 							String oneMsg = mTasks.get(i).progressMessage;
 							if (oneMsg != null && !oneMsg.trim().isEmpty()) {
 								if (got)
-									taskMsgs += "\n";
+									taskMsgs.append("\n");
 								else
 									got = true;
-								taskMsgs += " - " + oneMsg;									
+								taskMsgs.append(" - ").append(oneMsg);
 							}
 						}
-						if (!taskMsgs.isEmpty())
+						if (taskMsgs.length() > 0)
 							mProgressMessage += taskMsgs;
 					}
 				}				

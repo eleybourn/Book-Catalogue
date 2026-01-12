@@ -60,7 +60,7 @@ public class CropBitmapManager {
 	}
 
 	public static class ThreadSet implements Iterable<Thread> {
-		private final WeakHashMap<Thread, Object> mWeakCollection = new WeakHashMap<Thread, Object>();
+		private final WeakHashMap<Thread, Object> mWeakCollection = new WeakHashMap<>();
 
 		public void add(Thread t) {
 			mWeakCollection.put(t, null);
@@ -75,7 +75,7 @@ public class CropBitmapManager {
 		}
 	}
 
-	private final WeakHashMap<Thread, ThreadStatus> mThreadStatus = new WeakHashMap<Thread, ThreadStatus>();
+	private final WeakHashMap<Thread, ThreadStatus> mThreadStatus = new WeakHashMap<>();
 
 	private static CropBitmapManager sManager = null;
 

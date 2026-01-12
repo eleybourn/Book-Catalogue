@@ -74,7 +74,7 @@ public class DbSync {
         /**
          * Collection of threads that have shared locks
          */
-        private final Hashtable<Thread, Integer> mSharedOwners = new Hashtable<Thread, Integer>();
+        private final Hashtable<Thread, Integer> mSharedOwners = new Hashtable<>();
         /**
          * Lock used to pass back to consumers of shared locks
          */
@@ -111,7 +111,7 @@ public class DbSync {
             //System.out.println(t.getName() + " locked lock held by " + mLock.getHoldCount());
             purgeOldLocks();
             try {
-                Integer count;
+                int count;
                 if (mSharedOwners.containsKey(t)) {
                     count = mSharedOwners.get(t) + 1;
                 } else {
@@ -136,7 +136,7 @@ public class DbSync {
             //System.out.println(t.getName() + " locked lock held by " + mLock.getHoldCount());
             try {
                 if (mSharedOwners.containsKey(t)) {
-                    Integer count = mSharedOwners.get(t) - 1;
+                    int count = mSharedOwners.get(t) - 1;
                     //System.out.println(t.getName() + " now has " + count + " SHARED locks");
                     if (count < 0)
                         throw new RuntimeException("Release a lock count already zero");
@@ -303,12 +303,7 @@ public class DbSync {
          */
         public SynchronizedDb(final SQLiteOpenHelper helper, Synchronizer sync) {
             mSync = sync;
-            mDb = openWithRetries(new DbOpener() {
-                @Override
-                public SQLiteDatabase open() {
-                    return helper.getWritableDatabase();
-                }
-            });
+            mDb = openWithRetries(helper::getWritableDatabase);
         }
 
         /**
@@ -319,12 +314,7 @@ public class DbSync {
          */
         public SynchronizedDb(final GenericOpenHelper helper, Synchronizer sync) {
             mSync = sync;
-            mDb = openWithRetries(new DbOpener() {
-                @Override
-                public SQLiteDatabase open() {
-                    return helper.getWritableDatabase();
-                }
-            });
+            mDb = openWithRetries(helper::getWritableDatabase);
         }
 
         /**
@@ -352,13 +342,7 @@ public class DbSync {
                     //}
                 }
                 return refs;
-            } catch (NoSuchFieldException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }

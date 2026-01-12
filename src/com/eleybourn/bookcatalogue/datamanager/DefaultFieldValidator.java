@@ -55,7 +55,7 @@ public class DefaultFieldValidator implements DataValidator {
 			return;
 
 		try {
-			if (value.toString().trim().equals("")) {
+			if (value.toString().trim().isEmpty()) {
 				data.putString(datum, mDefault);
 			}
         } catch (Exception e) {

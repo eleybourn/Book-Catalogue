@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -414,13 +415,13 @@ public class LibraryThingManager {
 	 */
 	public void searchByIsbn(String isbn, boolean fetchThumbnail, Bundle bookData) {
 		String devKey = getDevKey();
-		if (devKey.equals(""))
+		if (devKey.isEmpty())
 			throw new RuntimeException("Developer Key not available");
 
 		// Base path for an ISBN search
 		String path = String.format(DETAIL_URL, devKey, isbn);
 
-		if (isbn.equals(""))
+		if (isbn.isEmpty())
 			throw new IllegalArgumentException();
 
 		URL url;
@@ -437,11 +438,7 @@ public class LibraryThingManager {
 			waitUntilRequestAllowed();
 			parser.parse(Utils.getInputStream(url), entryHandler);
 			// Dont bother catching general exceptions, they will be caught by the caller.
-		} catch (MalformedURLException e) {
-			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {}
-            Logger.logError(e, s);
-		} catch (ParserConfigurationException e) {
+		} catch (IOException | ParserConfigurationException e) {
 			String s = "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {}
             Logger.logError(e, s);
@@ -449,13 +446,9 @@ public class LibraryThingManager {
 			String s = e.getMessage(); // "unknown";
 			try { s = e.getMessage(); } catch (Exception e2) {}
             Logger.logError(e, s);
-		} catch (java.io.IOException e) {
-			String s = "unknown";
-			try { s = e.getMessage(); } catch (Exception e2) {}
-            Logger.logError(e, s);
 		}
 
-		if (fetchThumbnail)
+        if (fetchThumbnail)
 			getCoverImage(isbn, bookData, ImageSizes.LARGE);
 
     }
@@ -586,7 +579,7 @@ public class LibraryThingManager {
 	 */
 	public String getCoverImageUrl(String isbn, ImageSizes size) {
 		String devKey = getDevKey();
-		if (devKey.equals(""))
+		if (devKey.isEmpty())
 			throw new RuntimeException("Developer Key not available");
 
 		String path = COVER_URL_SMALL;
@@ -629,10 +622,10 @@ public class LibraryThingManager {
 	public static ArrayList<String> searchEditions(String isbn) {
 		// Base path for an ISBN search
 		String path = String.format(EDITIONS_URL, isbn);
-		if (isbn.equals(""))
+		if (isbn.isEmpty())
 			throw new RuntimeException("Can not get editions without an ISBN");
 
-		ArrayList<String> editions = new ArrayList<String>();
+		ArrayList<String> editions = new ArrayList<>();
 
 		// Setup the parser
 		SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -663,7 +656,7 @@ public class LibraryThingManager {
 	 */
 	static private class SearchLibraryThingEditionHandler extends DefaultHandler  {
 		private final StringBuilder mBuilder = new StringBuilder();
-		private ArrayList<String> mEditions = new ArrayList<String>();
+		private ArrayList<String> mEditions = new ArrayList<>();
 
 		SearchLibraryThingEditionHandler(ArrayList<String> editions) {
 			mEditions = editions;

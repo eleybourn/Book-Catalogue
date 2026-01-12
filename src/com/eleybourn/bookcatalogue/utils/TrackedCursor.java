@@ -49,7 +49,7 @@ public class TrackedCursor extends SynchronizedCursor  {
 	/* =========== */
 
 	/** Used as a collection of known cursors */
-	private static final HashSet<WeakReference<TrackedCursor>> mCursors = new HashSet<WeakReference<TrackedCursor>>();
+	private static final HashSet<WeakReference<TrackedCursor>> mCursors = new HashSet<>();
 	/** Global counter for unique cursor IDs */
 	private static Long mIdCounter = 0L;
 
@@ -90,7 +90,7 @@ public class TrackedCursor extends SynchronizedCursor  {
 			}
 			// Save this cursor in the collection
 			synchronized(mCursors) {
-				mWeakRef = new WeakReference<TrackedCursor>(this);
+				mWeakRef = new WeakReference<>(this);
 				mCursors.add(mWeakRef);
 			}			
 		} else {
@@ -178,7 +178,7 @@ public class TrackedCursor extends SynchronizedCursor  {
 		long count = 0;
 
 		if (DEBUG_TRACKED_CURSOR) {			
-			ArrayList<WeakReference<TrackedCursor>> list = new ArrayList<WeakReference<TrackedCursor>>();
+			ArrayList<WeakReference<TrackedCursor>> list = new ArrayList<>();
 			synchronized(mCursors) {
 				for(WeakReference<TrackedCursor> r : mCursors) {
 					TrackedCursor c = r.get();
@@ -214,7 +214,7 @@ public class TrackedCursor extends SynchronizedCursor  {
 	 * Get a collection of open cursors at the current time.
 	 */
 	public static ArrayList<TrackedCursor> getCursors() {
-		ArrayList<TrackedCursor> list = new ArrayList<TrackedCursor>();
+		ArrayList<TrackedCursor> list = new ArrayList<>();
 		if (DEBUG_TRACKED_CURSOR) {
 			synchronized(mCursors) {
 				for(WeakReference<TrackedCursor> r : mCursors) {

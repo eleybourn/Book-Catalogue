@@ -140,8 +140,8 @@ public class UpgradeMessageManager {
 				// It's not a new install, so we use the 'old' message format and set the version to the
 				// last installed version that used the old method.
 				lastVersion = 98;
-				if (!CatalogueDBAdapter.message.equals(""))
-					message.append("<p>" + CatalogueDBAdapter.message + "</p>");
+				if (!CatalogueDBAdapter.message.isEmpty())
+					message.append("<p>").append(CatalogueDBAdapter.message).append("</p>");
 			} finally {
 				tmpDb.close();				
 			}

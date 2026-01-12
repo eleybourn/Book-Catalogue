@@ -54,7 +54,7 @@ public class LocalCoverFinder implements Importer.CoverFinder {
 	}
 	
 	public void copyOrRenameCoverFile(String srcUuid, long srcId, long dstId) throws IOException {
-		if (srcUuid != null && !srcUuid.equals("")) {
+		if (srcUuid != null && !srcUuid.isEmpty()) {
 			// Only copy UUID files if they are foreign...since they already exists, otherwise.
 			if (mIsForeign)
 				copyCoverImageIfMissing(srcUuid);							

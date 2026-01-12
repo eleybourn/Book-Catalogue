@@ -100,9 +100,7 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
 		}
 		try {
 			mResult = execute();
-		} catch (CancellationException e) {
-			mState = STATE_CANCELED;
-		} catch (InterruptedException e) {
+		} catch (CancellationException | InterruptedException e) {
 			mState = STATE_CANCELED;
 		} catch (Throwable error) {
 			synchronized (this) {

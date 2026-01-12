@@ -1,7 +1,5 @@
 package com.eleybourn.bookcatalogue.scanner;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.TreeMap;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;

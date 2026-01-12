@@ -44,35 +44,29 @@ import java.util.ArrayList;
 public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
     private final int mRowViewId;
     private final ArrayList<T> mItems;
-    private final OnClickListener mRowClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            try {
-                int pos = getViewRow(v);
-                T item = getItem(pos);
-                onRowClick(item, pos, v);
-            } catch (Exception e) {
-                Logger.logError(e);
-            }
+    private final OnClickListener mRowClickListener = v -> {
+        try {
+            int pos = getViewRow(v);
+            T item = getItem(pos);
+            onRowClick(item, pos, v);
+        } catch (Exception e) {
+            Logger.logError(e);
         }
     };
-    private final OnClickListener mRowDeleteListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v == null)
-                return;
+    private final OnClickListener mRowDeleteListener = v -> {
+        if (v == null)
+            return;
 
-            int pos = getViewRow(v);
-            T old = getItem(pos);
-            try {
-                onRowDelete(old, pos, v);
-                remove(old);
-                notifyDataSetChanged();
-                onListChanged();
-            } catch (Exception e) {
-                // TODO: Allow a specific exception to cancel the action
-                Logger.logError(e);
-            }
+        int pos = getViewRow(v);
+        T old = getItem(pos);
+        try {
+            onRowDelete(old, pos, v);
+            remove(old);
+            notifyDataSetChanged();
+            onListChanged();
+        } catch (Exception e) {
+            // TODO: Allow a specific exception to cancel the action
+            Logger.logError(e);
         }
     };
     private final OnClickListener mRowDownListener = new OnClickListener() {
@@ -170,7 +164,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
         }
 
         // Save this views position
-        ViewTagger.setTag(v, R.id.TAG_POSITION, Integer.valueOf(position));
+        ViewTagger.setTag(v, R.id.TAG_POSITION, position);
 
         {
             // Giving the whole row an onClickListener seems to interfere

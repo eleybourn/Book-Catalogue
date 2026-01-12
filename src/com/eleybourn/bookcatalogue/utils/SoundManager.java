@@ -49,12 +49,7 @@ public class SoundManager {
 
 	private static void playFile(final MediaPlayer player, final AssetFileDescriptor file) throws IllegalArgumentException, IllegalStateException, IOException {
 	    // When the beep has finished playing, rewind to queue up another one.
-		player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-	      @Override
-	      public void onCompletion(MediaPlayer player) {
-	        player.release();
-	      }
-	    });
+		player.setOnCompletionListener(MediaPlayer::release);
 	    player.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
 	    file.close();
 	    player.setVolume(0.2f, 0.2f);

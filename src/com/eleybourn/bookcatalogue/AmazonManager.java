@@ -42,7 +42,7 @@ public class AmazonManager {
 		//} 
 		
 		String path = "https://bc.theagiledirector.com/getRest_v3.php";
-		if (mIsbn.equals("")) {
+		if (mIsbn.isEmpty()) {
 			path += "?author=" + mAuthor + "&title=" + mTitle;
 		} else {
 			path += "?isbn=" + mIsbn;

@@ -176,11 +176,7 @@ abstract class CropImageViewTouchBase extends androidx.appcompat.widget.AppCompa
 		final int viewWidth = getWidth();
 
 		if (viewWidth <= 0) {
-			mOnLayoutRunnable = new Runnable() {
-				public void run() {
-					setImageRotateBitmapResetBase(bitmap, resetSupp);
-				}
-			};
+			mOnLayoutRunnable = () -> setImageRotateBitmapResetBase(bitmap, resetSupp);
 			return;
 		}
 

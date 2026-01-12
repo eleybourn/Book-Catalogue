@@ -151,18 +151,12 @@ public class CropCropImage extends CropMonitoredActivity {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		findViewById(R.id.discard).setOnClickListener(
-				new View.OnClickListener() {
-					public void onClick(View v) {
-						setResult(RESULT_CANCELED);
-						finish();
-					}
-				});
+                v -> {
+                    setResult(RESULT_CANCELED);
+                    finish();
+                });
 
-		findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				onSaveClicked();
-			}
-		});
+		findViewById(R.id.save).setOnClickListener(v -> onSaveClicked());
 		startFaceDetection();
 	}
 
@@ -192,37 +186,33 @@ public class CropCropImage extends CropMonitoredActivity {
 		mImageView.setImageBitmapResetBase(mBitmap, true);
 
 		CropUtil.startBackgroundJob(this, null, "Please wait\u2026",
-				new Runnable() {
-					public void run() {
-						final CountDownLatch latch = new CountDownLatch(1);
-						final Bitmap b = (mImage != null) ? mImage
-								.fullSizeBitmap(CropIImage.UNCONSTRAINED,
-										1024 * 1024) : mBitmap;
-						mHandler.post(new Runnable() {
-							public void run() {
-								if (b != mBitmap && b != null) {
-									// Do not recycle until mBitmap has been set
-									// to the new bitmap!
-									Bitmap toRecycle = mBitmap;
-									mBitmap = b;
-									mImageView.setImageBitmapResetBase(mBitmap,
-											true);
-									toRecycle.recycle();
-								}
-								if (mImageView.getScale() == 1F) {
-									mImageView.center(true, true);
-								}
-								latch.countDown();
-							}
-						});
-						try {
-							latch.await();
-						} catch (InterruptedException e) {
-							throw new RuntimeException(e);
-						}
-						mRunFaceDetection.run();
-					}
-				}, mHandler);
+                () -> {
+                    final CountDownLatch latch = new CountDownLatch(1);
+                    final Bitmap b = (mImage != null) ? mImage
+                            .fullSizeBitmap(CropIImage.UNCONSTRAINED,
+                                    1024 * 1024) : mBitmap;
+                    mHandler.post(() -> {
+if (b != mBitmap && b != null) {
+// Do not recycle until mBitmap has been set
+// to the new bitmap!
+Bitmap toRecycle = mBitmap;
+mBitmap = b;
+mImageView.setImageBitmapResetBase(mBitmap,
+true);
+toRecycle.recycle();
+}
+if (mImageView.getScale() == 1F) {
+mImageView.center(true, true);
+}
+latch.countDown();
+});
+                    try {
+                        latch.await();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    mRunFaceDetection.run();
+                }, mHandler);
 	}
 
 	private void onSaveClicked() {
@@ -324,11 +314,7 @@ public class CropCropImage extends CropMonitoredActivity {
 		} else {
 			final Bitmap b = croppedImage;
 			CropUtil.startBackgroundJob(this, null, "Saving image",
-					new Runnable() {
-						public void run() {
-							saveOutput(b);
-						}
-					}, mHandler);
+                    () -> saveOutput(b), mHandler);
 		}
 	}
 
@@ -524,29 +510,27 @@ public class CropCropImage extends CropMonitoredActivity {
 				faceBitmap.recycle();
 			}
 
-			mHandler.post(new Runnable() {
-				public void run() {
-					mWaitingToPick = mNumFaces > 1;
-					if (mNumFaces > 0) {
-						for (int i = 0; i < mNumFaces; i++) {
-							handleFace(mFaces[i]);
-						}
-					} else {
-						makeDefault();
-					}
-					mImageView.invalidate();
-					if (mImageView.mHighlightViews.size() == 1) {
-						mCrop = mImageView.mHighlightViews.get(0);
-						mCrop.setFocus(true);
-					}
+			mHandler.post(() -> {
+                mWaitingToPick = mNumFaces > 1;
+                if (mNumFaces > 0) {
+                    for (int i = 0; i < mNumFaces; i++) {
+                        handleFace(mFaces[i]);
+                    }
+                } else {
+                    makeDefault();
+                }
+                mImageView.invalidate();
+                if (mImageView.mHighlightViews.size() == 1) {
+                    mCrop = mImageView.mHighlightViews.get(0);
+                    mCrop.setFocus(true);
+                }
 
-					if (mNumFaces > 1) {
-						Toast t = Toast.makeText(CropCropImage.this,
-								"Multi face crop help", Toast.LENGTH_SHORT);
-						t.show();
-					}
-				}
-			});
+                if (mNumFaces > 1) {
+                    Toast t = Toast.makeText(CropCropImage.this,
+                            "Multi face crop help", Toast.LENGTH_SHORT);
+                    t.show();
+                }
+            });
 		}
 	};
 

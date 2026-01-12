@@ -1369,7 +1369,8 @@ public class Utils {
      */
     public static String signedBy(Context context) {
         // Get value if no cached value exists
-        if (mSignedBy == null) {
+        StringBuilder localSignedBy = new StringBuilder(mSignedBy);
+        if (localSignedBy.length() == 0) {
             try {
                 // Get app info
                 PackageManager manager = context.getPackageManager();
@@ -1398,23 +1399,24 @@ public class Utils {
                         String fingerprint = hexString.toString();
 
                         // Append as needed (theoretically could have more than one sig */
-                        if (mSignedBy == null)
-                            mSignedBy = fingerprint;
+                        if (localSignedBy.length() == 0)
+                            localSignedBy = new StringBuilder(fingerprint);
                         else
-                            mSignedBy += "/" + fingerprint;
+                            localSignedBy.append("/").append(fingerprint);
                     }
                 }
 
             } catch (NameNotFoundException e) {
                 // Default if package not found...kind of unlikely
-                mSignedBy = "NO_PACKAGE";
+                localSignedBy = new StringBuilder("NO_PACKAGE");
 
             } catch (Exception e) {
                 // Default if we die
-                mSignedBy = e.getMessage();
+                localSignedBy = new StringBuilder(e.getMessage());
             }
         }
-        return mSignedBy;
+        mSignedBy = localSignedBy.toString();
+        return localSignedBy.toString();
     }
 
     /**

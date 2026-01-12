@@ -126,7 +126,7 @@ public class StringProperty extends ValuePropertyWithGlobalDefault<String> imple
 	public void validate() {
 		if (getRequireNonBlank()) {
 			String s = get();
-			if (s == null || s.trim().equals(""))
+			if (s == null || s.trim().isEmpty())
 				throw new ValidationException(BookCatalogueApp.getResourceString(R.string.thing_must_not_be_blank, getName()));
 		}
 	}

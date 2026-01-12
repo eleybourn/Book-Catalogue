@@ -134,7 +134,7 @@ public class ViewTagger {
 	public void set(int key, Object value) {
 		synchronized(this) {
 			if (mTags == null)
-				mTags = new SparseArray<Object>();
+				mTags = new SparseArray<>();
 			mTags.put(key, value);
 		}
 	}

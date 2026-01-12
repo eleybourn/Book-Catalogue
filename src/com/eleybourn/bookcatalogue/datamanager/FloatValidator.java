@@ -46,7 +46,7 @@ public class FloatValidator extends DefaultFieldValidator {
 		// Will throw on failure...
 		super.validate(data, datum, crossValidating);
 		try {
-			Float v;
+			float v;
 			Object o = data.get(datum);
 			if (o instanceof Float) {
 				v = (Float)o;

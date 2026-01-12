@@ -47,18 +47,12 @@ public class Terminator {
 
 		@Override
 		public int compare(Event lhs, Event rhs) {
-			if (lhs.time < rhs.time) {
-				return -1;
-			} else if (lhs.time > rhs.time) {
-				return 1;
-			} else {
-				return 0;
-			}
+            return Long.compare(lhs.time, rhs.time);
 		}
 	}
 
 	/** Queue of Event objects currently awaiting execution */
-	private static final PriorityQueue<Event> mEvents = new PriorityQueue<Event>(10, new EventComparator());
+	private static final PriorityQueue<Event> mEvents = new PriorityQueue<>(10, new EventComparator());
 
 	/**
 	 * Enqueue the passed runnable to be run after the specified delay.

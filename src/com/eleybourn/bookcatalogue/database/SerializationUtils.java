@@ -86,16 +86,10 @@ public class SerializationUtils {
 			ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(blob));
 			Object o = in.readObject();
 		    return (T)o;
-		} catch (ClassCastException e) {
-			throw new DeserializationException(e);
-		} catch (StreamCorruptedException e) {
-			throw new DeserializationException(e);
-		} catch (IOException e) {
-			throw new DeserializationException(e);
-		} catch (ClassNotFoundException e) {
+		} catch (ClassCastException | ClassNotFoundException | IOException e) {
 			throw new DeserializationException(e);
 		}
-	}
+    }
 
 	/**
 	 * Serialize then de-serialize to create a deep clone.

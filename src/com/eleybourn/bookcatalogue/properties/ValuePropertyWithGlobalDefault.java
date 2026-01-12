@@ -168,7 +168,7 @@ public abstract class ValuePropertyWithGlobalDefault<T> extends Property {
 	 * Utility to check if a global default is available
 	 */
 	public boolean hasGlobalDefault() {
-		return (mDefaultPrefKey != null && !mDefaultPrefKey.equals(""));
+		return (mDefaultPrefKey != null && !mDefaultPrefKey.isEmpty());
 	}
 
 	/**

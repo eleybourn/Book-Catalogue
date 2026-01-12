@@ -340,7 +340,7 @@ public class StartupActivity
         }
 
         // Display upgrade message if necessary, otherwise go on to stage 3
-        if (mUpgradeMessageShown || UpgradeMessageManager.getUpgradeMessage().equals("")) {
+        if (mUpgradeMessageShown || UpgradeMessageManager.getUpgradeMessage().isEmpty()) {
             stage3Startup();
         } else {
             upgradePopup(UpgradeMessageManager.getUpgradeMessage());
@@ -569,7 +569,7 @@ public class StartupActivity
                 try {
                     String uuid = db.getBookUuid(id);
                     // If there is a book with a valid UUID, then check
-                    if (uuid != null && !("".equals(uuid))) {
+                    if (uuid != null && !(uuid.isEmpty())) {
                         cnt++;
                         File f = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
                         if (f.exists()) {

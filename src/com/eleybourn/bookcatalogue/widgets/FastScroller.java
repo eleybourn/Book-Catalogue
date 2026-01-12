@@ -293,7 +293,7 @@ public class FastScroller {
                 else
                     line1 = mSectionTextV2[0];
                 // Check if line 2 is present
-                if (mSectionTextV2.length > 1 && mSectionTextV2[1] != null && !mSectionTextV2[1].equals("")) {
+                if (mSectionTextV2.length > 1 && mSectionTextV2[1] != null && !mSectionTextV2[1].isEmpty()) {
                     has2Lines = true;
                     line2 = mSectionTextV2[1];
                 } else {

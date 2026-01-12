@@ -40,7 +40,7 @@ public class XmlResponseParser extends DefaultHandler {
 	/** Temporary storage for inter-tag text */
 	StringBuilder m_builder = new StringBuilder();
 	/** Stack of parsed tags giving context to the XML parser */
-	ArrayList<ElementContext> m_parents = new ArrayList<ElementContext>();
+	ArrayList<ElementContext> m_parents = new ArrayList<>();
 
 	/**
 	 * Constructor. Requires a filter tree.

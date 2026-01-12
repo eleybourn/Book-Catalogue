@@ -73,17 +73,7 @@ public class CoversDbHelper {
 	// Domain and table definitions
 	
 	/** Static Factory object to create the custom cursor */
-	public static final CursorFactory mTrackedCursorFactory = new CursorFactory() {
-			@Override
-			public Cursor newCursor(
-					SQLiteDatabase db,
-					SQLiteCursorDriver masterQuery, 
-					String editTable,
-					SQLiteQuery query) 
-			{
-				return new TrackedCursor(db, masterQuery, editTable, query, mSynchronizer);
-			}
-	};
+	public static final CursorFactory mTrackedCursorFactory = (db, masterQuery, editTable, query) -> new TrackedCursor(db, masterQuery, editTable, query, mSynchronizer);
 
 	private static class CoversHelper extends GenericOpenHelper {
 
@@ -210,15 +200,12 @@ public class CoversDbHelper {
 	public final byte[] getFile(final String filename, final Date lastModified) {
 		SynchronizedDb db = this.getDb();
 
-		Cursor c = db.query(TBL_IMAGE.getName(), new String[]{DOM_IMAGE.name}, DOM_FILENAME + "=? and " + DOM_DATE + " > ?", 
-							new String[]{filename, Utils.toSqlDateTime(lastModified)}, null, null, null);
-		try {
-			if (!c.moveToFirst())
-				return null;		
-			return c.getBlob(0);
-		} finally {
-			c.close();
-		}
+        try (Cursor c = db.query(TBL_IMAGE.getName(), new String[]{DOM_IMAGE.name}, DOM_FILENAME + "=? and " + DOM_DATE + " > ?",
+                new String[]{filename, Utils.toSqlDateTime(lastModified)}, null, null, null)) {
+            if (!c.moveToFirst())
+                return null;
+            return c.getBlob(0);
+        }
 	}
 
 	/**
@@ -228,13 +215,10 @@ public class CoversDbHelper {
 	 */
 	public boolean isEntryValid(String filename, Date lastModified) {
 		SynchronizedDb db = this.getDb();
-		Cursor c = db.query(TBL_IMAGE.getName(), new String[]{DOM_ID.name}, DOM_FILENAME + "=? and " + DOM_DATE + " > ?", 
-								new String[]{filename, Utils.toSqlDateTime(lastModified)}, null, null, null);
-		try {
-			return c.moveToFirst();
-		} finally {
-			c.close();
-		}
+        try (Cursor c = db.query(TBL_IMAGE.getName(), new String[]{DOM_ID.name}, DOM_FILENAME + "=? and " + DOM_DATE + " > ?",
+                new String[]{filename, Utils.toSqlDateTime(lastModified)}, null, null, null)) {
+            return c.moveToFirst();
+        }
 	}
 	/**
 	 * Save the passed bitmap to a 'file'

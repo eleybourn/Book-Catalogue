@@ -40,7 +40,7 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 	private int div = 0;
 	private int entrydiv = 0;
 	private String this_title = "";
-	public ArrayList<String> titles = new ArrayList<String>();
+	public ArrayList<String> titles = new ArrayList<>();
 	
 	public static String DIV = "div";
 	public static String LIST1 = "ul";
@@ -114,7 +114,7 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 		super.startDocument();
 		// Clear all variables (in case they were set in a previous instantiation)
 		builder = new StringBuilder();
-		titles = new ArrayList<String>();
+		titles = new ArrayList<>();
 		entry1 = false;
 		entry2 = false;
 		entry3 = false;

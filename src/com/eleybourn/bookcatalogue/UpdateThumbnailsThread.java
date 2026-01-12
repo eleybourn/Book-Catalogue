@@ -69,12 +69,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 	// DB connection
 	protected CatalogueDBAdapter mDbHelper;
 
-	private final SearchManager.SearchListener mSearchListener = new SearchManager.SearchListener() {
-
-		@Override
-		public boolean onSearchFinished(Bundle bookData, boolean cancelled) {
-			return handleSearchFinished(bookData, cancelled);
-		}};
+	private final SearchManager.SearchListener mSearchListener = this::handleSearchFinished;
 	
 	/**
 	 * Constructor.
@@ -144,28 +139,33 @@ public class UpdateThumbnailsThread extends ManagedTask {
 						case COPY_IF_BLANK:
 							// Handle special cases
 							// - If it's a thumbnail, then see if it's missing or empty. 
-							if (usage.fieldName.equals(CatalogueDBAdapter.KEY_THUMBNAIL)) {
-								File file = CatalogueDBAdapter.fetchThumbnailByUuid(mCurrUuid);
-								if (!file.exists() || file.length() == 0)
-									mCurrFieldUsages.put(usage);
-							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_AUTHOR_ARRAY)) {
-								// We should never have a book with no authors, but lets be paranoid
-								if (mOrigData.containsKey(usage.fieldName)) {
-									ArrayList<Author> origAuthors = Utils.getAuthorsFromBundle(mOrigData);
-									if (origAuthors == null || origAuthors.isEmpty())
-										mCurrFieldUsages.put(usage);
-								}
-							} else if (usage.fieldName.equals(CatalogueDBAdapter.KEY_SERIES_ARRAY)) {
-								if (mOrigData.containsKey(usage.fieldName)) {
-									ArrayList<Series> origSeries = Utils.getSeriesFromBundle(mOrigData);
-									if (origSeries == null || origSeries.isEmpty())
-										mCurrFieldUsages.put(usage);
-								}
-							} else {
-								// If the original was blank, add to list
-								if (!mOrigData.containsKey(usage.fieldName) || mOrigData.getString(usage.fieldName) == null || mOrigData.getString(usage.fieldName).isEmpty())
-									mCurrFieldUsages.put(usage);
-							}
+                            switch (usage.fieldName) {
+                                case CatalogueDBAdapter.KEY_THUMBNAIL:
+                                    File file = CatalogueDBAdapter.fetchThumbnailByUuid(mCurrUuid);
+                                    if (!file.exists() || file.length() == 0)
+                                        mCurrFieldUsages.put(usage);
+                                    break;
+                                case CatalogueDBAdapter.KEY_AUTHOR_ARRAY:
+                                    // We should never have a book with no authors, but lets be paranoid
+                                    if (mOrigData.containsKey(usage.fieldName)) {
+                                        ArrayList<Author> origAuthors = Utils.getAuthorsFromBundle(mOrigData);
+                                        if (origAuthors == null || origAuthors.isEmpty())
+                                            mCurrFieldUsages.put(usage);
+                                    }
+                                    break;
+                                case CatalogueDBAdapter.KEY_SERIES_ARRAY:
+                                    if (mOrigData.containsKey(usage.fieldName)) {
+                                        ArrayList<Series> origSeries = Utils.getSeriesFromBundle(mOrigData);
+                                        if (origSeries == null || origSeries.isEmpty())
+                                            mCurrFieldUsages.put(usage);
+                                    }
+                                    break;
+                                default:
+                                    // If the original was blank, add to list
+                                    if (!mOrigData.containsKey(usage.fieldName) || mOrigData.getString(usage.fieldName) == null || mOrigData.getString(usage.fieldName).isEmpty())
+                                        mCurrFieldUsages.put(usage);
+                                    break;
+                            }
 							break;
 						}
 					}
@@ -187,7 +187,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 				// Use this to flag if we actually need a search.
 				boolean wantSearch = false;
 				// Update the progress appropriately
-				if (mCurrFieldUsages.isEmpty() || isbn.equals("") && (author.equals("") || title.equals(""))) {
+				if (mCurrFieldUsages.isEmpty() || isbn.isEmpty() && (author.isEmpty() || title.isEmpty())) {
 					mManager.doProgress(String.format(getString(R.string.skip_title), title));
 				} else {
 					wantSearch = true;
@@ -276,7 +276,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 	 */
 	private void processSearchResults(long bookId, String bookUuid, FieldUsages requestedFields, Bundle newData, Bundle origData) {
 		// First, filter the data to remove keys we don't care about
-		ArrayList<String> toRemove = new ArrayList<String>();
+		ArrayList<String> toRemove = new ArrayList<>();
 		for(String key : newData.keySet()) {
 			if (!requestedFields.containsKey(key) || !requestedFields.get(key).selected)
 				toRemove.add(key);
@@ -363,14 +363,14 @@ public class UpdateThumbnailsThread extends ManagedTask {
 		}
 		// Otherwise an empty list
 		if (origList == null)
-			origList = new ArrayList<T>();
+			origList = new ArrayList<>();
 
 		// Get from the new data
 		if (newData.containsKey(key)) {
 			newList = Utils.getListFromBundle(newData, key);			
 		}
 		if (newList == null)
-			newList = new ArrayList<T>();
+			newList = new ArrayList<>();
 		origList.addAll(newList);
 		// Save combined version to the new data
 		newData.putSerializable(key, origList);

@@ -77,11 +77,7 @@ public class AlertDialogUtils {
 			final AlertDialogItem[] itemArray = new AlertDialogItem[items.size()];
 			items.toArray(itemArray);
 	
-			builder.setItems(itemArray, new DialogInterface.OnClickListener() {
-			    public void onClick(DialogInterface dialog, int item) {
-			    	itemArray[item].handler.run();
-			    }
-			});
+			builder.setItems(itemArray, (dialog, item) -> itemArray[item].handler.run());
 			AlertDialog alert = builder.create();	
 			alert.show();
 		}		

@@ -1,5 +1,6 @@
 package com.eleybourn.bookcatalogue.utils;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -1373,12 +1374,10 @@ public class Base64
         
             obj = ois.readObject();
         }   // end try
-        catch( java.io.IOException e ) {
+        catch(IOException | ClassNotFoundException e ) {
             throw e;    // Catch and throw in order to execute finally{}
         }   // end catch
-        catch( java.lang.ClassNotFoundException e ) {
-            throw e;    // Catch and throw in order to execute finally{}
-        }   // end catch
+        // end catch
         finally {
             try{ bais.close(); } catch( Exception e ){}
             try{ ois.close();  } catch( Exception e ){}
@@ -1409,19 +1408,16 @@ public class Base64
         if( dataToEncode == null ){
             throw new NullPointerException( "Data to encode was null." );
         }   // end iff
-        
-        Base64.OutputStream bos = null;
-        try {
-            bos = new Base64.OutputStream( 
-                  new java.io.FileOutputStream( filename ), Base64.ENCODE );
-            bos.write( dataToEncode );
-        }   // end try
-        catch( java.io.IOException e ) {
-            throw e; // Catch and throw to execute finally{} block
-        }   // end catch: java.io.IOException
-        finally {
-            try{ bos.close(); } catch( Exception e ){}
-        }   // end finally
+
+        try (OutputStream bos = new OutputStream(
+                new java.io.FileOutputStream(filename), Base64.ENCODE)) {
+            try {
+                bos.write(dataToEncode);
+            } catch (java.io.IOException e) {
+                throw e; // Catch and throw to execute finally{} block
+            }
+        } catch (Exception e) {
+        }
         
     }   // end encodeToFile
     
@@ -1441,19 +1437,16 @@ public class Base64
      */
     public static void decodeToFile( String dataToDecode, String filename )
     throws java.io.IOException {
-        
-        Base64.OutputStream bos = null;
-        try{
-            bos = new Base64.OutputStream( 
-                      new java.io.FileOutputStream( filename ), Base64.DECODE );
-            bos.write( dataToDecode.getBytes( PREFERRED_ENCODING ) );
-        }   // end try
-        catch( java.io.IOException e ) {
-            throw e; // Catch and throw to execute finally{} block
-        }   // end catch: java.io.IOException
-        finally {
-                try{ bos.close(); } catch( Exception e ){}
-        }   // end finally
+
+        try (OutputStream bos = new OutputStream(
+                new java.io.FileOutputStream(filename), Base64.DECODE)) {
+            try {
+                bos.write(dataToDecode.getBytes(PREFERRED_ENCODING));
+            } catch (java.io.IOException e) {
+                throw e; // Catch and throw to execute finally{} block
+            }
+        } catch (Exception e) {
+        }
         
     }   // end decodeToFile
     
@@ -1584,19 +1577,15 @@ public class Base64
     throws java.io.IOException {
         
         String encoded = Base64.encodeFromFile( infile );
-        java.io.OutputStream out = null;
-        try{
-            out = new java.io.BufferedOutputStream(
-                  new java.io.FileOutputStream( outfile ) );
-            out.write( encoded.getBytes(StandardCharsets.US_ASCII) ); // Strict, 7-bit output.
-        }   // end try
-        catch( java.io.IOException e ) {
-            throw e; // Catch and release to execute finally{}
-        }   // end catch
-        finally {
-            try { out.close(); }
-            catch( Exception ex ){}
-        }   // end finally    
+        try (java.io.OutputStream out = new java.io.BufferedOutputStream(
+                new java.io.FileOutputStream(outfile))) {
+            try {
+                out.write(encoded.getBytes(StandardCharsets.US_ASCII)); // Strict, 7-bit output.
+            } catch (java.io.IOException e) {
+                throw e; // Catch and release to execute finally{}
+            }
+        } catch (Exception ex) {
+        }
     }   // end encodeFileToFile
 
 
@@ -1612,19 +1601,15 @@ public class Base64
     throws java.io.IOException {
         
         byte[] decoded = Base64.decodeFromFile( infile );
-        java.io.OutputStream out = null;
-        try{
-            out = new java.io.BufferedOutputStream(
-                  new java.io.FileOutputStream( outfile ) );
-            out.write( decoded );
-        }   // end try
-        catch( java.io.IOException e ) {
-            throw e; // Catch and release to execute finally{}
-        }   // end catch
-        finally {
-            try { out.close(); }
-            catch( Exception ex ){}
-        }   // end finally    
+        try (java.io.OutputStream out = new java.io.BufferedOutputStream(
+                new java.io.FileOutputStream(outfile))) {
+            try {
+                out.write(decoded);
+            } catch (java.io.IOException e) {
+                throw e; // Catch and release to execute finally{}
+            }
+        } catch (Exception ex) {
+        }
     }   // end decodeFileToFile
     
     

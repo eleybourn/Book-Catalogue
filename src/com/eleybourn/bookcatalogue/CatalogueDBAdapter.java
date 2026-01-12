@@ -202,16 +202,7 @@ public class CatalogueDBAdapter {
     /**
      * Static Factory object to create the custom cursor
      */
-    public static final CursorFactory mTrackedCursorFactory = new CursorFactory() {
-        @Override
-        public Cursor newCursor(
-                SQLiteDatabase db,
-                SQLiteCursorDriver masterQuery,
-                String editTable,
-                SQLiteQuery query) {
-            return new TrackedCursor(db, masterQuery, editTable, query, mSynchronizer);
-        }
-    };
+    public static final CursorFactory mTrackedCursorFactory = (db, masterQuery, editTable, query) -> new TrackedCursor(db, masterQuery, editTable, query, mSynchronizer);
     /* Database creation sql statement */
     private static final String DATABASE_CREATE_AUTHORS =
             "create table " + DB_TB_AUTHORS +
@@ -436,20 +427,11 @@ public class CatalogueDBAdapter {
             "CREATE UNIQUE INDEX IF NOT EXISTS book_author_book ON " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ");",
             "CREATE UNIQUE INDEX IF NOT EXISTS anthology_pk_idx ON " + DB_TB_ANTHOLOGY + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_TITLE + ")"
     };
-    private static final ArrayList<InstanceRef> mInstances = new ArrayList<InstanceRef>();
+    private static final ArrayList<InstanceRef> mInstances = new ArrayList<>();
     /**
      * Static Factory object to create the custom cursor
      */
-    private static final CursorFactory m_booksFactory = new CursorFactory() {
-        @Override
-        public Cursor newCursor(
-                SQLiteDatabase db,
-                SQLiteCursorDriver masterQuery,
-                String editTable,
-                SQLiteQuery query) {
-            return new BooksCursor(db, masterQuery, editTable, query, mSynchronizer);
-        }
-    };
+    private static final CursorFactory m_booksFactory = (db, masterQuery, editTable, query) -> new BooksCursor(db, masterQuery, editTable, query, mSynchronizer);
     /**
      * DEBUG ONLY. Set to true to enable logging of instances of this class.
      */
@@ -628,8 +610,7 @@ public class CatalogueDBAdapter {
      */
     private static void renameIdFilesToHash(SynchronizedDb db) {
         String sql = "select " + KEY_ROW_ID + ", " + DOM_BOOK_UUID + " from " + DB_TB_BOOKS + " Order by " + KEY_ROW_ID;
-        Cursor c = db.rawQuery(sql);
-        try {
+        try (Cursor c = db.rawQuery(sql)) {
             while (c.moveToNext()) {
                 final long id = c.getLong(0);
                 final String hash = c.getString(1);
@@ -639,9 +620,6 @@ public class CatalogueDBAdapter {
                     f.renameTo(newFile);
                 }
             }
-        } finally {
-            if (c != null)
-                c.close();
         }
     }
 
@@ -696,7 +674,7 @@ public class CatalogueDBAdapter {
     }
 
     private static void removeInstance(CatalogueDBAdapter db) {
-        ArrayList<InstanceRef> toDelete = new ArrayList<InstanceRef>();
+        ArrayList<InstanceRef> toDelete = new ArrayList<>();
         for (InstanceRef ref : mInstances) {
             CatalogueDBAdapter refDb = ref.get();
             if (refDb == null) {
@@ -762,7 +740,7 @@ public class CatalogueDBAdapter {
             suffix = "";
 
         File file = null;
-        if (prefix == null || prefix.equals("")) {
+        if (prefix == null || prefix.isEmpty()) {
             return getTempThumbnail(suffix);
         } else {
             final String base = StorageUtils.getBCCoversPath() + "/" + prefix + suffix;
@@ -824,12 +802,12 @@ public class CatalogueDBAdapter {
     static public String[] processAuthorName(String name) {
         String[] author = {"", ""};
         String family = "";
-        String given = "";
+        StringBuilder given = new StringBuilder();
         String[] names;
         int commaIndex = name.indexOf(",");
         if (commaIndex > 0) {
             family = name.substring(0, commaIndex);
-            given = name.substring(commaIndex + 1);
+            given = new StringBuilder(name.substring(commaIndex + 1));
         } else {
             names = name.split(" ");
             int flen = 1;
@@ -849,13 +827,13 @@ public class CatalogueDBAdapter {
             }
             family += names[names.length - 1];
             for (int i = 0; i < names.length - flen; i++) {
-                given += names[i] + " ";
+                given.append(names[i]).append(" ");
             }
         }
         family = family.trim();
-        given = given.trim();
+        given = new StringBuilder(given.toString().trim());
         author[0] = family;
-        author[1] = given;
+        author[1] = given.toString();
         return author;
     }
 
@@ -867,16 +845,11 @@ public class CatalogueDBAdapter {
     public static int countBooks() {
         int result = 0;
         String sql = "SELECT count(*) as count FROM " + DB_TB_BOOKS + " b ";
-        Cursor count = null;
-        try {
-            count = mDb.rawQuery(sql, new String[]{});
+        try (Cursor count = mDb.rawQuery(sql, new String[]{})) {
             count.moveToNext();
             result = count.getInt(0);
         } catch (IllegalStateException e) {
             Logger.logError(e);
-        } finally {
-            if (count != null)
-                count.close();
         }
         return result;
     }
@@ -884,11 +857,11 @@ public class CatalogueDBAdapter {
     public static String join(String[] strings) {
         if (strings == null || strings.length == 0)
             return null;
-        String s = strings[0];
+        StringBuilder s = new StringBuilder(strings[0]);
         final int len = strings.length;
         for (int i = 1; i < len; i++)
-            s += "," + strings[i];
-        return s;
+            s.append(",").append(strings[i]);
+        return s.toString();
     }
 
     public static String encodeString(String value) {
@@ -1118,7 +1091,7 @@ public class CatalogueDBAdapter {
     public int countBooks(String bookshelf) {
         int result = 0;
         try {
-            if (bookshelf.equals("")) {
+            if (bookshelf.isEmpty()) {
                 return countBooks();
             }
             String sql = "SELECT count(DISTINCT b._id) as count " +
@@ -1207,16 +1180,13 @@ public class CatalogueDBAdapter {
      * Return a complete list of author names from the database; used for AutoComplete.
      */
     protected ArrayList<String> getAllAuthors() {
-        ArrayList<String> author_list = new ArrayList<String>();
-        Cursor author_cur = fetchAllAuthorsIgnoreBooks();
-        try {
+        ArrayList<String> author_list = new ArrayList<>();
+        try (Cursor author_cur = fetchAllAuthorsIgnoreBooks()) {
             while (author_cur.moveToNext()) {
                 String name = author_cur.getString(author_cur.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED));
                 author_list.add(name);
             }
             return author_list;
-        } finally {
-            author_cur.close();
         }
     }
 
@@ -1253,7 +1223,7 @@ public class CatalogueDBAdapter {
      * @return Cursor over all notes
      */
     public Cursor fetchAllAuthors(String bookshelf, boolean sortByFamily, boolean firstOnly) {
-        if (bookshelf.equals("")) {
+        if (bookshelf.isEmpty()) {
             return fetchAllAuthors(sortByFamily, firstOnly);
         }
         String order = "";
@@ -1376,7 +1346,7 @@ public class CatalogueDBAdapter {
 
         String sql = " FROM " + DB_TB_BOOKS + " b";
 
-        if (!bookshelf.equals("") && !bookshelf.trim().isEmpty()) {
+        if (!bookshelf.isEmpty() && !bookshelf.trim().isEmpty()) {
             // Join with specific bookshelf
             sql += " Join " + DB_TB_BOOK_BOOKSHELF_WEAK + " bb_sx On bb_sx." + KEY_BOOK + " = b." + KEY_ROW_ID;
             sql += " Join " + DB_TB_BOOKSHELF + " b_sx On b_sx." + KEY_ROW_ID + " = bb_sx." + KEY_BOOKSHELF
@@ -1471,7 +1441,7 @@ public class CatalogueDBAdapter {
                     + " and s." + KEY_SERIES_ID + " = b." + KEY_SERIES_ID
                     + " and " + this.makeEqualFieldsTerm("s." + KEY_SERIES_NUM, "b." + KEY_SERIES_NUM);
         }
-        if (!order.equals("")) {
+        if (!order.isEmpty()) {
             fullSql += " ORDER BY " + order;
         }
         return fullSql;
@@ -1800,7 +1770,7 @@ public class CatalogueDBAdapter {
      */
     public Cursor fetchAllSeries(String bookshelf, boolean include_blank) {
         String series;
-        if (bookshelf.equals("")) {
+        if (bookshelf.isEmpty()) {
             series = sqlAllSeries();
         } else {
             series = sqlAllSeriesOnBookshelf(bookshelf);
@@ -1894,7 +1864,7 @@ public class CatalogueDBAdapter {
 
         String where = "";
         String[] names = processAuthorName(name);
-        if (bookshelf.equals("")) {
+        if (bookshelf.isEmpty()) {
             // do nothing
         } else {
             where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROW_ID, false);
@@ -1925,7 +1895,7 @@ public class CatalogueDBAdapter {
 
         String where = "";
         String[] names = processAuthorName(name);
-        if (bookshelf.equals("")) {
+        if (bookshelf.isEmpty()) {
             // do nothing
         } else {
             where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROW_ID, false);
@@ -1969,22 +1939,22 @@ public class CatalogueDBAdapter {
         if (isbns.isEmpty())
             throw new RuntimeException("No ISBNs specified in lookup");
 
-        String where;
+        StringBuilder where;
         if (isbns.size() == 1) {
-            where = TBL_BOOKS.dot(DOM_ISBN) + " = '" + encodeString(isbns.get(0)) + "'";
+            where = new StringBuilder(TBL_BOOKS.dot(DOM_ISBN) + " = '" + encodeString(isbns.get(0)) + "'");
         } else {
-            where = TBL_BOOKS.dot(DOM_ISBN) + " in (";
+            where = new StringBuilder(TBL_BOOKS.dot(DOM_ISBN) + " in (");
             boolean first = true;
             for (String isbn : isbns) {
                 if (first)
                     first = false;
                 else
-                    where += ",";
-                where += "'" + encodeString(isbn) + "'";
+                    where.append(",");
+                where.append("'").append(encodeString(isbn)).append("'");
             }
-            where += ")";
+            where.append(")");
         }
-        return fetchAllBooks("", "", "", where, "", "", "");
+        return fetchAllBooks("", "", "", where.toString(), "", "", "");
     }
 
     /**
@@ -2190,7 +2160,7 @@ public class CatalogueDBAdapter {
      */
     public int fetchSeriesPositionBySeries(String seriesName, String bookshelf) {
         String seriesSql;
-        if (bookshelf.equals("")) {
+        if (bookshelf.isEmpty()) {
             seriesSql = sqlAllSeries();
         } else {
             seriesSql = sqlAllSeriesOnBookshelf(bookshelf);
@@ -2233,7 +2203,7 @@ public class CatalogueDBAdapter {
         String where = "";
         String baWhere = "";
         searchText = encodeString(searchText);
-        if (bookshelf.equals("")) {
+        if (bookshelf.isEmpty()) {
             // do nothing
         } else {
             where += " AND " + this.authorOnBookshelfSql(bookshelf, "a." + KEY_ROW_ID, false);
@@ -2283,21 +2253,13 @@ public class CatalogueDBAdapter {
         // Just do a simple search of a bunch of fields.
         String[] keys = new String[]{KEY_TITLE, KEY_ISBN, KEY_PUBLISHER, KEY_NOTES, KEY_LOCATION, KEY_DESCRIPTION};
         for (String k : keys)
-            result.append(makeSearchTerm(k, search_term) + " OR ");
+            result.append(makeSearchTerm(k, search_term)).append(" OR ");
 
         // And check the series too.
-        result.append(" Exists(Select NULL From " + DB_TB_BOOK_SERIES + " bsw "
-                + " Join " + DB_TB_SERIES + " s "
-                + "     On s." + KEY_ROW_ID + " = bsw." + KEY_SERIES_ID
-                + "         And " + makeSearchTerm("s." + KEY_SERIES_NAME, search_term)
-                + " Where bsw." + KEY_BOOK + " = b." + KEY_ROW_ID + ") ");
+        result.append(" Exists(Select NULL From " + DB_TB_BOOK_SERIES + " bsw " + " Join " + DB_TB_SERIES + " s " + "     On s." + KEY_ROW_ID + " = bsw." + KEY_SERIES_ID + "         And ").append(makeSearchTerm("s." + KEY_SERIES_NAME, search_term)).append(" Where bsw.").append(KEY_BOOK).append(" = b.").append(KEY_ROW_ID).append(") ");
 
         //and check the anthologies too.
-        result.append(" OR Exists (SELECT NULL FROM  " + DB_TB_ANTHOLOGY + " bs_anthology, " + DB_TB_AUTHORS + " bs_author "
-                + " WHERE bs_anthology." + KEY_AUTHOR_ID + "= bs_author." + KEY_ROW_ID + " AND bs_anthology." + KEY_BOOK + " = b." + KEY_ROW_ID + " AND "
-                + "(" + makeSearchTerm("bs_anthology." + KEY_TITLE, search_term) + " OR "
-                + makeSearchTerm("bs_author." + KEY_FAMILY_NAME, search_term) + " OR "
-                + makeSearchTerm("bs_author." + KEY_GIVEN_NAMES, search_term) + ")) ");
+        result.append(" OR Exists (SELECT NULL FROM  " + DB_TB_ANTHOLOGY + " bs_anthology, " + DB_TB_AUTHORS + " bs_author " + " WHERE bs_anthology." + KEY_AUTHOR_ID + "= bs_author." + KEY_ROW_ID + " AND bs_anthology." + KEY_BOOK + " = b." + KEY_ROW_ID + " AND " + "(").append(makeSearchTerm("bs_anthology." + KEY_TITLE, search_term)).append(" OR ").append(makeSearchTerm("bs_author." + KEY_FAMILY_NAME, search_term)).append(" OR ").append(makeSearchTerm("bs_author." + KEY_GIVEN_NAMES, search_term)).append(")) ");
 
         result.append(")");
 
@@ -2555,7 +2517,7 @@ public class CatalogueDBAdapter {
             long rowId = mDb.insert(DB_TB_BOOKS, null, initialValues);
 
             String bookshelf = values.getBookshelfList();
-            if (bookshelf != null && !bookshelf.trim().equals("")) {
+            if (bookshelf != null && !bookshelf.trim().isEmpty()) {
                 createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPARATOR), false);
             }
 
@@ -2616,7 +2578,7 @@ public class CatalogueDBAdapter {
         //String[] bookshelves = bookshelf.split(BookEditFields.BOOKSHELF_SEPARATOR.toString());
         for (int i = 0; i < bookshelves.size(); i++) {
             String name = bookshelves.get(i).trim();
-            if (name.equals("")) {
+            if (name.isEmpty()) {
                 continue;
             }
 
@@ -2825,8 +2787,8 @@ public class CatalogueDBAdapter {
      */
     protected ArrayList<String> getFormats() {
         // Hash to *try* to avoid duplicates
-        HashSet<String> foundSoFar = new HashSet<String>();
-        ArrayList<String> list = new ArrayList<String>();
+        HashSet<String> foundSoFar = new HashSet<>();
+        ArrayList<String> list = new ArrayList<>();
         try (Cursor c = mDb.rawQuery("Select distinct " + KEY_FORMAT + " from " + DB_TB_BOOKS + " Order by lower(" + KEY_FORMAT + ") " + COLLATION)) {
             while (c.moveToNext()) {
                 String name = c.getString(0);
@@ -2852,7 +2814,7 @@ public class CatalogueDBAdapter {
     }
 
     public ArrayList<AnthologyTitle> getBookAnthologyTitleList(long id) {
-        ArrayList<AnthologyTitle> list = new ArrayList<AnthologyTitle>();
+        ArrayList<AnthologyTitle> list = new ArrayList<>();
         Cursor cursor = null;
         try {
             cursor = this.fetchAnthologyTitlesByBook(id);
@@ -2879,10 +2841,8 @@ public class CatalogueDBAdapter {
     }
 
     public ArrayList<Author> getBookAuthorList(long id) {
-        ArrayList<Author> authorList = new ArrayList<Author>();
-        Cursor authors = null;
-        try {
-            authors = fetchAllAuthorsByBook(id);
+        ArrayList<Author> authorList = new ArrayList<>();
+        try (Cursor authors = fetchAllAuthorsByBook(id)) {
             int count = authors.getCount();
 
             if (count == 0)
@@ -2895,18 +2855,13 @@ public class CatalogueDBAdapter {
             while (authors.moveToNext()) {
                 authorList.add(new Author(authors.getLong(idCol), authors.getString(familyCol), authors.getString(givenCol)));
             }
-        } finally {
-            if (authors != null)
-                authors.close();
         }
         return authorList;
     }
 
     public ArrayList<Bookshelf> getBookBookshelfList(long id) {
-        ArrayList<Bookshelf> bookshelfList = new ArrayList<Bookshelf>();
-        Cursor bookshelves = null;
-        try {
-            bookshelves = fetchAllBookshelvesByBook(id);
+        ArrayList<Bookshelf> bookshelfList = new ArrayList<>();
+        try (Cursor bookshelves = fetchAllBookshelvesByBook(id)) {
             int count = bookshelves.getCount();
 
             if (count == 0)
@@ -2921,18 +2876,13 @@ public class CatalogueDBAdapter {
                 bs.name = bookshelves.getString(nameCol);
                 bookshelfList.add(bs);
             }
-        } finally {
-            if (bookshelves != null)
-                bookshelves.close();
         }
         return bookshelfList;
     }
 
     public ArrayList<Series> getBookSeriesList(long id) {
-        ArrayList<Series> seriesList = new ArrayList<Series>();
-        Cursor series = null;
-        try {
-            series = fetchAllSeriesByBook(id);
+        ArrayList<Series> seriesList = new ArrayList<>();
+        try (Cursor series = fetchAllSeriesByBook(id)) {
             int count = series.getCount();
 
             if (count == 0)
@@ -2945,9 +2895,6 @@ public class CatalogueDBAdapter {
             while (series.moveToNext()) {
                 seriesList.add(new Series(series.getLong(idCol), series.getString(nameCol), series.getString(numCol)));
             }
-        } finally {
-            if (series != null)
-                series.close();
         }
         return seriesList;
     }
@@ -3070,18 +3017,18 @@ public class CatalogueDBAdapter {
         if (isNew && values.containsKey(KEY_TITLE)) {
             /* Move "The, A, An" to the end of the string */
             String title = values.getString(KEY_TITLE);
-            String newTitle = "";
+            StringBuilder newTitle = new StringBuilder();
             String[] title_words = title.split(" ");
             try {
                 if (title_words[0].matches("a|A|an|An|the|The")) {
                     for (int i = 1; i < title_words.length; i++) {
                         if (i != 1) {
-                            newTitle += " ";
+                            newTitle.append(" ");
                         }
-                        newTitle += title_words[i];
+                        newTitle.append(title_words[i]);
                     }
-                    newTitle += ", " + title_words[0];
-                    values.putString(KEY_TITLE, newTitle);
+                    newTitle.append(", ").append(title_words[0]);
+                    values.putString(KEY_TITLE, newTitle.toString());
                 }
             } catch (Exception e) {
                 //do nothing. Title stays the same
@@ -3099,7 +3046,7 @@ public class CatalogueDBAdapter {
                 Object o = values.get(name);
                 // Need to allow for the possibility the stored value is not
                 // a string, in which case getString() would return a NULL.
-                if (o == null || o.toString().equals(""))
+                if (o == null || o.toString().isEmpty())
                     values.remove(name);
             }
         }
@@ -3139,7 +3086,7 @@ public class CatalogueDBAdapter {
             success = mDb.update(DB_TB_BOOKS, args, KEY_ROW_ID + "=" + rowId, null) > 0;
 
             String bookshelf = values.getBookshelfList();
-            if (bookshelf != null && !bookshelf.trim().equals("")) {
+            if (bookshelf != null && !bookshelf.trim().isEmpty()) {
                 createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPARATOR), false);
             }
 
@@ -3222,7 +3169,7 @@ public class CatalogueDBAdapter {
             Iterator<Author> i = authors.iterator();
             // The list MAY contain duplicates (eg. from Internet lookups of multiple
             // sources), so we track them in a hash table
-            Hashtable<String, Boolean> idHash = new Hashtable<String, Boolean>();
+            Hashtable<String, Boolean> idHash = new Hashtable<>();
             int pos = 0;
             while (i.hasNext()) {
                 Author a = null;
@@ -3283,7 +3230,7 @@ public class CatalogueDBAdapter {
             Iterator<Series> i = series.iterator();
             // The list MAY contain duplicates (eg. from Internet lookups of multiple
             // sources), so we track them in a hash table
-            Hashtable<String, Boolean> idHash = new Hashtable<String, Boolean>();
+            Hashtable<String, Boolean> idHash = new Hashtable<>();
             int pos = 0;
             while (i.hasNext()) {
                 Series s = null;
@@ -3721,7 +3668,7 @@ public class CatalogueDBAdapter {
             }
         }
 
-        if (uuid != null && !uuid.equals("")) {
+        if (uuid != null && !uuid.isEmpty()) {
             getUtils().eraseCachedBookCover(uuid);
         }
 
@@ -4204,18 +4151,15 @@ public class CatalogueDBAdapter {
      * @return                List of values
      */
     private ArrayList<String> fetchArray(String sql, String columnName) {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
 
-        Cursor cursor = mDb.rawQuery(sql, new String[]{});
-        try {
+        try (Cursor cursor = mDb.rawQuery(sql, new String[]{})) {
             int column = cursor.getColumnIndexOrThrow(columnName);
             while (cursor.moveToNext()) {
                 String name = cursor.getString(column);
                 list.add(name);
             }
             return list;
-        } finally {
-            cursor.close();
         }
     }
 
@@ -4352,8 +4296,7 @@ public class CatalogueDBAdapter {
             titleText.setLength(0);
             // Get list of authors
             {
-                Cursor c = mDb.rawQuery(authorBaseSql + book.getId());
-                try {
+                try (Cursor c = mDb.rawQuery(authorBaseSql + book.getId())) {
                     // Get column indexes, if not already got
                     if (colGivenNames < 0)
                         colGivenNames = c.getColumnIndex(KEY_GIVEN_NAMES);
@@ -4366,15 +4309,12 @@ public class CatalogueDBAdapter {
                         authorText.append(c.getString(colFamilyName));
                         authorText.append(";");
                     }
-                } finally {
-                    c.close();
                 }
             }
 
             // Get list of series
             {
-                Cursor c = mDb.rawQuery(seriesBaseSql + book.getId());
-                try {
+                try (Cursor c = mDb.rawQuery(seriesBaseSql + book.getId())) {
                     // Get column indexes, if not already got
                     if (colSeriesInfo < 0)
                         colSeriesInfo = c.getColumnIndex("seriesInfo");
@@ -4383,15 +4323,12 @@ public class CatalogueDBAdapter {
                         seriesText.append(c.getString(colSeriesInfo));
                         seriesText.append(";");
                     }
-                } finally {
-                    c.close();
                 }
             }
 
             // Get list of anthology data (author and title)
             {
-                Cursor c = mDb.rawQuery(anthologyBaseSql + book.getId());
-                try {
+                try (Cursor c = mDb.rawQuery(anthologyBaseSql + book.getId())) {
                     // Get column indexes, if not already got
                     if (colAnthologyAuthorInfo < 0)
                         colAnthologyAuthorInfo = c.getColumnIndex("anthologyAuthorInfo");
@@ -4404,8 +4341,6 @@ public class CatalogueDBAdapter {
                         titleText.append(c.getString(colAnthologyTitleInfo));
                         titleText.append(";");
                     }
-                } finally {
-                    c.close();
                 }
             }
 
@@ -4615,18 +4550,18 @@ public class CatalogueDBAdapter {
         String[] authorWords = author.split(" ");
         String[] titleWords = title.split(" ");
 
-        String sql = "select " + DOM_DOCID + " from " + TBL_BOOKS_FTS + " where " + TBL_BOOKS_FTS + " match '" + anywhere;
+        StringBuilder sql = new StringBuilder("select " + DOM_DOCID + " from " + TBL_BOOKS_FTS + " where " + TBL_BOOKS_FTS + " match '" + anywhere);
         for (String w : authorWords) {
-            if (!w.equals(""))
-                sql += " " + DOM_AUTHOR_NAME + ":" + w;
+            if (!w.isEmpty())
+                sql.append(" ").append(DOM_AUTHOR_NAME).append(":").append(w);
         }
         for (String w : titleWords) {
-            if (!w.equals(""))
-                sql += " " + DOM_TITLE + ":" + w;
+            if (!w.isEmpty())
+                sql.append(" ").append(DOM_TITLE).append(":").append(w);
         }
-        sql += "'";
+        sql.append("'");
 
-        return mDb.rawQuery(sql, EMPTY_STRING_ARRAY);
+        return mDb.rawQuery(sql.toString(), EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -4655,12 +4590,9 @@ public class CatalogueDBAdapter {
 
     public long getBookCount() {
         String sql = "select Count(*) From " + DatabaseDefinitions.TBL_BOOKS.ref();
-        Cursor c = mDb.rawQuery(sql);
-        try {
+        try (Cursor c = mDb.rawQuery(sql)) {
             c.moveToFirst();
             return c.getLong(0);
-        } finally {
-            c.close();
         }
     }
 
@@ -4757,7 +4689,7 @@ public class CatalogueDBAdapter {
             current.close();
 
             String[] indices = DATABASE_CREATE_INDICES;
-            for (int i = 0; i < indices.length; i++) {
+            for (String index : indices) {
                 // Avoid index creation killing an upgrade because this
                 // method may be called by any upgrade script and some tables
                 // may not yet exist. We probably still want indexes.
@@ -4767,11 +4699,11 @@ public class CatalogueDBAdapter {
                 // script written for the new DB.
                 //db.beginTransaction();
                 try {
-                    db.execSQL(indices[i]);
+                    db.execSQL(index);
                     //db.setTransactionSuccessful();
                 } catch (Exception e) {
                     // Expected on multi-version upgrades.
-                    Logger.logError(e, "Index creation failed (probably not a problem), definition was: " + indices[i]);
+                    Logger.logError(e, "Index creation failed (probably not a problem), definition was: " + index);
                 }
             }
             db.execSQL("analyze");
@@ -5760,10 +5692,9 @@ public class CatalogueDBAdapter {
         Map<String, ColumnInfo> describeTable(String tableName) {
             String sql = "PRAGMA table_info(" + tableName + ")";
 
-            Map<String, ColumnInfo> cols = new Hashtable<String, ColumnInfo>();
+            Map<String, ColumnInfo> cols = new Hashtable<>();
 
-            Cursor colCsr = mDb.rawQuery(sql, new String[]{});
-            try {
+            try (Cursor colCsr = mDb.rawQuery(sql, new String[]{})) {
                 if (colCsr == null)
                     throw new IllegalArgumentException();
 
@@ -5779,18 +5710,24 @@ public class CatalogueDBAdapter {
                     col.defaultValue = colCsr.getString(4);
                     col.isPrimaryKey = colCsr.getInt(5) == 1;
                     String tName = col.typeName.toLowerCase();
-                    if (tName.equals("int") || tName.equals("integer")) {
-                        col.typeClass = CLASS_INTEGER;
-                    } else if (tName.equals("text")) {
-                        col.typeClass = CLASS_TEXT;
-                    } else if (tName.equals("float") || tName.equals("real") || tName.equals("double")) {
-                        col.typeClass = CLASS_REAL;
-                    } else if ((tName.equals("date")) || (tName.equals("datetime"))) {
-                        col.typeClass = CLASS_TEXT;
-                    } else if (tName.equals("boolean")) {
-                        col.typeClass = CLASS_INTEGER;
-                    } else {
-                        throw new RuntimeException("Unknown data type '" + tName + "'");
+                    switch (tName) {
+                        case "int":
+                        case "integer":
+                        case "boolean":
+                            col.typeClass = CLASS_INTEGER;
+                            break;
+                        case "text":
+                        case "date":
+                        case "datetime":
+                            col.typeClass = CLASS_TEXT;
+                            break;
+                        case "float":
+                        case "real":
+                        case "double":
+                            col.typeClass = CLASS_REAL;
+                            break;
+                        default:
+                            throw new RuntimeException("Unknown data type '" + tName + "'");
                     }
 
                     cols.put(col.name.toLowerCase(), col);
@@ -5798,9 +5735,6 @@ public class CatalogueDBAdapter {
                         break;
                     colCsr.moveToNext();
                 }
-            } finally {
-                if (colCsr != null)
-                    colCsr.close();
             }
             return cols;
         }

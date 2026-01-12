@@ -44,7 +44,7 @@ public class GoogleBooksManager {
 		title = title.replace(" ", "%20");
 
 		String path = "https://books.google.com/books/feeds/volumes";
-		if (mIsbn.equals("")) {
+		if (mIsbn.isEmpty()) {
 			path += "?q=" + "intitle%3A"+title+"%2Binauthor%3A"+author;
 		} else {
 			path += "?q=isbn%3A" + mIsbn;
@@ -71,14 +71,6 @@ public class GoogleBooksManager {
 				parser.parse(Utils.getInputStream(url), entryHandler);
 			}
 			return;
-		} catch (MalformedURLException e) {
-			Logger.logError(e);
-		} catch (ParserConfigurationException e) {
-			Logger.logError(e);
-		} catch (ParseException e) {
-			Logger.logError(e);
-		} catch (SAXException e) {
-			Logger.logError(e);
 		} catch (Exception e) {
 			Logger.logError(e);
 		}

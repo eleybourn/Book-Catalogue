@@ -45,7 +45,6 @@ public class BooksCursor extends TrackedCursor {
 		super(db, driver, editTable, query, sync);
 	}
 
-
     /**
 	 * Get the row ID; need a local implementation so that get/setSelected() works.
 	 */

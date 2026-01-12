@@ -175,19 +175,6 @@ public class MainAdministration extends ActivityWithTasks
             });
         }
 
-
-        /* TaskList Link */
-        View backgroundEvents = findViewById(R.id.backgroundEventsLabel);
-        // Make line flash when clicked.
-        backgroundEvents.setBackgroundResource(android.R.drawable.list_selector_background);
-        backgroundEvents.setOnClickListener(v -> showEvents());
-
-        /* TaskList Link */
-        View backgroundTasks = findViewById(R.id.backgroundTasksLabel);
-        // Make line flash when clicked.
-        backgroundTasks.setBackgroundResource(android.R.drawable.list_selector_background);
-        backgroundTasks.setOnClickListener(v -> showBackgroundTasks());
-
         {
             // Debug ONLY!
             /* Backup Link */
@@ -346,16 +333,5 @@ public class MainAdministration extends ActivityWithTasks
         // Do nothing. We just need this so we can display message dialogs.
         super.onMessageDialogResult(dialogId, dialog, button);
     }
-
-    private void showEvents() {
-        Intent i = new Intent(this, AdminBackgroundEvents.class);
-        startActivity(i);
-    }
-
-    private void showBackgroundTasks() {
-        Intent i = new Intent(this, AdminBackgroundTasks.class);
-        startActivity(i);
-    }
-
 
 }

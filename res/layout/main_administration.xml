@@ -156,21 +156,6 @@
                 android:text="@string/label_import_old_files"
                 android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/backgroundEventsLabel"
-                style="@style/layout_menu_list"
-                app:drawableLeftCompat="@drawable/ic_menu_settings"
-                android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_background_events"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/backgroundTasksLabel"
-                style="@style/layout_menu_list"
-                app:drawableLeftCompat="@drawable/ic_menu_settings"
-                android:drawablePadding="@dimen/p_lg"
-                android:text="@string/label_background_tasks"
-                android:visibility="gone" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

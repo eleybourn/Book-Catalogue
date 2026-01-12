@@ -156,12 +156,6 @@
             android:name=".MainAdministration"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".AdminBackgroundEvents"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".AdminBackgroundTasks"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".MainHelp"
             android:windowSoftInputMode="adjustResize" />
         <activity

@@ -25,7 +25,6 @@ import java.util.Date;
 
 /**
  * Interface definition for ant 'books' importer.
- * 
  * Currently (Feb 2013) there is only one, but there will probably be
  * an XML export/import one day.
  * 
@@ -61,8 +60,6 @@ public interface Exporter {
 	 * @param listener			Progress & cancellation interface
 	 * 
 	 * @return	true on success
-	 * 
-	 * @throws IOException
 	 */
     boolean export(OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags, Date since) throws IOException;
 

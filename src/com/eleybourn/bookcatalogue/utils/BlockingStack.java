@@ -28,8 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Based loosely on LinkedBlockingQueue. Ideally we would use BlockingDeque but that is only
  * available in Android 2.3.
- * 
- * A much-simplified blocking stack that satisfies the need of this application. Should be 
+ * A much-simplified blocking stack that satisfies the need of this application. Should be
  * replaceable with BlockingDeque when we set the min. version requirement to 2.3!
  * 
  * @author Philip Warner
@@ -79,8 +78,6 @@ public class BlockingStack<T> {
 	 * Return a copy of all elements for safe examination. Obviously this
 	 * collection will not reflect reality for very long, but is safe to
 	 * iterate etc.
-	 * 
-	 * @return
 	 */
 	public Stack<T> getElements() {
 		Stack<T> copy = new Stack<T>();
@@ -95,8 +92,6 @@ public class BlockingStack<T> {
 	 * Add an object to the stack and signal
 	 * 
 	 * @param object		Object to add
-	 * 
-	 * @throws InterruptedException
 	 */
 	public void push(T object) throws InterruptedException {
 		final ReentrantLock pushLock = this.mPushLock;
@@ -134,9 +129,6 @@ public class BlockingStack<T> {
 
 	/**
 	 * Remove an object from the stack, wait if none.
-	 * 
-	 * @return
-	 * @throws InterruptedException
 	 */
 	public T pop(long waitMilliseconds) throws InterruptedException {
 		final ReentrantLock popLock = mPopLock;
@@ -171,8 +163,6 @@ public class BlockingStack<T> {
 	 * Return an object if available, otherwise null.
 	 * 
 	 * @return	Object
-	 * 
-	 * @throws InterruptedException
 	 */
 	public T poll() throws InterruptedException {
 		final ReentrantLock popLock = mPopLock;

@@ -547,8 +547,6 @@ public class CatalogueDBAdapter {
 
 		/**
 		 * Return a boolean indicating if this was a new install
-		 * 
-		 * @return
 		 */
 		public boolean isNewInstall() {
 			return mDbWasCreated;
@@ -586,8 +584,6 @@ public class CatalogueDBAdapter {
 
 		/**
 		 * Create the database triggers. Currently only one, and the implementation needs refining!
-		 *
-		 * @param db
 		 */
 		private void createTriggers(SynchronizedDb db) {
 			String name = "books_tg_reset_goodreads";
@@ -645,7 +641,6 @@ public class CatalogueDBAdapter {
 		/**
 		 * This function is called each time the database is upgraded. The function will run all 
 		 * upgrade scripts between the oldVersion and the newVersion. 
-		 * 
 		 * NOTE: As of 4.2, DO NOT USE OnUpgrade TO DISPLAY UPGRADE MESSAGES. See header for details.
 		 * 
 		 * @param db The database to be upgraded
@@ -1558,10 +1553,7 @@ public class CatalogueDBAdapter {
 	/**
 	 * For the upgrade to version 4 (db version 72), all cover files were renamed based on the hash value in
 	 * the books table to avoid future collisions.
-	 * 
 	 * This routine renames all files, if they exist.
-	 * 
-	 * @param db
 	 */
 	private static void renameIdFilesToHash(SynchronizedDb db) {
 		String sql = "select " + KEY_ROW_ID + ", " + DOM_BOOK_UUID + " from " + DB_TB_BOOKS + " Order by " + KEY_ROW_ID;
@@ -1587,13 +1579,7 @@ public class CatalogueDBAdapter {
 	 * method will copy ALL columns from the source to the destination; if columns do not exist in the 
 	 * destination, an error will occur. Columns in the destination that are not in the source will be 
 	 * defaulted or set to NULL if no default is defined.
-	 * 
-	 * ENHANCE: allow an exclusion list to be added as a parameter so the some 'from' columns can be ignored.
-	 * 
-	 * @param sdb
-	 * @param from
-	 * @param to
-	 * @param toRemove	List of fields to be removed from the source table (ignored in copy)
+     * ENHANCE: allow an exclusion list to be added as a parameter so the some 'from' columns can be ignored.
 	 */
 	private static void copyTableSafely(SynchronizedDb sdb, String from, String to, String...toRemove) {
 		// Get the source info
@@ -1766,7 +1752,6 @@ public class CatalogueDBAdapter {
 	
 	/**
 	 * Backup database file using default file name
-	 * @throws Exception 
 	 */
 	public File backupDbFile() {
 		return backupDbFile("DbExport.db");
@@ -1774,8 +1759,6 @@ public class CatalogueDBAdapter {
 	
 	/**
 	 * Backup database file to the specified filename
-	 *
-	 * @throws Exception 
 	 */
 	public File backupDbFile(String suffix) {
 		try {
@@ -1837,14 +1820,6 @@ public class CatalogueDBAdapter {
 			}
 		}
 	}
-	
-	/**
-	 * return the thumbnail (as a File object) for the given id. Optionally use a suffix
-	 * on the file name.
-	 * 
-	 * @param id The id of the book
-	 * @return The File object
-	 */
 
     /**
 	 * return the thumbnail (as a File object) for the given id. Optionally use a suffix
@@ -1932,7 +1907,6 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @param results The Cursor the extract from
 	 * @param index The index, or column, to extract from
-	 * @return
 	 */
 	private int getIntValue(Cursor results, int index) {
 		int value = 0;
@@ -1953,7 +1927,6 @@ public class CatalogueDBAdapter {
 	 * 
 	 * @param results The Cursor the extract from
 	 * @param index The index, or column, to extract from
-	 * @return
 	 */
 	private String getStringValue(Cursor results, int index) {
 		String value = null;
@@ -2102,8 +2075,6 @@ public class CatalogueDBAdapter {
 
 	/**
 	 * Return a complete list of author names from the database; used for AutoComplete.
-	 *  
-	 * @return
 	 */
 	protected ArrayList<String> getAllAuthors() {
 		ArrayList<String> author_list = new ArrayList<String>();
@@ -2217,7 +2188,6 @@ public class CatalogueDBAdapter {
 	 * Return the SQL for a list of all books in the database matching the passed criteria. The SQL
 	 * returned can only be assumed to have the books table with alias 'b' and starts at the 'FROM'
 	 * clause.
-	 * 
 	 * A possible addition would be to specify the conditions under which other data may be present.
 	 * 
 	 * @param order What order to return the books
@@ -2924,10 +2894,6 @@ public class CatalogueDBAdapter {
 	
 	/**
 	 * Check that a book with the passed UUID exists and return the ID of the book, or zero
-	 * 
-	 * @param rowId		UUID of book
-	 * 
-	 * @return			Boolean indicating it exists
 	 */
 	private SynchronizedStatement mGetBookIdFromUuidStmt = null;
 	public long getBookIdFromUuid(String uuid) {
@@ -3025,9 +2991,6 @@ public class CatalogueDBAdapter {
 	/**
 	 * This will return JUST the bookshelf id based on the name. 
 	 * The name can be in either "family, given" or "given family" format.
-	 * 
-	 * @param name The bookshelf name to search for
-	 * @return A cursor containing all bookshelves with the given name
 	 */
 	private SynchronizedStatement mFetchBookshelfIdByNameStmt = null;
 	public long fetchBookshelfIdByName(String name) {
@@ -3532,7 +3495,6 @@ public class CatalogueDBAdapter {
 	 * This function will create a new bookshelf in the database
 	 * 
 	 * @param bookshelf The bookshelf name
-	 * @return
 	 */
 	public long createBookshelf(String bookshelf) {
 		// TODO: Decide if we need to backup EMPTY bookshelves...
@@ -4223,11 +4185,7 @@ public class CatalogueDBAdapter {
 	/**
 	 * If the passed ContentValues contains KEY_SERIES_DETAILS, parse them
 	 * and add the series.
-	 * 
-	 * @param bookId		ID of book
-	 * @param bookData		Book fields
 	 */
-	//
 	private SynchronizedStatement mDeleteBookSeriesStmt = null;
 	private SynchronizedStatement mAddBookSeriesStmt = null;
 	private void createBookSeries(long bookId, ArrayList<Series> series, boolean dirtyBookIfNecessary) {
@@ -4315,8 +4273,6 @@ public class CatalogueDBAdapter {
 
 	/**
 	 * Utility routine to set a book as in need of backup if any ancillary data has changed.
-	 * 
-	 * @param bookId
 	 */
 	private void setBookDirty(long bookId) {
 		// Mark specific book as dirty
@@ -4327,8 +4283,6 @@ public class CatalogueDBAdapter {
 	
 	/**
 	 * Utility routine to set all books referencing a given author as dirty.
-	 * 
-	 * @param authorId
 	 */
 	private void setBooksDirtyByAuthor(long authorId) {
 		// Mark all related books based on anthology author as dirty
@@ -4395,8 +4349,6 @@ public class CatalogueDBAdapter {
 
 	/**
 	 * Add or update the passed author, depending whether a.id == 0.
-	 *
-	 * @param a
 	 */
 	private void addOrUpdateAuthor(Author a) {
 		if (a.id != 0) {
@@ -5104,10 +5056,6 @@ public class CatalogueDBAdapter {
 
     /**
      * Data cleaning routine for upgrade to version 4.0.3 to cleanup any books that have no primary author/series.
-     * 
-     * @param tableName
-     * @param objectIdField
-     * @param positionField
      */
     private void fixupPositionedBookItems(String tableName, String objectIdField, String positionField) {
 		String sql = "select b." + KEY_ROW_ID + " as " + KEY_ROW_ID + ", min(o." + positionField + ") as pos" +
@@ -5245,8 +5193,6 @@ public class CatalogueDBAdapter {
 
     /**
      * Utility routine to build an arrayList of all series names.
-     * 
-     * @return
      */
 	public ArrayList<String> fetchAllSeriesArray() {
     	String sql = "SELECT DISTINCT " + KEY_SERIES_NAME +  
@@ -5257,8 +5203,6 @@ public class CatalogueDBAdapter {
 
     /**
      * Utility routine to build an arrayList of all author names.
-     * 
-     * @return
      */
 	public ArrayList<String> fetchAllAuthorsArray() {
 
@@ -5399,8 +5343,6 @@ public class CatalogueDBAdapter {
 	
 	/**
 	 * Return a list of all defined styles in the database
-	 * 
-	 * @return
 	 */
 	public Cursor getBooklistStyles() {
 		final String sql = "Select " + TBL_BOOK_LIST_STYLES.ref(DOM_ID, DOM_STYLE) 
@@ -5411,8 +5353,6 @@ public class CatalogueDBAdapter {
 
 	/**
 	 * Create a new booklist style
-	 * 
-	 * @return
 	 */
 	private SynchronizedStatement mInsertBooklistStyleStmt = null;
 	public long insertBooklistStyle(LibraryStyle s) {
@@ -5428,8 +5368,6 @@ public class CatalogueDBAdapter {
 
 	/**
 	 * Update an existing booklist style
-	 * 
-	 * @return
 	 */
 	private SynchronizedStatement mUpdateBooklistStyleStmt = null;
 	public void updateBooklistStyle(LibraryStyle s) {
@@ -5445,8 +5383,6 @@ public class CatalogueDBAdapter {
 
 	/**
 	 * Delete an existing booklist style
-	 * 
-	 * @return
 	 */
 	private SynchronizedStatement mDeleteBooklistStyleStmt = null;
 	public void deleteBooklistStyle(long id) {
@@ -5459,18 +5395,16 @@ public class CatalogueDBAdapter {
 		mDeleteBooklistStyleStmt.execute();
 	}
 
-	/****************************************************************************************************
-	 * FTS Support
-	 */
+	////////////////////////////////////////////
+    // FTS Support
+    ////////////////////////////////////////////
 
 	/**
 	 * Send the book details from the cursor to the passed fts query. 
-	 * 
 	 * NOTE: This assumes a specific order for query parameters.
 	 * 
 	 * @param books		Cursor of books to update
 	 * @param stmt		Statement to execute
-	 * 
 	 */
 	public void ftsSendBooks(BooksCursor books, SynchronizedStatement stmt) {
 
@@ -5585,8 +5519,6 @@ public class CatalogueDBAdapter {
 	
 	/**
 	 * Insert a book into the FTS. Assumes book does not already exist in FTS.
-	 * 
-	 * @param bookId
 	 */
 	private SynchronizedStatement mInsertFtsStmt = null;
 	public void insertFts(long bookId) {
@@ -5624,8 +5556,6 @@ public class CatalogueDBAdapter {
 	
 	/**
 	 * Update an existing FTS record.
-	 * 
-	 * @param bookId
 	 */
 	private SynchronizedStatement mUpdateFtsStmt = null;
 	public void updateFts(long bookId) {
@@ -5660,8 +5590,6 @@ public class CatalogueDBAdapter {
 
 	/**
 	 * Delete an existing FTS record
-	 * 
-	 * @param bookId
 	 */
 	private SynchronizedStatement mDeleteFtsStmt = null;
 	public void deleteFts(long bookId) {
@@ -5745,12 +5673,7 @@ public class CatalogueDBAdapter {
 	/**
 	 * Utility function to bind a string or NULL value to a parameter since binding a NULL
 	 * in bindString produces an error.
-	 * 
 	 * NOTE: We specifically want to use the default locale for this.
-	 * 
-	 * @param stmt
-	 * @param position
-	 * @param s
 	 */
 	private void bindStringOrNull(SynchronizedStatement stmt, int position, String s) {
 		if (s == null) {
@@ -5766,10 +5689,8 @@ public class CatalogueDBAdapter {
 
 	/**
 	 * Cleanup a search string to remove all quotes etc.
-	 * 
 	 * Remove punctuation from the search string to TRY to match the tokenizer. The only punctuation we
 	 * allow is a hyphen preceded by a space. Everything else is translated to a space.
-	 * 
 	 * TODO: Consider making '*' to the end of all words a preference item.
 	 * 
 	 * @param search		Search criteria to clean
@@ -5828,13 +5749,11 @@ public class CatalogueDBAdapter {
 
 	/**
 	 * Search the FTS table and return a cursor.
-	 * 
 	 * ENHANCE: Integrate with existing search code, if we keep it.
 	 * 
 	 * @param author		Author-related keywords to find
 	 * @param title			Title-related keywords to find
 	 * @param anywhere		Keywords to find anywhere in book
-	 * @return
 	 */
 	public Cursor searchFts(String author, String title, String anywhere) {
 		author = cleanupFtsCriterion(author);
@@ -5876,10 +5795,7 @@ public class CatalogueDBAdapter {
 	/**
 	 * Get the synchronizer object for this database in case there is some other activity that needs to
 	 * be synced.
-	 * 
 	 * Note: Cursor requery() is the only thing found so far.
-	 * 
-	 * @return
 	 */
 	public static Synchronizer getSynchronizer() {
 		return mSynchronizer;
@@ -5887,8 +5803,6 @@ public class CatalogueDBAdapter {
 
 	/**
 	 * Return a boolean indicating this instance was a new installation
-	 *
-	 * @return
 	 */
 	public boolean isNewInstall() {
 		return mDbHelper.isNewInstall();

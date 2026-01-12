@@ -29,7 +29,6 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * Class used to manager a collection of backgroud threads for an AcitivityWithTasks subclass.
- * 
  * Part of three components that make this easier:
  *  - TaskManager -- handles the management of multiple threads sharing a progressDialog
  *  - ActivityWithTasks -- uses a TaskManager (and communicates with it) to handle progress
@@ -133,7 +132,6 @@ public class TaskManager {
 
 	/**
 	 * 	STATIC Object for passing messages from background tasks to activities that may be recreated 
-	 *
 	 *  This object handles all underlying OnTaskEndedListener messages for every instance of this class.
 	 */
 	private static final MessageSwitch<TaskManagerListener, TaskManagerController> mMessageSwitch = new MessageSwitch<TaskManagerListener, TaskManagerController>();
@@ -238,8 +236,6 @@ public class TaskManager {
 
 	/**
 	 * Called when the onTaskFinished message is received by the listener object.
-	 * 
-	 * @param task
 	 */
 	private void onTaskFinished(ManagedTask task) {
 		boolean doClose;
@@ -276,17 +272,6 @@ public class TaskManager {
 		return mTasks.size();
 	}
 
-	/**
-	 * Return the associated activity object.
-	 * 
-	 * @return	The context
-	 */
-//	private Context getContext() {
-//	synchronized(this) {
-//		return mContext;
-//	}
-//}
-
 	/** 
 	 * Utility routine to cancel all tasks.
 	 */
@@ -303,8 +288,6 @@ public class TaskManager {
 	 * Update the base progress message. Used (generally) by the ActivityWuthTasks to 
 	 * display some text above the task info. Set to blank to ensure ProgressDialog will
 	 * be removed.
-	 * 
-	 * @param message
 	 */
 	public void doProgress(String message) {
 		mBaseMessage = message;
@@ -414,9 +397,6 @@ public class TaskManager {
 
 	/**
 	 * Set the maximum value for progress for the passed task.
-	 * 
-	 * @param task
-	 * @param max
 	 */
 	public void setMax(ManagedTask task, int max) {
 		TaskInfo t = getTaskInfo(task);
@@ -428,9 +408,6 @@ public class TaskManager {
 
 	/**
 	 * Set the count value for progress for the passed task.
-	 * 
-	 * @param task
-	 * @param max
 	 */
 	public void setCount(ManagedTask task, int count) {
 		TaskInfo t = getTaskInfo(task);

@@ -31,7 +31,6 @@ import com.eleybourn.bookcatalogue.utils.XmlFilter.ElementContext;
 /**
  * Base class for parsing the output any web request that returns an XML response. NOTE: this does
  * not include general web page parsing since they often do not conform to XML formatting standards.
- * 
  * This class is used with the XmlFilter class to call user-defined code at specific points in
  * an XML file.
  * 

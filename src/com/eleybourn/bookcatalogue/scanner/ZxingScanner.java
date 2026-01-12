@@ -9,7 +9,6 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp;
 /**
  * This object will start a Zxing compatible scanner and extract the data
  * from the resulting intent when the activity completes.
- * 
  * It also has a static method to check if the intent is present.
  * 
  * @author pjw

@@ -58,8 +58,6 @@ public interface Importer {
 	 * @param listener			Progress and cancellation provider
 	 * 
 	 * @return		true on success
-	 * 
-	 * @throws IOException
 	 */
     boolean importBooks(InputStream importStream, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener, int importFlags) throws IOException;
 }

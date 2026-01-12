@@ -263,12 +263,12 @@ abstract class CropImageViewTouchBase extends ImageView {
 	}
 
 	/**
-	 * We get 'unsupported feature' crshes if the option to always use GL is turned on.
-	 * See:
-	 *     http://developer.android.com/guide/topics/graphics/hardware-accel.html
-	 *     http://stackoverflow.com/questions/13676059/android-unsupportedoperationexception-at-canvas-clippath
-	 * so for API level > 11, we turn it off manually.
-	 */
+     * We get 'unsupported feature' crshes if the option to always use GL is turned on.
+     * See:
+     *     <a href="http://developer.android.com/guide/topics/graphics/hardware-accel.html">...</a>
+     *     <a href="http://stackoverflow.com/questions/13676059/android-unsupportedoperationexception-at-canvas-clippath">...</a>
+     * so for API level > 11, we turn it off manually.
+     */
 	@SuppressLint("NewApi")
 	private void forceSoftwareRenderer() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

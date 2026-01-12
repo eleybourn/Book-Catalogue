@@ -107,8 +107,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public Bundle getBundle() {
 		return mBundle;
@@ -116,8 +114,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public int getArchVersion() {
 		return mBundle.getInt(INFO_ARCHVERSION);
@@ -125,8 +121,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public int getCompatArchiver() {
 		return mBundle.getInt(INFO_COMPATARCHIVER);
@@ -134,8 +128,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public Date getCreateDate() {
 		return Utils.parseDate(mBundle.getString(INFO_CREATEDATE));
@@ -143,8 +135,6 @@ public class BackupInfo {
 	
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public int getNumBooks() {
 		return mBundle.getInt(INFO_NUMBOOKS);		
@@ -152,8 +142,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public String getAppPackage() {
 		return mBundle.getString(INFO_APPPACKAGE);		
@@ -161,8 +149,6 @@ public class BackupInfo {
 	
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public String getAppVersionName() {
 		return mBundle.getString(INFO_APPVERSIONNAME);		
@@ -170,8 +156,6 @@ public class BackupInfo {
 	
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public int getAppVersionCode() {
 		return mBundle.getInt(INFO_APPVERSIONCODE);		
@@ -179,8 +163,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public int getSdk() {
 		return mBundle.getInt(INFO_APPVERSIONCODE);		
@@ -188,8 +170,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public boolean hasBooks() {
 		return mBundle.getBoolean(INFO_HAS_BOOKS);
@@ -197,8 +177,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public boolean hasCoverCount() {
 		return mBundle.containsKey(INFO_NUMCOVERS);
@@ -206,8 +184,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public boolean hasCovers() {
 		return mBundle.getBoolean(INFO_HAS_COVERS);
@@ -215,8 +191,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public boolean hasDatabase() {
 		return mBundle.getBoolean(INFO_HAS_DATABASE);
@@ -224,8 +198,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public boolean hasPreferences() {
 		return mBundle.getBoolean(INFO_HAS_SETTINGS);
@@ -233,8 +205,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public boolean hasBooklistStyles() {
 		return mBundle.getBoolean(INFO_HAS_BOOKLIST_STYLES);
@@ -242,8 +212,6 @@ public class BackupInfo {
 	
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public int getBookCount() {
 		return mBundle.getInt(INFO_NUMBOOKS);
@@ -251,8 +219,6 @@ public class BackupInfo {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public int getCoverCount() {
 		return mBundle.getInt(INFO_NUMCOVERS);

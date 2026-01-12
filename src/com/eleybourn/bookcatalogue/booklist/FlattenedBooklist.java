@@ -66,8 +66,6 @@ public class FlattenedBooklist {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public TableDefinition getTable() {
 		return mTable;
@@ -75,8 +73,6 @@ public class FlattenedBooklist {
 	
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public Long getBookId() {
 		return mBookId;
@@ -99,8 +95,6 @@ public class FlattenedBooklist {
 
 	/**
 	 * Passed a statement update the 'current' row details based on the columns returned
-	 * @param stmt
-	 * @return
 	 */
 	private boolean updateDetailsFromStatement(SynchronizedStatement stmt) {
 		// Get a pair of ID's separated by a '/'
@@ -125,8 +119,6 @@ public class FlattenedBooklist {
 	 * Check that the referenced table exists. This is important for resumed activities
 	 * where th underlying database connection may have closed and the table been deleted
 	 * as a result.
-	 * 
-	 * @return
 	 */
 	public boolean exists() {
 		return mTable.exists(mDb);
@@ -242,7 +234,6 @@ public class FlattenedBooklist {
 
 	/**
 	 * Get the underlying row position (row ID)
-	 * @return
 	 */
 	public long getPosition() {
 		return mPosition;

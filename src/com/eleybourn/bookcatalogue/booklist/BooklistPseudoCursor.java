@@ -30,32 +30,23 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Yet Another Rabbit Burrow ("YARB" -- did I invent a new acronym?). What led to this?
- * 
  * 1. The call to getCount() that ListView does when it is passed a cursor added approximately 25% to the
  *    total time building a book list. Given the way book lists are constructed (a flat table with an index 
  *    table that is ordered by ID), it was worth replacing getCount() with a local version that simply returned 
  *    the number of 'visible' rows in the nav table.
- *    
- * 2. This worked (approx 5ms vs. 500ms for a big list), but failed if the current position was saved at the 
+ * 2. This worked (approx 5ms vs. 500ms for a big list), but failed if the current position was saved at the
  *    end of a long list. For some reason this caused lots of 'skip_rows' messages from 'Cursor', and a 
  *    *very* jittery backwards scroll.
- *    
  * 3. FUD: SQLite cursors seem to use memory based on the number of rows in the cursor. They do not *seem*
  *    to refer back to the database and cache a window. If true, with lots of a books and a small phone memory,
  *    this would lead to problems.
- * 
  * The result?
- * 
- * A pseudo cursor that is made up of multiple cursors around a given position. Originally, the plan was to 
+ * A pseudo cursor that is made up of multiple cursors around a given position. Originally, the plan was to
  * build the surrounding cursors in a background thread, but the build time for small cursors is remarkably
  * small (approx 10ms on a 1.5GHz dual CPU). So, this much simpler implementation was chosen.
- * 
  * What does it do?
- * 
  * getCount() is implemented as one would hope: a direct count of visible rows
- * 
  * onMove(...) results in a new cursor being built when the row is not available in existing cursors.
- * 
  * Cursors are kept in a hash based on their position; cursors more than 3 'windows' away from the current
  * position are eligible for purging if they are not in the Most Recently Used (MRU) list. The MRU list 
  * holds 8 cursors.
@@ -107,8 +98,6 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 
 	/**
 	 * Get the builder used to make this cursor.
-	 * 
-	 * @return
 	 */
 	public LibraryBuilder getBuilder() {
 		return mBuilder;
@@ -116,8 +105,6 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 
 	/**
 	 * Get a RowView for this cursor. Constructs one if necessary.
-	 * 
-	 * @return
 	 */
 	public LibraryRowView getRowView() {
 		if (mRowView == null)
@@ -242,9 +229,6 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 
 	/**
 	 * Check if the passed cursor ID is in the MRU list
-	 * 
-	 * @param id
-	 * @return
 	 */
 	private boolean checkMru(Integer id) {
 		for(int i: mMruList) {
@@ -345,8 +329,6 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 
 	/**
 	 * Get the number of levels in the book list.
-	 * 
-	 * @return
 	 */
 	public int numLevels() {
 		return mBuilder.numLevels();

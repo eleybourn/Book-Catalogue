@@ -50,9 +50,7 @@ public class TarBackupReader extends BackupReaderAbstract {
 	/**
 	 * Constructor
 	 * 
-	 * @param container		Parent 
-	 * 
-	 * @throws IOException
+	 * @param container		Parent
 	 */
 	public TarBackupReader(TarBackupContainer container) throws IOException {
 		mContainer = container;
@@ -130,8 +128,6 @@ public class TarBackupReader extends BackupReaderAbstract {
 
 	/**
 	 * Accessor used by TarEntityReader to get access to the stream data
-	 * 
-	 * @return
 	 */
 	protected TarArchiveInputStream getInput() {
 		return mInput;

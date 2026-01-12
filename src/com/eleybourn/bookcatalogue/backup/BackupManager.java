@@ -82,24 +82,13 @@ public class BackupManager {
 		return bkp.newReader();
 	}
 
-	/**
-	 * Esnure the file name extension is what we want
-	 */
-	//private static DocumentFile cleanupFile(DocumentFile requestedFile) {
-	//	if (!requestedFile.getName().toUpperCase().endsWith(".BCBK")) {
-	//		requestedFile.renameTo(requestedFile.getName() + ".bcbk");
-	//	}
-	//	return requestedFile;
-	//}
-
 	public interface BackupListener {
 		void onFinish(SimpleTaskQueueProgressFragment fragment, int taskId, FragmentTask task);
 	}
 
 	/**
 	 * Start a foreground task that backs up the entire catalogue.
-	 * 
-	 * We use a FragmentTask so that long actions do not occur in the UI thread.
+     * We use a FragmentTask so that long actions do not occur in the UI thread.
 	 */
 	public static DocumentFile backupCatalogue(final BookCatalogueActivity context, final DocumentFile requestedFile, int taskId, final int backupFlags, final Date since, BackupListener listener) {
 		final int flags = backupFlags & Exporter.EXPORT_MASK;
@@ -214,7 +203,6 @@ public class BackupManager {
 
 	/**
 	 * Start a foreground task that backs up the entire catalogue.
-	 * 
 	 * We use a FragmentTask so that long actions do not occur in the UI thread.
 	 */
 	public static void restoreCatalogue(final BookCatalogueActivity context, final DocumentFile inputFile, int taskId, final int importFlags, BackupListener listener) {

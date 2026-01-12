@@ -162,9 +162,6 @@ public class IsbnUtils {
 	}
 	/**
 	 * Validate an ISBN
-	 * 
-	 * @param isbn
-	 * @return
 	 */
 	public static boolean isValid(String isbn) {
 		try {
@@ -176,12 +173,9 @@ public class IsbnUtils {
 	}
 	
 	/**
-	 * Validate an ISBN10.
-	 * See http://en.wikipedia.org/wiki/International_Standard_Book_Number
-	 * 
-	 * @param digits
-	 * @return
-	 */
+     * Validate an ISBN10.
+     * See <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number">...</a>
+     */
 	private static int getIsbn10Check(int[] digits) {
 		int mult = 10;
 		int check = 0;
@@ -193,23 +187,17 @@ public class IsbnUtils {
 	}
 
 	/**
-	 * Validate an ISBN10.
-	 * See http://en.wikipedia.org/wiki/International_Standard_Book_Number
-	 * 
-	 * @param digits
-	 * @return
-	 */
+     * Validate an ISBN10.
+     * See <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number">...</a>
+     */
 	private static boolean isValidIsbn10(int[] digits) {
 		return (getIsbn10Check(digits) == 0);
 	}
 
 	/**
-	 * Validate an ISBN10.
-	 * See http://en.wikipedia.org/wiki/International_Standard_Book_Number
-	 * 
-	 * @param digits
-	 * @return
-	 */
+     * Validate an ISBN10.
+     * See <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number">...</a>
+     */
 	private static int getIsbn13Check(int[] digits) {
 		int check = 0;
 	    for (int i = 0; i <= 12; i += 2) {
@@ -222,12 +210,9 @@ public class IsbnUtils {
 	}
 
 	/**
-	 * Validate an ISBN10.
-	 * See http://en.wikipedia.org/wiki/International_Standard_Book_Number
-	 * 
-	 * @param digits
-	 * @return
-	 */
+     * Validate an ISBN10.
+     * See <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number">...</a>
+     */
 	private static boolean isValidIsbn13(int[] digits) {
 		// Start with 978 or 979
 		if (digits[0] != 9 || digits[1] != 7 || (digits[2] != 8 && digits[2] != 9))

@@ -158,11 +158,8 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
 	 * Runs a <code>Cancelable</code> subtask. This method is helpful, if the
 	 * task can be composed of several cancelable tasks. By using this function,
 	 * it will pass <code>requestCancel</code> message to those subtasks.
-	 * 
-	 * @param <T>
-	 *            the return type of the sub task
-	 * @param cancelable
-	 *            the sub task
+	 *
+	 * @param cancelable the sub task
 	 * @return the result of the subtask
 	 */
 	protected <X> X runSubTask(CropCancelable<X> cancelable)

@@ -81,7 +81,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 	 * 
 	 * @param manager			Object to manage background tasks
 	 * @param requestedFields	fields to update
-	 * @param lookupHandler		Interface object to handle events in this thread.
+	 * @param listener		Interface object to handle events in this thread.
 	 */
 	public UpdateThumbnailsThread(TaskManager manager, FieldUsages requestedFields, TaskListener listener) {
 		super(manager);
@@ -239,9 +239,6 @@ public class UpdateThumbnailsThread extends ManagedTask {
 
 	/**
 	 * Called in the main thread for this object when a search has completed.
-	 *
-	 * @param bookData
-	 * @param cancelled
 	 */
 	private boolean handleSearchFinished(Bundle bookData, boolean cancelled) {
 		System.out.println("onSearchFinished (cancel = " + cancelled + ")");
@@ -271,7 +268,9 @@ public class UpdateThumbnailsThread extends ManagedTask {
 	/**
 	 * Passed the old & new data, construct the update data and perform the update.
 	 * 
-	 * @param rowId		Book ID
+	 * @param bookId		Book ID
+     * @param bookUuid The Book UUID
+     * @param requestedFields which fields to get
 	 * @param newData	Data gathered from internet
 	 * @param origData	Original data
 	 */

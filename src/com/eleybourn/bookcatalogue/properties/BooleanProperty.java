@@ -34,7 +34,6 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
 /**
  * Extends ValuePropertyWithGlobalDefault to create a trinary value (or nullable boolean?) with 
  * associated editing support.
- * 
  * Resulting editing display is a checkbox that cycles between 3 values.
  * 
  * @author Philip Warner
@@ -128,9 +127,6 @@ public class BooleanProperty extends ValuePropertyWithGlobalDefault<Boolean> imp
 
 	/**
 	 * Set the checkbox and text fields based on passed value.
-	 * 
-	 * @param h
-	 * @param b
 	 */
 	private void setViewValues(Holder h, Boolean b) {
 		if (b != null) {

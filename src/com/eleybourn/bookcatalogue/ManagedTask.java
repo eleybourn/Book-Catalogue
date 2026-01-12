@@ -27,7 +27,6 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * Base class for handling tasks in background while displaying a ProgressDialog.
- * 
  * Part of three components that make this easier:
  *  - TaskManager -- handles the management of multiple threads sharing a progressDialog
  *  - ActivityWithTasks -- uses a TaskManager (and communicates with it) to handle progress
@@ -74,8 +73,6 @@ abstract public class ManagedTask extends Thread {
 	 * Constructor.
 	 * 
 	 * @param manager			Associated task manager
-	 * @param taskHandler		Object to inform of life0cycle events
-	 * 
 	 */
 	public ManagedTask(TaskManager manager) {
 		// Must be non-null
@@ -199,7 +196,6 @@ abstract public class ManagedTask extends Thread {
 
 	/**
 	 * 	STATIC Object for passing messages from background tasks to activities that may be recreated 
-	 *
 	 *  This object handles all underlying OnTaskEndedListener messages for every instance of this class.
 	 */
 	protected static class TaskSwitch extends MessageSwitch<TaskListener, TaskController> {}

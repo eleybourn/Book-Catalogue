@@ -50,19 +50,14 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 public class DbSync {
 	/**
 	 * Implementation of a Readers/Writer lock that is fully reentrant.
-	 * 
 	 * Because SQLite throws exception on locking conflicts, this class can be used to serialize WRITE
 	 * access while allowing concurrent read access.
-	 * 
 	 * Each logical database should have its own 'Synchronizer' and before any read, or group or reads, a call
 	 * to getSharedLock() should be made. A call to getExclusiveLock() should be made before any update. Multiple
 	 * calls can be made as necessary so long as an unlock() is called for all get*() calls by using the 
 	 * SyncLock object returned from the get*() call.
-	 * 
 	 * These can be called in any order and locks in the current thread never block requests.
-	 * 
 	 * Deadlocks are not possible because the implementation involves a single lock object.
-	 * 
 	 * NOTE: This lock can cause writer starvation since it does not introduce pending locks.
 	 * 
 	 * @author Philip Warner
@@ -142,8 +137,6 @@ public class DbSync {
 
 		/**
 		 * Add a new SharedLock to the collection and return it.
-		 * 
-		 * @return
 		 */
 		public SyncLock getSharedLock() {
 			final Thread t = Thread.currentThread();
@@ -197,13 +190,10 @@ public class DbSync {
 
 		/**
 		 * Return when exclusive access is available.
-		 * 
 		 * - take a lock on the collection
 		 * - see if there are any other locks
 		 * - if not, return with the lock still held -- this prevents more EX or SH locks.
 		 * - if there are other SH locks, wait for one to be release and loop.
-		 * 
-		 * @return
 		 */
 		public SyncLock getExclusiveLock() {
 			final Thread t = Thread.currentThread();
@@ -377,10 +367,6 @@ public class DbSync {
 
 		/**
 		 * Locking-aware wrapper for underlying database method.
-		 * 
-		 * @param sql
-		 * @param selectionArgs
-		 * @return
 		 */
 		public SynchronizedCursor rawQuery(String sql, String [] selectionArgs) {
 			return rawQueryWithFactory(mCursorFactory, sql, selectionArgs,"");
@@ -388,9 +374,6 @@ public class DbSync {
 
 		/**
 		 * Locking-aware wrapper for underlying database method.
-		 * 
-		 * @param sql
-		 * @return
 		 */
 		public SynchronizedCursor rawQuery(String sql) {
 			return rawQuery(sql, CatalogueDBAdapter.EMPTY_STRING_ARRAY);
@@ -398,12 +381,6 @@ public class DbSync {
 
 		/**
 		 * Locking-aware wrapper for underlying database method.
-		 * 
-		 * @param factory
-		 * @param sql
-		 * @param selectionArgs
-		 * @param editTable
-		 * @return
 		 */
 		public SynchronizedCursor rawQueryWithFactory(SynchronizedCursorFactory factory, String sql, String [] selectionArgs, String editTable) {
 			SyncLock l = null;
@@ -420,10 +397,6 @@ public class DbSync {
 
 		/**
 		 * Locking-aware wrapper for underlying database method.
-		 * 
-		 * @param sql
-		 * @param selectionArgs
-		 * @return
 		 */
 		public void execSQL(String sql) {
 			if (mTxLock != null) {
@@ -442,15 +415,6 @@ public class DbSync {
 
 		/**
 		 * Locking-aware wrapper for underlying database method.
-		 * 
-		 * @param table
-		 * @param columns
-		 * @param selection
-		 * @param selectionArgs
-		 * @param groupBy
-		 * @param having
-		 * @param orderBy
-		 * @return
 		 */
 		public Cursor query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
 			SyncLock l = null;
@@ -468,10 +432,6 @@ public class DbSync {
 		/**
 		 * Locking-aware wrapper for underlying database method; actually
 		 * calls insertOrThrow since this method also throws exceptions
-		 * 
-		 * @param sql
-		 * @param selectionArgs
-		 * @return
 		 */
 		public long insert(String table, String nullColumnHack, ContentValues values) {
 			SyncLock l = null;
@@ -491,12 +451,6 @@ public class DbSync {
 
 		/**
 		 * Locking-aware wrapper for underlying database method.
-		 * 
-		 * @param table
-		 * @param values
-		 * @param whereClause
-		 * @param whereArgs
-		 * @return
 		 */
 		public int update(String table, ContentValues values, String whereClause, String[] whereArgs) {
 			SyncLock l = null;
@@ -516,10 +470,6 @@ public class DbSync {
 
 		/**
 		 * Locking-aware wrapper for underlying database method.
-		 * 
-		 * @param sql
-		 * @param selectionArgs
-		 * @return
 		 */
 		public int delete(String table, String whereClause, String[] whereArgs) {
 			SyncLock l = null;
@@ -539,12 +489,6 @@ public class DbSync {
 
 		/**
 		 * Wrapper for underlying database method. It is recommended that custom cursors subclass SynchronizedCursor.
-		 * 
-		 * @param cursorFactory
-		 * @param sql
-		 * @param selectionArgs
-		 * @param editTable
-		 * @return
 		 */
 		public Cursor rawQueryWithFactory(SQLiteDatabase.CursorFactory cursorFactory, String sql, String[] selectionArgs, String editTable) {
 			SyncLock l = null;
@@ -560,9 +504,6 @@ public class DbSync {
 
 		/**
 		 * Locking-aware wrapper for underlying database method.
-		 * 
-		 * @param sql
-		 * @return
 		 */
 		public SynchronizedStatement compileStatement(String sql) {
 			SyncLock l = null;
@@ -582,8 +523,6 @@ public class DbSync {
 
 		/**
 		 * Return the underlying SQLiteDatabase object.
-		 * 
-		 * @return
 		 */
 		public SQLiteDatabase getUnderlyingDatabase() {
 			return mDb;
@@ -591,8 +530,6 @@ public class DbSync {
 
 		/**
 		 * Wrapper.
-		 * 
-		 * @return
 		 */
 		public boolean inTransaction() {
 			return mDb.inTransaction();
@@ -602,8 +539,6 @@ public class DbSync {
 		 * Locking-aware wrapper for underlying database method.
 		 * 
 		 * @param isUpdate	Indicates if updates will be done in TX
-		 *
-		 * @return
 		 */
 		public SyncLock beginTransaction(boolean isUpdate) {
 			SyncLock l;
@@ -669,8 +604,6 @@ public class DbSync {
 
 		/**
 		 * Return the underlying synchronizer object.
-		 * 
-		 * @return
 		 */
 		public Synchronizer getSynchronizer() {
 			return mSync;

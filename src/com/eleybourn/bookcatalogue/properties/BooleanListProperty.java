@@ -26,7 +26,6 @@ import com.eleybourn.bookcatalogue.properties.Property.BooleanValue;
 
 /**
  * Extends ListProperty to create a trinary value (or nullable boolean?) with associated editing support.
- * 
  * Resulting editing display is a list of values in a dialog.
  * 
  * @author Philip Warner

@@ -25,13 +25,10 @@ import android.graphics.BitmapFactory;
 
 /**
  * This class provides several utilities to cancel bitmap decoding.
- * 
  * The function decodeFileDescriptor() is used to decode a bitmap. During
  * decoding if another thread wants to cancel it, it calls the function
  * cancelThreadDecoding() specifying the Thread which is in decoding.
- * 
  * cancelThreadDecoding() is sticky until allowThreadDecoding() is called.
- * 
  * You can also cancel decoding for a set of threads using ThreadSet as the
  * parameter for cancelThreadDecoding. To put a thread into a ThreadSet, use the
  * add() method. A ThreadSet holds (weak) references to the threads, so you

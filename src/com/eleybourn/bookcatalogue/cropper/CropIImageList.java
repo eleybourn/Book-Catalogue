@@ -74,17 +74,11 @@ public interface CropIImageList extends Parcelable {
 
 	/**
 	 * Returns the image with a particular Uri.
-	 * 
-	 * @param uri
+     *
 	 * @return the image with a particular Uri. null if not found.
 	 */
     CropIImage getImageForUri(Uri uri);
 
-	/**
-	 * 
-	 * @param image
-	 * @return true if the image was removed.
-	 */
     boolean removeImage(CropIImage image);
 
 	/**

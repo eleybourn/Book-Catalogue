@@ -105,10 +105,6 @@ public abstract class BackupReaderAbstract implements BackupReader {
 
 	/**
 	 * Restore the books from the export file.
-	 * 
-	 * @param listener
-	 * @param entity
-	 * @throws IOException
 	 */
 	private void restoreBooks(final BackupReaderListener listener, ReaderEntity entity, int importFlags) throws IOException {
 		// Make a listener for the 'export' function that just passes on the progress to out listener
@@ -145,7 +141,6 @@ public abstract class BackupReaderAbstract implements BackupReader {
 	 * @param listener	Listener
 	 * @param cover		Entity containing the cover image
 	 * @param flags		Import flags
-	 * @throws IOException
 	 */
 	private void restoreCover(BackupReaderListener listener, ReaderEntity cover, int flags) throws IOException {
 		listener.step("Processing Covers...", 1);
@@ -165,10 +160,6 @@ public abstract class BackupReaderAbstract implements BackupReader {
 
 	/**
 	 * Restore the app preferences
-	 * 
-	 * @param listener
-	 * @param entity
-	 * @throws IOException
 	 */
 	private void restorePreferences(BackupReaderListener listener, ReaderEntity entity) throws IOException {
 		listener.step("Preferences...", 1);
@@ -178,10 +169,6 @@ public abstract class BackupReaderAbstract implements BackupReader {
 
 	/**
 	 * Restore a booklist style
-	 * 
-	 * @param listener
-	 * @param entity
-	 * @throws IOException
 	 */
 	private void restoreStyle(BackupReaderListener listener, ReaderEntity entity) throws IOException {
 		listener.step("Booklist Styles...", 1);

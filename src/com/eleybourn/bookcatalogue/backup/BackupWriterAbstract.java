@@ -110,10 +110,6 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 
 	/**
 	 * Generate a bundle containing the INFO block, and send it to the archive
-	 * 
-	 * @param writer
-	 * 
-	 * @throws IOException
 	 */
 	private void writeInfo(BackupWriterListener listener, int bookCount, int coverCount) throws IOException {
 		BackupInfo info = BackupInfo.createInfo(getContainer(), mDbHelper, BookCatalogueApp.context, bookCount, coverCount);
@@ -123,18 +119,12 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 
 	/**
 	 * Generate a temporary file containing a books export, and send it to the archive
-	 * 
 	 * NOTE: This implementation is built around the TAR format; it is not a fixed design.
 	 * We could for example pass an Exporter to the writer and leave it to decide if a 
 	 * temp file or a stream were appropriate. Sadly, tar archives need to know size before
 	 * the header can be written.
-	 * 
-	 * It IS convenient to do it here because we can caputre the progress, but we could also
+	 * It IS convenient to do it here because we can capture the progress, but we could also
 	 * have writer.putBooks(exporter, listener) as the method.
-	 * 
-	 * @param writer
-	 * 
-	 * @throws IOException
 	 */
 	private File generateBooks(final BackupWriterListener listener, final int backupFlags, final Date since, final int numCovers) throws IOException {
 		// This is an estimate only; we actually don't know how many covers
@@ -182,8 +172,6 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 
 	/**
 	 * @param exportFile 	the file containing the exported books in CSV format
-	 * 
-	 * @throws IOException
 	 */
 	private void writeBooks(File exportFile) throws IOException {
 		try {
@@ -255,10 +243,6 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 
 	/**
 	 * Write each cover file corresponding to a book to the archive
-	 * 
-	 * @param writer
-	 * 
-	 * @throws IOException
 	 */
 	private int writeCovers(final BackupWriterListener listener, final int backupFlags, final Date since, boolean dryRun) throws IOException {
 		long sinceTime = 0;
@@ -319,10 +303,6 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 
 	/**
 	 * Get the preferences and save them
-	 * 
-	 * @param listener
-	 * 
-	 * @throws IOException
 	 */
 	private void writePreferences(final BackupWriterListener listener) throws IOException {
 		SharedPreferences prefs = BookCataloguePreferences.getSharedPreferences();
@@ -332,10 +312,6 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 
 	/**
 	 * Save all USER styles
-	 * 
-	 * @param listener
-	 * 
-	 * @throws IOException
 	 */
 	private void writeStyles(final BackupWriterListener listener) throws IOException {
 		BooklistStyles styles = BooklistStyles.getAllStyles(mDbHelper);

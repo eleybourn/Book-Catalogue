@@ -30,7 +30,6 @@ import android.widget.ExpandableListView;
 /**
  * Subclass of ExpandableListView that uses a local implementation of FastScroller to bypass
  * the deficiencies in the original Android version. See fastScroller.java for a discussion.
- * 
  * We need to subclass ExpandableListView because we need access to events that are only provided
  * by the subclass.
  * 
@@ -80,8 +79,6 @@ public class FastScrollExpandableListView extends ExpandableListView {
 	
 	/**
 	 * Called to create and start a new FastScroller if none already exists.
-	 * 
-	 * @param scroller
 	 */
 	private void initScroller() {
 		if (mScroller != null)

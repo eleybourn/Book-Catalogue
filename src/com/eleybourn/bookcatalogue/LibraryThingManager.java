@@ -41,16 +41,13 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Handle all aspects of searching (and ultimately synchronizing with) LibraryThing.
- * 
  * The basic URLs are:
- *
- * Details via ISBN: http://www.librarything.com/services/rest/1.1/?method=librarything.ck.getwork&apikey=<DEVKEY>&isbn=<ISBN>
- * Covers via ISBN: http://covers.librarything.com/devkey/<DEVKEY>/large/isbn/<ISBN>
- *
+ * Details via ISBN: <a href="http://www.librarything.com/services/rest/1.1/?method=librarything.ck.getwork&apikey=">...</a><DEVKEY>&isbn=<ISBN>
+ * Covers via ISBN: <a href="http://covers.librarything.com/devkey/<DEVKEY>/large/isbn/<ISBN>">...</a>
  * ENHANCE: extend the use of LibraryThing:
- * 			- Lookup title using keywords: http://www.librarything.com/api/thingTitle/hand oberon
- * 			- consider scraping html for covers: http://www.librarything.com/work/18998/covers
- * 
+ * 			- Lookup title using keywords: <a href="http://www.librarything.com/api/thingTitle/hand oberon">...</a>
+ * 			- consider scraping html for covers: <a href="http://www.librarything.com/work/18998/covers">...</a>
+ *
  * @author Philip Warner
  *
  */
@@ -97,11 +94,9 @@ public class LibraryThingManager {
 	/**
 	 * Use mLastRequestTime to determine how long until the next request is allowed; and
 	 * update mLastRequestTime this needs to be synchroized across threads.
-	 *
- 	 * Note that as a result of this approach mLastRequestTime may in fact be
+	 * Note that as a result of this approach mLastRequestTime may in fact be
 	 * in the future; callers to this routine effectively allocate time slots.
-	 * 
-	 * This method will sleep() until it can make a request; if ten threads call this 
+	 * This method will sleep() until it can make a request; if ten threads call this
 	 * simultaneously, one will return immediately, one will return 1 second later, another
 	 * two seconds etc.
 	 * 
@@ -132,9 +127,7 @@ public class LibraryThingManager {
 	 * 
 	 * @param isbn		ISBN to lookup
 	 * @param bookData	COllection to save results in
-	 * 
 	 * A typical (and thorough) LibraryThing ISBN response looks like (with formatting added):
-	 * 
 	 * <?xml version="1.0" encoding="UTF-8"?>
 	 * <response stat="ok">
 	 *   <ltml xmlns="http://www.librarything.com/" version="1.1">
@@ -402,9 +395,8 @@ public class LibraryThingManager {
 	 *     <legal>By using this data you agree to the LibraryThing API terms of service.</legal>
 	 *   </ltml>
 	 * </response>
-	 * 
+
 	 * A less well-known work produces rather less data:
-	 * 
 	 * <?xml version="1.0" encoding="UTF-8"?>
 	 * <response stat="ok">
 	 *   <ltml xmlns="http://www.librarything.com/" version="1.1">
@@ -591,8 +583,6 @@ public class LibraryThingManager {
 
 	/**
 	 * Get the cover image using the ISBN
-	 * 
-	 * @param isbn
 	 */
 	public String getCoverImageUrl(String isbn, ImageSizes size) {
 		String devKey = getDevKey();
@@ -618,8 +608,6 @@ public class LibraryThingManager {
 	}
 	/**
 	 * Get the cover image using the ISBN
-	 * 
-	 * @param isbn
 	 */
 	public String getCoverImage(String isbn, Bundle bookData, ImageSizes size) {
 		String url = getCoverImageUrl(isbn, size);
@@ -637,9 +625,6 @@ public class LibraryThingManager {
 	
 	/**
 	 * Search for edition data.
-	 *
-	 * @param bookData
-	 * 
 	 */
 	public static ArrayList<String> searchEditions(String isbn) {
 		// Base path for an ISBN search
@@ -664,9 +649,7 @@ public class LibraryThingManager {
 
 	/**
 	 * Parser Handler to collect the edition data.
-	 * 
 	 * Typical request output:
-	 * 
 	 * <?xml version="1.0" encoding="utf-8"?>
 	 * <idlist>
 	 *  <isbn>0380014300</isbn>

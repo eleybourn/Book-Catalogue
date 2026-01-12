@@ -177,7 +177,6 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 		 * 
 		 * @param value		Underlying value
 		 * @param stringId	String ID of description
-		 * @return
 		 */
 		public ItemEntries<T> add(T value, int stringId, Object... args) {
 			mList.add(new ItemEntry<T>(value, stringId, args));
@@ -219,9 +218,6 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 
 	/**
 	 * Set the 'value' field in the passed view to match the passed item.
-	 * 
-	 * @param baseView
-	 * @param item
 	 */
 	private void setValueInView(View baseView, ItemEntry<T> item) {
 		TextView text = baseView.findViewById(R.id.value);
@@ -244,7 +240,6 @@ public abstract class ListProperty<T extends Object> extends ValuePropertyWithGl
 	 * @param base		Specific view that was clicked
 	 * @param inflater	LayoutInflater
 	 * @param items		All list items
-	 * @return
 	 */
 	private boolean displayList(final View base, final LayoutInflater inflater, ItemEntries<T> items) {
 

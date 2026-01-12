@@ -81,7 +81,6 @@ public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends P
 
 	/**
 	 * Accessor for underlying (or global) value
-	 * @return
 	 */
 	public T get() {
 		if (mIsGlobal)
@@ -91,7 +90,6 @@ public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends P
 	}
 	/**
 	 * Accessor for underlying (or global) value
-	 * @return
 	 */
 	public ValuePropertyWithGlobalDefault<T> set(T value) {
 		mValue = value;
@@ -102,7 +100,6 @@ public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends P
 
 	/**
 	 * Accessor for for fully resolved/defaulted value
-	 * @return
 	 */
 	public T getResolvedValue() {
 		if (mIsGlobal)
@@ -176,8 +173,6 @@ public abstract class ValuePropertyWithGlobalDefault<T extends Object> extends P
 
 	/**
 	 * Utility to check if the current value IS the default value
-	 * @param value
-	 * @return
 	 */
 	public boolean isDefault(T value) {
 		if (hasGlobalDefault() && !isGlobal())

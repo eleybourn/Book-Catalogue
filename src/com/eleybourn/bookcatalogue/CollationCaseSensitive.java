@@ -7,9 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
  * Class to detect if collation implementations are case sensitive.
  * This was built because ICS broke the UNICODE collation (making it CS) and we needed
  * to check for collation case-sensitivity.
- * 
  * This bug was introduced in ICS and present in 4.0-4.0.3, at least.
- * 
  * Now the code has been generalized to allow for arbitrary changes to choice of collation.
  * 
  * @author Philip Warner

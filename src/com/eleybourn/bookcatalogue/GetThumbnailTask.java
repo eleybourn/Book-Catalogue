@@ -36,7 +36,6 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
 /**
  * Task to get a thumbnail from the sdcard or cover database. It will resize it as required and 
  * apply the resulting Bitmap to the related view.
- * 
  * This object also has it's own statically defined SimpleTaskQueue for getting thumbnails in
  * background.
  * 
@@ -93,12 +92,8 @@ public class GetThumbnailTask implements SimpleTask {
 	}
 	/**
 	 * Utility routine to remove any record of a prior thumbnail task from a View object.
-	 * 
-	 * Used internally and from Utils.fetchFileIntoImageView to ensure that nothing 
+	 * Used internally and from Utils.fetchFileIntoImageView to ensure that nothing
 	 * overwrites the view.
-	 * 
-	 * @param queue
-	 * @param v
 	 */
 	public static void clearOldTaskFromView(final ImageView v) {
 		final GetThumbnailTask oldTask = ViewTagger.getTag(v, R.id.TAG_GET_THUMBNAIL_TASK);
@@ -110,12 +105,6 @@ public class GetThumbnailTask implements SimpleTask {
 
 	/**
 	 * Constructor. Clean the view and save the details of what we want.
-	 * 
-	 * @param queue
-	 * @param bookId
-	 * @param v
-	 * @param width
-	 * @param height
 	 */
 	public GetThumbnailTask( final String hash, final ImageView v, int maxWidth, int maxHeight, boolean cacheWasChecked ) {
 		clearOldTaskFromView(v);

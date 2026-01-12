@@ -26,7 +26,6 @@ import android.widget.TextView;
 /**
  * Prior to API 14 there was no way to get TextView to capitalize all text. So this class 
  * overrides TextView to crudely capitalize everything.
- * 
  * ENHANCE: Support SmallCaps by building styled spans based on words.
  * 
  * @author pjw
@@ -35,8 +34,6 @@ public class CapitalizedTextView extends TextView {// implements ViewTreeObserve
 
 	/**
 	 * Constructor
-	 * 
-	 * @param context
 	 */
     public CapitalizedTextView(Context context) {
         super(context);
@@ -44,8 +41,6 @@ public class CapitalizedTextView extends TextView {// implements ViewTreeObserve
 
 	/**
 	 * Constructor
-	 * 
-	 * @param context
 	 */
     public CapitalizedTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -53,8 +48,6 @@ public class CapitalizedTextView extends TextView {// implements ViewTreeObserve
 
 	/**
 	 * Constructor
-	 * 
-	 * @param context
 	 */
     public CapitalizedTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

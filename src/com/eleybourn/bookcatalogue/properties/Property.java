@@ -34,12 +34,9 @@ public abstract class Property {
 	/**
 	 * Counter used to generate unique View IDs. Needed to prevent some fields being overwritten when
 	 * screen is rotated (if thay all have the same ID).
-	 * 
 	 * ENHANCE: allow topological sort of parameters to allow arbitrary grouping and sorting.
-	 * 
 	 * NOTE ABOUT SERIALIZATION
-	 * 
-	 * It is very tempting to make these serializable, but fraught with danger. Specifically, these 
+	 * It is very tempting to make these serializable, but fraught with danger. Specifically, these
 	 * objects contain resource IDs and, as far as I can tell, resource IDs can change across versions.
 	 * This means that any serialized version would only be useful for in-process data passing. But this
 	 * can be accomplished by custom serialization in the referencing object much more easily.
@@ -73,8 +70,6 @@ public abstract class Property {
 	}
 	/**
 	 * Increment and return the view counter
-	 * 
-	 * @return
 	 */
 	public static int nextViewId() {
 		return ++mViewIdCounter;
@@ -82,8 +77,6 @@ public abstract class Property {
 
 	/**
 	 * Get the string name of this property
-	 * 
-	 * @return
 	 */
 	public String getName() {
 //		if (mName == null)
@@ -93,8 +86,6 @@ public abstract class Property {
 
 	/**
 	 * Accessor
-	 * 
-	 * @param weight
 	 */
 	public Property setWeight(int weight) {
 		mWeight = weight;
@@ -153,24 +144,18 @@ public abstract class Property {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public String getUniqueName() {
 		return mUniqueId;
 	}
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public PropertyGroup getGroup() {
 		return mGroup;
 	}
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public Property setGroup(PropertyGroup group) {
 		mGroup = group;
@@ -179,8 +164,6 @@ public abstract class Property {
 
 	/**
 	 * Accessor
-	 * 
-	 * @return
 	 */
 	public int getNameResourceId() {
 		return mNameResourceId;

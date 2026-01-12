@@ -46,7 +46,6 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * DB Helper for Covers DB on external storage.
- * 
  * In the initial pass, the covers database has a single table whose members are accessed via unique
  * 'file names'.
  * 
@@ -167,8 +166,6 @@ public class CoversDbHelper {
 	}
 	/**
 	 * Delete the named 'file'
-	 * 
-	 * @param filename
 	 */
 	public void deleteFile(final String filename) {
 		SynchronizedDb db = getDb();
@@ -184,8 +181,6 @@ public class CoversDbHelper {
 	
 	/**
 	 * Delete the cached covers associated with the passed hash
-	 * 
-	 * @param filename
 	 */
 	private SynchronizedStatement mDeleteBookCoversStmt = null;
 	public void deleteBookCover(final String bookHash) {
@@ -210,8 +205,6 @@ public class CoversDbHelper {
 	/**
 	 * Get the named 'file'
 	 * 
-	 * @param filename
-	 * 
 	 * @return	byte[] of image data
 	 */
 	public final byte[] getFile(final String filename, final Date lastModified) {
@@ -231,8 +224,6 @@ public class CoversDbHelper {
 	/**
 	 * Get the named 'file'
 	 * 
-	 * @param filename
-	 * 
 	 * @return	byet[] of image data
 	 */
 	public boolean isEntryValid(String filename, Date lastModified) {
@@ -247,9 +238,6 @@ public class CoversDbHelper {
 	}
 	/**
 	 * Save the passed bitmap to a 'file'
-	 * 
-	 * @param filename
-	 * @param bm
 	 */
 	public void saveFile(final String filename, final Bitmap bm) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -261,9 +249,6 @@ public class CoversDbHelper {
 
 	/**
 	 * Save the passed encoded image data to a 'file'
-	 * 
-	 * @param filename
-	 * @param bm
 	 */
 	private SynchronizedStatement mExistsStmt = null;
 	public void saveFile(final String filename, final int height, final int width, final byte[] bytes) {
@@ -319,8 +304,6 @@ public class CoversDbHelper {
 
 	/**
 	 * Erase all cached images relating to the passed book UUID.
-	 * 
-	 * @param uuid
 	 */
 	public int eraseCachedBookCover(String uuid) {
 		SynchronizedDb db = this.getDb();

@@ -229,9 +229,6 @@ public class DataManager {
 	/**
 	 * Store all passed values in our collection.
 	 * We do the laborious method here to allow Accessors to do their thing.
-	 *
-	 * @param src
-	 * @return
 	 */
 	public DataManager putAll(Bundle src) {
 		for(String key: src.keySet()) {
@@ -262,8 +259,6 @@ public class DataManager {
 
 	/**
 	 * Store the contents of the passed cursor
-	 *
-	 * @param cursor
 	 */
 	public void putAll(Cursor cursor) {
         putAll_Api11(cursor);

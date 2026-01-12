@@ -41,10 +41,9 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 
 /**
  * TODO: Remove this!!!! Fragments makes ActivityWithTasks mostly redundant.
- * 
+
  * Class to used as a base class for any Activity that wants to run one or more threads that
  * use a ProgressDialog.
- * 
  * Part of three components that make this easier:
  *  - TaskManager -- handles the management of multiple threads sharing a progressDialog
  *  - ActivityWithTasks -- uses a TaskManager (and communicates with it) to handle progress
@@ -80,7 +79,6 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 
     /**
 	 * Utility routine to get the task manager for his activity
-	 * @return
 	 */
 	protected TaskManager getTaskManager() {
 		if (mTaskManager == null) {
@@ -140,8 +138,6 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 
 	/**
 	 * Method to allow subclasses easy access to terminating tasks
-	 * 
-	 * @param task
 	 */
 	public void onTaskEnded(ManagedTask task) {	}
 
@@ -307,10 +303,10 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
 		}
 	}
 
+    /**
+     * Save the TaskManager ID for later retrieval
+     */
 	@Override
-	/**
-	 * Save the TaskManager ID for later retrieval
-	 */
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 

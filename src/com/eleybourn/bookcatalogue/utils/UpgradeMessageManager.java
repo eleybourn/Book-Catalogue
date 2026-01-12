@@ -31,7 +31,6 @@ import com.eleybourn.bookcatalogue.R;
 
 /**
  * Class to manage the message that is displayed when the application is upgraded.
- * 
  * The app version is stored in preferences and when there are messages to display,
  * the getUpgradeMessage() method returns a non-empty string. When the message has
  * been acknowledged by the user, the startup activity should call setMessageAcknowledged()

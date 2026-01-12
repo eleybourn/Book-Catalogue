@@ -56,11 +56,7 @@ public interface BackupWriter {
 	/**
 	 * Perform a restore of the database; a convenience method to loop through 
 	 * all entities in the backup and restore them based on the entity type.
-	 * 
 	 * See BackupWriterAbstract for a default implementation.
-	 * 
-	 * @param listener
-	 * @throws IOException
 	 */
 	void backup(BackupWriterListener listener, final int backupFlags, final Date since) throws IOException;
 	/** Get the containing archive */

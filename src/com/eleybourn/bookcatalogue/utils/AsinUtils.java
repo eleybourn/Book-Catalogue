@@ -25,12 +25,8 @@ public class AsinUtils {
 	
 	/**
 	 * Validate an ASIN
-	 * 
 	 * Amazon have apparently designed ASINs without (public) validation methods. All we can do is check length and characters;
-	 * the apparent rule is that it must be an ISBN10 or be a 10 character string containing at least on nonnumeric. 
-	 * 
-	 * @param asin
-	 * @return
+	 * the apparent rule is that it must be an ISBN10 or be a 10 character string containing at least on nonnumeric.
 	 */
 	public static boolean isValid(String asin) {
 		try {

@@ -79,10 +79,6 @@ public class SerializationUtils {
 
 	/**
 	 * Deserialize the passed byte array
-	 * 
-	 * @param blob
-	 * @return
-	 * @throws DeserializationException
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T deserializeObject(byte[] blob) throws DeserializationException {
@@ -103,10 +99,6 @@ public class SerializationUtils {
 
 	/**
 	 * Serialize then de-serialize to create a deep clone.
-	 * 
-	 * @param o
-	 * @return
-	 * @throws DeserializationException
 	 */
 	public static <T extends Serializable> T cloneObject(T o) throws DeserializationException {
 		return deserializeObject(serializeObject(o));

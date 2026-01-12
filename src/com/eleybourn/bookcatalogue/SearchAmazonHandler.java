@@ -32,7 +32,6 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 
 /** 
  * An XML handler for the Amazon return 
- * 
  * An example response looks like;
  * <ItemSearchResponse xmlns="http://webservices.amazon.com/AWSECommerceService/2005-10-05">
  * 		<OperationRequest>

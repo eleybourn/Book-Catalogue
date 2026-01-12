@@ -31,8 +31,6 @@ public interface BackupContainer {
 	 * Get a BackupReader for the referenced archive.
 	 * 
 	 * @return a new reader
-	 * 
-	 * @throws IOException
 	 */
     BackupReader newReader() throws IOException;
 
@@ -40,15 +38,11 @@ public interface BackupContainer {
 	 * Get a BackupWriter for the referenced archive.
 	 * 
 	 * @return a new writer
-	 * 
-	 * @throws IOException
 	 */
     BackupWriter newWriter() throws IOException;
 
 	/**
 	 * Get the version of the underlying archiver
-	 * 
-	 * @return
 	 */
     int getVersion();
 

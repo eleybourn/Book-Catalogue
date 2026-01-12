@@ -10,7 +10,6 @@ import com.eleybourn.bookcatalogue.scanner.pic2shop.Scan;
 /**
  * Based on the pic2shop client code at github, this object will start pic2shop and extract the data
  * from the resulting intent when the activity completes.
- * 
  * It also has a static method to check if the intent is present.
  * 
  * @author pjw
@@ -31,7 +30,6 @@ public class Pic2ShopScanner implements Scanner {
 	private final Handler mHandler = new Handler();
 	/**
 	 * Start the activity with the passed request code.
-	 * 
 	 * Note that we always send an intent; the caller should have checked that
 	 * one of the intents is valid, or catch the resulting errors.
 	 */

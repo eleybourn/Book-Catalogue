@@ -160,10 +160,6 @@ public class BackupUtils {
 
 	/**
 	 * Write preferences to an XML stream.
-	 * 
-	 * @param out
-	 * @param prefs
-	 * @throws IOException
 	 */
 	public static void preferencesToXml(BufferedWriter out, SharedPreferences prefs) throws IOException {
 		PreferencesAccessor a = new PreferencesAccessor(prefs);
@@ -172,10 +168,6 @@ public class BackupUtils {
 	
 	/**
 	 * Read preferences from an XML stream.
-	 * 
-	 * @param in
-	 * @param prefs
-	 * @throws IOException
 	 */
 	public static void preferencesFromXml(BufferedReader in, SharedPreferences prefs) throws IOException {
 		PreferencesAccessor a = new PreferencesAccessor(prefs);
@@ -186,10 +178,6 @@ public class BackupUtils {
 
 	/**
 	 * Write Bundle to an XML stream.
-	 * 
-	 * @param out
-	 * @param bundle
-	 * @throws IOException
 	 */
 	public static void bundleToXml(BufferedWriter out, Bundle bundle) throws IOException {
 		BundleAccessor a = new BundleAccessor(bundle);
@@ -198,10 +186,6 @@ public class BackupUtils {
 
 	/**
 	 * Read Bundle from an XML stream.
-	 * 
-	 * @param in
-	 * @return		Bundle
-	 * @throws IOException
 	 */
 	public static Bundle bundleFromXml(BufferedReader in) throws IOException {
 		final Bundle bundle = new Bundle();
@@ -212,10 +196,6 @@ public class BackupUtils {
 
 	/**
 	 * Internal routine to send the passed CollectionAccessor data to an XML file.
-	 * 
-	 * @param out
-	 * @param col
-	 * @throws IOException
 	 */
 	private static void collectionToXml(BufferedWriter out, CollectionAccessor<String> col) throws IOException {
 		out.append("<collection>\n");
@@ -264,10 +244,6 @@ public class BackupUtils {
 
 	/**
 	 * Internal routine to update the passed CollectionAccessor from an XML file.
-	 * 
-	 * @param in
-	 * @param accessor
-	 * @throws IOException
 	 */
 	private static void collectionFromXml(BufferedReader in, final CollectionAccessor<String> accessor) throws IOException {
 		final Bundle bundle = new Bundle();

@@ -33,9 +33,7 @@ import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
 
 /**
  * DEBUG CLASS to help com.eleybourn.bookcatalogue.debug cursor leakage.
- * 
  * Set the static variable DEBUG_TRACKED_CURSOR to 'false' to make most of the code a NOP.
- * 
  * By using TrackedCursorFactory it is possible to use this class to analyze when and
  * where cursors are being allocated, and whether they are being deallocated in a timely
  * fashion.
@@ -72,11 +70,6 @@ public class TrackedCursor extends SynchronizedCursor  {
 
 	/**
 	 * Constructor.
-	 *
-	 * @param db
-	 * @param driver
-	 * @param editTable
-	 * @param query
 	 */
 	public TrackedCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query, Synchronizer sync) {
 		super(db, driver, editTable, query, sync);
@@ -149,14 +142,12 @@ public class TrackedCursor extends SynchronizedCursor  {
 	}
 	/**
 	 * Get the stack trace recorded when cursor created
-	 * @return
 	 */
 	public StackTraceElement[] getStackTrace() {
 		return mStackTrace;
 	}
 	/**
 	 * Get the ID of this cursor
-	 * @return
 	 */
 	final public long getCursorId() {
 		return mId;
@@ -166,8 +157,6 @@ public class TrackedCursor extends SynchronizedCursor  {
 	 * Get the total number of cursors that have not called close(). This is subtly
 	 * different from the list of open cursors because non-referenced cursors may 
 	 * have been deleted and the finalizer not called.
-	 * 
-	 * @return
 	 */
 	public static long getCursorCountApproximate() {
 		long count = 0;
@@ -183,10 +172,7 @@ public class TrackedCursor extends SynchronizedCursor  {
 	/**
 	 * Get the total number of open cursors; verifies that existing weak refs are valid
 	 * and removes from collection if not. 
-	 * 
 	 * Note: This is not a *cheap* operation.
-	 * 
-	 * @return
 	 */
 	public static long getCursorCount() {
 		long count = 0;
@@ -226,8 +212,6 @@ public class TrackedCursor extends SynchronizedCursor  {
 
 	/**
 	 * Get a collection of open cursors at the current time.
-	 *
-	 * @return
 	 */
 	public static ArrayList<TrackedCursor> getCursors() {
 		ArrayList<TrackedCursor> list = new ArrayList<TrackedCursor>();

@@ -55,7 +55,6 @@ public class TarBackupWriter extends BackupWriterAbstract {
 	 * Constructor
 	 * 
 	 * @param container		Parent
-	 * @throws IOException
 	 */
 	public TarBackupWriter(TarBackupContainer container) throws IOException {
 		mContainer = container;
@@ -124,7 +123,6 @@ public class TarBackupWriter extends BackupWriterAbstract {
 
 	/**
 	 * Save the preferences.
-	 * 
 	 * It would be nice to support groups (ie. more than one preference name), but ... we don't need it.
 	 */
 	@Override
@@ -142,8 +140,6 @@ public class TarBackupWriter extends BackupWriterAbstract {
 	 * Utility routine to send the contents of a stream to the current archive entry
 	 * 
 	 * @param in			Stream to be saved
-	 * 
-	 * @throws IOException
 	 */
 	private void streamToArchive(InputStream in) throws IOException {
 		try {
@@ -166,8 +162,6 @@ public class TarBackupWriter extends BackupWriterAbstract {
 	 * 
 	 * @param name		name of "file" in archive
 	 * @param bytes		bytes to write
-	 * 
-	 * @throws IOException
 	 */
 	private void bytesToArchive(String name, byte[] bytes) throws IOException {
 		TarArchiveEntry entry = new TarArchiveEntry(name);

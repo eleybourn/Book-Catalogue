@@ -45,44 +45,32 @@ public interface BackupReader {
 	/**
 	 * Perform a restore of the database; a convenience method to loop through 
 	 * all entities in the backup and restore them based on the entity type.
-	 * 
 	 * See BackupReaderAbstract for a default implementation.
 	 * 
 	 * @param listener		Listener to receive progress information.
-	 * 
-	 * @throws IOException
 	 */
 	void restore(BackupReaderListener listener, int importFlags) throws IOException;
 	
 	/**
 	 * Read the next ReaderEntity from the backup.
-	 * 
 	 * Currently, backup files are read sequentially.
 	 * 
 	 * @return	The next entity, or null if at end
-	 * 
-	 * @throws IOException
 	 */
     ReaderEntity nextEntity() throws IOException;
 	
 	/**
 	 * Close the reader
-	 * 
-	 * @throws IOException
 	 */
     void close() throws IOException;
 	
 	/**
 	 * Get the associated BackupContainer
-	 * 
-	 * @return
 	 */
 	BackupContainer getContainer();
 	
 	/**
 	 * Get the INFO object read from the backup
-	 * 
-	 * @return
 	 */
     BackupInfo getInfo();
 

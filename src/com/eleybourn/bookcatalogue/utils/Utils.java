@@ -646,8 +646,10 @@ public class Utils {
         }
     }
 
-    /*
-     *@return boolean return true if the application can access the internet
+    /**
+     * Check if the application can access the internet.
+     *
+     * @return boolean return true if the application can access the internet
      */
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

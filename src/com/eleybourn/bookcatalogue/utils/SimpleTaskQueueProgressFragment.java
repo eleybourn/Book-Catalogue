@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -36,7 +35,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
@@ -54,9 +52,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	private final SimpleTaskQueue mQueue;
 	/** Handler so we can detect UI thread */
 	private final Handler mHandler = new Handler();
-	/** List of messages queued; only used if activity not present when showToast() is called */
-	private ArrayList<String> mMessages = null;
-	/** Flag indicating dialog was cancelled */
+    /** Flag indicating dialog was cancelled */
 	private boolean mWasCancelled = false;
 	
 	/** Max value of progress (for determinate progress) */
@@ -302,44 +298,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
         mQueue.setTaskFinishListener(mTaskFinishListener);
 	}
 
-	/**
-	 * Utility routine to display a Toast message or queue it as appropriate.
-	 * @param id	Show a toast message based on the string id
-	 */
-	public void showToast(final int id) {
-		if (id != 0) {
-			// We don't use getString() because we have no guarantee this 
-			// object is associated with an activity when this is called, and
-			// for whatever reason the implementation requires it.
-			showToast(BookCatalogueApp.getResourceString(id));
-		}
-	}
-
-	/**
-	 * Utility routine to display a Toast message or queue it as appropriate.
-	 * @param message String to display
-	 */
-	public void showToast(final String message) {
-		// Can only display in main thread.
-		if (Looper.getMainLooper().getThread() == Thread.currentThread() ) {
-			synchronized(this) {
-				if (this.getActivity() != null) {
-					Toast.makeText(this.getActivity(), message, Toast.LENGTH_LONG).show();
-				} else {
-					// Assume the toast message was sent before the fragment was displayed; this
-					// list will be read in onAttach
-					if (mMessages == null)
-						mMessages = new ArrayList<>();
-					mMessages.add(message);
-				}				
-			}
-		} else {
-			// Post() it to main thread.
-			mHandler.post(() -> showToast(message));
-		}
-	}
-
-	/**
+    /**
 	 * Post a runnable to the UI thread
 	 * 
 	 * @param r	Runnable to execute in main thread at a later time
@@ -373,16 +332,6 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	@Override
 	public void onAttach(@NonNull Context a) {
 		super.onAttach(a);
-
-		synchronized(this) {
-			if (mMessages != null) {
-				for(String message: mMessages) {
-					if (message != null && !message.isEmpty())
-						Toast.makeText(a, message, Toast.LENGTH_LONG).show();
-				}
-				mMessages.clear();
-			}			
-		}
     }
 
 	@Override

@@ -35,10 +35,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
@@ -392,27 +388,9 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	@Override
 	public void onStart() { // TODO: Decide if/how to use ViewModelProvider !!!
 		super.onStart();
-		TaskModel taskModel = new ViewModelProvider(requireActivity()).get(TaskModel.class);
-	}
+    }
 
-	public static class TaskModel extends ViewModel {
-		private final MutableLiveData<SimpleTask> mTaskLiveData = new MutableLiveData<>();
-		public LiveData<SimpleTask> getTask() {
-			return mTaskLiveData;
-		}
-
-		public TaskModel() {
-			// trigger user load.
-			//mTaskLiveData.setValue(task);
-		}
-
-		void doAction() {
-			// depending on the action, do necessary business logic calls and update the
-			// userLiveData.
-		}
-	}
-
-	@Override
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// VERY IMPORTANT. We do not want this destroyed!
@@ -432,7 +410,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		
 		// If no tasks left, exit
 		if (!mQueue.hasActiveTasks()) {
-			System.out.println("STQPF: Tasks finished while activity absent, closing");
+			System.out.println("Simple Task Queue: Tasks finished while activity absent, closing");
 			dismiss();
 		}
 	}
@@ -451,7 +429,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		// tasks as appropriate. When all tasks are finished, the dialog is dismissed.
 		setCancelable(false);
 
-		final Dialog dialog = new Dialog(getActivity());
+		final Dialog dialog = new Dialog(requireActivity());
 		dialog.setContentView(R.layout.progress_dialog);
 		dialog.setCancelable(true);
 		dialog.setCanceledOnTouchOutside(false);
@@ -463,13 +441,13 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
         }
 
 		final boolean isIndeterminate = getArguments().getBoolean("isIndeterminate");
-        LinearLayout spinnerLayout = (LinearLayout) dialog.findViewById(R.id.spinner_layout);
-        LinearLayout horizontalLayout = (LinearLayout) dialog.findViewById(R.id.horizontal_layout);
+        LinearLayout spinnerLayout = dialog.findViewById(R.id.spinner_layout);
+        LinearLayout horizontalLayout = dialog.findViewById(R.id.horizontal_layout);
 
 		if (isIndeterminate) {
             horizontalLayout.setVisibility(View.GONE);
             spinnerLayout.setVisibility(View.VISIBLE);
-            TextView messageView = (TextView) dialog.findViewById(R.id.spinner_message);
+            TextView messageView = dialog.findViewById(R.id.spinner_message);
             if (mMessage != null) {
                 messageView.setText(mMessage);
             } else if (msg != 0) {
@@ -478,11 +456,11 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 		} else {
             spinnerLayout.setVisibility(View.GONE);
             horizontalLayout.setVisibility(View.VISIBLE);
-            ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.progress_horizontal);
+            ProgressBar progressBar = dialog.findViewById(R.id.progress_horizontal);
 			progressBar.setMax(mMax);
 			progressBar.setProgress(mProgress);
 
-            TextView messageView = (TextView) dialog.findViewById(R.id.horizontal_message);
+            TextView messageView = dialog.findViewById(R.id.horizontal_message);
 			if (mMessage != null) {
 				messageView.setText(mMessage);
             } else if (msg != 0) {
@@ -555,7 +533,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	 * Refresh the dialog, or post a refresh to the UI thread
 	 */
 	private void requestUpdateProgress() {
-		System.out.println("STQPF: " + mMessage + " (" + mProgress + "/" + mMax + ")");
+		System.out.println("Simple Task Queue: " + mMessage + " (" + mProgress + "/" + mMax + ")");
 		if (Thread.currentThread() == mHandler.getLooper().getThread()) {
 			updateProgress();
 		} else {
@@ -613,9 +591,9 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 	private void updateProgress() {
 		Dialog d = getDialog();
 		if (d != null) {
-            ProgressBar progressBar = (ProgressBar) d.findViewById(R.id.progress_horizontal);
-            TextView messageView = (TextView) d.findViewById(R.id.horizontal_message);
-            TextView spinnerMessageView = (TextView) d.findViewById(R.id.spinner_message);
+            ProgressBar progressBar = d.findViewById(R.id.progress_horizontal);
+            TextView messageView = d.findViewById(R.id.horizontal_message);
+            TextView spinnerMessageView = d.findViewById(R.id.spinner_message);
 
 			synchronized(this) {
 				if (mMaxChanged) {

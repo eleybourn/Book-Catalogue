@@ -49,6 +49,12 @@ dependencies {
     implementation libs.androidx.credentials.play.services.auth
     implementation libs.googleid
     annotationProcessor libs.androidx.room.compiler
+    //ACRA Core for crash alerts
+    implementation libs.acra.core
+    implementation libs.acra.mail
+    implementation libs.acra.toast
+    implementation libs.acra.dialog
+
 }
 
 android {
@@ -137,5 +143,5 @@ android {
 secrets {
     // Change the properties file from the default "local.properties" in your root project
     // to another properties file in your root project.
-    propertiesFileName 'secrets.properties'
+    propertiesFileName = 'secrets.properties'
 }

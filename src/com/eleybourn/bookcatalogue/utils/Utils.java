@@ -1369,7 +1369,10 @@ public class Utils {
      */
     public static String signedBy(Context context) {
         // Get value if no cached value exists
-        StringBuilder localSignedBy = new StringBuilder(mSignedBy);
+        StringBuilder localSignedBy = new StringBuilder();
+        if (mSignedBy != null) {
+            localSignedBy.append(mSignedBy);
+        }
         if (localSignedBy.length() == 0) {
             try {
                 // Get app info

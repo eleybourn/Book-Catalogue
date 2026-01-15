@@ -38,7 +38,7 @@ import com.eleybourn.bookcatalogue.utils.ViewTagger;
  * @author Philip Warner
  */
 public class StringProperty extends ValuePropertyWithGlobalDefault<String> implements StringValue {
-	/** Flag indicating value must be non-blabnk */
+	/** Flag indicating value must be non-blank */
 	private boolean mRequireNonBlank = false;
 
 	public StringProperty(String uniqueId, PropertyGroup group, int nameResourceId, String value, String defaultPref, String defaultValue) {

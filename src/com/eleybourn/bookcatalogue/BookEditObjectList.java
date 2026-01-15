@@ -1,5 +1,6 @@
 package com.eleybourn.bookcatalogue;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -174,6 +175,7 @@ public abstract class BookEditObjectList<T extends Serializable> extends BookCat
             return new ViewHolder(v);
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             T object = mList.get(position);

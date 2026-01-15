@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue.widgets;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
@@ -108,7 +109,8 @@ public class FastScrollListView extends ListView {
 	/**
 	 * Pass to scroller if defined, otherwise perform default actions.
 	 */
-	@Override
+	@SuppressLint("ClickableViewAccessibility")
+    @Override
 	public boolean onTouchEvent(MotionEvent ev) {
 		if (mScroller != null && mScroller.onTouchEvent(ev))
 			return true;

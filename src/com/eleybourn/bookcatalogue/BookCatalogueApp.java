@@ -49,10 +49,11 @@ import com.eleybourn.bookcatalogue.utils.Terminator;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 import org.acra.ACRA;
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
-import org.acra.collector.CrashReportData;
-import org.acra.sender.ReportSenderException;
+import org.acra.config.CoreConfigurationBuilder;
+import org.acra.config.MailSenderConfigurationBuilder;
+import org.acra.config.ToastConfigurationBuilder;
+import org.acra.config.DialogConfigurationBuilder;
+import org.acra.data.StringFormat;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -67,23 +68,6 @@ import java.util.Locale;
  * @author Philip Warner
  *
  */
-@ReportsCrashes(formKey = "", // will not be used
-        mailTo = "philip.warner@rhyme.com.au,eleybourn@gmail.com",
-        mode = ReportingInteractionMode.DIALOG,
-        customReportContent = {USER_COMMENT, USER_APP_START_DATE, USER_CRASH_DATE, APP_VERSION_NAME, APP_VERSION_CODE, ANDROID_VERSION, PHONE_MODEL, CUSTOM_DATA, STACK_TRACE},
-        //optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
-        resToastText = R.string.crash_toast_text,
-        resNotifTickerText = R.string.crash_notif_ticker_text,
-        resNotifTitle = R.string.crash_notif_title,
-        resNotifText = R.string.crash_notif_text,
-        resNotifIcon = R.drawable.ic_alert_warning, // optional. default is a warning sign
-        resDialogText = R.string.crash_dialog_text,
-        resDialogIcon = R.drawable.ic_menu_info, //optional. default is a warning sign
-        resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
-        resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
-        resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
-)
-
 public class BookCatalogueApp extends Application {
 
     /**
@@ -306,10 +290,41 @@ public class BookCatalogueApp extends Application {
         context = setLocale(getApplicationContext());
 
         Terminator.init();
-        // The following line triggers the initialization of ACRA
-        ACRA.init(this);
-        BcReportSender bcSender = new BcReportSender(this);
-        ACRA.getErrorReporter().setReportSender(bcSender);
+
+        // *** START ACRA CONFIGURATION ***
+        CoreConfigurationBuilder builder = new CoreConfigurationBuilder()
+                // Core ACRA settings
+                .withBuildConfigClass(BuildConfig.class)
+                .withReportFormat(StringFormat.KEY_VALUE_LIST)
+                // Customize the report content
+                .withReportContent(
+                        USER_COMMENT, USER_APP_START_DATE, USER_CRASH_DATE, APP_VERSION_NAME,
+                        APP_VERSION_CODE, ANDROID_VERSION, PHONE_MODEL, CUSTOM_DATA, STACK_TRACE
+                )
+                // Configure the Toast notification
+                .withPluginConfigurations(
+                        new ToastConfigurationBuilder()
+                                .withText(this.getString(R.string.crash_toast_text))
+                                .build(),
+                        // Configure the email sender
+                        new DialogConfigurationBuilder()
+                                .withTitle(this.getString(R.string.crash_dialog_title)) // Title of the dialog
+                                .withText(this.getString(R.string.crash_dialog_text))   // Main message
+                                .withPositiveButtonText(this.getString(R.string.crash_dialog_ok_toast)) // "Send Report" button
+                                .withNegativeButtonText(this.getString(R.string.button_cancel)) // "Cancel" button
+                                .build(),
+                        // If the user agrees, this configuration will be used to send the email
+                        new MailSenderConfigurationBuilder()
+                                .withMailTo("philip.warner@rhyme.com.au,eleybourn@gmail.com")
+                                .withReportAsFile(true)
+                                .withSubject(this.getString(R.string.crash_dialog_title))
+                                .withBody(this.getString(R.string.crash_dialog_text))
+                                .build()
+                );
+
+        // Initialize ACRA
+        ACRA.init(this, builder);
+        // *** END ACRA CONFIGURATION ***
         // Save the app signer
         ACRA.getErrorReporter().putCustomData("Signed-By", Utils.signedBy(this));
 
@@ -380,18 +395,5 @@ public class BookCatalogueApp extends Application {
      */
     public interface OnLocaleChangedListener {
         void onLocaleChanged();
-    }
-
-    public static class BcReportSender extends org.acra.sender.EmailIntentSender {
-
-        public BcReportSender(Context ctx) {
-            super(ctx);
-        }
-
-        @Override
-        public void send(CrashReportData report) throws ReportSenderException {
-            //report.put(USER_COMMENT, report.get(USER_COMMENT) + "\n\n" + Tracker.getEventsInfo());
-            super.send(report);
-        }
     }
 }

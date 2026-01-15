@@ -2,6 +2,7 @@ package com.eleybourn.bookcatalogue.cropper;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -98,7 +99,8 @@ public class CropImageView extends CropImageViewTouchBase {
 		invalidate();
 	}
 
-	@Override
+	@SuppressLint("ClickableViewAccessibility")
+    @Override
 	public boolean onTouchEvent(MotionEvent event) {
 		CropCropImage cropImage = (CropCropImage) mContext;
 		if (cropImage.mSaving) {
@@ -158,15 +160,8 @@ public class CropImageView extends CropImageViewTouchBase {
 				mLastX = event.getX();
 				mLastY = event.getY();
 
-				if (true) {
-					// This section of code is optional. It has some user
-					// benefit in that moving the crop rectangle against
-					// the edge of the screen causes scrolling but it means
-					// that the crop rectangle is no longer fixed under
-					// the user's finger.
-					ensureVisible(mMotionHighlightView);
-				}
-			}
+                ensureVisible(mMotionHighlightView);
+            }
 			break;
 		}
 

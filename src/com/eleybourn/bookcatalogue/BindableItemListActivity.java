@@ -144,9 +144,8 @@ public abstract class BindableItemListActivity extends AppCompatActivity impleme
     }
 
     public void onListItemClick(AdapterView<?> parent, View v, int position, long id) {
+        // Do nothing
     }
-
-    //public abstract void bindListItem(View view, Context context, TasksCursor cursor) ;
 
     public boolean onListItemLongClick(AdapterView<?> parent, View v, int position, long id) {
         return false;

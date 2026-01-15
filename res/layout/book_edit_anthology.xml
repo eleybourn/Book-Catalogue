@@ -1,70 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/root"
+    <TextView
+        android:id="@+id/field_anthology_title"
+        style="@style/layout_heading"
+        android:text="@string/label_anthology_titles" />
+
+    <CheckBox
+        android:id="@+id/field_same_author"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/field_anthology_title"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/label_same_author" />
 
-        <TextView
-            android:id="@+id/field_anthology_title"
-            style="@style/layout_heading"
-            android:text="@string/label_anthology_titles" />
-
-        <CheckBox
-            android:id="@+id/field_same_author"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/field_anthology_title"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:text="@string/label_same_author" />
+    <LinearLayout
+        android:id="@+id/row_add_anthology_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/field_same_author"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/row_add_anthology_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/field_same_author"
-            android:orientation="horizontal">
+            android:layout_weight="3"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:orientation="vertical">
+            <EditText
+                android:id="@+id/field_add_title"
+                style="@style/locale_field_text_title"
+                android:hint="@string/label_title"
+                android:importantForAutofill="no" />
 
-                <EditText
-                    android:id="@+id/field_add_title"
-                    style="@style/locale_field_text_title"
-                    android:hint="@string/label_title"
-                    android:importantForAutofill="no" />
-
-                <AutoCompleteTextView
-                    android:id="@+id/field_add_author"
-                    style="@style/locale_field_text_name"
-                    android:hint="@string/label_author" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/row_add"
-                style="@style/layout_button"
-                android:layout_width="0dp"
-                android:layout_gravity="bottom"
-                android:layout_weight="1"
-                android:text="@string/button_anthology_add" />
+            <AutoCompleteTextView
+                android:id="@+id/field_add_author"
+                style="@style/locale_field_text_name"
+                android:hint="@string/label_author" />
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/row_add_anthology_title"
-            android:layout_alignParentBottom="true"
-            android:textSize="16sp" />
+        <Button
+            android:id="@+id/row_add"
+            style="@style/layout_button"
+            android:layout_width="0dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:text="@string/button_anthology_add" />
+    </LinearLayout>
 
-    </RelativeLayout>
-</LinearLayout>
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/row_add_anthology_title"
+        android:layout_alignParentBottom="true"
+        android:textSize="16sp" />
+
+</RelativeLayout>

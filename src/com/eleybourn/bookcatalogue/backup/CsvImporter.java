@@ -47,7 +47,6 @@ import java.util.Date;
  * @author pjw
  */
 public class CsvImporter {
-	@SuppressWarnings("FieldCanBeLocal")
 	private static final int BUFFER_SIZE = 32768;
 
 	public void importBooks(InputStream exportStream, Importer.OnImporterListener listener, int importFlags) throws IOException {

@@ -128,14 +128,17 @@ public class AdminUpdateFromInternet extends ActivityWithTasks {
                     assert usage1 != null;
                     String extra;
                     String text = getResources().getString(usage1.stringId);
+                    String bracketed_text;
                     if (usage1.canAppend) {
                         extra = getResources().getString(R.string.option_usage_add_extra);
-                        this_checkbox.setText(text + " (" + extra + ")");
+                        bracketed_text = getResources().getString(R.string.fragment_bracketed_string, extra);
+                        this_checkbox.setText(text + " " + bracketed_text);
                         this_checkbox.setChecked(true); //reset to checked
                         usage1.usage = Usages.ADD_EXTRA;
                     } else {
                         extra = getResources().getString(R.string.option_usage_overwrite);
-                        this_checkbox.setText(text + " (" + extra + ")");
+                        bracketed_text = getResources().getString(R.string.fragment_bracketed_string, extra);
+                        this_checkbox.setText(text + " " + bracketed_text);
                         this_checkbox.setChecked(true); //reset to checked
                         usage1.usage = Usages.OVERWRITE;
                     }
@@ -145,7 +148,8 @@ public class AdminUpdateFromInternet extends ActivityWithTasks {
                     String extra = getResources().getString(R.string.option_usage_overwrite);
                     assert usage1 != null;
                     String text = getResources().getString(usage1.stringId);
-                    this_checkbox.setText(text + " (" + extra + ")");
+                    String bracketed_text = getResources().getString(R.string.fragment_bracketed_string, extra);
+                    this_checkbox.setText(text + " " + bracketed_text);
                     this_checkbox.setChecked(true); //reset to checked
                     usage1.usage = Usages.OVERWRITE;
                     ViewTagger.setTag(this_checkbox, usage1);
@@ -154,7 +158,8 @@ public class AdminUpdateFromInternet extends ActivityWithTasks {
                     String extra = getResources().getString(R.string.option_usage_copy_if_blank);
                     assert usage1 != null;
                     String text = getResources().getString(usage1.stringId);
-                    this_checkbox.setText(text + " (" + extra + ")");
+                    String bracketed_text = getResources().getString(R.string.fragment_bracketed_string, extra);
+                    this_checkbox.setText(text + " " + bracketed_text);
                     usage1.usage = Usages.COPY_IF_BLANK;
                     ViewTagger.setTag(this_checkbox, usage1);
                 }
@@ -175,7 +180,8 @@ public class AdminUpdateFromInternet extends ActivityWithTasks {
                 default:
                     throw new RuntimeException("Unknown Usage");
             }
-            cb.setText(text + " (" + extra + ")");
+            String bracketed_text = getResources().getString(R.string.fragment_bracketed_string, extra);
+            cb.setText(text + " " + bracketed_text);
             //tv.setPadding(0, 5, 0, 0);
             ll.addView(cb);
 

@@ -5181,6 +5181,7 @@ public class CatalogueDBAdapter {
                         go = true;
                     }
                 }
+                results.close();
                 if (go) {
                     try {
                         message += "New in v3.4 - Updates courtesy of (mainly) Grunthos (blame him, politely, if it toasts your data)\n\n";
@@ -5267,6 +5268,7 @@ public class CatalogueDBAdapter {
                     } else {
                         go2 = true;
                     }
+                    results2.close();
                     if (go2) {
                         try {
                             db.execSQL(DATABASE_CREATE_SERIES);
@@ -5356,6 +5358,7 @@ public class CatalogueDBAdapter {
                             );
                         }
                     }
+                    results57_2.close();
                 }
                 results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKS + "'", new String[]{});
                 if (results57.getCount() == 0) {
@@ -5410,6 +5413,8 @@ public class CatalogueDBAdapter {
                         db.execSQL("DROP TABLE tmpBooks");
                     }
                 }
+                results57_3.close();
+                results57.close();
             }
             if (curVersion == 58) {
                 curVersion++;

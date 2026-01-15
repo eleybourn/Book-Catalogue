@@ -10,6 +10,7 @@
         <EditText
             android:id="@+id/field_text"
             style="@style/field_text"
+            android:importantForAutofill="no"
             android:ems="10"
             android:gravity="top"
             android:inputType="textMultiLine"

@@ -38,7 +38,7 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
 	 * When the task stop, it must be end with one of the following states:
 	 * COMPLETE, CANCELED, or ERROR;
 	 */
-	private static final int STATE_INITIAL = (1 << 0);
+	private static final int STATE_INITIAL = (1);
 	private static final int STATE_EXECUTING = (1 << 1);
 	private static final int STATE_CANCELING = (1 << 2);
 	private static final int STATE_CANCELED = (1 << 3);

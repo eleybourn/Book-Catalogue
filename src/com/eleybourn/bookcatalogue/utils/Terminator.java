@@ -13,13 +13,6 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
  * @author pjw
  */
 public class Terminator {
-	
-	/**
-	 * Dummy method to make sure static initialization is done. Need to be 
-	 * called from main thread (usually at app startup).
-	 */
-	public static void init() {
-	}
 
 	/** Task queue to get book lists in background */
 	private static final SimpleTaskQueue mTaskQueue = new SimpleTaskQueue("Terminator", 1);

@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/theme_surface"
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/p_md" >
 
@@ -24,6 +23,7 @@
 
         <Button
             android:id="@+id/button_cancel"
+            style="@style/layout_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -31,6 +31,7 @@
 
         <Button
             android:id="@+id/button_confirm"
+            style="@style/layout_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

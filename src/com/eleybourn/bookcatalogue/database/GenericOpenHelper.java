@@ -268,7 +268,9 @@ public abstract class GenericOpenHelper {
      *
      * @param db The database.
      */
+    @SuppressWarnings("EmptyMethod")
     public void onOpen(SQLiteDatabase db) {
+        // Do nothing
     }
 
 }

@@ -56,13 +56,8 @@
 
     <string name="available">Uygun</string>
 
-    <string name="background_tasks">Ardalan görevleri</string>
-
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Yedekleniyor…</string>
-
-    <string name="backup_request">Veritabanınızı SD karta yedeklemek ister misiniz?</string>
-    <string name="backup_title">Yedekle</string>
 
     <string name="bad_scanner">Görünüşe göre var olan barkod tarayıcı uygulamanız Book Catalogue ile uyumlu değil. Biz Zxing barkod tarayıcısını yüklemenizi öneriyoruz. Eğer zaten yüklüyse silip yeniden yüklemeniz yardımcı olabilir.</string>
 
@@ -99,11 +94,6 @@
 
     <string name="changed_author_how_apply">Yazarı şundan:\n  \'%1$s\' şuna:\n  \'%2$s\' değiştirdiniz.\nDeğişiklikleri nasıl uygulamak istersiniz?\nNot: \'%3$s\' seçimi anında uygulanacaktır.</string>
     <string name="changed_series_how_apply">Seriyi şundan:\n  \'%1$s\' şuna: \n  \'%2$s\' değiştirdiniz.\nDeğişiklikleri nasıl uygulamak istersiniz?\nNot: \'Tüm kitaplar\' seçimi anında uygulanacaktır.</string>
-
-    <string name="cleanup_old_events">Eski olayları temizle</string>
-    <string name="cleanup_old_tasks">Eski görevleri temizle</string>
-
-    <string name="click_on_thumb">Daha büyük görüntülemek için küçük resme dokunun</string>
 
     <string name="clone_style">Biçemi çoğalt</string>
 
@@ -214,8 +204,6 @@
     <string name="file_must_contain_any_column">Dosya, %s adlarından birini kullanan bir sütun içermeli</string>
     <string name="file_must_contain_column">Dosya adı %s adında bir sütun içermeli</string>
 
-    <string name="finding_editions">Sürümler bulunuyor…</string>
-
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="fragment_a_and_b">%1$s ve %2$s</string>
     <string name="fragment_and_others">ve diğerleri</string>
@@ -269,8 +257,6 @@
 
     <string name="if_day_is_specified_month_and_year_must_be">Eğer gün belirtmiş iseniz hem ay hem yıl bölümlerini de doldurmalısınız.</string>
     <string name="if_month_is_specified_year_must_be">Eğer bir ay belirtmiş iseniz yıl da belirtmelisiniz.</string>
-
-    <string name="image_not_found">Görsel bulunamadı</string>
 
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">İçe aktarma başarısız.</string>
@@ -338,7 +324,6 @@
     <string name="label_import_from_archive">Arşivden içe aktar</string>
     <!-- Admin option to import books -->
     <string name="label_import_from_csv">CSV dosyasından içe aktar</string>
-    <string name="label_in">İçinde</string>
     <string name="label_is_anthology">Bu kitap bir seçkide var mı?</string>
     <!-- End: Added/Updated in 5.0.3 -->
     <!-- Begin: Added/Updated in 5.0.4 -->
@@ -379,7 +364,6 @@
     <string name="label_series_num">#</string>
     <string name="label_set_authors">Yazar ekle…</string>
     <string name="label_signed">Bu kitap imzalı mı?</string>
-    <string name="label_size">Boyut</string>
     <string name="label_sort_title_first_letter">İlk harf başlık</string>
     <string name="label_sourcecode">Kaynak kodu</string>
     <!-- Heading in 'about' dialog -->
@@ -393,7 +377,6 @@
     <string name="label_update_month">Ayı güncelle</string>
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="label_update_year">Yılı güncelle</string>
-    <string name="label_updated">Güncellenmiş</string>
     <string name="label_user_interface">Kullanıcı arayüzü</string>
     <string name="label_version_number">Sürüm numarası</string>
     <string name="label_webpage">İnteret Sayfası</string>
@@ -598,10 +581,7 @@
 
     <string name="no_author">(yazar yok)</string>
     <string name="no_connection">Ağ bağlantısı yok.</string>
-    <string name="no_editions">Başka sürüm bulunamadı</string>
     <string name="no_genre">(tür yok)</string>
-    <string name="no_image_found">Resim bulunamadı</string>
-    <string name="no_isbn_no_editions">ISBN\'si olmayan bir kitabın diğer sürümlerine ulaşılamaz</string>
     <string name="no_publisher">(yayımcı yok)</string>
     <string name="no_series">(seri yok)</string>
     <string name="no_title">(ad yok)</string>
@@ -725,9 +705,7 @@
     <string name="searching_google_books">Google Kitaplar aranıyor</string>
     <string name="searching_library_thing">LibraryThing aranıyor</string>
 
-    <string name="select_an_action">Bir eylem seçin</string>
     <string name="select_based_on_read_status">\'Okunma\' durumuna göre seç</string>
-    <string name="select_cover">Kapak seç</string>
     <string name="select_style">Biçem seç</string>
 
     <string name="series_already_in_list">Seri zaten ekli</string>
@@ -737,7 +715,6 @@
 
     <string name="shelves">Raflar</string>
 
-    <string name="show_events_ellipsis">Olayları göster…</string>
     <string name="show_fewer_ellipsis">Daha az göster…</string>
     <string name="show_more_ellipsis">Daha fazla göster…</string>
 
@@ -759,8 +736,6 @@
     <string name="starting_up">Başlatılıyor…</string>
 
     <string name="status_adding_book_ellipsis">Kitap ekle…</string>
-
-    <string name="task_errors">Görev hataları</string>
 
     <string name="the_title_already_exists">Bu kitap adı zaten var</string>
 

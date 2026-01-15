@@ -31,13 +31,8 @@
 
     <string name="available">Διαθέσιμο</string>
 
-    <string name="background_tasks">Εργασίες Παρασκηνίου</string>
-
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Δημιουργείται Αντίγραφο Ασφαλείας…</string>
-
-    <string name="backup_request">Θέλετε να κρατήσετε αντίγραφο ασφαλείας της βάσης στην SDcard;</string>
-    <string name="backup_title">Δημιουργία αντιγράφου;</string>
 
     <string name="bad_scanner">Η εφαρμογή για σκανάρισμα barcode που έχετε δεν είναι συμβατή με το Book Catalogue. Προτείνουμε να εγκαταστήσετε την εφαρμογή Zxing barcode scanner, και αν είναι ήδη εγκατεστημένη, προτείνουμε να την απεγκαταστήσετε και να την ξαναεγκαταστήσετε.</string>
 
@@ -74,11 +69,6 @@
 
     <string name="changed_author_how_apply">Αλλάξατε τον συγγραφέα από:\n  \'%1$s\' σε \n  \'%2$s\'\nΠως επιθυμείτε να εφαρμοστεί αυτή η αλλαγή;\nΣημείωση: Η επιλογή \'%3$s\' θα εφαρμοστεί στιγμιαία.</string>
     <string name="changed_series_how_apply">Αλλάξατε την σειρά από:\n  \'%1$s\' σε \n  \'%2$s\'\nΠως επιθυμείτε να εφαρμοστεί αυτή η αλλαγή;\nΣημείωση: Η επιλογή \'Ολα τα βιβλία\' θα εφαρμοστεί στιγμιαία.</string>
-
-    <string name="cleanup_old_events">Εκκαθάριση παλιών events</string>
-    <string name="cleanup_old_tasks">Εκκαθάριση παλιών εργασιών</string>
-
-    <string name="click_on_thumb">Πατήστε σε μια μικρογραφία για να εμφανιστεί μεγαλύτερη εικόνα.</string>
 
     <string name="clone_style">Αντιγραφή στυλ</string>
 
@@ -186,8 +176,6 @@
     <string name="file_must_contain_any_column">Το αρχείο πρέπει να περιέχει στήλη με ένα από τα ακόλουθα όνοματα: %s</string>
     <string name="file_must_contain_column">Το αρχείο πρέπει να περιέχει στήλη με όνομα %s</string>
 
-    <string name="finding_editions">Γίνεται εντοπισμός Εκδόσεων…</string>
-
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="fragment_a_and_b">%1$s και %2$s</string>
     <string name="fragment_and_others">κτλ.</string>
@@ -245,8 +233,6 @@
 
     <string name="if_day_is_specified_month_and_year_must_be">Αν προσδιοριστεί ημέρα, τότε πρέπει να προσδιοριστεί επίσης μήνας και έτος.</string>
     <string name="if_month_is_specified_year_must_be">Αν προσδιοριστεί μήνας, τότε πρέπει να προσδιοριστεί και έτος.</string>
-
-    <string name="image_not_found">Εικόνα δεν βρέθηκε</string>
 
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Αποτυχία Εισαγωγής.</string>
@@ -314,7 +300,6 @@
     <string name="label_import_from_archive">Εισαγωγή από Αρχείο</string>
     <!-- Admin option to import books -->
     <string name="label_import_from_csv">Εισαγωγή από αρχείο CSV</string>
-    <string name="label_in">Μέσα</string>
     <string name="label_is_anthology">Είναι αυτό το βιβλίο ανθολογία;</string>
     <string name="label_isbn">ISBN</string>
     <!-- End: Added/Updated in 5.0.3 -->
@@ -358,7 +343,6 @@
     <string name="label_series_num">#</string>
     <string name="label_set_authors">Ορισμός συγγραφέων…</string>
     <string name="label_signed">Έιναι αυτό το βιβλίο υπογεγραμένο</string>
-    <string name="label_size">Μέγεθος</string>
     <string name="label_sort_title_first_letter">Πρώτο γράμμα τίτλου</string>
     <string name="label_sourcecode">Πηγαίος Κώδικας:</string>
     <!-- Heading in 'about' dialog -->
@@ -372,7 +356,6 @@
     <string name="label_update_month">Μήνας ενημέρωσης</string>
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="label_update_year">Έτος ενημέρωσης</string>
-    <string name="label_updated">Ενημερωμένο</string>
     <string name="label_user_interface">Περιβάλλον Χρήστη</string>
     <string name="label_version_number">Αριθμός έκδοσης:</string>
     <string name="label_webpage">Ιστοσελίδα:</string>
@@ -589,10 +572,7 @@
 
     <string name="no_author">(χωρίς συγγραφέα)</string>
     <string name="no_connection">Δεν υπάρχει διαθέσιμη σύνδεση internet.</string>
-    <string name="no_editions">Δεν υπάρχουν διαθέσιμες εκδόσεις</string>
     <string name="no_genre">(χωρίς είδος)</string>
-    <string name="no_image_found">Δε βρέθηκε εικόνα</string>
-    <string name="no_isbn_no_editions">Δεν μπορούν να ληφθούν εκδόσεις για βιβλίο χωρίς ISBN</string>
     <string name="no_publisher">(χωρίς εκδότη)</string>
     <string name="no_series">(χωρίς σειρά)</string>
     <string name="no_title">(χωρίς τίτλο)</string>
@@ -731,9 +711,7 @@
     <string name="searching_google_books">Αναζήτηση στο Google Books</string>
     <string name="searching_library_thing">Αναζήτηση στο LibraryThing</string>
 
-    <string name="select_an_action">Επιλέξτε μια ενέργεια</string>
     <string name="select_based_on_read_status">Επιλογή με βάση την κατάσταση του πεδίου \'Αναγνωσμένο\'</string>
-    <string name="select_cover">Επιλογή εξωφύλλου</string>
     <string name="select_style">Επιλογή Στυλ</string>
 
     <string name="series_already_in_list">Η σειρά βρίσκεται ήδη στη λίστα</string>
@@ -743,7 +721,6 @@
 
     <string name="shelves">Ράφια</string>
 
-    <string name="show_events_ellipsis">Εμφάνιση events…</string>
     <string name="show_fewer_ellipsis">Εμφάνιση λιγότερων…</string>
     <string name="show_more_ellipsis">Εμφάνιση περισσότερων…</string>
 
@@ -765,8 +742,6 @@
     <string name="starting_up">Εκκίνηση…</string>
 
     <string name="status_adding_book_ellipsis">Γίνεται πρόσθεση βιβλίου…</string>
-
-    <string name="task_errors">Σφάλματα εργασιών</string>
 
     <string name="the_title_already_exists">Αυτός ο τίτλος υπάρχει ήδη</string>
 

@@ -39,13 +39,8 @@
 
     <string name="available">Available</string>
 
-    <string name="background_tasks">Background Tasks</string>
-
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Backing up…</string>
-
-    <string name="backup_request">Would you like to backup your database?</string>
-    <string name="backup_title">Backup?</string>
 
     <string name="bad_scanner">It looks like your existing barcode scanner app is not compatible with Book Catalogue. We recommend installing the Zxing barcode scanner application, and if it is already installed, we recommend uninstalling it and reinstalling it.</string>
 
@@ -85,11 +80,6 @@
 
     <string name="changed_author_how_apply">You have changed the author from:\n  \'%1$s\' to \n  \'%2$s\'\nHow do you wish to apply this change?\nNote: The choice \'%3$s\' will be applied instantly.</string>
     <string name="changed_series_how_apply">You have changed the series from:\n  \'%1$s\' to \n  \'%2$s\'\nHow do you wish to apply this change?\nNote: The choice \'All Books\' will be applied instantly.</string>
-
-    <string name="cleanup_old_events">Cleanup Old Events</string>
-    <string name="cleanup_old_tasks">Cleanup Old Tasks</string>
-
-    <string name="click_on_thumb">Click on a thumbnail to display a larger image</string>
 
     <string name="clone_style">Clone style</string>
 
@@ -199,8 +189,6 @@
     <string name="file_must_contain_any_column">File must contain a column with one of the following names: %s</string>
     <string name="file_must_contain_column">File must contain column named %s</string>
 
-    <string name="finding_editions">Finding Editions…</string>
-
     <string name="fragment_a_and_b">%1$s and %2$s</string>
     <string name="fragment_and_others">et. al.</string>
     <!-- this is used in the 'archive_complete_details' string (elsewhere in this file)
@@ -269,8 +257,6 @@
     <string name="if_day_is_specified_month_and_year_must_be">If day is specified, then both month and year must also be specified.</string>
     <string name="if_month_is_specified_year_must_be">If month is specified, then year must also be specified.</string>
 
-    <string name="image_not_found">Image Not Found</string>
-
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Import failed.</string>
 
@@ -296,8 +282,6 @@
     <string name="label_anthology">Anthology</string>
     <string name="label_anthology_titles">Anthology Titles</string>
     <string name="label_author">Author</string>
-    <string name="label_background_events">Show Background Events</string>
-    <string name="label_background_tasks">Show Background Tasks</string>
     <!-- Admin option to import -->
     <string name="label_backup_to_archive">Backup to Archive</string>
     <!-- Introduction for 'advanced export' option -->
@@ -345,7 +329,6 @@
     <!-- Seems no longer used. Ignore. -->
     <!-- Hint displayed when an export or database backup is done -->
     <string name="label_import_old_files">Import old files</string>
-    <string name="label_in">In</string>
     <string name="label_insert_description">Add manually or by barcode</string>
     <string name="label_is_anthology">Is this book an Anthology?</string>
     <string name="label_isbn">ISBN</string>
@@ -393,7 +376,6 @@
     <string name="label_series_number">Series Number</string>
     <string name="label_set_authors">Set Authors…</string>
     <string name="label_signed">Has this book been signed</string>
-    <string name="label_size">Size</string>
     <string name="label_sort_title_first_letter">Title first letter</string>
     <string name="label_sourcecode">Source Code:</string>
     <!-- Heading in 'about' dialog -->
@@ -409,7 +391,6 @@
     <string name="label_update_month">Update Month</string>
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="label_update_year">Update Year</string>
-    <string name="label_updated">Updated</string>
     <string name="label_user_interface">User Interface</string>
     <string name="label_version_number">Version Number:</string>
     <string name="label_webpage">Webpage:</string>
@@ -675,10 +656,7 @@
 
     <string name="no_author">(no author)</string>
     <string name="no_connection">No Internet connection is available.</string>
-    <string name="no_editions">No editions available</string>
     <string name="no_genre">(no genre)</string>
-    <string name="no_image_found">No image found</string>
-    <string name="no_isbn_no_editions">Can not get editions for a book with no ISBN</string>
     <string name="no_publisher">(no publisher)</string>
     <string name="no_series">(no series)</string>
     <string name="no_title">(no title)</string>
@@ -853,9 +831,7 @@
     <string name="searching_google_books">Searching Google Books</string>
     <string name="searching_library_thing">Searching LibraryThing</string>
 
-    <string name="select_an_action">Select an action</string>
     <string name="select_based_on_read_status">Select based on \'Read\' status</string>
-    <string name="select_cover">Select Cover</string>
     <string name="select_style">Select Style</string>
 
     <string name="selected_dir_wrong_name">The selected directory is not called \'%1$s\' and does not seem to contain a directory of that name. Are you sure that this is the correct location?</string>
@@ -867,7 +843,6 @@
 
     <string name="shelves">Shelves</string>
 
-    <string name="show_events_ellipsis">Show events…</string>
     <string name="show_fewer_ellipsis">Show fewer…</string>
     <string name="show_more_ellipsis">Show more…</string>
 
@@ -892,8 +867,6 @@
 
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
     <string name="system_locale">System Locale</string>
-
-    <string name="task_errors">Task Errors</string>
 
     <string name="the_title_already_exists">The title already exists</string>
 

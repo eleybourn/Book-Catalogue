@@ -31,13 +31,8 @@
 
     <string name="available">Beschikbaar</string>
 
-    <string name="background_tasks">Achtergrondtaken</string>
-
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Aan \'t Back-uppen…</string>
-
-    <string name="backup_request">Wilt u  een back-up van uw database op uw SD kaart maken?</string>
-    <string name="backup_title">Back-up maken?</string>
 
     <string name="bad_scanner">Het lijkt er op dat de door u gebruikt streepjescode scanner app niet compatibel is met Book Catalogue. Wij kunnen de Zxing streepjescode scanner application aanbevelen. als deze al is geïnstalleerd raden we aan deze te deïnstalleren en daarna weer opnieuw te installeren.</string>
 
@@ -74,11 +69,6 @@
 
     <string name="changed_author_how_apply">U heeft de auteursnaam veranderd van:\n  \'%1$s\' naar \n  \'%2$s\'\nHoe wilt u deze verandering toepassen?\nNB: De keuze \'%3$s\' wordt onmiddelijk toegepast.</string>
     <string name="changed_series_how_apply">U heeft de serie veranderd van:\n  \'%1$s\' naar \n  \'%2$s\'\nHoe wilt u deze verandering doorvoeren?\nNB: De keuze \'Alle Boeken\' wordt onmiddelijk toegepast.</string>
-
-    <string name="cleanup_old_events">Opschonen oude gebeurtenissen</string>
-    <string name="cleanup_old_tasks">Opschonen oude taken</string>
-
-    <string name="click_on_thumb">Tik op een miniatuur voor vergroting</string>
 
     <string name="clone_style">Stijl klonen</string>
 
@@ -188,8 +178,6 @@
     <string name="file_must_contain_any_column">Bestandsnaam moet een kolom met de volgende namen bevatten: %s</string>
     <string name="file_must_contain_column">Bestandsnaam moet een kolomnaam %s bevatten</string>
 
-    <string name="finding_editions">Zoeken naar uitgaven…</string>
-
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="fragment_a_and_b">%1$s and %2$s</string>
     <string name="fragment_and_others">et. al.</string>
@@ -251,8 +239,6 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <string name="if_day_is_specified_month_and_year_must_be">Als de dag is gespecificeerd dan moet ook de maand en het jaar ingevuld worden.</string>
     <string name="if_month_is_specified_year_must_be">Als de maand is gespecificeerd moet ook het jaar worden ingevuld.</string>
-
-    <string name="image_not_found">Afbeelding niet gevonden</string>
 
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Import mislukt.</string>
@@ -320,7 +306,6 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="label_import_from_archive">Importeren vanuit archief</string>
     <!-- Admin option to import books -->
     <string name="label_import_from_csv">Importeer vanuit CSV-bestand</string>
-    <string name="label_in">In</string>
     <string name="label_is_anthology">Is dit boek een bloemlezing?</string>
     <string name="label_isbn">ISBN</string>
     <!-- End: Added/Updated in 5.0.3 -->
@@ -364,7 +349,6 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="label_series_num">#</string>
     <string name="label_set_authors">Invullen auteurs…</string>
     <string name="label_signed">Is dit boek gesigneerd?</string>
-    <string name="label_size">Grootte</string>
     <string name="label_sort_title_first_letter">Titel eerste letter</string>
     <string name="label_sourcecode">Broncode:</string>
     <!-- Heading in 'about' dialog -->
@@ -378,7 +362,6 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="label_update_month">Maand update</string>
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="label_update_year">Jaar update</string>
-    <string name="label_updated">Bijgewerkt</string>
     <string name="label_user_interface">Gebruikersinterface</string>
     <string name="label_version_number">Versienummer:</string>
     <string name="label_webpage">Webpagina:</string>
@@ -611,10 +594,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <string name="no_author">(geen auteur)</string>
     <string name="no_connection">Geen Internet verbinding beschikbaar.</string>
-    <string name="no_editions">Geen uitgavegegevens beschikbaar</string>
     <string name="no_genre">(geen genre)</string>
-    <string name="no_image_found">Geen afbeelding gevonden</string>
-    <string name="no_isbn_no_editions">Kan geen uitgavegegevens verkrijgen van een boek zonder ISBN</string>
     <string name="no_publisher">(geen uitgever)</string>
     <string name="no_series">(geen series)</string>
     <string name="no_title">(geen titel)</string>
@@ -751,9 +731,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="searching_google_books">Zoeken bij Google Books</string>
     <string name="searching_library_thing">Zoeken bij LibraryThing</string>
 
-    <string name="select_an_action">Selecteer een actie</string>
     <string name="select_based_on_read_status">Selecteer op \'Gelezen\' status</string>
-    <string name="select_cover">Selecteer omslagafbeelding</string>
     <string name="select_style">Selecteer stijl</string>
 
     <string name="series_already_in_list">Serie staat al in de lijst</string>
@@ -763,7 +741,6 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <string name="shelves">Planken</string>
 
-    <string name="show_events_ellipsis">Toon gebeurtenissen…</string>
     <string name="show_fewer_ellipsis">Toon minder…</string>
     <string name="show_more_ellipsis">Toon meer…</string>
 
@@ -787,8 +764,6 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="status_adding_book_ellipsis">Boeken aan \'t toevoegen…</string>
 
     <string name="system_locale">Systeem taal</string>
-
-    <string name="task_errors">Taakfouten</string>
 
     <string name="the_title_already_exists">De titel bestaat al</string>
 

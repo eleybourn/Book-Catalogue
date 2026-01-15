@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths xmlns:android="http://schemas.android.com/apk/res/android">
+<paths>
     <external-path name="external_files1" path="bookCatalogue"/>
     <external-path name="external_files2" path="/"/>
     <cache-path name="cache" path="/" />

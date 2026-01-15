@@ -32,13 +32,9 @@
 
     <string name="available">Verfügbar</string>
 
-    <string name="background_tasks">Aufgaben im Hintergrund</string>
-
     <string name="backing_up_ellipsis">Sichere…</string>
 
-    <string name="backup_request">Möchten Sie Ihre Datenbank sichern?</string>
     <!--<string name="backup_request">Möchten Sie ihre Datenbank auf SD-Karte sichern?</string>-->
-    <string name="backup_title">Sicherungskopie?</string>
 
     <string name="bad_scanner">Anscheinend ist Ihre derzeitige Scanner-App nicht mit Book Catalogue kompatible. Wir empfehlen, die App "Zxing Barcode Scanner" zu installieren. Falls sie bereits installiert ist, empfehlen wir eine Deinstalltion und erneute Installation.</string>
 
@@ -71,11 +67,6 @@
 
     <string name="changed_author_how_apply">Der Autor wurde geändert von\n  \'%1$s\' in \n  \'%2$s\'\nWie wollen Sie diese Änderung übernehmen?\nHinweis: Die Auswahl \'%3$s\' wird sofort übernommen.</string>
     <string name="changed_series_how_apply">Die Serie wurde geändert von\n  \'%1$s\' in \n  \'%2$s\'\nWie wollen Sie diese Änderung übernehmen?\nHinweis: Die Auswahl \'Alle Bücher\' wird sofort übernommen.</string>
-
-    <string name="cleanup_old_events">Alte Ereignisse bereinigen</string>
-    <string name="cleanup_old_tasks">Alte Aufgaben bereinigen</string>
-
-    <string name="click_on_thumb">Klicke auf ein Cover-Bild, um ein größeres Bild angezeigt zu bekommen</string>
 
     <string name="clone_style">Stil klonen</string>
 
@@ -184,8 +175,6 @@
     <string name="file_must_contain_any_column">Die Datei muss eine Spalte mit den folgenden Namen enthalten: %s</string>
     <string name="file_must_contain_column">Die Datei muss eine Spalte mit dem Namen %s enthalten</string>
 
-    <string name="finding_editions">Suche Ausgaben…</string>
-
     <!--  Hint displayed when aCatalogue Backup is done -->
     <string name="fragment_a_and_b">%1$s und %2$s</string>
     <string name="fragment_and_others">et. al.</string>
@@ -238,8 +227,6 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
 
     <string name="if_day_is_specified_month_and_year_must_be">Wenn der Tag angegeben wird, muss auch Monat und Jahr angegeben werden.</string>
     <string name="if_month_is_specified_year_must_be">Wenn das Monat angegeben wird, muss auch das Jahr angegeben werden.</string>
-
-    <string name="image_not_found">Bild nicht gefunden</string>
 
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Import gescheitert.</string>
@@ -302,7 +289,6 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <string name="label_import_books">Bücher importieren</string>
     <string name="label_import_from_archive">Import vom Archiv</string>
     <string name="label_import_from_csv">Import aus einer CSV-Datei</string>
-    <string name="label_in">in</string>
     <string name="label_is_anthology">Ist dieses Buch eine Anthologie?</string>
     <!-- End: Added/Updated in 5.0.3 -->
     <!-- Begin: Added/Updated in 5.0.4 -->
@@ -343,7 +329,6 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <string name="label_series_num">#</string>
     <string name="label_set_authors">Autor angeben…</string>
     <string name="label_signed">Wurde dieses Buch signiert</string>
-    <string name="label_size">Größe</string>
     <string name="label_sort_title_first_letter">Erster Buchstabe des Titels</string>
     <string name="label_sourcecode">Quellcode:</string>
     <!-- Heading in 'about' dialog -->
@@ -357,7 +342,6 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <string name="label_update_month">Anderungsmonat</string>
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="label_update_year">Änderungsjahr</string>
-    <string name="label_updated">Geändert</string>
     <string name="label_user_interface">Benutzeroberfläche</string>
     <string name="label_version_number">Versionsnummer:</string>
     <string name="label_webpage">Webseite:</string>
@@ -604,10 +588,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
 
     <string name="no_author">(kein Autor)</string>
     <string name="no_connection">Internet Verbindung nicht verfügbar.</string>
-    <string name="no_editions">Keine Ausgaben vorhanden</string>
     <string name="no_genre">(kein Genre)</string>
-    <string name="no_image_found">Kein Bild gefunden</string>
-    <string name="no_isbn_no_editions">Für ein Buch ohne ISBN können keine Ausgaben ermittelt werden</string>
     <string name="no_publisher">(kein Verlag)</string>
     <string name="no_series">(keine Serie)</string>
     <string name="no_title">(kein Titel)</string>
@@ -761,9 +742,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <string name="searching_google_books">Suche bei Google Books</string>
     <string name="searching_library_thing">Suche bei LibraryThing</string>
 
-    <string name="select_an_action">Eine Aktion wählen</string>
     <string name="select_based_on_read_status">Auswahl auf Basis des Status \'Gelesen\'</string>
-    <string name="select_cover">Cover auswählen</string>
     <string name="select_style">Stil wählen</string>
 
     <string name="series_already_in_list">Die Serie befindet sich bereits in der Liste</string>
@@ -773,7 +752,6 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
 
     <string name="shelves">Regale</string>
 
-    <string name="show_events_ellipsis">Ereignisse anzeigen…</string>
     <string name="show_fewer_ellipsis">Weniger anzeigen…</string>
     <string name="show_more_ellipsis">Mehr anzeigen…</string>
 
@@ -799,8 +777,6 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
 
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
     <string name="system_locale">System Locale</string>
-
-    <string name="task_errors">Aufgabenfehler</string>
 
     <string name="the_title_already_exists">Der Titel existiert bereits</string>
 

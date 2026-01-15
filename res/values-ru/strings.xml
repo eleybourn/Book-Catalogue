@@ -46,12 +46,7 @@
 
     <string name="available">Доступно</string>
 
-    <string name="background_tasks">Фоновые задачи</string>
-
     <string name="backing_up_ellipsis">Делаю бэкап…</string>
-
-    <string name="backup_request">Вы хотите создать резервную копию базы данных на SD-карте?</string>
-    <string name="backup_title">Резервная копия?</string>
 
     <string name="bad_scanner">Возможно, ваше приложение-сканер не совместимо с Book Catalogue. Мы рекомендуем установить Zxing сканер, или если он уже установлен, удалите его, затем снова установите.</string>
 
@@ -88,11 +83,6 @@
 
     <string name="changed_author_how_apply">Вы изменили имя автора с:\n  \'%1$s\' на \n  \'%2$s\'\nКак вы хотите применить это изменение?\nЗамечание: выбор \'%3$s\' будет применён немедленно.</string>
     <string name="changed_series_how_apply">Вы изменили название серии с:\n  \'%1$s\' на \n  \'%2$s\'\nКак вы хотите применить это изменение?\nЗамечание: выбор \'Все книги\' будет применён немедленно.</string>
-
-    <string name="cleanup_old_events">Очистить старые события</string>
-    <string name="cleanup_old_tasks">Очистить старые задачи</string>
-
-    <string name="click_on_thumb">Щёлкните по миниатюре для просмотра большого изображения</string>
 
     <string name="clone_style">Клонировать стиль</string>
 
@@ -185,8 +175,6 @@
     <string name="file_must_contain_any_column">Файл должен содержать столбец с одним из следующих имён: %s</string>
     <string name="file_must_contain_column">В файле должен быть столбец с названием %s</string>
 
-    <string name="finding_editions">Поиск изданий…</string>
-
     <string name="fragment_a_and_b">%1$s и %2$s</string>
     <string name="fragment_and_others">и др.</string>
 
@@ -234,8 +222,6 @@
 
     <string name="if_day_is_specified_month_and_year_must_be">Если указан день, также необходимо указать месяц и год.</string>
     <string name="if_month_is_specified_year_must_be">Если указан месяц, также необходимо указать год.</string>
-
-    <string name="image_not_found">Изображение не найдено</string>
 
     <string name="import_failed">Импорт не удался.</string>
 
@@ -286,7 +272,6 @@
     <string name="label_import_books">Импортировать книги</string>
     <string name="label_import_from_archive">Импорт из архива</string>
     <string name="label_import_from_csv">Импортировать CSV файл</string>
-    <string name="label_in">В</string>
     <string name="label_is_anthology">Эта книга - антология?</string>
     <string name="label_language">Язык</string>
     <string name="label_list_price">Список цен</string>
@@ -325,7 +310,6 @@
     <string name="label_series_num">№</string>
     <string name="label_set_authors">Установка авторов…</string>
     <string name="label_signed">Книга подписана?</string>
-    <string name="label_size">Размер</string>
     <string name="label_sort_title_first_letter">Первая буква названия</string>
     <string name="label_sourcecode">Исходный код:</string>
     <string name="label_special_thanks">Особые благодарности</string>
@@ -335,7 +319,6 @@
     <string name="label_update_fields">Автоматическое обновление полей</string>
     <string name="label_update_month">Месяц обновления</string>
     <string name="label_update_year">Год обновления</string>
-    <string name="label_updated">Обновлено</string>
     <string name="label_user_interface">Пользовательский интерфейс</string>
     <string name="label_version_number">Номер версии:</string>
     <string name="label_webpage">Веб-адрес проекта:</string>
@@ -535,10 +518,7 @@
 
     <string name="no_author">(без автора)</string>
     <string name="no_connection">Интернет соединение отсутствует.</string>
-    <string name="no_editions">Другие издания не доступны</string>
     <string name="no_genre">(без жанра)</string>
-    <string name="no_image_found">Рисунок не найден</string>
-    <string name="no_isbn_no_editions">Нельзя получить издание книги без ISBN</string>
     <string name="no_publisher">(без издателя)</string>
     <string name="no_series">(без серии)</string>
     <string name="no_title">(без заголовка)</string>
@@ -648,9 +628,7 @@
     <string name="searching_google_books">Поиск в Google Books</string>
     <string name="searching_library_thing">Поиск в LibraryThing</string>
 
-    <string name="select_an_action">Выберете дествие</string>
     <string name="select_based_on_read_status">Выбор основан на статусе \'Прочитана\'</string>
-    <string name="select_cover">Выбрать обложку</string>
     <string name="select_style">Выбрать стиль</string>
 
     <string name="series_already_in_list">Серия уже есть в списке</string>
@@ -660,7 +638,6 @@
 
     <string name="shelves">Полки</string>
 
-    <string name="show_events_ellipsis">Показать события…</string>
     <string name="show_fewer_ellipsis">Показать меньше…</string>
     <string name="show_more_ellipsis">Показать больше…</string>
 
@@ -684,8 +661,6 @@
     <string name="status_adding_book_ellipsis">Добавление книги…</string>
 
     <string name="system_locale">Локаль системы</string>
-
-    <string name="task_errors">Ошибки задач</string>
 
     <string name="the_title_already_exists">Название уже существует</string>
 

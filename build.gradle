@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 
 // For custom app signing config, set BookCatalogue.signing in local.properties to the
 // path f a gradle file with the Android signing config. eg.
@@ -21,6 +22,7 @@ buildscript {
     }
     dependencies {
         classpath libs.gradle
+        classpath libs.secrets.gradle.plugin
     }
 }
 
@@ -130,4 +132,10 @@ android {
         viewBinding = false
         buildConfig = true
     }
+}
+
+secrets {
+    // Change the properties file from the default "local.properties" in your root project
+    // to another properties file in your root project.
+    propertiesFileName 'secrets.properties'
 }

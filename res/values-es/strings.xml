@@ -31,13 +31,8 @@
 
     <string name="available">Disponible</string>
 
-    <string name="background_tasks">Tareas en segundo plano</string>
-
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Copiando…</string>
-
-    <string name="backup_request">¿Desea realizar una copia de la base de datos a la tarjeta SD?</string>
-    <string name="backup_title">¿Realizar copia?</string>
 
     <string name="bad_scanner">Su aplicación de escaneado de código de barras no es compatible con Book Catalogue. Recomendamos la instalción de Zxing barcode scanner, y si ya está instalada, pruebe a desinstalarla y volver a instalarla.</string>
 
@@ -74,11 +69,6 @@
 
     <string name="changed_author_how_apply">Ha cambiado el autor de :\n  \'%1$s\' a \n  \'%2$s\'\n¿Cómo quiere aplicar este cambio?\nNota: La opción \'%3$s\' se aplicará de manera inmediata.</string>
     <string name="changed_series_how_apply">Ha cambiado la serie de:\n  \'%1$s\' a \n  \'%2$s\'\n¿Cómo quiere aplicar este cambio?\nNota: La opción \'All Books\' se aplicará de manera inmediata.</string>
-
-    <string name="cleanup_old_events">Eliminar eventos antiguos</string>
-    <string name="cleanup_old_tasks">Eliminar tareas antiguas</string>
-
-    <string name="click_on_thumb">Pinche sobre una portada para ver una imagen de mayor tamaño</string>
 
     <string name="clone_style">Duplicar Estilo</string>
 
@@ -186,8 +176,6 @@
     <string name="file_must_contain_any_column">El fichero debe tener una columna con uno de los nombres siguientes: %s</string>
     <string name="file_must_contain_column">El fichero debe tener una columna con el nombre %s</string>
 
-    <string name="finding_editions">Buscando ediciones…</string>
-
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="fragment_a_and_b">%1$s y %2$s</string>
     <string name="fragment_and_others">et. al.</string>
@@ -245,8 +233,6 @@ y puede editar el libro utilizando el menú de opciones.
 
     <string name="if_day_is_specified_month_and_year_must_be">Si se especifica un día, deben especificarse también el mes y el año.</string>
     <string name="if_month_is_specified_year_must_be">Si se especifica el mes, debe especificarse también el año.</string>
-
-    <string name="image_not_found">Imagen no encontrada</string>
 
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">La importación falló.</string>
@@ -314,7 +300,6 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="label_import_from_archive">Importar de fichero</string>
     <!-- Admin option to import books -->
     <string name="label_import_from_csv">Importar de fichero CSV</string>
-    <string name="label_in">en</string>
     <string name="label_is_anthology">¿Se trata de una antología?</string>
     <!-- End: Added/Updated in 5.0.3 -->
     <!-- Begin: Added/Updated in 5.0.4 -->
@@ -357,7 +342,6 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="label_series_num">#</string>
     <string name="label_set_authors">Definir autores…</string>
     <string name="label_signed">¿Está firmado este libro?</string>
-    <string name="label_size">Tamaño</string>
     <string name="label_sort_title_first_letter">Primera letra del título</string>
     <string name="label_sourcecode">Código fuente</string>
     <!-- Heading in 'about' dialog -->
@@ -371,7 +355,6 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="label_update_month">Mes de actualización</string>
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="label_update_year">Año de actualización</string>
-    <string name="label_updated">Actualizado</string>
     <string name="label_user_interface">Interfaz de usuario</string>
     <string name="label_version_number">Versión</string>
     <string name="label_webpage">Página web</string>
@@ -589,10 +572,7 @@ y puede editar el libro utilizando el menú de opciones.
 
     <string name="no_author">(sin autor)</string>
     <string name="no_connection">No hay conexión a internet.</string>
-    <string name="no_editions">No hay más ediciones</string>
     <string name="no_genre">(sin género)</string>
-    <string name="no_image_found">No se ha encontrado imagen</string>
-    <string name="no_isbn_no_editions">No se pueden obtener ediciones para un libro sin ISBN</string>
     <string name="no_publisher">(sin Editorial)</string>
     <string name="no_series">(sin serie)</string>
     <string name="no_title">(sin título)</string>
@@ -716,9 +696,7 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="searching_google_books">Buscando en Google Books</string>
     <string name="searching_library_thing">Buscando en LibraryThing</string>
 
-    <string name="select_an_action">Seleccione una opción</string>
     <string name="select_based_on_read_status">Seleccionar en función del estado \'Leído\'</string>
-    <string name="select_cover">Seleccionar portada</string>
     <string name="select_style">Seleccionar Estilo</string>
 
     <string name="series_already_in_list">Esa serie ya está en la lista</string>
@@ -728,7 +706,6 @@ y puede editar el libro utilizando el menú de opciones.
 
     <string name="shelves">Biblioteca</string>
 
-    <string name="show_events_ellipsis">Mostrar eventos…</string>
     <string name="show_fewer_ellipsis">Mostrar menos…</string>
     <string name="show_more_ellipsis">Mostrar más…</string>
 
@@ -750,8 +727,6 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="starting_up">Arrancando…</string>
 
     <string name="status_adding_book_ellipsis">Añadiendo libro…</string>
-
-    <string name="task_errors">Errores en tareas</string>
 
     <string name="the_title_already_exists">El título ya existe</string>
 

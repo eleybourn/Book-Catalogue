@@ -56,13 +56,8 @@
 
     <string name="available">Disponibile</string>
 
-    <string name="background_tasks">Operazioni in background</string>
-
     <!-- Showed in progress dialog when an import starts -->
     <string name="backing_up_ellipsis">Creazione backup in corso…</string>
-
-    <string name="backup_request">Vuoi effettuare il backup del database nella scheda SD?</string>
-    <string name="backup_title">Backup?</string>
 
     <string name="bad_scanner">L\'applicazione prescelta per la scansione dei codici a barre sembra incompatibile con Book Catalogue. Ti raccomandiamo di utilizzare l\'applicazione Zxing, e, se è già installata, ti raccomandiamo di disinstallarla e installarla di nuovo.</string>
 
@@ -99,11 +94,6 @@
 
     <string name="changed_author_how_apply">Hai modificato l\'autore da:\n  \'%1$s\' a \n  \'%2$s\'\nCome desideri applicare questa modifica?\nNota: La scelta \'%3$s\' sarà applicata immediatamente.</string>
     <string name="changed_series_how_apply">Hai modificato le serie da:\n  \'%1$s\' a \n  \'%2$s\'\nCome desideri applicare questa modifica?\nNota: La scelta \'Tutti i libri\' sarà applicata immediatamente.</string>
-
-    <string name="cleanup_old_events">Cancella eventi trascorsi</string>
-    <string name="cleanup_old_tasks">Cancella operazioni precedenti</string>
-
-    <string name="click_on_thumb">Clicca sulla miniatura per visualizzare l\'immagine ingrandita</string>
 
     <string name="clone_style">Duplica stile</string>
 
@@ -213,8 +203,6 @@
     <string name="file_must_contain_any_column">Il file deve contenere una colonna con uno dei seguenti nomi: %s</string>
     <string name="file_must_contain_column">Il file deve contenere una colonna con nome %s</string>
 
-    <string name="finding_editions">Ricerca edizioni…</string>
-
     <!-- Hint displayed when aCatalogue Backup is done -->
     <string name="fragment_a_and_b">%1$s e %2$s</string>
     <string name="fragment_and_others">e altri</string>
@@ -270,8 +258,6 @@
 
     <string name="if_day_is_specified_month_and_year_must_be">Se si indica il giorno, occorre indicare anche mese ed anno.</string>
     <string name="if_month_is_specified_year_must_be">Se si indica il mese, occorre indicare anche l\'anno.</string>
-
-    <string name="image_not_found">Immagine non trovata</string>
 
     <!-- Displayed when an archive operation fails -->
     <string name="import_failed">Importazione fallita.</string>
@@ -339,7 +325,6 @@
     <string name="label_import_from_archive">Importa da Backup</string>
     <!-- Admin option to import books -->
     <string name="label_import_from_csv">Importa da File CSV</string>
-    <string name="label_in">In</string>
     <string name="label_is_anthology">Questo libro è una antologia?</string>
     <!-- End: Added/Updated in 5.0.3 -->
     <!-- Begin: Added/Updated in 5.0.4 -->
@@ -382,7 +367,6 @@
     <string name="label_series_num">#</string>
     <string name="label_set_authors">Imposta autori…</string>
     <string name="label_signed">Questo libro è firmato?</string>
-    <string name="label_size">Dimensioni</string>
     <string name="label_sort_title_first_letter">Titolo (prima lettera)</string>
     <string name="label_sourcecode">Codice sorgente:</string>
     <string name="label_thumbnail">Miniatura copertina</string>
@@ -394,7 +378,6 @@
     <string name="label_update_month">Mese</string>
     <!-- Name of the new style grouping (needs to be short). -->
     <string name="label_update_year">Anno</string>
-    <string name="label_updated">Aggiornato</string>
     <string name="label_user_interface">Interfaccia Utente</string>
     <string name="label_version_number">Numero versione:</string>
     <string name="label_webpage">Pagina web:</string>
@@ -613,10 +596,7 @@
 
     <string name="no_author">(autore non indicato)</string>
     <string name="no_connection">Nessuna connessione disponibile.</string>
-    <string name="no_editions">Nessuna edizione disponibile</string>
     <string name="no_genre">(genere non indicato)</string>
-    <string name="no_image_found">Nessuna immagine trovata</string>
-    <string name="no_isbn_no_editions">Impossibile ottenere le edizioni di un libro senza codice ISBN</string>
     <string name="no_publisher">(editore non indicato)</string>
     <string name="no_series">(collana non indicata)</string>
     <string name="no_title">(titolo non indicato)</string>
@@ -749,9 +729,7 @@
     <string name="searching_google_books">Ricerca in Google Books</string>
     <string name="searching_library_thing">Ricerca in LibraryThing</string>
 
-    <string name="select_an_action">Seleziona un\'azione</string>
     <string name="select_based_on_read_status">Seleziona in base allo stato \'Letto\'</string>
-    <string name="select_cover">Seleziona copertina</string>
     <string name="select_style">Seleziona Stile</string>
 
     <string name="series_already_in_list">La serie è già presente in elenco</string>
@@ -761,7 +739,6 @@
 
     <string name="shelves">Scaffali</string>
 
-    <string name="show_events_ellipsis">Mostra eventi…</string>
     <string name="show_fewer_ellipsis">Mostra meno…</string>
     <string name="show_more_ellipsis">Mostra di più…</string>
 
@@ -787,8 +764,6 @@
     <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
     <string name="system_locale">Impostazioni locali di sistema</string>
-
-    <string name="task_errors">Task Errors</string>
 
     <string name="the_title_already_exists">Titolo già presente in elenco</string>
 

@@ -56,7 +56,7 @@ abstract public class ManagedTask extends Thread {
 	//
 	abstract protected void onThreadFinish();
 	// Called to do the main thread work. Can use doProgress() and doToast() to display messages.
-	abstract protected void onRun() throws InterruptedException, ClosedByInterruptException;
+	abstract protected void onRun() throws InterruptedException;
 
 	/**
 	 * Utility routine to ask the Taskmanager to get a String from a resource ID.
@@ -112,7 +112,7 @@ abstract public class ManagedTask extends Thread {
 
 		try {
 			onRun();			
-		} catch (InterruptedException | ClosedByInterruptException e) {
+		} catch (InterruptedException e) {
 			mCancelFlg = true;
 		} catch (Exception e) {
 			Logger.logError(e);
@@ -197,7 +197,7 @@ abstract public class ManagedTask extends Thread {
 	protected static class TaskSwitch extends MessageSwitch<TaskListener, TaskController> {}
 
     private static final TaskSwitch mMessageSwitch = new TaskSwitch();
-	protected static final TaskSwitch getMessageSwitch() { return mMessageSwitch; }
+	protected static TaskSwitch getMessageSwitch() { return mMessageSwitch; }
 
 	private final long mMessageSenderId = mMessageSwitch.createSender(mController);
 	public long getSenderId() { return mMessageSenderId; }

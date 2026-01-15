@@ -69,7 +69,7 @@ public abstract class ReaderEntityAbstract implements ReaderEntity {
 				out.write(buffer, 0, cnt);
 			}
 		} finally {
-			if (out != null && out.getChannel().isOpen())
+			if (out.getChannel().isOpen())
 				out.close();
 			try {
 				outFile.setLastModified(this.getDateModified().getTime());

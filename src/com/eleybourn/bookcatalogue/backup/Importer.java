@@ -59,5 +59,5 @@ public interface Importer {
 	 * 
 	 * @return		true on success
 	 */
-    boolean importBooks(InputStream importStream, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener, int importFlags) throws IOException;
+    boolean importBooks(InputStream importStream, Importer.CoverFinder coverFinder, Importer.OnImporterListener listener, int importFlags);
 }

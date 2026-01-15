@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -458,7 +459,7 @@ public class LibraryThingManager {
 	 * @author Philip Warner
 	 */
 	private class SearchLibraryThingEntryHandler extends DefaultHandler  {
-		private Bundle mBookData = null;
+		private Bundle mBookData;
 		private final StringBuilder mBuilder = new StringBuilder();
 		
 		private FieldTypes mFieldType = FieldTypes.OTHER;
@@ -479,7 +480,7 @@ public class LibraryThingManager {
 		 * @param key	Key for data to add
 		 */
 		private void addIfNotPresent(String key) {
-			if (!mBookData.containsKey(key) || mBookData.getString(key).isEmpty()) {
+			if (!mBookData.containsKey(key) || Objects.requireNonNull(mBookData.getString(key)).isEmpty()) {
 				mBookData.putString(key, mBuilder.toString());
 			}		
 		}
@@ -501,16 +502,10 @@ public class LibraryThingManager {
 			// reset the string. See note in endElement() for a discussion.
 			mBuilder.setLength(0);
 
-			if (localName.equalsIgnoreCase(RESPONSE)){
-				// Not really much to do; we *could* look for the <err> element, then report it.
-				//String stat = attributes.getValue("", "stat");
-			} else if (localName.equalsIgnoreCase(ITEM)){
+			if (localName.equalsIgnoreCase(ITEM)){
 				// We don't use it yet, but this contains the Work ID. LibraryThing supports
 				// retrieval of other editions etc via the Work ID.
 				String type = attributes.getValue("","type");
-				if (type != null && type.equalsIgnoreCase("work")) {
-					//mWorkId = attributes.getValue("", "id");
-				}
 			} else if (localName.equalsIgnoreCase(FIELD)){
 				// FIELDs are the main things we want. Once we are in a fieldm we wait for a FACT; these
 				// are read in the endElement() method.
@@ -599,9 +594,9 @@ public class LibraryThingManager {
 		return url;
 	}
 	/**
-	 * Get the cover image using the ISBN
-	 */
-	public String getCoverImage(String isbn, Bundle bookData, ImageSizes size) {
+     * Get the cover image using the ISBN
+     */
+	public void getCoverImage(String isbn, Bundle bookData, ImageSizes size) {
 		String url = getCoverImageUrl(isbn, size);
 		//Log.e("BC", url + " " + isbn + " " + size.toString());
 		
@@ -612,8 +607,7 @@ public class LibraryThingManager {
 		String filename = Utils.saveThumbnailFromUrl(url, "_LT_" + size + "_" + isbn);
 		if (!filename.isEmpty() && bookData != null)
 			Utils.appendOrAdd(bookData, "__thumbnail", filename);
-		return filename;
-	}
+    }
 	
 	/**
 	 * Search for edition data.
@@ -655,7 +649,7 @@ public class LibraryThingManager {
 	 */
 	static private class SearchLibraryThingEditionHandler extends DefaultHandler  {
 		private final StringBuilder mBuilder = new StringBuilder();
-		private ArrayList<String> mEditions = new ArrayList<>();
+		private ArrayList<String> mEditions;
 
 		SearchLibraryThingEditionHandler(ArrayList<String> editions) {
 			mEditions = editions;

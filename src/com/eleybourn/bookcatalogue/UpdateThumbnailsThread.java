@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -64,14 +65,12 @@ public class UpdateThumbnailsThread extends ManagedTask {
 	private FieldUsages mCurrFieldUsages;
 
 	// Active search manager
-	private SearchManager mSearchManager = null;
+	private SearchManager mSearchManager;
 
 	// DB connection
 	protected CatalogueDBAdapter mDbHelper;
 
-	private final SearchManager.SearchListener mSearchListener = this::handleSearchFinished;
-	
-	/**
+    /**
 	 * Constructor.
 	 * 
 	 * @param manager			Object to manage background tasks
@@ -84,7 +83,8 @@ public class UpdateThumbnailsThread extends ManagedTask {
 		mDbHelper.open();
 		
 		mRequestedFields = requestedFields;
-		mSearchManager = new SearchManager(mManager, mSearchListener);
+        SearchManager.SearchListener mSearchListener = this::handleSearchFinished;
+        mSearchManager = new SearchManager(mManager, mSearchListener);
 		mManager.doProgress(BookCatalogueApp.getResourceString(R.string.starting_search));
 		getMessageSwitch().addListener(getSenderId(), listener, false);
 	}
@@ -162,7 +162,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
                                     break;
                                 default:
                                     // If the original was blank, add to list
-                                    if (!mOrigData.containsKey(usage.fieldName) || mOrigData.getString(usage.fieldName) == null || mOrigData.getString(usage.fieldName).isEmpty())
+                                    if (!mOrigData.containsKey(usage.fieldName) || mOrigData.getString(usage.fieldName) == null || Objects.requireNonNull(mOrigData.getString(usage.fieldName)).isEmpty())
                                         mCurrFieldUsages.put(usage);
                                     break;
                             }
@@ -187,11 +187,12 @@ public class UpdateThumbnailsThread extends ManagedTask {
 				// Use this to flag if we actually need a search.
 				boolean wantSearch = false;
 				// Update the progress appropriately
-				if (mCurrFieldUsages.isEmpty() || isbn.isEmpty() && (author.isEmpty() || title.isEmpty())) {
+				if (mCurrFieldUsages.isEmpty() || isbn.isEmpty() && (Objects.requireNonNull(author).isEmpty() || Objects.requireNonNull(title).isEmpty())) {
 					mManager.doProgress(String.format(getString(R.string.skip_title), title));
 				} else {
 					wantSearch = true;
-					if (!title.isEmpty())
+                    assert title != null;
+                    if (!title.isEmpty())
 						mManager.doProgress(title);
 					else
 						mManager.doProgress(isbn);
@@ -216,7 +217,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 			}
 		} finally {
 			// Clean up the cursor
-			if (books != null && !books.isClosed())
+			if (!books.isClosed())
 				books.close();
 			// Empty the progress.
 			mManager.doProgress(null);
@@ -278,7 +279,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 		// First, filter the data to remove keys we don't care about
 		ArrayList<String> toRemove = new ArrayList<>();
 		for(String key : newData.keySet()) {
-			if (!requestedFields.containsKey(key) || !requestedFields.get(key).selected)
+			if (!requestedFields.containsKey(key) || !Objects.requireNonNull(requestedFields.get(key)).selected)
 				toRemove.add(key);
 		}
 		for(String key : toRemove) {
@@ -325,7 +326,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 							}
 						} else {
 							// If the original was non-blank, erase from list
-							if (origData.containsKey(usage.fieldName) && origData.getString(usage.fieldName) != null && !origData.getString(usage.fieldName).isEmpty())
+							if (origData.containsKey(usage.fieldName) && origData.getString(usage.fieldName) != null && !Objects.requireNonNull(origData.getString(usage.fieldName)).isEmpty())
 								newData.remove(usage.fieldName);
 						}
 						break;

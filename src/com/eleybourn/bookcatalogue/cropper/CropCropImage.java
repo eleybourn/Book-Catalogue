@@ -41,6 +41,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.StatFs;
 import androidx.core.content.FileProvider;
 
@@ -66,9 +67,9 @@ public class CropCropImage extends CropMonitoredActivity {
 	private Uri mSaveUri = null;
 	private int mAspectX, mAspectY;
 	private boolean mCircleCrop = false;
-	private final Handler mHandler = new Handler();
+	private final Handler mHandler = new Handler(Looper.getMainLooper());
 
-	// These options specifiy the output image size and whether we should
+	// These options specify the output image size and whether we should
 	// scale the output to fit it (or just crop it).
 	private int mOutputX, mOutputY;
 	private boolean mScale;
@@ -76,9 +77,7 @@ public class CropCropImage extends CropMonitoredActivity {
 	// Flag indicating if default crop rect is whole image
 	private boolean mCropWholeImage = false;
 
-	private final boolean mDoFaceDetection = false;
-
-	boolean mWaitingToPick; // Whether we are wait the user to pick a face.
+    boolean mWaitingToPick; // Whether we are wait the user to pick a face.
 	boolean mSaving; // Whether the "save" button is already clicked.
 
 	private CropImageView mImageView;
@@ -90,9 +89,7 @@ public class CropCropImage extends CropMonitoredActivity {
 
 	private CropIImage mImage;
 
-	private String mImagePath;
-
-	@Override
+    @Override
 	protected RequiredPermission[] getRequiredPermissions() {
 		return new RequiredPermission[0];
 	}
@@ -121,7 +118,7 @@ public class CropCropImage extends CropMonitoredActivity {
 				mAspectY = 1;
 			}
 
-			mImagePath = extras.getString("image-path");
+            String mImagePath = extras.getString("image-path");
 
 			// Use the "output" parameter if present, otherwise overwrite
 			// existing file
@@ -169,7 +166,7 @@ public class CropCropImage extends CropMonitoredActivity {
 
 	private Bitmap getBitmap(String path) {
 		Uri uri = getImageUri(path);
-		InputStream in = null;
+		InputStream in;
 		try {
 			in = mContentResolver.openInputStream(uri);
 			return BitmapFactory.decodeStream(in);
@@ -335,39 +332,6 @@ latch.countDown();
 			Bundle extras = new Bundle();
 			setResult(RESULT_OK,
 					new Intent(mSaveUri.toString()).putExtras(extras));
-		} else {
-			/*
-			 * Bundle extras = new Bundle(); extras.putString("rect",
-			 * mCrop.getCropRect().toString());
-			 * 
-			 * File oldPath = new File(mImage.getDataPath()); File directory =
-			 * new File(oldPath.getParent());
-			 * 
-			 * int x = 0; String fileName = oldPath.getName(); fileName =
-			 * fileName.substring(0, fileName.lastIndexOf("."));
-			 * 
-			 * // Try file-1.jpg, file-2.jpg, ... until we find a filename which
-			 * // does not exist yet. while (true) { x += 1; String candidate =
-			 * directory.toString() + "/" + fileName + "-" + x + ".jpg"; boolean
-			 * exists = (new File(candidate)).exists(); if (!exists) { break; }
-			 * }
-			 * 
-			 * try { Uri newUri = ImageManager.addImage( mContentResolver,
-			 * mImage.getTitle(), mImage.getDateTaken(), null, // TODO this null
-			 * is going to cause us to lose // the location (gps). 0, // TODO
-			 * this is going to cause the orientation // to reset.
-			 * directory.toString(), fileName + "-" + x + ".jpg");
-			 * 
-			 * Cancelable<Void> cancelable = ImageManager.storeImage( newUri,
-			 * mContentResolver, 0, // TODO fix this orientation croppedImage,
-			 * null);
-			 * 
-			 * cancelable.get(); setResult(RESULT_OK, new Intent()
-			 * .setAction(newUri.toString()) .putExtras(extras)); } catch
-			 * (Exception ex) { // basically ignore this or put up // some ui
-			 * saying we failed Log.e(TAG, "store image fail, continue anyway",
-			 * ex); }
-			 */
 		}
 		croppedImage.recycle();
 		finish();
@@ -500,7 +464,8 @@ latch.countDown();
 			Bitmap faceBitmap = prepareBitmap();
 
 			mScale = 1.0F / mScale;
-			if (faceBitmap != null && mDoFaceDetection) {
+            boolean mDoFaceDetection = false;
+            if (faceBitmap != null && mDoFaceDetection) {
 				FaceDetector detector = new FaceDetector(faceBitmap.getWidth(),
 						faceBitmap.getHeight(), mFaces.length);
 				mNumFaces = detector.findFaces(faceBitmap, mFaces);
@@ -546,7 +511,7 @@ latch.countDown();
 
 		if (remaining == NO_STORAGE_ERROR) {
 			String state = Environment.getExternalStorageState();
-			if (state == Environment.MEDIA_CHECKING) {
+			if (state.equals(Environment.MEDIA_CHECKING)) {
 				noStorageText = "Preparing card";
 			} else {
 				noStorageText = "No storage card";

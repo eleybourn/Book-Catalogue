@@ -42,7 +42,7 @@ public class TarBackupReader extends BackupReaderAbstract {
 	/** The data stream for the archive */
 	private final TarArchiveInputStream mInput;
 	/** Used to allow 'peeking' at the input stream */
-	private ReaderEntity mPushedEntity = null;
+	private ReaderEntity mPushedEntity;
 	/** The INFO data read from the start of the archive */
 	private final BackupInfo mInfo;
 

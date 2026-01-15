@@ -102,22 +102,20 @@ public class StringProperty extends ValuePropertyWithGlobalDefault<String> imple
 		return BookCatalogueApp.getAppPreferences().getString(getPreferenceKey(), getDefaultValue());
 	}
 	/**
-	 * Set underlying preferences value
-	 */
+     * Set underlying preferences value
+     */
 	@Override
-	protected StringProperty setGlobalDefault(String value) {
-		BookCatalogueApp.getAppPreferences().setString(getPreferenceKey(), value);	
-		return this;
-	}
+	protected void setGlobalDefault(String value) {
+		BookCatalogueApp.getAppPreferences().setString(getPreferenceKey(), value);
+    }
 
 	@Override
-	public StringProperty set(Property p) {
+	public void set(Property p) {
 		if (! (p instanceof StringValue) )
 			throw new RuntimeException("Can not find a compatible interface for string parameter");
 		StringValue bv = (StringValue) p;
 		set(bv.get());
-		return this;
-	}
+    }
 
 	/**
 	 * Optional validator.

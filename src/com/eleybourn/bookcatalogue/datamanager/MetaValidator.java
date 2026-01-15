@@ -28,7 +28,7 @@ import java.util.ArrayList;
  */
 abstract public class MetaValidator extends ArrayList<DataValidator> implements DataValidator {
 	// Java likes this
-	public static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor taking one 'sub' Validator.

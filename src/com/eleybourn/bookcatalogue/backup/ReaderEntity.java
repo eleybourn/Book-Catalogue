@@ -44,7 +44,7 @@ public interface ReaderEntity {
 	/** Get the type of this entity */
 	BackupEntityType getType();
 	/** get the stream to read the entity */
-	InputStream getStream() throws IOException;
+	InputStream getStream();
 	/** Save the data to a directory, using the original file name */
 	void saveToDirectory(File dir) throws IOException;
 	/** Save the data to a file, using the passed file name & path */

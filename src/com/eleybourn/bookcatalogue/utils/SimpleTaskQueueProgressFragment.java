@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -56,7 +57,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
     /**
      * Handler so we can detect UI thread
      */
-    private final Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
     /**
      * List of messages to be sent to the underlying activity, but not yet sent
      */

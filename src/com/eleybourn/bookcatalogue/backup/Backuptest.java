@@ -59,8 +59,7 @@ public class Backuptest {
 		wrt.backup(new BackupWriterListener() {
 			private long mMax;
 			private String mMessage = "";
-			private final boolean mIsCancelled = false;
-			private int mPosition = 0;
+            private int mPosition = 0;
 			private int mTotalBooks;
 
 			@Override
@@ -78,7 +77,8 @@ public class Backuptest {
 
 			@Override
 			public boolean isCancelled() {
-				return mIsCancelled;
+                boolean mIsCancelled = false;
+                return mIsCancelled;
 			}
 
 			@Override
@@ -105,8 +105,7 @@ public class Backuptest {
 		rdr.restore(new BackupReaderListener() {
 			private long mMax;
 			private String mMessage = "";
-			private final boolean mIsCancelled = false;
-			private int mPosition = 0;
+            private int mPosition = 0;
 
 			@Override
 			public void setMax(int max) {
@@ -123,7 +122,8 @@ public class Backuptest {
 
 			@Override
 			public boolean isCancelled() {
-				return mIsCancelled;
+                boolean mIsCancelled = false;
+                return mIsCancelled;
 			}}, Importer.IMPORT_ALL);
 
 		System.out.println("Finished " + file.getAbsolutePath() + ", size = " + file.length());

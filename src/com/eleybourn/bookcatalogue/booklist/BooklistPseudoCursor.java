@@ -197,7 +197,8 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 
 			// Set the active cursor, and set its position correctly
 			mActiveCursor = mCursors.get(cursorId);
-			mActiveCursor.moveToPosition(newPosition - cursorStartPos);
+            assert mActiveCursor != null;
+            mActiveCursor.moveToPosition(newPosition - cursorStartPos);
 		}
 		return true;			
 	}
@@ -224,7 +225,8 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 		for(Integer i: toPurge) {
 			System.out.println("Removing cursor at " + i);
 			BooklistCursor c = mCursors.remove(i);
-			c.close();
+            assert c != null;
+            c.close();
 		}
 	}
 

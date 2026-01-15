@@ -52,7 +52,7 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
 	private CropCancelable<?> mCurrentTask;
 	private Thread mThread;
 
-	protected abstract T execute() throws Exception;
+	protected abstract T execute();
 
 	protected synchronized void interruptNow() {
 		if (isInStates(STATE_CANCELING | STATE_EXECUTING)) {
@@ -100,7 +100,7 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
 		}
 		try {
 			mResult = execute();
-		} catch (CancellationException | InterruptedException e) {
+		} catch (CancellationException e) {
 			mState = STATE_CANCELED;
 		} catch (Throwable error) {
 			synchronized (this) {
@@ -124,26 +124,21 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
 	}
 
 	/**
-	 * Requests the task to be canceled.
-	 * 
-	 * @return true if the task is running and has not been canceled; false
-	 *         otherwise
-	 */
+     * Requests the task to be canceled.
+     */
 
-	public synchronized boolean requestCancel() {
+	public synchronized void requestCancel() {
 		if (mState == STATE_INITIAL) {
 			mState = STATE_CANCELED;
 			notifyAll();
-			return false;
+			return;
 		}
 		if (mState == STATE_EXECUTING) {
 			if (mCurrentTask != null)
 				mCurrentTask.requestCancel();
 			mState = STATE_CANCELING;
-			return true;
-		}
-		return false;
-	}
+        }
+    }
 
 	/**
 	 * Whether the task's has been requested for cancel.

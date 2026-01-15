@@ -269,10 +269,9 @@ public class Fields extends ArrayList<Fields.Field> {
      * @param sourceColumn    Source DB column (can be blank)
      * @param visibilityGroup Group name to determine visibility.
      * @param fieldValidator  Field Validator (can be null)
-     * @return                    The resulting Field.
      */
-    public Field add(int fieldId, String sourceColumn, String visibilityGroup, FieldValidator fieldValidator) {
-        return add(fieldId, sourceColumn, visibilityGroup, fieldValidator, null);
+    public void add(int fieldId, String sourceColumn, String visibilityGroup, FieldValidator fieldValidator) {
+        add(fieldId, sourceColumn, visibilityGroup, fieldValidator, null);
     }
 
     /**

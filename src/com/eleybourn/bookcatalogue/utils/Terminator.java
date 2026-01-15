@@ -14,6 +14,13 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
  */
 public class Terminator {
 
+    /**
+     * Dummy method to make sure static initialization is done. Need to be
+     * called from main thread (usually at app startup).
+     */
+    public static void init() {
+    }
+
 	/** Task queue to get book lists in background */
 	private static final SimpleTaskQueue mTaskQueue = new SimpleTaskQueue("Terminator", 1);
 
@@ -81,7 +88,7 @@ public class Terminator {
 	private static class TerminatorTask implements SimpleTask {
 
 		@Override
-		public void run(SimpleTaskContext taskContext) throws Exception {
+		public void run(SimpleTaskContext taskContext) {
 			System.out.println("Terminator starting");
 			do {
 				Event e;

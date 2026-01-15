@@ -52,18 +52,16 @@ public class IntegerListProperty extends ListProperty<Integer> implements Intege
 		return BookCatalogueApp.getAppPreferences().getInt(getPreferenceKey(), getDefaultValue());
 	}
 	@Override
-	protected IntegerListProperty setGlobalDefault(Integer value) {
-		BookCatalogueApp.getAppPreferences().setInt(getPreferenceKey(), value);	
-		return this;
-	}
+	protected void setGlobalDefault(Integer value) {
+		BookCatalogueApp.getAppPreferences().setInt(getPreferenceKey(), value);
+    }
 
 	@Override
-	public IntegerListProperty set(Property p) {
+	public void set(Property p) {
 		if (! (p instanceof IntegerValue) )
 			throw new RuntimeException("Can not find a compatible interface for integer parameter");
 		IntegerValue v = (IntegerValue) p;
 		set(v.get());
-		return this;
-	}
+    }
 }
 

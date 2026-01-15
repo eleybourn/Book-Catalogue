@@ -23,6 +23,8 @@ import java.util.WeakHashMap;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import androidx.annotation.NonNull;
+
 /**
  * This class provides several utilities to cancel bitmap decoding.
  * The function decodeFileDescriptor() is used to decode a bitmap. During
@@ -44,7 +46,8 @@ public class CropBitmapManager {
 		public State mState = State.ALLOW;
 		public BitmapFactory.Options mOptions;
 
-		@Override
+		@NonNull
+        @Override
 		public String toString() {
 			String s;
 			if (mState == State.CANCEL) {
@@ -70,7 +73,8 @@ public class CropBitmapManager {
 			mWeakCollection.remove(t);
 		}
 
-		public Iterator<Thread> iterator() {
+		@NonNull
+        public Iterator<Thread> iterator() {
 			return mWeakCollection.keySet().iterator();
 		}
 	}
@@ -110,7 +114,8 @@ public class CropBitmapManager {
 
 	synchronized void removeDecodingOptions(Thread t) {
 		ThreadStatus status = mThreadStatus.get(t);
-		status.mOptions = null;
+        assert status != null;
+        status.mOptions = null;
 	}
 
 	/**

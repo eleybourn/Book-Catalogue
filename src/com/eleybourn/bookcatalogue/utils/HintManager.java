@@ -97,14 +97,16 @@ public class HintManager {
 		h.setVisibility(show);
 	}
 
-	/** Display the passed hint, if the user has not disabled it */
-	public static boolean displayHint(Context context, int stringId, Integer headingId, final Runnable postRun, Object... args) {
+	/**
+     * Display the passed hint, if the user has not disabled it
+     */
+	public static void displayHint(Context context, int stringId, Integer headingId, final Runnable postRun, Object... args) {
 		// Get the hint and return if it has been disabled.
 		final Hint h = mHints.getHint(stringId);
 		if (!h.shouldBeShown()) {
 			if (postRun != null)
 				postRun.run();
-			return false;			
+			return;
 		}
 
 		// Build the hint dialog
@@ -143,8 +145,7 @@ public class HintManager {
 		dialog.show();
 		h.setHasBeenDisplayed(true);
 
-		return true;
-	}
+    }
 	
 	/**
 	 * Class to represent a collection of all defined hints

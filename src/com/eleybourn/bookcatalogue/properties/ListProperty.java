@@ -48,7 +48,7 @@ import java.util.Iterator;
  */
 public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> {
 	/** List of valid values */
-	protected ItemEntries<T> mList;
+	protected final ItemEntries<T> mList;
 
 	/** Accessor */
 	public ItemEntries<T> getListItems() { return mList; }

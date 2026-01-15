@@ -97,7 +97,7 @@ public interface CropIImageList extends Parcelable {
 	 * @param index
 	 *            the position of the image
 	 */
-    void checkThumbnail(int index) throws IOException;
+    void checkThumbnail(int index);
 
 	/**
 	 * Opens this list for operation.

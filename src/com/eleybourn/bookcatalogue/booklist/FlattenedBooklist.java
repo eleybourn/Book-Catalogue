@@ -183,12 +183,10 @@ public class FlattenedBooklist {
 	 */
 	private static final String MOVE_STMT_NAME = "move";
 	/**
-	 * Move to the specified book row, based on the row ID, not the book ID or row number.
-	 * The row ID should be the row number in the table, including header-related rows.
-	 * 
-	 * @return	true if successful
-	 */
-	public boolean moveTo(Integer pos) {
+     * Move to the specified book row, based on the row ID, not the book ID or row number.
+     * The row ID should be the row number in the table, including header-related rows.
+     */
+	public void moveTo(Integer pos) {
 		SynchronizedStatement stmt = mStatements.get(MOVE_STMT_NAME);
 		if (stmt == null) {
 			String sql = "Select " + mTable.dot(DOM_ID) + "|| '/' || " + mTable.dot(DOM_BOOK) 
@@ -197,16 +195,13 @@ public class FlattenedBooklist {
 		}
 		stmt.bindLong(1, pos);
 		if ( updateDetailsFromStatement(stmt) ) {
-			return true;
-		} else {
+        } else {
 			long posSav = mPosition;
 			mPosition = pos;
 			if (moveNext() || movePrev()) {
-				return true;
-			} else {
+            } else {
 				mPosition = posSav;
-				return false;
-			}
+            }
 		}
 	}
 	

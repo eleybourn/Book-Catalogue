@@ -100,7 +100,8 @@ public class BooleanProperty extends ValuePropertyWithGlobalDefault<Boolean> imp
 
 	private void handleClick(View v) {
 		Holder h = ViewTagger.getTag(v, R.id.TAG_PROPERTY);
-		Boolean b = h.p.get();
+        assert h != null;
+        Boolean b = h.p.get();
 		// Cycle through three values: 'null', 'true', 'false'. If the value is 'global' omit 'null'.
 		if (b == null) {
 			b = true;
@@ -146,19 +147,17 @@ public class BooleanProperty extends ValuePropertyWithGlobalDefault<Boolean> imp
 		return BookCatalogueApp.getAppPreferences().getBoolean(getPreferenceKey(), getDefaultValue());
 	}
 	@Override
-	protected BooleanProperty setGlobalDefault(Boolean value) {
+	protected void setGlobalDefault(Boolean value) {
 		BookCatalogueApp.getAppPreferences().setBoolean(getPreferenceKey(), value);
-		return this;
-	}
+    }
 
 	@Override
-	public BooleanProperty set(Property p) {
+	public void set(Property p) {
 		if (! (p instanceof BooleanValue) )
 			throw new RuntimeException("Can not find a compatible interface for boolean parameter");
 		BooleanValue bv = (BooleanValue) p;
 		set(bv.get());
-		return this;
-	}
+    }
 
 	@Override
 	public BooleanProperty setGlobal(boolean isGlobal) {

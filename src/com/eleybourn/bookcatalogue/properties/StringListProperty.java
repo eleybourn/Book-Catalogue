@@ -51,18 +51,16 @@ public class StringListProperty extends ListProperty<String> implements Property
 		return BookCatalogueApp.getAppPreferences().getString(getPreferenceKey(), getDefaultValue());
 	}
 	@Override
-	protected StringListProperty setGlobalDefault(String value) {
+	protected void setGlobalDefault(String value) {
 		BookCatalogueApp.getAppPreferences().setString(getPreferenceKey(), value);
-		return this;
-	}
+    }
 
 	@Override
-	public StringListProperty set(Property p) {
+	public void set(Property p) {
 		if (! (p instanceof StringValue) )
 			throw new RuntimeException("Can not find a compatible interface for integer parameter");
         StringValue v = (StringValue) p;
 		set(v.get());
-		return this;
-	}
+    }
 }
 

@@ -29,6 +29,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
@@ -146,8 +148,9 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
      */
     abstract protected void onSetupView(T object, int position, View target);
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         // Get the object, if not null, do some processing
         final T o = this.getItem(position);
 
@@ -156,7 +159,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
         if (v == null) {
             LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             // If possible, ask the object for the view ID
-            if (o != null && o instanceof ViewProvider) {
+            if (o instanceof ViewProvider) {
                 v = vi.inflate(((ViewProvider) o).getViewId(), null);
             } else {
                 v = vi.inflate(mRowViewId, null);

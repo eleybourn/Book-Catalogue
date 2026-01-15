@@ -30,6 +30,8 @@ import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+import java.util.Objects;
+
 /** 
  * An XML handler for the Amazon return 
  * An example response looks like;
@@ -231,7 +233,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 * @param key	Key for data to add
 	 */
 	private void addIfNotPresent(String key) {
-		if (!mBookData.containsKey(key) || mBookData.getString(key).isEmpty()) {
+		if (!mBookData.containsKey(key) || Objects.requireNonNull(mBookData.getString(key)).isEmpty()) {
 			mBookData.putString(key, mBuilder.toString());
 		}		
 	}
@@ -242,7 +244,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 * @param key	Key for data to add
 	 */
 	private void addIfNotPresent(String key, String value) {
-		if (!mBookData.containsKey(key) || mBookData.getString(key).isEmpty()) {
+		if (!mBookData.containsKey(key) || Objects.requireNonNull(mBookData.getString(key)).isEmpty()) {
 			mBookData.putString(key, value);
 		}		
 	}
@@ -254,7 +256,7 @@ public class SearchAmazonHandler extends DefaultHandler {
 	 * @param value	Value to compare to; if present but equal to this, it will be overwritten
 	 */
 	private void addIfNotPresentOrEqual(String key, String value) {
-		if (!mBookData.containsKey(key) || mBookData.getString(key).isEmpty() || mBookData.getString(key).equals(value)) {
+		if (!mBookData.containsKey(key) || Objects.requireNonNull(mBookData.getString(key)).isEmpty() || Objects.requireNonNull(mBookData.getString(key)).equals(value)) {
 			mBookData.putString(key, mBuilder.toString());
 		}		
 	}
@@ -314,13 +316,13 @@ public class SearchAmazonHandler extends DefaultHandler {
 				} else if (localName.equalsIgnoreCase(ISBN) || localName.equalsIgnoreCase(EISBN)){
 					String tmp = mBuilder.toString();
 					if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
-							|| mBookData.getString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
+							|| Objects.requireNonNull(mBookData.getString(CatalogueDBAdapter.KEY_ISBN)).length() < tmp.length()) {
 						mBookData.putString(CatalogueDBAdapter.KEY_ISBN, tmp);
 					}					
 				} else if (localName.equalsIgnoreCase(ISBNOLD)){
 					String tmp = mBuilder.toString();
 					if (!mBookData.containsKey(CatalogueDBAdapter.KEY_ISBN) 
-							|| mBookData.getString(CatalogueDBAdapter.KEY_ISBN).length() < tmp.length()) {
+							|| Objects.requireNonNull(mBookData.getString(CatalogueDBAdapter.KEY_ISBN)).length() < tmp.length()) {
 						mBookData.putString(CatalogueDBAdapter.KEY_ISBN, tmp);
 					}					
 				} else if (localName.equalsIgnoreCase(PUBLISHER)){
@@ -339,9 +341,6 @@ public class SearchAmazonHandler extends DefaultHandler {
 					mCurrencyAmount = mBuilder.toString();
 				} else if (mInListPrice && localName.equalsIgnoreCase(CURRENCY_CODE)){
 					mCurrencyCode = mBuilder.toString();
-				} else {
-					// Debug Only; see what we are missing.
-					//System.out.println(localName + "->'" + mBuilder.toString() + "'");
 				}
 			}
 			mBuilder.setLength(0);			

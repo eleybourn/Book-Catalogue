@@ -202,8 +202,10 @@ public abstract class Property {
 	public void validate() {
 	}
 
-	/** Children must implement set(Property) */
-	public abstract Property set(Property p);
+	/**
+     * Children must implement set(Property)
+     */
+	public abstract void set(Property p);
 	/** Children must method to return an editor for this object */
 	public abstract View getView(LayoutInflater inflater);
 }

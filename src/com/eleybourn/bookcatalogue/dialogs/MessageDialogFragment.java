@@ -60,16 +60,20 @@ public class MessageDialogFragment extends BookCatalogueDialogFragment {
             a = (Activity) context;
         }
 
-        if (!(a instanceof OnMessageDialogResultListener))
+        if (!(a instanceof OnMessageDialogResultListener)) {
+            assert a != null;
             throw new RuntimeException("Activity " + a.getClass().getSimpleName() + " must implement OnMessageDialogResultListener");
+        }
 
     }
 
     /**
      * Create the underlying dialog
      */
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        assert getArguments() != null;
         mDialogId = getArguments().getInt("dialogId");
         int title = getArguments().getInt("titleId");
         String msg = getArguments().getString("message");

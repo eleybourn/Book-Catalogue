@@ -28,7 +28,7 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 
 
 /**
- * Class used to manager a collection of backgroud threads for an AcitivityWithTasks subclass.
+ * Class used to manager a collection of background threads for an ActivityWithTasks subclass.
  * Part of three components that make this easier:
  *  - TaskManager -- handles the management of multiple threads sharing a progressDialog
  *  - ActivityWithTasks -- uses a TaskManager (and communicates with it) to handle progress
@@ -136,7 +136,7 @@ public class TaskManager {
 	 */
 	private static final MessageSwitch<TaskManagerListener, TaskManagerController> mMessageSwitch = new MessageSwitch<>();
 
-	public static final MessageSwitch<TaskManagerListener, TaskManagerController> getMessageSwitch() {
+	public static MessageSwitch<TaskManagerListener, TaskManagerController> getMessageSwitch() {
 		return mMessageSwitch;
 	}
 
@@ -280,7 +280,7 @@ public class TaskManager {
 	}
 
 	/**
-	 * Update the base progress message. Used (generally) by the ActivityWuthTasks to 
+	 * Update the base progress message. Used (generally) by the ActivityWithTasks to
 	 * display some text above the task info. Set to blank to ensure ProgressDialog will
 	 * be removed.
 	 */
@@ -326,21 +326,21 @@ public class TaskManager {
 						if (oneMsg != null && !oneMsg.trim().isEmpty())
 							mProgressMessage += oneMsg;						
 					} else {
-						StringBuilder taskMsgs = new StringBuilder();
+						StringBuilder taskMessages = new StringBuilder();
 						boolean got = false;
 						// Don't append blank messages; allows tasks to hide.
 						for(int i = 0; i < mTasks.size(); i++) {
 							String oneMsg = mTasks.get(i).progressMessage;
 							if (oneMsg != null && !oneMsg.trim().isEmpty()) {
 								if (got)
-									taskMsgs.append("\n");
+									taskMessages.append("\n");
 								else
 									got = true;
-								taskMsgs.append(" - ").append(oneMsg);
+								taskMessages.append(" - ").append(oneMsg);
 							}
 						}
-						if (taskMsgs.length() > 0)
-							mProgressMessage += taskMsgs;
+						if (taskMessages.length() > 0)
+							mProgressMessage += taskMessages;
 					}
 				}				
 			}

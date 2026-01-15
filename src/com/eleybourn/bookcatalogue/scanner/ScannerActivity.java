@@ -63,10 +63,9 @@ public class ScannerActivity
 						.setBarcodeFormats(Barcode.EAN_13)
 						.build();
 
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-		int width = displayMetrics.widthPixels;
-		int height = displayMetrics.heightPixels;
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int width = displayMetrics.widthPixels;
+        int height = displayMetrics.heightPixels;
 
 		mCameraSource = new CameraSource
 				.Builder(this, barcodeDetector)

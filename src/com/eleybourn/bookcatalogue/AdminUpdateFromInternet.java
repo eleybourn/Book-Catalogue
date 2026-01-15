@@ -284,9 +284,8 @@ public class AdminUpdateFromInternet extends ActivityWithTasks {
     static public class FieldUsages extends LinkedHashMap<String, FieldUsage> {
         private static final long serialVersionUID = 1L;
 
-        public FieldUsage put(FieldUsage usage) {
+        public void put(FieldUsage usage) {
             this.put(usage.fieldName, usage);
-            return usage;
         }
 
         public enum Usages {COPY_IF_BLANK, ADD_EXTRA, OVERWRITE}

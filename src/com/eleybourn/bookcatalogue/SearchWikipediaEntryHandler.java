@@ -70,7 +70,7 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 				if (entry1 && entry2) {
 					String title = this_title + builder.toString();
 					title = title.replace("\"", "").trim();
-					if (title != null && title != "") {
+					if (!title.isEmpty()) {
 						titles.add(title);
 					}
 					this_title = "";

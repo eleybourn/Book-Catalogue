@@ -32,7 +32,7 @@ import com.eleybourn.bookcatalogue.R;
 public class OrValidator extends MetaValidator implements DataValidator {
 
 	// Java likes this
-	public static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	// Constructors
 	OrValidator(DataValidator v1) { super(v1); }

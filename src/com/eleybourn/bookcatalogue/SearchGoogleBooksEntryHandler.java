@@ -29,6 +29,8 @@ import android.os.Bundle;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+import java.util.Objects;
+
 /* 
  * An XML handler for the Google Books entry return 
  * 
@@ -138,7 +140,7 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	}
 
 	private void addIfNotPresent(String key) {
-		if (!mValues.containsKey(key) || mValues.getString(key).isEmpty()) {
+		if (!mValues.containsKey(key) || Objects.requireNonNull(mValues.getString(key)).isEmpty()) {
 			mValues.putString(key, builder.toString());
 		}		
 	}
@@ -152,7 +154,7 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 			String tmp = builder.toString(); 
 			if (tmp.indexOf("ISBN:") == 0) {
 				tmp = tmp.substring(5); 
-				if (!mValues.containsKey(CatalogueDBAdapter.KEY_ISBN) || tmp.length() > mValues.getString(CatalogueDBAdapter.KEY_ISBN).length()) {
+				if (!mValues.containsKey(CatalogueDBAdapter.KEY_ISBN) || tmp.length() > Objects.requireNonNull(mValues.getString(CatalogueDBAdapter.KEY_ISBN)).length()) {
 					mValues.putString(CatalogueDBAdapter.KEY_ISBN, tmp);
 				}
 			}

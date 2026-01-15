@@ -24,6 +24,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.xml.parsers.SAXParser;
@@ -60,7 +61,7 @@ public class BackupUtils {
 		Set<T> keySet();
 		/** Get the object for the specified key */
 		Object get(T key);
-		/** Process the passed tring to store int the collection */
+		/** Process the passed thing to store int the collection */
         void putItem(Bundle bundle, String key, String type, String value) throws IOException;
 	}
 
@@ -147,7 +148,7 @@ public class BackupUtils {
 			return mMap.get(key);
 		}
 		@Override
-		public void putItem(Bundle bundle, String key, String type, String value) throws IOException {
+		public void putItem(Bundle bundle, String key, String type, String value) {
             switch (type) {
                 case BackupUtils.TYPE_INTEGER:
                     mEditor.putInt(key, Integer.parseInt(value));
@@ -245,7 +246,7 @@ public class BackupUtils {
 	}
 
 	/**
-	 * Record to preservr data while parsing XML input
+	 * Record to preserve data while parsing XML input
 	 * 
 	 * @author pjw
 	 */
@@ -259,11 +260,11 @@ public class BackupUtils {
 	 */
 	private static void collectionFromXml(BufferedReader in, final CollectionAccessor<String> accessor) throws IOException {
 		final Bundle bundle = new Bundle();
-		XmlFilter rootFilter = null;
+		XmlFilter rootFilter;
 		rootFilter = new XmlFilter("");
 		final ItemInfo info = new ItemInfo();
 
-		XmlFilter.buildFilter(rootFilter, "collection", "item")
+		Objects.requireNonNull(XmlFilter.buildFilter(rootFilter, "collection", "item"))
 			.setStartAction(context -> {
                 info.name = context.attributes.getValue("name");
                 info.type = context.attributes.getValue("type");

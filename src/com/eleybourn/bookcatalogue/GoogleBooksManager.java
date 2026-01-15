@@ -2,6 +2,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Objects;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -24,7 +25,7 @@ public class GoogleBooksManager {
 		try {
 			searchGoogle(isbn, "", "", b, true);
 			if (b.containsKey(SearchGoogleBooksEntryHandler.THUMBNAIL_KEY)) {
-				File f = new File(b.getString(SearchGoogleBooksEntryHandler.THUMBNAIL_KEY));
+				File f = new File(Objects.requireNonNull(b.getString(SearchGoogleBooksEntryHandler.THUMBNAIL_KEY)));
 				File newName = new File(f.getAbsolutePath() + "_" + isbn);
 				f.renameTo(newName);
 				return newName;
@@ -58,7 +59,7 @@ public class GoogleBooksManager {
 		try {
 			url = new URL(path);
 			parser = factory.newSAXParser();
-			int count = 0;
+			int count;
 			// We can't Toast anything from here; it no longer runs in UI thread. So let the caller deal 
 			// with any exceptions.
 			parser.parse(Utils.getInputStream(url), handler);

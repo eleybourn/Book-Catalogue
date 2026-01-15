@@ -360,7 +360,7 @@ public class DbSync {
             int wait = 10; // 10ms
             //int retriesLeft = 5; // up to 320ms
             int retriesLeft = 10; // 2^10 * 10ms = 10.24sec (actually 2x that due to total wait time)
-            SQLiteDatabase db = null;
+            SQLiteDatabase db;
             do {
                 SyncLock l = mSync.getExclusiveLock();
                 try {
@@ -683,17 +683,15 @@ public class DbSync {
          */
         final boolean mIsReadOnly;
         /**
-         * Copy of SQL used for debugging
-         */
-        private final String mSql;
-        /**
          * Indicates close() has been called
          */
         private boolean mIsClosed = false;
 
         private SynchronizedStatement(final SynchronizedDb db, final String sql) {
             mSync = db.getSynchronizer();
-            mSql = sql;
+            /**
+             * Copy of SQL used for debugging
+             */
             mIsReadOnly = sql.trim().toLowerCase().startsWith("select");
             mStatement = db.getUnderlyingDatabase().compileStatement(sql);
         }

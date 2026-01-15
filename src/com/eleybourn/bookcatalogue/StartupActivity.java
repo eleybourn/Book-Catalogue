@@ -27,6 +27,7 @@ import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDoneException;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -97,7 +98,7 @@ public class StartupActivity
     /**
      * Handler to post runnable's to UI thread
      */
-    private final Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
     /**
      * Queue for executing startup tasks, if any
      */

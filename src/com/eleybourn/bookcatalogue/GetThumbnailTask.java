@@ -71,7 +71,7 @@ public class GetThumbnailTask implements SimpleTask {
 	}
 
 	/** Reference to the view we are using */
-	WeakReference<ImageView> mView = null;
+	WeakReference<ImageView> mView;
 	/** ID of book whose cover we are getting */
 	private final String mBookHash;
 	/** Resulting bitmap object */
@@ -201,7 +201,8 @@ public class GetThumbnailTask implements SimpleTask {
 				mBitmap = null;
 			}
 		} else {
-			v.setImageResource(R.drawable.ic_alert_warning);
+            assert v != null;
+            v.setImageResource(R.drawable.ic_alert_warning);
 		}
 
 		mView.clear();

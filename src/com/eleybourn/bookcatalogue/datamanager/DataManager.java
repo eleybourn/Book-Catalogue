@@ -421,10 +421,9 @@ public class DataManager {
      * @param key Key of data to remove.
      *
      */
-    public Datum remove(String key) {
+    public void remove(String key) {
         Datum datum = mData.remove(key);
         mBundle.remove(key);
-        return datum;
     }
 
     /**

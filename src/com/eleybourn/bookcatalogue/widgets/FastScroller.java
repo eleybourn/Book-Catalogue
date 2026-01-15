@@ -218,7 +218,7 @@ public class FastScroller {
         mPaint = new TextPaint();
         mPaint.setAntiAlias(true);
         mPaint.setTextAlign(Paint.Align.CENTER);
-        mPaint.setTextSize(mOverlaySize / 3);
+        mPaint.setTextSize((float) mOverlaySize / 3);
         TypedArray ta = context.getTheme().obtainStyledAttributes(new int[]{
                 android.R.attr.textColorPrimary});
         ColorStateList textColor = ta.getColorStateList(ta.getIndex(0));
@@ -490,7 +490,7 @@ public class FastScroller {
                     && me.getY() <= mThumbY + mThumbH) {
 
                 setState(STATE_DRAGGING);
-                if (mListAdapter == null && mList != null) {
+                if (mListAdapter == null) {
                     getSections();
                 }
 

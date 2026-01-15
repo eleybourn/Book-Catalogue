@@ -20,6 +20,8 @@
 
 package com.eleybourn.bookcatalogue.properties;
 
+import androidx.annotation.NonNull;
+
 /**
  * Implements a property with a default value stored in preferences or provided locally.
  * 
@@ -35,12 +37,14 @@ public abstract class ValuePropertyWithGlobalDefault<T> extends Property {
 	/** Default value, for case when not in preferences, or no preferences given */
 	private T mDefaultValue;
 	/** Indicates that this instance is to only use the global default */
-	private boolean mIsGlobal = false;
+	private boolean mIsGlobal;
 
 	/** Children must implement accessor for global default */
 	protected abstract T getGlobalDefault();
-	/** Children must implement accessor for global default */	
-	protected abstract ValuePropertyWithGlobalDefault<T> setGlobalDefault(T value);
+	/**
+     * Children must implement accessor for global default
+     */
+	protected abstract void setGlobalDefault(T value);
 
 	/**
 	 * Constructor
@@ -132,7 +136,8 @@ public abstract class ValuePropertyWithGlobalDefault<T> extends Property {
 	/**
 	 * Accessor
 	 */
-	public String toString() {
+	@NonNull
+    public String toString() {
 		return mValue.toString();
 	}
 

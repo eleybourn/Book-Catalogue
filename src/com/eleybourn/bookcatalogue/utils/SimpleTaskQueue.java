@@ -287,11 +287,11 @@ public class SimpleTaskQueue {
 	}
 
 	/**
-	 * Queue a request to run in the worker thread.
-	 * 
-	 * @param task		Task to run.
-	 */
-	public long enqueue(SimpleTask task) {
+     * Queue a request to run in the worker thread.
+     *
+     * @param task Task to run.
+     */
+	public void enqueue(SimpleTask task) {
 		SimpleTaskWrapper wrapper = new SimpleTaskWrapper(this, task);
 
 		try {
@@ -312,8 +312,7 @@ public class SimpleTaskQueue {
 				t.start();
 			}
 		}
-		return wrapper.id;
-	}
+    }
 
 	/**
 	 * Remove a previously requested task based on ID, if present
@@ -333,9 +332,9 @@ public class SimpleTaskQueue {
 	}
 	
 	/**
-	 * Remove a previously requested task, if present
-	 */
-	public boolean remove(SimpleTask t) {
+     * Remove a previously requested task, if present
+     */
+	public void remove(SimpleTask t) {
 		Stack<SimpleTaskWrapper> currTasks = mQueue.getElements();
 		for (SimpleTaskWrapper w : currTasks) {
 			if (w.task.equals(t)) {
@@ -343,11 +342,10 @@ public class SimpleTaskQueue {
 					if (mQueue.remove(w))
 						mManagedTaskCount--;					
 				}
-				return true;
+				return;
 			}
 		}
-		return false;
-	}
+    }
 	
 	/**
 	 * Flag indicating runnable is queued but not run; avoids multiple unnecessary runnable tasks

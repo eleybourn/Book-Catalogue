@@ -62,7 +62,7 @@ public class TarReaderEntity extends ReaderEntityAbstract {
 	 * Accessor
 	 */
 	@Override
-	public InputStream getStream() throws IOException {
+	public InputStream getStream() {
 		return mReader.getInput();
 	}
 

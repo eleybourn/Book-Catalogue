@@ -253,7 +253,7 @@ public class CoversDbHelper {
 		cv.put(DOM_SIZE.name, bytes.length);
 
 		mExistsStmt.bindString(1, filename);
-		long rows = 0;
+		long rows;
 		
 		SyncLock txLock = db.beginTransaction(true);
 		try {
@@ -285,15 +285,15 @@ public class CoversDbHelper {
 	}
 
 	/**
-	 * Erase all cached images relating to the passed book UUID.
-	 */
-	public int eraseCachedBookCover(String uuid) {
+     * Erase all cached images relating to the passed book UUID.
+     */
+	public void eraseCachedBookCover(String uuid) {
 		SynchronizedDb db = this.getDb();
 		// We use encodeString here because it's possible a user screws up the data and imports
 		// bad UUIDs...this has happened.
 		String sql = DOM_FILENAME + " glob '" + CatalogueDBAdapter.encodeString(uuid) + ".*'";
-		return db.delete(TBL_IMAGE.getName(), sql, CatalogueDBAdapter.EMPTY_STRING_ARRAY);
-	}
+        db.delete(TBL_IMAGE.getName(), sql, CatalogueDBAdapter.EMPTY_STRING_ARRAY);
+    }
 	
 	/**
 	 * Analyze the database

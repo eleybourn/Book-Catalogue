@@ -46,7 +46,7 @@ public class IntegerValidator extends DefaultFieldValidator {
 		// Will throw on failure...
 		super.validate(data, datum, crossValidating);
 
-		Object o = null;
+		Object o;
 		try {
 			o = data.get(datum);
 			int v;

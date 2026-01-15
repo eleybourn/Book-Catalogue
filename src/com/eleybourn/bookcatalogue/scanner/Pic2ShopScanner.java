@@ -35,7 +35,7 @@ public class Pic2ShopScanner implements Scanner {
 	 */
 	@Override
 	public void startActivityForResult(final Activity a, final int requestCode) {
-		Intent i = null;
+		Intent i;
 		if (com.eleybourn.bookcatalogue.scanner.pic2shop.Utils.isFreeScannerAppInstalled(a)) {
 			i = new Intent(Scan.ACTION);
 			//i.putExtra(Scan.Pro.FORMATS, BARCODE_FORMAT);		

@@ -56,19 +56,17 @@ public class BooleanListProperty extends ListProperty<Boolean> implements Boolea
 		return BookCatalogueApp.getAppPreferences().getBoolean(getPreferenceKey(), getDefaultValue());
 	}
 	@Override
-	protected BooleanListProperty setGlobalDefault(Boolean value) {
-		BookCatalogueApp.getAppPreferences().setBoolean(getPreferenceKey(), value);		
-		return this;
-	}
+	protected void setGlobalDefault(Boolean value) {
+		BookCatalogueApp.getAppPreferences().setBoolean(getPreferenceKey(), value);
+    }
 
 	@Override
-	public BooleanListProperty set(Property p) {
+	public void set(Property p) {
 		if (! (p instanceof BooleanValue) )
 			throw new RuntimeException("Can not find a compatible interface for boolean parameter");
 		BooleanValue v = (BooleanValue) p;
 		set(v.get());
-		return this;
-	}
+    }
 
 }
 

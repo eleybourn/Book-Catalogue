@@ -27,7 +27,7 @@ package com.eleybourn.bookcatalogue.datamanager;
  */
 public class AndValidator extends MetaValidator implements DataValidator {
 	// Java likes this
-	public static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	// Constructors
 	AndValidator(DataValidator v1) { super(v1); }

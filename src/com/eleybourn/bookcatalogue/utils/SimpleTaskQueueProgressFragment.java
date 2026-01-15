@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 
 import com.eleybourn.bookcatalogue.R;
@@ -123,12 +124,11 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
      * @param message Message to display
      * @param task    Task to run
      */
-    public static SimpleTaskQueueProgressFragment runTaskWithProgress(
+    public static void runTaskWithProgress(
             final FragmentManager fm, int message, FragmentTask task, boolean isIndeterminate, int taskId) {
         SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.newInstance(message, isIndeterminate, taskId);
         frag.enqueue(task);
         frag.show(fm, null);
-        return frag;
     }
 
     public static SimpleTaskQueueProgressFragment newInstance(int title, boolean isIndeterminate, int taskId) {
@@ -232,12 +232,9 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
         mTaskId = getArguments().getInt("taskId");
     }
 
-    //public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-    //    super.onViewCreated(view, savedInstanceState);
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    
         // Deliver any outstanding messages
         deliverMessages();
 

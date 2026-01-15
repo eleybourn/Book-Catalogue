@@ -29,6 +29,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.utils.HintManager;
@@ -46,20 +48,13 @@ import java.util.Iterator;
  */
 public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> {
 	/** List of valid values */
-	protected ItemEntries<T> mList = null;
+	protected ItemEntries<T> mList;
 
 	/** Accessor */
 	public ItemEntries<T> getListItems() { return mList; }
 
-    /** Accessor */
-	public void setListItems(ItemEntries<T> list) { mList= list; }
-
     public ListProperty(ItemEntries<T> list, String uniqueId, PropertyGroup group, int nameResourceId, T value, String defaultPref, T defaultValue) {
 		super(uniqueId, group, nameResourceId, value, defaultPref, defaultValue);
-		mList = list;
-	}
-	public ListProperty(ItemEntries<T> list, String uniqueId, PropertyGroup group, int nameResourceId, T value, T defaultValue) {
-		super(uniqueId, group, nameResourceId, value, null, defaultValue);
 		mList = list;
 	}
 
@@ -125,11 +120,6 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 			this.textId = resourceId; //BookCatalogueApp.getResourceString(resourceId);
             this.textArgs = args;
 		}
-//		/** Constructor */
-//		public ItemEntry(T value, String text) {
-//			this.value = value;
-//			this.text = text;
-//		}
 
         /** Accessor */
         public String getString() {
@@ -147,6 +137,7 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
             textArgs = args;
         }
 
+        @NonNull
         @Override
 		public String toString() {
 			return getString();
@@ -173,19 +164,9 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 			mList.add(new ItemEntry<>(value, stringId, args));
 			return this;
 		}
-//		/**
-//		 * Utility to make adding items easier.
-//		 *
-//		 * @param value		Underlying value
-//		 * @param stringId	Description
-//		 * @return
-//		 */
-//		public ItemEntries<T> add(T value, int string) {
-//			mList.add(new ItemEntry<T>(value, string));
-//			return this;
-//		}
 		/** Iterator access */
-		@Override
+		@NonNull
+        @Override
 		public Iterator<ItemEntry<T>> iterator() {
 			return mList.iterator();
 		}
@@ -226,13 +207,13 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 	}
 
 	/**
-	 * Called to display a list of values for this property.
-	 * 
-	 * @param base		Specific view that was clicked
-	 * @param inflater	LayoutInflater
-	 * @param items		All list items
-	 */
-	private boolean displayList(final View base, final LayoutInflater inflater, ItemEntries<T> items) {
+     * Called to display a list of values for this property.
+     *
+     * @param base     Specific view that was clicked
+     * @param inflater LayoutInflater
+     * @param items    All list items
+     */
+	private void displayList(final View base, final LayoutInflater inflater, ItemEntries<T> items) {
 
 		// Get the view and the radio group
 		View root = inflater.inflate(R.layout.property_value_list_list, null);
@@ -247,6 +228,7 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 		OnClickListener l = v -> {
             dialog.dismiss();
             Holder<T> h = ViewTagger.getTag(v, R.id.TAG_HOLDER);
+            assert h != null;
             set(h.item.value);
             setValueInView(h.baseView, h.item);
         };
@@ -281,7 +263,6 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 
 		// Display dialog
 		dialog.show();
-		return true;
-	}
+    }
 }
 

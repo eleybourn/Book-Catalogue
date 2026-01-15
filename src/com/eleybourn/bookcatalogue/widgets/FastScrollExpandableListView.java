@@ -101,10 +101,10 @@ public class FastScrollExpandableListView extends ExpandableListView {
 	 * Pass to scroller if defined, otherwise perform default actions.
 	 */
 	@Override
-	protected void  onSizeChanged(int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
+	protected void  onSizeChanged(int w, int h, int old_w, int old_h) {
+		super.onSizeChanged(w, h, old_w, old_h);
 		if (mScroller != null)
-			mScroller.onSizeChanged(w, h, oldw, oldh);
+			mScroller.onSizeChanged(w, h, old_w, old_h);
 	}
 	/**
 	 * Pass to scroller if defined, otherwise perform default actions.

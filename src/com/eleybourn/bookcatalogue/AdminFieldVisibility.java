@@ -114,7 +114,7 @@ public class AdminFieldVisibility extends BookCatalogueActivity {
                 SharedPreferences.Editor ed = mPrefs1.edit();
                 boolean field_visibility = mPrefs1.getBoolean(prefs_name, true);
                 ed.putBoolean(prefs_name, !field_visibility);
-                ed.commit();
+                ed.apply();
             };
 
             //Create the checkbox

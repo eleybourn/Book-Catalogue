@@ -84,10 +84,6 @@ public class StartupActivity
      */
     private static final int BACKUP_PROMPT_WAIT = 5;
 
-    /**
-     * Number of app startups between displaying the Amazon hint
-     */
-    private static final int AMAZON_PROMPT_WAIT = 7;
     public static WeakReference<StartupActivity> mStartupActivity = null;
     /**
      * Indicates the upgrade message has been shown
@@ -97,17 +93,9 @@ public class StartupActivity
      * Flag set to true on first call
      */
     private static boolean mIsReallyStartup = true;
-    /**
-     * Flag indicating a StartupActivity has been created in this session
-     */
-    private static boolean mHasBeenCalled = false;
-    /**
-     * Flag indicating Amazon hint could be shown
-     */
-    private static boolean mShowAmazonHint = false;
     private static boolean mNeedMoveFiles = false;
     /**
-     * Handler to post runnables to UI thread
+     * Handler to post runnable's to UI thread
      */
     private final Handler mHandler = new Handler();
     /**
@@ -122,10 +110,10 @@ public class StartupActivity
      * Flag indicating THIS instance was really the startup instance
      */
     private boolean mWasReallyStartup = false;
-    /**
-     * Flag indicating an export is required after startup
-     */
-    private boolean mExportRequired = false;
+    ///**
+    // * Flag indicating an export is required after startup
+    // */
+    //private boolean mExportRequired = false;
     /**
      * UI thread
      */
@@ -165,14 +153,6 @@ public class StartupActivity
             return null;
     }
 
-    public static boolean hasBeenCalled() {
-        return mHasBeenCalled;
-    }
-
-    public static boolean getShowAmazonHint() {
-        return mShowAmazonHint;
-    }
-
     @Override
     protected RequiredPermission[] getRequiredPermissions() {
         return new RequiredPermission[0];
@@ -186,7 +166,6 @@ public class StartupActivity
 
         System.out.println("Startup isTaskRoot() = " + isTaskRoot());
 
-        mHasBeenCalled = true;
         mUiThread = Thread.currentThread();
 
         // Create a progress dialog; we may not use it...but we need it to be created in the UI thread.
@@ -248,10 +227,6 @@ public class StartupActivity
         // tasks will cause stage 2 to start.
         if (mTaskQueue == null)
             stage2Startup();
-//		getSupportFragmentManager().beginTransaction()
-//					   .replace(R.id., list)
-//					   .addToBackStack(null)
-//					   .commit();
     }
 
     /**
@@ -354,7 +329,7 @@ public class StartupActivity
         Intent i = new Intent(this, Library.class);
         if (mWasReallyStartup)
             i.putExtra("startup", true);
-        // XXX: This is nasty, now we use fragments, StartupActivity shoud be a FragmenActivity and load the right fragment
+        // XXX: This is nasty, now we use fragments, StartupActivity should be a FragmenActivity and load the right fragment
         // then we could do away with the whole isRoot/willBeRoot thing
         i.putExtra("willBeTaskRoot", isTaskRoot());
         startActivity(i);
@@ -385,11 +360,8 @@ public class StartupActivity
         ed.putInt(PREF_START_COUNT, startCount);
         ed.commit();
 
-        if ((startCount % AMAZON_PROMPT_WAIT) == 0) {
-            mShowAmazonHint = true;
-        }
-        mExportRequired = false;
-
+        //mExportRequired = false;
+        //
         //	if (opened == 0) {
         //		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.backup_request).create();
         //		alertDialog.setCanceledOnTouchOutside(false);

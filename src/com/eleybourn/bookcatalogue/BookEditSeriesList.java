@@ -132,7 +132,6 @@ public class BookEditSeriesList extends BookEditObjectList<Series> {
 		EditText numView = dialog.findViewById(R.id.field_series_num);
 		numView.setText(series.num);
 
-		//setTextOrHideView(dialog.findViewById(R.id.label_title), mBookTitleLabel);
 		setTextOrHideView(dialog.findViewById(R.id.field_title), mBookTitle);
 
 		Button saveButton = dialog.findViewById(R.id.button_confirm);

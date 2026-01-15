@@ -213,7 +213,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                     frag.show(fm, null);
                 }
             };
-            SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.runTaskWithProgress(fm, R.string.copying_files, task, false, 0);
+            SimpleTaskQueueProgressFragment.runTaskWithProgress(fm, R.string.copying_files, task, false, 0);
         }
     }
 

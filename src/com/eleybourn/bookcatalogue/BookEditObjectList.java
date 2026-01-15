@@ -1,6 +1,5 @@
 package com.eleybourn.bookcatalogue;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,7 +7,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,7 +45,7 @@ public abstract class BookEditObjectList<T extends Serializable> extends BookCat
     protected String mBookTitleLabel;
 
     // Configuration
-    private String mKey = "";
+    private String mKey;
     private final int mBaseViewId; // Removed final to fix initialization error
     private final int mRowViewId;  // Removed final to fix initialization error
 
@@ -175,7 +173,6 @@ public abstract class BookEditObjectList<T extends Serializable> extends BookCat
             return new ViewHolder(v);
         }
 
-        @SuppressLint("ClickableViewAccessibility")
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             T object = mList.get(position);
@@ -208,8 +205,6 @@ public abstract class BookEditObjectList<T extends Serializable> extends BookCat
                 // EXPLICITLY SET THE ICON AS REQUESTED
                 if (deleteBtn instanceof ImageView) {
                     ((ImageView) deleteBtn).setImageResource(R.drawable.ic_menu_delete);
-                } else if (deleteBtn instanceof ImageButton) {
-                    ((ImageButton) deleteBtn).setImageResource(R.drawable.ic_menu_delete);
                 }
 
                 deleteBtn.setOnClickListener(v -> {
@@ -336,6 +331,7 @@ public abstract class BookEditObjectList<T extends Serializable> extends BookCat
         v.setVisibility(View.GONE);
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected void setTextOrHideView(int id, String s) {
         setTextOrHideView(this.findViewById(id), id, s);
     }

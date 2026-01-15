@@ -23,7 +23,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
@@ -40,7 +39,7 @@ class CropHighlightView {
 	private static final String TAG = "HighlightView";
 	final View mContext; // The View displaying the image.
 
-	public static final int GROW_NONE = (1 << 0);
+	public static final int GROW_NONE = (1);
 	public static final int GROW_LEFT_EDGE = (1 << 1);
 	public static final int GROW_RIGHT_EDGE = (1 << 2);
 	public static final int GROW_TOP_EDGE = (1 << 3);
@@ -95,7 +94,7 @@ class CropHighlightView {
 				path.addRect(new RectF(mDrawRect), Path.Direction.CW);
 				mOutlinePaint.setColor(0xFFFF8A00);
 			}
-			canvas.clipPath(path, Region.Op.DIFFERENCE);
+			canvas.clipOutPath(path);
 			canvas.drawRect(viewDrawingRect, hasFocus() ? mFocusPaint
 					: mNoFocusPaint);
 
@@ -173,7 +172,7 @@ class CropHighlightView {
 	public int getHit(float x, float y) {
 		Rect r = computeLayout();
 		final float hysteresis = 20F;
-		int retval = GROW_NONE;
+		int return_val = GROW_NONE;
 
 		if (mCircle) {
 			float distX = x - r.centerX();
@@ -184,58 +183,56 @@ class CropHighlightView {
 			if (Math.abs(delta) <= hysteresis) {
 				if (Math.abs(distY) > Math.abs(distX)) {
 					if (distY < 0) {
-						retval = GROW_TOP_EDGE;
+						return_val = GROW_TOP_EDGE;
 					} else {
-						retval = GROW_BOTTOM_EDGE;
+						return_val = GROW_BOTTOM_EDGE;
 					}
 				} else {
 					if (distX < 0) {
-						retval = GROW_LEFT_EDGE;
+						return_val = GROW_LEFT_EDGE;
 					} else {
-						retval = GROW_RIGHT_EDGE;
+						return_val = GROW_RIGHT_EDGE;
 					}
 				}
 			} else if (distanceFromCenter < radius) {
-				retval = MOVE;
-			} else {
-				retval = GROW_NONE;
+				return_val = MOVE;
 			}
 		} else {
 			// verticalCheck makes sure the position is between the top and
-			// the bottom edge (with some tolerance). Similar for horizCheck.
+			// the bottom edge (with some tolerance). Similar for horizontalCheck.
 			boolean verticalCheck = (y >= r.top - hysteresis)
 					&& (y < r.bottom + hysteresis);
-			boolean horizCheck = (x >= r.left - hysteresis)
+			boolean horizontalCheck = (x >= r.left - hysteresis)
 					&& (x < r.right + hysteresis);
 
 			// Check whether the position is near some edge(s).
 			if ((Math.abs(r.left - x) < hysteresis) && verticalCheck) {
-				retval |= GROW_LEFT_EDGE;
+				return_val |= GROW_LEFT_EDGE;
 			}
 			if ((Math.abs(r.right - x) < hysteresis) && verticalCheck) {
-				retval |= GROW_RIGHT_EDGE;
+				return_val |= GROW_RIGHT_EDGE;
 			}
-			if ((Math.abs(r.top - y) < hysteresis) && horizCheck) {
-				retval |= GROW_TOP_EDGE;
+			if ((Math.abs(r.top - y) < hysteresis) && horizontalCheck) {
+				return_val |= GROW_TOP_EDGE;
 			}
-			if ((Math.abs(r.bottom - y) < hysteresis) && horizCheck) {
-				retval |= GROW_BOTTOM_EDGE;
+			if ((Math.abs(r.bottom - y) < hysteresis) && horizontalCheck) {
+				return_val |= GROW_BOTTOM_EDGE;
 			}
 
 			// Not near any edge but inside the rectangle: move.
-			if (retval == GROW_NONE && r.contains((int) x, (int) y)) {
-				retval = MOVE;
+			if (return_val == GROW_NONE && r.contains((int) x, (int) y)) {
+				return_val = MOVE;
 			}
 		}
-		return retval;
+		return return_val;
 	}
 
 	// Handles motion (dx, dy) in screen space.
 	// The "edge" parameter specifies which edges the user is dragging.
 	void handleMotion(int edge, float dx, float dy) {
 		Rect r = computeLayout();
-		if (edge == GROW_NONE) {
-        } else if (edge == MOVE) {
+		//if (edge == GROW_NONE) {
+        if (edge == MOVE) {
 			// Convert to image space before sending to moveBy().
 			moveBy(dx * (mCropRect.width() / r.width()),
 					dy * (mCropRect.height() / r.height()));
@@ -256,7 +253,7 @@ class CropHighlightView {
 		}
 	}
 
-	// Grows the cropping rectange by (dx, dy) in image space.
+	// Grows the cropping rectangle by (dx, dy) in image space.
 	void moveBy(float dx, float dy) {
 		Rect invalRect = new Rect(mDrawRect);
 
@@ -275,7 +272,7 @@ class CropHighlightView {
 		mContext.invalidate(invalRect);
 	}
 
-	// Grows the cropping rectange by (dx, dy) in image space.
+	// Grows the cropping rectangle by (dx, dy) in image space.
 	void growBy(float dx, float dy) {
 		if (mMaintainAspectRatio) {
 			if (dx != 0) {
@@ -290,15 +287,13 @@ class CropHighlightView {
 		// the cropping rectangle.
 		RectF r = new RectF(mCropRect);
 		if (dx > 0F && r.width() + 2 * dx > mImageRect.width()) {
-			float adjustment = (mImageRect.width() - r.width()) / 2F;
-			dx = adjustment;
+            dx = (mImageRect.width() - r.width()) / 2F;
 			if (mMaintainAspectRatio) {
 				dy = dx / mInitialAspectRatio;
 			}
 		}
 		if (dy > 0F && r.height() + 2 * dy > mImageRect.height()) {
-			float adjustment = (mImageRect.height() - r.height()) / 2F;
-			dy = adjustment;
+            dy = (mImageRect.height() - r.height()) / 2F;
 			if (mMaintainAspectRatio) {
 				dx = dy * mInitialAspectRatio;
 			}

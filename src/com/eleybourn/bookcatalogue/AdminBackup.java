@@ -337,19 +337,26 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 return;
             }
 
-            if (request.equals(BookCatalogueAPI.REQUEST_INFO_COUNT)) {
-                int totalLocalBooks = CatalogueDBAdapter.countBooks();
-                String statsText = message + " of " + totalLocalBooks + " books backed up";
-                activity.mBackupStatsField.setText(statsText);
-            } else if (request.equals(BookCatalogueAPI.REQUEST_INFO_LAST)) {
-                String statsText = "Last Backup: " + message;
-                activity.mLastBackupDateField.setText(statsText);
-            } else if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL)) {
-                // Reload stats after full backup completes
-                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_COUNT, this);
-                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_LAST, this);
-            } else if (request.equals(BookCatalogueAPI.REQUEST_LOGIN)) {
-                activity.reload();
+            switch (request) {
+                case BookCatalogueAPI.REQUEST_INFO_COUNT: {
+                    int totalLocalBooks = CatalogueDBAdapter.countBooks();
+                    String statsText = message + " of " + totalLocalBooks + " books backed up";
+                    activity.mBackupStatsField.setText(statsText);
+                    break;
+                }
+                case BookCatalogueAPI.REQUEST_INFO_LAST: {
+                    String statsText = "Last Backup: " + message;
+                    activity.mLastBackupDateField.setText(statsText);
+                    break;
+                }
+                case BookCatalogueAPI.REQUEST_BACKUP_ALL:
+                    // Reload stats after full backup completes
+                    new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_COUNT, this);
+                    new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_LAST, this);
+                    break;
+                case BookCatalogueAPI.REQUEST_LOGIN:
+                    activity.reload();
+                    break;
             }
 
             // Hide progress bar on completion of any task except count/last_backup

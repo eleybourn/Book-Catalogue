@@ -34,6 +34,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.scanner.Scanner;
 import com.eleybourn.bookcatalogue.scanner.ScannerManager;
@@ -658,7 +660,7 @@ public class BookISBNSearch extends ActivityWithTasks {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle inState) {
+    protected void onSaveInstanceState(@NonNull Bundle inState) {
         super.onSaveInstanceState(inState);
 
         // Saving intent data is a kludge due to an apparent Android bug in some

@@ -31,12 +31,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerController;
 import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.debug.Tracker.States;
 import com.eleybourn.bookcatalogue.utils.Logger;
+
+import java.util.Objects;
 
 /**
  * TODO: Remove this!!!! Fragments makes ActivityWithTasks mostly redundant.
@@ -100,8 +104,6 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
                 } else {
                     Logger.logError(new RuntimeException("Have ID, but can not find controller getting TaskManager"));
                 }
-            } else {
-                //Logger.logError(new RuntimeException("Task manager requested, but no ID available"));
             }
 
             // Create if necessary
@@ -184,7 +186,7 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
             mProgressMessage = message;
 
             // If empty, close any dialog
-            if ((mProgressMessage == null || mProgressMessage.trim().isEmpty()) && mProgressMax == mProgressCount) {
+            if (mProgressMessage.trim().isEmpty() && mProgressMax == mProgressCount) {
                 if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
                     mProgressDialog = null;
@@ -221,7 +223,7 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
         boolean wantDet = wantDeterminateProgress();
 
         if (mProgressDialog != null) {
-            Object tag = mProgressDialog.getWindow().getDecorView().getTag();
+            Object tag = Objects.requireNonNull(mProgressDialog.getWindow()).getDecorView().getTag();
             if ((wantDet && "indeterminate".equals(tag)) || (!wantDet && "determinate".equals(tag))) {
                 mProgressDialog.dismiss();
                 mProgressDialog = null;
@@ -234,7 +236,7 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
             mProgressDialog.setContentView(R.layout.progress_dialog);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setCanceledOnTouchOutside(false);
-            mProgressDialog.getWindow().getDecorView().setTag(wantDet ? "determinate" : "indeterminate");
+            Objects.requireNonNull(mProgressDialog.getWindow()).getDecorView().setTag(wantDet ? "determinate" : "indeterminate");
         }
 
         LinearLayout spinnerLayout = mProgressDialog.findViewById(R.id.spinner_layout);
@@ -289,7 +291,7 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
      * Save the TaskManager ID for later retrieval
      */
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         if (mTaskManagerId != 0)

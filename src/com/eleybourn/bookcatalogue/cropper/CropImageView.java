@@ -240,7 +240,7 @@ public class CropImageView extends CropImageViewTouchBase {
 		}
 	}
 
-	public void add(CropHighlightView hv) {
+	void add(CropHighlightView hv) {
 		mHighlightViews.add(hv);
 		invalidate();
 	}

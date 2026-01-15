@@ -19,7 +19,6 @@
  */
 package com.eleybourn.bookcatalogue.backup;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
@@ -49,25 +48,12 @@ public class BackupManager {
 	/**
 	 * Create a BackupReader for the specified file.
 	 * 
-	 * @param file	File to read
+	 * @param file	DocumentFile to read
 	 * 
 	 * @return	a new reader
 	 * 
 	 * @throws IOException (inaccessible, invalid other other errors)
 	 */
-	public static BackupReader readBackup(File file) throws IOException {
-		if (!file.exists())
-			throw new java.io.FileNotFoundException("Attempt to open non-existent backup file");
-
-		// We only support one backup format; so we use that. In future we would need to 
-		// explore the file to determine which format to use
-		TarBackupContainer bkp = new TarBackupContainer(file);
-		// Each format should provide a validator of some kind
-		if (!bkp.isValid())
-			throw new IOException("Not a valid backup file");
-
-		return bkp.newReader();
-	}
 	public static BackupReader readBackup(DocumentFile file) throws IOException {
 		if (!file.exists())
 			throw new java.io.FileNotFoundException("Attempt to open non-existent backup file");
@@ -94,15 +80,6 @@ public class BackupManager {
 		final int flags = backupFlags & Exporter.EXPORT_MASK;
 		if (flags == 0)
 			throw new RuntimeException("Backup flags must be specified");
-		//if (flags == (Exporter.EXPORT_ALL | Exporter.EXPORT_NEW_OR_UPDATED) )
-		//	throw new RuntimeException("Illegal backup flag combination: ALL and NEW_OR_UPADTED");
-		
-		final DocumentFile resultingFile = requestedFile; //cleanupFile(requestedFile);
-		// We can no longer save to a temp file then delete/rename due to google awfulness.
-		////final File tempFile = new File(resultingFile.getAbsolutePath() + ".tmp");
-		//final String finalName = resultingFile.getName();
-		//resultingFile.renameTo(resultingFile.getName() + ".tmp");
-		//final DocumentFile tempFile = resultingFile;
 
 		FragmentTask task = new FragmentTaskAbstract() {
 			private boolean mBackupOk = false;
@@ -113,8 +90,8 @@ public class BackupManager {
 				BackupWriter wrt = null;
 
 				try {
-					System.out.println("Starting " + resultingFile.getName());
-					TarBackupContainer bkp = new TarBackupContainer(resultingFile);
+					System.out.println("Starting " + requestedFile.getName());
+					TarBackupContainer bkp = new TarBackupContainer(requestedFile);
 					wrt = bkp.newWriter();
 
 					wrt.backup(new BackupWriterListener() {
@@ -146,21 +123,18 @@ public class BackupManager {
 						}}, backupFlags, since);
 
 					if (fragment.isCancelled()) {
-						System.out.println("Cancelled " + resultingFile.getName());
-						if (resultingFile.exists())
-							resultingFile.delete();
+						System.out.println("Cancelled " + requestedFile.getName());
+						if (requestedFile.exists())
+                            requestedFile.delete();
 					} else {
-//						if (resultingFile.exists())
-//							resultingFile.delete();
-						//tempFile.renameTo(finalName);
 						mBackupOk = true;
-						System.out.println("Finished " + resultingFile.getName() + ", size = " + resultingFile.length());
+						System.out.println("Finished " + requestedFile.getName() + ", size = " + requestedFile.length());
 					}
 				} catch (Exception e) {
 					Logger.logError(e);
-					if (resultingFile.exists())
+					if (requestedFile.exists())
 						try {
-							resultingFile.delete();
+                            requestedFile.delete();
 						} catch (Exception e2) {
 							// Ignore
 						}
@@ -180,8 +154,8 @@ public class BackupManager {
 			public void onFinish(SimpleTaskQueueProgressFragment fragment, Exception exception) {
 				super.onFinish(fragment, exception);
 				if (exception != null) {
-					if (resultingFile.exists())
-						resultingFile.delete();
+					if (requestedFile.exists())
+                        requestedFile.delete();
 				}
 				fragment.setSuccess(mBackupOk);
 				if (mBackupOk) {
@@ -189,7 +163,7 @@ public class BackupManager {
 					if ( (backupFlags == Exporter.EXPORT_ALL)) {
 						prefs.setString(BookCataloguePreferences.PREF_LAST_BACKUP_DATE, mBackupDate);
 					}
-					prefs.setString(BookCataloguePreferences.PREF_LAST_BACKUP_FILE, resultingFile.getName());
+					prefs.setString(BookCataloguePreferences.PREF_LAST_BACKUP_FILE, requestedFile.getName());
 				}
 				if (listener != null) {
 					listener.onFinish(fragment, taskId, this);
@@ -197,8 +171,8 @@ public class BackupManager {
 			}
 
 		};
-		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.runTaskWithProgress(context.getSupportFragmentManager(), R.string.backing_up_ellipsis, task, false, taskId);
-		return resultingFile;
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(context.getSupportFragmentManager(), R.string.backing_up_ellipsis, task, false, taskId);
+		return requestedFile;
 	}
 
 	/**
@@ -210,10 +184,9 @@ public class BackupManager {
 		FragmentTask task = new FragmentTaskAbstract() {
 			@Override
 			public void run(final SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
-				DocumentFile file = inputFile; //new File(StorageUtils.getSharedStoragePath() + "/bookCatalogue.bcbk");
 				try {
-					System.out.println("Starting " + file.getName());
-					BackupReader rdr = BackupManager.readBackup(file);
+					System.out.println("Starting " + inputFile.getName());
+					BackupReader rdr = BackupManager.readBackup(inputFile);
 					rdr.restore(new BackupReaderListener() {
 						@Override
 						public void setMax(int max) {
@@ -233,7 +206,7 @@ public class BackupManager {
 					Logger.logError(e);
 					throw new RuntimeException("Error during restore", e);
 				}
-				System.out.println("Finished " + file.getName() + ", size = " + file.length());
+				System.out.println("Finished " + inputFile.getName() + ", size = " + inputFile.length());
 			}
 
 			@Override
@@ -242,7 +215,7 @@ public class BackupManager {
 				listener.onFinish(fragment, taskId, this);
 			}
 		};
-		SimpleTaskQueueProgressFragment frag = SimpleTaskQueueProgressFragment.runTaskWithProgress(context.getSupportFragmentManager(),
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(context.getSupportFragmentManager(),
 				R.string.importing_ellipsis, task, false, taskId);
 	}
 }

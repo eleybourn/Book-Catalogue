@@ -109,7 +109,7 @@ public class BookCatalogueAPICredentials {
             try {
                 // The CustomCredential's 'data' Bundle contains the Google ID token.
                 GoogleIdTokenCredential googleId = GoogleIdTokenCredential.createFrom(customCredential.getData());
-                String idToken = googleId.getIdToken();
+                //String idToken = googleId.getIdToken();
                 email = googleId.getId(); // Or extract email if distinct from ID
                 Log.d("APICredentials", "Successfully obtained ID token for: " + email);
             } catch (Exception e) {

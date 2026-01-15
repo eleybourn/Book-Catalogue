@@ -22,7 +22,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:gravity="end"
-        android:paddingEnd="@dimen/p_md"
+        android:paddingHorizontal="@dimen/p_md"
         android:src="@drawable/ic_button_down" />
 
     <ImageView
@@ -36,7 +36,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:gravity="end"
-        android:paddingEnd="@dimen/p_md"
+        android:paddingHorizontal="@dimen/p_md"
         android:src="@drawable/ic_button_up" />
 
     <TextView
@@ -47,7 +47,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:gravity="start"
-        android:paddingEnd="@dimen/p_md" />
+        android:paddingHorizontal="@dimen/p_md" />
 
     <TextView
         android:id="@+id/row_title"
@@ -58,7 +58,7 @@
         android:layout_toEndOf="@id/row_position"
         android:ellipsize="marquee"
         android:gravity="start"
-        android:paddingEnd="@dimen/p_md"
+        android:paddingHorizontal="@dimen/p_md"
         android:singleLine="true" />
 
     <TextView
@@ -70,7 +70,7 @@
         android:layout_toEndOf="@id/row_position"
         android:ellipsize="marquee"
         android:gravity="start"
-        android:paddingEnd="@dimen/p_md"
+        android:paddingHorizontal="@dimen/p_md"
         android:singleLine="true" />
 
 </RelativeLayout>

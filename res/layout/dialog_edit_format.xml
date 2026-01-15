@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:completionThreshold="2"
             android:hint="@string/label_format"
-            android:paddingStart="@dimen/p_md" />
+            android:paddingHorizontal="@dimen/p_md" />
 
     </LinearLayout>
 

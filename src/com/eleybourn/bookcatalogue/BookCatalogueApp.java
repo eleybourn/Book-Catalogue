@@ -42,9 +42,12 @@ import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
+import androidx.core.os.LocaleListCompat;
 
 import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
+import com.eleybourn.bookcatalogue.utils.LocaleManager;
 import com.eleybourn.bookcatalogue.utils.Terminator;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
@@ -69,11 +72,6 @@ import java.util.Locale;
  *
  */
 public class BookCatalogueApp extends Application {
-
-    /**
-     * The locale used at startup; so that we can revert to system locale if we want to
-     */
-    private static final Locale mInitialLocale = Locale.getDefault();
     /**
      * Set of OnLocaleChangedListeners
      */
@@ -87,7 +85,6 @@ public class BookCatalogueApp extends Application {
      */
     private static Boolean mCollationCaseSensitive = null;
     private static BcQueueManager mQueueManager = null;
-    @SuppressLint("ConstantLocale")
     // User-specified default locale
     private static Locale mPreferredLocale = null;
     /**
@@ -230,31 +227,6 @@ public class BookCatalogueApp extends Application {
         return mPreferredLocale;
     }
 
-    /// **
-    // * Set the current preferred locale in the passed resources.
-    // *
-    // * @param res   Resources to use
-    // * @return  true if it was actually changed
-    // */
-    public static Context setLocale(Context context) {
-        String prefLocaleName = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, null);
-        // If we have a preference, set it
-        if (prefLocaleName != null && !prefLocaleName.isEmpty()) {
-            mPreferredLocale = localeFromName(prefLocaleName);
-        } else {
-            mPreferredLocale = getSystemLocale();
-        }
-
-        Locale.setDefault(mPreferredLocale);
-        Resources resources = context.getResources();
-        Configuration configuration = resources.getConfiguration();
-
-        configuration.setLocale(mPreferredLocale);
-        configuration.setLayoutDirection(mPreferredLocale);
-
-        return context.createConfigurationContext(configuration);
-    }
-
     /**
      * Get the list of supported locale names
      *
@@ -277,7 +249,9 @@ public class BookCatalogueApp extends Application {
     }
 
     public static Locale getSystemLocale() {
-        return mInitialLocale;
+        // Return the current system default from Resources.
+        // This is more reliable than Locale.getDefault() in some edge cases.
+        return Resources.getSystem().getConfiguration().getLocales().get(0);
     }
 
     /**
@@ -286,8 +260,10 @@ public class BookCatalogueApp extends Application {
      */
     @Override
     public void onCreate() {
+        super.onCreate();
+        context = getApplicationContext();
 
-        context = setLocale(getApplicationContext());
+        applyLocaleSettings();
 
         Terminator.init();
 
@@ -332,20 +308,27 @@ public class BookCatalogueApp extends Application {
         if (mQueueManager == null)
             mQueueManager = new BcQueueManager(this.getApplicationContext());
 
-        super.onCreate();
-
-        applyLocaleSettings();
-
         // Watch the preferences and handle changes as necessary
-        //BookCataloguePreferences ap = getPreferences();
         SharedPreferences p = BookCataloguePreferences.getSharedPreferences();
-
         p.registerOnSharedPreferenceChangeListener(mPrefsListener);
     }
 
     private void applyLocaleSettings() {
-        context = setLocale(getBaseContext());
-        //applyPreferredLocaleIfNecessary(getBaseContext().getResources());
+        // Get your saved language preference (e.g., "fr-FR", "es-ES")
+        String prefLocaleName = getAppPreferences().getString(BookCataloguePreferences.PREF_APP_LOCALE, "");
+
+        if (prefLocaleName != null && !prefLocaleName.isEmpty()) {
+            // Use the new centralized LocaleManager
+            LocaleManager.setAppLocale(prefLocaleName.replace("_", "-"));
+        } else {
+            // To revert to the system default, call with an empty or null string.
+            // Let's modify LocaleManager slightly to handle this cleanly.
+            LocaleManager.setAppLocale(""); // An empty tag list results in using system default.
+        }
+
+        // You no longer need to manually update the context here.
+        // The system handles recreating activities.
+        // You can still notify your listeners if they need to update non-activity components.
         notifyLocaleChanged();
     }
 
@@ -367,27 +350,6 @@ public class BookCatalogueApp extends Application {
         for (WeakReference<OnLocaleChangedListener> ref : toRemove) {
             mOnLocaleChangedListeners.remove(ref);
         }
-    }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        // We need a context in order to get prefs
-        context = base;
-        // Find out preferred locale and set it
-        context = setLocale(base);
-        super.attachBaseContext(context);
-    }
-
-    /**
-     * Monitor configuration changes (like rotation) to make sure we reset the
-     * locale.
-     *
-     * @param newConfig The new configuration
-     */
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        context = setLocale(getBaseContext());
     }
 
     /**

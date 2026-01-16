@@ -94,12 +94,12 @@
     <string name="cover_options_cc_ellipsis">Boekomslag opties…</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
-    <string name="covers_progress">%1$s boekomslagen verwerkt (%2$s missend)</string>
+    <string name="covers_progress">%1$d boekomslagen verwerkt (%2$d missend)</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$s boekomslagen verwerkt (%2$s missend, %3$s overgeslagen)</string>
+    <string name="covers_progress_increment">%1$d boekomslagen verwerkt (%2$d missend, %3$d overgeslagen)</string>
 
     <string name="crash_dialog_comment_prompt">Uw commentaar (of laat dit leeg):</string>
     <string name="crash_dialog_ok_toast">Dank u!</string>

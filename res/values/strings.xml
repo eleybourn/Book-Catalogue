@@ -107,12 +107,12 @@
     <string name="cover_options_cc_ellipsis">Cover Options…</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
-    <string name="covers_progress">%1$s covers processed (%2$s missing)</string>
+    <string name="covers_progress">%1$d covers processed (%2$d missing)</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$s covers processed (%2$s missing, %3$s skipped)</string>
+    <string name="covers_progress_increment">%1$d covers processed (%2$d missing, %3$d skipped)</string>
 
     <string name="crash_dialog_comment_prompt">Your comments (or just leave blank):</string>
     <string name="crash_dialog_ok_toast">Thank you!</string>

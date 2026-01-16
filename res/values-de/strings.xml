@@ -91,12 +91,12 @@
     <string name="cover_detail">Coverdetails</string>
     <string name="cover_options_cc_ellipsis">Umschlag-Einstellungen…</string>
 
-    <string name="covers_progress">%1$s Cover bearbeitet (%2$s offen)</string>
+    <string name="covers_progress">%1$d Cover bearbeitet (%2$d offen)</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$s Cover bearbeitet (%2$s fehlen, %3$s übersprungen)</string>
+    <string name="covers_progress_increment">%1$d Cover bearbeitet (%2$d fehlen, %3$d übersprungen)</string>
 
     <string name="crash_dialog_comment_prompt">Ihr Kommentar (darf auch leer bleiben):</string>
     <string name="crash_dialog_ok_toast">Danke!</string>

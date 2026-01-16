@@ -119,12 +119,12 @@
     <string name="cover_options_cc_ellipsis">Opzioni Copertine…</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
-    <string name="covers_progress">%1$s copertine processate (%2$s mancanti)</string>
+    <string name="covers_progress">%1$d copertine processate (%2$d mancanti)</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$s copertine elaborate (%2$s mancanti, %3$s saltate)</string>
+    <string name="covers_progress_increment">%1$d copertine elaborate (%2$d mancanti, %3$d saltate)</string>
 
     <string name="crash_dialog_comment_prompt">I tuoi commenti (o lascia in bianco):</string>
     <string name="crash_dialog_ok_toast">Grazie!</string>

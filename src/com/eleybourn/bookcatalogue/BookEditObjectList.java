@@ -45,7 +45,7 @@ public abstract class BookEditObjectList<T extends Serializable> extends BookCat
     protected String mBookTitleLabel;
 
     // Configuration
-    private final String mKey;
+    private String mKey;
     private final int mBaseViewId; // Removed final to fix initialization error
     private final int mRowViewId;  // Removed final to fix initialization error
 

@@ -107,8 +107,8 @@
     <string name="cover_detail">Детальная информация об обложке</string>
     <string name="cover_options_cc_ellipsis">Настройки обложек…</string>
 
-    <string name="covers_progress">%1$s обложек обработано (%2$s пропущено)</string>
-    <string name="covers_progress_increment">%1$s обложек обработано (%2$s не хватает, %3$s пропущено)</string>
+    <string name="covers_progress">%1$d обложек обработано (%2$d пропущено)</string>
+    <string name="covers_progress_increment">%1$d обложек обработано (%2$d не хватает, %3$d пропущено)</string>
 
     <string name="crash_dialog_comment_prompt">Ваши комментарии (или оставьте пустым):</string>
     <string name="crash_dialog_ok_toast">Спасибо!</string>

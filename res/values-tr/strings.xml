@@ -119,12 +119,12 @@
     <string name="cover_options_cc_ellipsis">Kapak seçenekleri…</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
-    <string name="covers_progress">%1$s kapak işlendi (%2$s bulunamadı)</string>
+    <string name="covers_progress">%1$d kapak işlendi (%2$d bulunamadı)</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$s kapak işlendi (%2$s bulunamadı, %3$s atlandı)</string>
+    <string name="covers_progress_increment">%1$d kapak işlendi (%2$d bulunamadı, %3$d atlandı)</string>
 
     <string name="crash_dialog_comment_prompt">Yorumlarınız (isteğe bağlı):</string>
     <string name="crash_dialog_ok_toast">Sağ olun!</string>

@@ -334,7 +334,7 @@ public class BookDetails extends BookAbstract {
         public String format(Field f, String source) {
             try {
                 boolean val = Utils.stringToBoolean(source, false);
-                return BookCatalogueApp.getResourceString(val ? R.string.option_yes : R.string.option_no);
+                return BookCatalogueApp.getRes().getString(val ? R.string.option_yes : R.string.option_no);
             } catch (Exception e) {
                 return source;
             }

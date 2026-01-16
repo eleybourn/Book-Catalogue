@@ -212,7 +212,7 @@ public class CsvImporter {
 					// (it seems a 'book' record gets written without an 'author' record; should not happen)
 					// so we allow blank author_details and full in a regionalized version of "Author, Unknown"
 					if (authorDetails == null || authorDetails.isEmpty()) {
-						authorDetails = BookCatalogueApp.getResourceString(R.string.label_author) + ", " + BookCatalogueApp.getResourceString(R.string.unknown);
+						authorDetails = BookCatalogueApp.getRes().getString(R.string.label_author) + ", " + BookCatalogueApp.getRes().getString(R.string.unknown);
 					}
 
 					// Now build the array for authors
@@ -388,7 +388,7 @@ public class CsvImporter {
 
 				long now = System.currentTimeMillis();
 				if ( (now - lastUpdate) > 200 && !listener.isCancelled()) {
-					listener.onProgress(title + "\n(" + BookCatalogueApp.getResourceString(R.string.n_created_m_updated, nCreated, nUpdated) + ")", row);
+					listener.onProgress(title + "\n(" + BookCatalogueApp.getRes().getString(R.string.n_created_m_updated, nCreated, nUpdated) + ")", row);
 					lastUpdate = now;
 				}
 
@@ -545,7 +545,7 @@ public class CsvImporter {
 		if (values.containsKey(name))
 			return;
 
-		String s = BookCatalogueApp.getResourceString(R.string.file_must_contain_column);
+		String s = BookCatalogueApp.getRes().getString(R.string.file_must_contain_column);
 		throw new ImportException(String.format(s,name));
 	}
 
@@ -555,7 +555,7 @@ public class CsvImporter {
 			if (values.containsKey(name))
 				return;
 		
-		String s = BookCatalogueApp.getResourceString(R.string.file_must_contain_any_column);
+		String s = BookCatalogueApp.getRes().getString(R.string.file_must_contain_any_column);
 		throw new ImportException(String.format(s, Utils.join(names, ",")));
 	}
 
@@ -563,7 +563,7 @@ public class CsvImporter {
 	private void requireNonBlank(BookData values, int row, String name) {
 		if (!values.getString(name).isEmpty())
 			return;
-		String s = BookCatalogueApp.getResourceString(R.string.column_is_blank);
+		String s = BookCatalogueApp.getRes().getString(R.string.column_is_blank);
 		throw new ImportException(String.format(s, name, row));
 	}
 
@@ -573,7 +573,7 @@ public class CsvImporter {
 			if (values.containsKey(name) && !values.getString(name).isEmpty())
 				return;
 
-		String s = BookCatalogueApp.getResourceString(R.string.columns_are_blank);
+		String s = BookCatalogueApp.getRes().getString(R.string.columns_are_blank);
 		throw new ImportException(String.format(s, Utils.join( names, ","), row));
 	}
 

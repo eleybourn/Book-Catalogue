@@ -86,31 +86,31 @@ public class LibraryGroup implements Serializable {
 
 	private static final UniqueMap<Integer, String> mRowKindNames = new UniqueMap<>();
 	static {
-		mRowKindNames.add(ROW_KIND_AUTHOR, BookCatalogueApp.getResourceString(R.string.label_author));
-		mRowKindNames.add(ROW_KIND_SERIES, BookCatalogueApp.getResourceString(R.string.label_series));
-		mRowKindNames.add(ROW_KIND_GENRE, BookCatalogueApp.getResourceString(R.string.label_genre));
-		mRowKindNames.add(ROW_KIND_PUBLISHER, BookCatalogueApp.getResourceString(R.string.label_publisher));
-		mRowKindNames.add(ROW_KIND_READ_AND_UNREAD, BookCatalogueApp.getResourceString(R.string.label_read_amp_unread));
-		mRowKindNames.add(ROW_KIND_LOANED, BookCatalogueApp.getResourceString(R.string.label_loaned));
-		mRowKindNames.add(ROW_KIND_YEAR_PUBLISHED, BookCatalogueApp.getResourceString(R.string.label_publication_year));
-		mRowKindNames.add(ROW_KIND_MONTH_PUBLISHED, BookCatalogueApp.getResourceString(R.string.label_publication_month));
-		mRowKindNames.add(ROW_KIND_TITLE_LETTER, BookCatalogueApp.getResourceString(R.string.label_sort_title_first_letter));
-		mRowKindNames.add(ROW_KIND_YEAR_ADDED, BookCatalogueApp.getResourceString(R.string.label_added_year));
-		mRowKindNames.add(ROW_KIND_MONTH_ADDED, BookCatalogueApp.getResourceString(R.string.label_added_month));
-		mRowKindNames.add(ROW_KIND_DAY_ADDED, BookCatalogueApp.getResourceString(R.string.label_added_day));
-		mRowKindNames.add(ROW_KIND_FORMAT, BookCatalogueApp.getResourceString(R.string.label_format));
-		mRowKindNames.add(ROW_KIND_YEAR_READ, BookCatalogueApp.getResourceString(R.string.label_read_year));
-		mRowKindNames.add(ROW_KIND_MONTH_READ, BookCatalogueApp.getResourceString(R.string.label_read_month));
-		mRowKindNames.add(ROW_KIND_DAY_READ, BookCatalogueApp.getResourceString(R.string.label_read_day));
-		mRowKindNames.add(ROW_KIND_LOCATION, BookCatalogueApp.getResourceString(R.string.label_location));
-		mRowKindNames.add(ROW_KIND_LANGUAGE, BookCatalogueApp.getResourceString(R.string.label_language));
-		mRowKindNames.add(ROW_KIND_UPDATE_DAY, BookCatalogueApp.getResourceString(R.string.label_update_day));
-		mRowKindNames.add(ROW_KIND_UPDATE_MONTH, BookCatalogueApp.getResourceString(R.string.label_update_month));
-		mRowKindNames.add(ROW_KIND_UPDATE_YEAR, BookCatalogueApp.getResourceString(R.string.label_update_year));
-		mRowKindNames.add(ROW_KIND_RATING, BookCatalogueApp.getResourceString(R.string.label_rating));
-		mRowKindNames.add(ROW_KIND_BOOKSHELF, BookCatalogueApp.getResourceString(R.string.label_bookshelf));
+		mRowKindNames.add(ROW_KIND_AUTHOR, BookCatalogueApp.getRes().getString(R.string.label_author));
+		mRowKindNames.add(ROW_KIND_SERIES, BookCatalogueApp.getRes().getString(R.string.label_series));
+		mRowKindNames.add(ROW_KIND_GENRE, BookCatalogueApp.getRes().getString(R.string.label_genre));
+		mRowKindNames.add(ROW_KIND_PUBLISHER, BookCatalogueApp.getRes().getString(R.string.label_publisher));
+		mRowKindNames.add(ROW_KIND_READ_AND_UNREAD, BookCatalogueApp.getRes().getString(R.string.label_read_amp_unread));
+		mRowKindNames.add(ROW_KIND_LOANED, BookCatalogueApp.getRes().getString(R.string.label_loaned));
+		mRowKindNames.add(ROW_KIND_YEAR_PUBLISHED, BookCatalogueApp.getRes().getString(R.string.label_publication_year));
+		mRowKindNames.add(ROW_KIND_MONTH_PUBLISHED, BookCatalogueApp.getRes().getString(R.string.label_publication_month));
+		mRowKindNames.add(ROW_KIND_TITLE_LETTER, BookCatalogueApp.getRes().getString(R.string.label_sort_title_first_letter));
+		mRowKindNames.add(ROW_KIND_YEAR_ADDED, BookCatalogueApp.getRes().getString(R.string.label_added_year));
+		mRowKindNames.add(ROW_KIND_MONTH_ADDED, BookCatalogueApp.getRes().getString(R.string.label_added_month));
+		mRowKindNames.add(ROW_KIND_DAY_ADDED, BookCatalogueApp.getRes().getString(R.string.label_added_day));
+		mRowKindNames.add(ROW_KIND_FORMAT, BookCatalogueApp.getRes().getString(R.string.label_format));
+		mRowKindNames.add(ROW_KIND_YEAR_READ, BookCatalogueApp.getRes().getString(R.string.label_read_year));
+		mRowKindNames.add(ROW_KIND_MONTH_READ, BookCatalogueApp.getRes().getString(R.string.label_read_month));
+		mRowKindNames.add(ROW_KIND_DAY_READ, BookCatalogueApp.getRes().getString(R.string.label_read_day));
+		mRowKindNames.add(ROW_KIND_LOCATION, BookCatalogueApp.getRes().getString(R.string.label_location));
+		mRowKindNames.add(ROW_KIND_LANGUAGE, BookCatalogueApp.getRes().getString(R.string.label_language));
+		mRowKindNames.add(ROW_KIND_UPDATE_DAY, BookCatalogueApp.getRes().getString(R.string.label_update_day));
+		mRowKindNames.add(ROW_KIND_UPDATE_MONTH, BookCatalogueApp.getRes().getString(R.string.label_update_month));
+		mRowKindNames.add(ROW_KIND_UPDATE_YEAR, BookCatalogueApp.getRes().getString(R.string.label_update_year));
+		mRowKindNames.add(ROW_KIND_RATING, BookCatalogueApp.getRes().getString(R.string.label_rating));
+		mRowKindNames.add(ROW_KIND_BOOKSHELF, BookCatalogueApp.getRes().getString(R.string.label_bookshelf));
 		// NEW_KIND: Add new kinds here
-		mRowKindNames.add(ROW_KIND_BOOK, BookCatalogueApp.getResourceString(R.string.book));
+		mRowKindNames.add(ROW_KIND_BOOK, BookCatalogueApp.getRes().getString(R.string.book));
 		
 		// Sanity check
 		for(int i = 0; i <= ROW_KIND_MAX; i++) {
@@ -216,7 +216,7 @@ public class LibraryGroup implements Serializable {
 		/** mAllSeries Parameter values and descriptions */
 		private static final ItemEntries<Boolean> mAllSeriesItems = new ItemEntries<>();
 		static {
-			String kind = BookCatalogueApp.getResourceString(R.string.label_series);
+			String kind = BookCatalogueApp.getRes().getString(R.string.label_series);
 			mAllSeriesItems.add(null, R.string.option_use_default_setting);
 			mAllSeriesItems.add(false, R.string.option_show_book_under_primary_thing, kind);
 			mAllSeriesItems.add(true, R.string.option_show_book_under_each_thing, kind);
@@ -286,7 +286,7 @@ public class LibraryGroup implements Serializable {
 		public transient BooleanListProperty mAllAuthors;		
 		private static final ItemEntries<Boolean> mAllAuthorsItems = new ItemEntries<>();
 		static {
-			String kind = BookCatalogueApp.getResourceString(R.string.label_author);
+			String kind = BookCatalogueApp.getRes().getString(R.string.label_author);
 			mAllAuthorsItems.add(null, R.string.option_use_default_setting);
 			mAllAuthorsItems.add(false, R.string.option_show_book_under_primary_thing, kind);
 			mAllAuthorsItems.add(true, R.string.option_show_book_under_each_thing, kind);

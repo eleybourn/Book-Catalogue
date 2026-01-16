@@ -63,7 +63,7 @@ public class MenuHandler {
      * @param menu Root menu
      */
     public void addCreateBookItems(Menu menu) {
-        SubMenu addMenu = menu.addSubMenu(0, MENU_ADD_BOOK, mSort++, BookCatalogueApp.getResourceString(R.string.title_add_book) + "...");
+        SubMenu addMenu = menu.addSubMenu(0, MENU_ADD_BOOK, mSort++, BookCatalogueApp.getRes().getString(R.string.title_add_book) + "...");
         addMenu.setIcon(R.drawable.ic_menu_new);
         addMenu.getItem().setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onPrimary)));
         addMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -106,27 +106,27 @@ public class MenuHandler {
      */
     public void addCreateHelpAndAdminItems(Menu menu) {
         {
-            String title = BookCatalogueApp.getResourceString(R.string.title_manage_bookshelves);
+            String title = BookCatalogueApp.getRes().getString(R.string.title_manage_bookshelves);
             MenuItem item = menu.add(0, MENU_ITEM_BOOKSHELVES, mSort++, title);
             item.setIcon(R.drawable.ic_menu_bookshelves);
         }
         {
-            String helpTitle = BookCatalogueApp.getResourceString(R.string.label_help);
+            String helpTitle = BookCatalogueApp.getRes().getString(R.string.label_help);
             MenuItem help = menu.add(0, MENU_ITEM_HELP, mSort++, helpTitle);
             help.setIcon(R.drawable.ic_menu_help);
         }
         {
-            String adminTitle = BookCatalogueApp.getResourceString(R.string.title_settings);
+            String adminTitle = BookCatalogueApp.getRes().getString(R.string.title_settings);
             MenuItem admin = menu.add(0, MENU_ITEM_ADMIN, mSort++, adminTitle);
             admin.setIcon(R.drawable.ic_menu_settings);
         }
         {
-            String aboutTitle = BookCatalogueApp.getResourceString(R.string.label_about);
+            String aboutTitle = BookCatalogueApp.getRes().getString(R.string.label_about);
             MenuItem admin = menu.add(0, MENU_ITEM_ABOUT, mSort++, aboutTitle);
             admin.setIcon(R.drawable.ic_menu_info);
         }
         if (BuildConfig.IS_DONATE_ALLOWED) {
-            String title = BookCatalogueApp.getResourceString(R.string.label_donate);
+            String title = BookCatalogueApp.getRes().getString(R.string.label_donate);
             MenuItem donate = menu.add(0, MENU_ITEM_DONATE, mSort++, title);
             donate.setIcon(R.drawable.ic_menu_donate);
         }

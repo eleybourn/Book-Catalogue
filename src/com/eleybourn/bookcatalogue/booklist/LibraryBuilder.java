@@ -406,7 +406,7 @@ public class LibraryBuilder {
      */
     private String getUNKNOWNText() {
         if (mUNKNOWNText == null) {
-            mUNKNOWNText = BookCatalogueApp.getResourceString(R.string.unknown_uc);
+            mUNKNOWNText = BookCatalogueApp.getRes().getString(R.string.unknown_uc);
         }
         return mUNKNOWNText;
     }
@@ -686,8 +686,8 @@ public class LibraryBuilder {
                     case ROW_KIND_READ_AND_UNREAD:
                         g.displayDomain = DOM_READ_STATUS;
                         String unreadExpr = "Case When " + TBL_BOOKS.dot(DOM_READ) + " = 1\n" +
-                                "	Then '" + BookCatalogueApp.getResourceString(R.string.option_library_read) + "'\n" +
-                                " Else '" + BookCatalogueApp.getResourceString(R.string.option_library_unread) + "' end";
+                                "	Then '" + BookCatalogueApp.getRes().getString(R.string.option_library_read) + "'\n" +
+                                " Else '" + BookCatalogueApp.getRes().getString(R.string.option_library_unread) + "' end";
                         summary.addDomain(DOM_READ_STATUS, unreadExpr, SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
                         // We want the READ flag at the lowest level only. Some bad data means that it may be 0 or 'f', so we don't group by it.
                         summary.addDomain(DOM_READ, TBL_BOOKS.dot(DOM_READ), SummaryBuilder.FLAG_NONE);
@@ -699,8 +699,8 @@ public class LibraryBuilder {
                         hasGroupLOANED = true;
                         g.displayDomain = DOM_LOANED_TO;
                         summary.addDomain(DOM_LOANED_TO_SORT, "Case When " + TBL_LOAN.dot(KEY_LOANED_TO) + " is null then 1 else 0 end", SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
-                        summary.addDomain(DOM_LOANED_TO, "Case When " + TBL_LOAN.dot(KEY_LOANED_TO) + " is null then '" + BookCatalogueApp.getResourceString(R.string.available) + "'" +
-                                        " else '" + BookCatalogueApp.getResourceString(R.string.loaned_to_2) + "' || " + TBL_LOAN.dot(KEY_LOANED_TO) + " end",
+                        summary.addDomain(DOM_LOANED_TO, "Case When " + TBL_LOAN.dot(KEY_LOANED_TO) + " is null then '" + BookCatalogueApp.getRes().getString(R.string.available) + "'" +
+                                        " else '" + BookCatalogueApp.getRes().getString(R.string.loaned_to_2) + "' || " + TBL_LOAN.dot(KEY_LOANED_TO) + " end",
                                 SummaryBuilder.FLAG_GROUPED | SummaryBuilder.FLAG_SORTED);
                         g.setKeyComponents("l", DOM_LOANED_TO);
                         break;

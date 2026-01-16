@@ -117,13 +117,13 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 		/** Constructor. Instantiates string. */
 		public ItemEntry(T value, int resourceId, Object... args) {
 			this.value = value;
-			this.textId = resourceId; //BookCatalogueApp.getResourceString(resourceId);
+			this.textId = resourceId; //BookCatalogueApp.getRes().getString(resourceId);
             this.textArgs = args;
 		}
 
         /** Accessor */
         public String getString() {
-            return BookCatalogueApp.getResourceString(textId, textArgs);
+            return BookCatalogueApp.getRes().getString(textId, textArgs);
         }
 
         /** Accessor */

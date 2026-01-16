@@ -354,7 +354,7 @@ public class StorageUtils {
         File coverDir = getBCCovers();
         File sharedDir = getBCShared();
         File toDir;
-        String copyingMsg = BookCatalogueApp.getResourceString(R.string.copying_files);
+        String copyingMsg = BookCatalogueApp.getRes().getString(R.string.copying_files);
         CatalogueDBAdapter db = new CatalogueDBAdapter(BookCatalogueApp.context);
         db.open();
         for (DocumentFile file : files) {

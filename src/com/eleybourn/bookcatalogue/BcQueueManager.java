@@ -121,7 +121,7 @@ public class BcQueueManager extends QueueManager {
 
 		@Override
 		public String getDescription() {
-			return BookCatalogueApp.getResourceString(R.string.unrecognized_task);
+			return BookCatalogueApp.getRes().getString(R.string.unrecognized_task);
 		}
 
 		@Override

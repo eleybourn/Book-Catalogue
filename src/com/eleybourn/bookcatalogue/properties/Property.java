@@ -80,8 +80,8 @@ public abstract class Property {
 	 */
 	public String getName() {
 //		if (mName == null)
-//			mName = BookCatalogueApp.getResourceString(mNameResourceId);
-		return BookCatalogueApp.getResourceString(mNameResourceId);
+//			mName = BookCatalogueApp.getRes().getString(mNameResourceId);
+		return BookCatalogueApp.getRes().getString(mNameResourceId);
 	}
 
 	/**

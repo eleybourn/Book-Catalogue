@@ -24,7 +24,7 @@ public class MessageDialogFragment extends BookCatalogueDialogFragment {
      * @return            Created fragment
      */
     public static MessageDialogFragment newInstance(int dialogId, int titleId, int messageId, int buttonPositiveTextId, int buttonNegativeTextId, int buttonNeutralTextId) {
-        String message = BookCatalogueApp.getResourceString(messageId);
+        String message = BookCatalogueApp.getRes().getString(messageId);
         return MessageDialogFragment.newInstance(dialogId, titleId, message, buttonPositiveTextId, buttonNegativeTextId, buttonNeutralTextId);
     }
 

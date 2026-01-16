@@ -30,21 +30,16 @@ import static org.acra.ReportField.USER_APP_START_DATE;
 import static org.acra.ReportField.USER_COMMENT;
 import static org.acra.ReportField.USER_CRASH_DATE;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
-import androidx.core.os.LocaleListCompat;
 
 import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
 import com.eleybourn.bookcatalogue.utils.LocaleManager;
@@ -80,6 +75,8 @@ public class BookCatalogueApp extends Application {
      * Not sure this is a good idea. Stores the Application context once created
      */
     public static Context context = null;
+    private static BookCatalogueApp mInstance;
+    private static Resources res;
     /**
      * Flag indicating the collation we use in the current database is case-sensitive
      */
@@ -181,26 +178,6 @@ public class BookCatalogueApp extends Application {
     }
 
     /**
-     * Wrapper to reduce explicit use of the 'context' member.
-     *
-     * @param resId Resource ID
-     * @return Localized resource string
-     */
-    public static String getResourceString(int resId) {
-        return context.getString(resId);
-    }
-
-    /**
-     * Wrapper to reduce explicit use of the 'context' member.
-     *
-     * @param resId Resource ID
-     * @return Localized resource string
-     */
-    public static String getResourceString(int resId, Object... objects) {
-        return context.getString(resId, objects);
-    }
-
-    /**
      * Utility routine to return as BookCataloguePreferences object.
      *
      * @return Application preferences object.
@@ -254,6 +231,14 @@ public class BookCatalogueApp extends Application {
         return Resources.getSystem().getConfiguration().getLocales().get(0);
     }
 
+    public static BookCatalogueApp getInstance() {
+        return mInstance;
+    }
+
+    public static Resources getRes() {
+        return res;
+    }
+
     /**
      * Most real initialization should go here, since before this point, the App is still
      * 'Under Construction'.
@@ -262,8 +247,9 @@ public class BookCatalogueApp extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-
         applyLocaleSettings();
+        mInstance = this;
+        res = getResources();
 
         Terminator.init();
 

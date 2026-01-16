@@ -84,7 +84,7 @@ public class UpgradeMessageManager {
 			this.messageId = messageId;
 		}
 		public String getMessage() {
-			return BookCatalogueApp.getResourceString(messageId);
+			return BookCatalogueApp.getRes().getString(messageId);
 		}
 	}
 

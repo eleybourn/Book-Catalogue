@@ -85,7 +85,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 		mRequestedFields = requestedFields;
         SearchManager.SearchListener mSearchListener = this::handleSearchFinished;
         mSearchManager = new SearchManager(mManager, mSearchListener);
-		mManager.doProgress(BookCatalogueApp.getResourceString(R.string.starting_search));
+		mManager.doProgress(BookCatalogueApp.getRes().getString(R.string.starting_search));
 		getMessageSwitch().addListener(getSenderId(), listener, false);
 	}
 
@@ -225,7 +225,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
 			// Make the final message
 			mFinalMessage = String.format(getString(R.string.num_books_searched), "" + counter);
 			if (isCancelled()) 
-				mFinalMessage = String.format(BookCatalogueApp.getResourceString(R.string.cancelled_info), mFinalMessage);
+				mFinalMessage = String.format(BookCatalogueApp.getRes().getString(R.string.cancelled_info), mFinalMessage);
 		}
 	}
 

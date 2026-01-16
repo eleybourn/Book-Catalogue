@@ -246,7 +246,7 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 		if (!s.isEmpty())
 			return s;
 		else
-			return BookCatalogueApp.getResourceString(mNameStringId);
+			return BookCatalogueApp.getRes().getString(mNameStringId);
 	}
 	/**
 	 * Accessor. Sets user-defined name.

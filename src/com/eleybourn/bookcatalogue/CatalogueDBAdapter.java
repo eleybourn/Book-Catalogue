@@ -2789,11 +2789,11 @@ public class CatalogueDBAdapter {
             }
         }
         if (list.isEmpty() || list.size() == 1) {
-            list.add(BookCatalogueApp.getResourceString(R.string.option_format1));
-            list.add(BookCatalogueApp.getResourceString(R.string.option_format2));
-            list.add(BookCatalogueApp.getResourceString(R.string.option_format3));
-            list.add(BookCatalogueApp.getResourceString(R.string.option_format4));
-            list.add(BookCatalogueApp.getResourceString(R.string.option_format5));
+            list.add(BookCatalogueApp.getRes().getString(R.string.option_format1));
+            list.add(BookCatalogueApp.getRes().getString(R.string.option_format2));
+            list.add(BookCatalogueApp.getRes().getString(R.string.option_format3));
+            list.add(BookCatalogueApp.getRes().getString(R.string.option_format4));
+            list.add(BookCatalogueApp.getRes().getString(R.string.option_format5));
         }
         return list;
     }

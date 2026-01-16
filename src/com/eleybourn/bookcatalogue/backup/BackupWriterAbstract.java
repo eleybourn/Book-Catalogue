@@ -183,65 +183,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 		}
 	}
 
-//	/**
-//	 * Generate a temporary file containing a books export, and send it to the archive
-//	 * 
-//	 * NOTE: This implementation is built around the TAR format; it is not a fixed design.
-//	 * We could for example pass an Exporter to the writer and leave it to decide if a 
-//	 * temp file or a stream were appropriate. Sadly, tar archives need to know size before
-//	 * the header can be written.
-//	 * 
-//	 * It IS convenient to do it here because we can caputre the progress, but we could also
-//	 * have writer.putBooks(exporter, listener) as the method.
-//	 * 
-//	 * @param writer
-//	 * 
-//	 * @throws IOException
-//	 */
-//	private void writeBooks(final BackupWriterListener listener, final int backupFlags, final Date since) throws IOException {
-//		// This is an estimate only; we actually don't know how many covers
-//		// there are in the backup.
-//		listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
-//
-//		Exporter.ExportListener exportListener = new Exporter.ExportListener() {
-//			private int mLastPos = 0;
-//			@Override
-//			public void onProgress(String message, int position) {
-//				// The progress is sent periodically and has jumps, so we calculate deltas
-//				listener.step(message, position - mLastPos);
-//				mLastPos = position;
-//			}
-//			@Override
-//			public boolean isCancelled() {
-//				return listener.isCancelled();
-//			}
-//			@Override
-//			public void setMax(int max) {
-//				// Ignore
-//			}
-//		};
-//
-//		// Get a temp file and mark for delete
-//		System.out.println("Getting books");
-//		File temp = File.createTempFile("bookcat", ".tmp");
-//		temp.deleteOnExit();
-//		FileOutputStream output = null;
-//		try {
-//			CsvExporter exporter = new CsvExporter();
-//			output = new FileOutputStream(temp);
-//			exporter.export(output, exportListener, backupFlags, since);
-//			output.close();
-//			System.out.println("Writing Books");
-//			putBooks(temp);
-//		} finally {
-//			if (output != null && output.getChannel().isOpen())
-//				output.close();
-//			if (temp.exists())
-//				temp.delete();
-//		}
-//	}
-
-	/**
+    /**
 	 * Write each cover file corresponding to a book to the archive
 	 */
 	private int writeCovers(final BackupWriterListener listener, final int backupFlags, final Date since, boolean dryRun) throws IOException {
@@ -260,8 +202,8 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 		int ok = 0;
 		int missing = 0;
 		int skipped = 0;
-		String fmt_noskip = BookCatalogueApp.getResourceString(R.string.covers_progress);
-		String fmt_skip = BookCatalogueApp.getResourceString(R.string.covers_progress_increment);
+		String fmt_no_skip = BookCatalogueApp.getRes().getString(R.string.covers_progress);
+		String fmt_skip = BookCatalogueApp.getRes().getString(R.string.covers_progress_increment);
 
 		Cursor c = mDbHelper.getUuidList();
 		try {
@@ -284,7 +226,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 				if (!dryRun) {
 					String message;
 					if (skipped == 0) {
-						message = String.format(fmt_noskip, ok, missing);
+						message = String.format(fmt_no_skip, ok, missing);
 					} else {
 						message = String.format(fmt_skip, ok, missing, skipped);
 					}

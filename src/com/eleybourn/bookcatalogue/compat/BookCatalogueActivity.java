@@ -129,7 +129,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                 message.append("</p>");
                 message.append("<p>");
 
-                message.append(BookCatalogueApp.getResourceString(req.reason));
+                message.append(BookCatalogueApp.getRes().getString(req.reason));
                 message.append("</p>");
             }
         }
@@ -138,7 +138,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
             // Show reasons, rinse and repeat.
             new AlertDialog.Builder(activity)
                     .setTitle(R.string.perm_required)
-                    .setMessage(Html.fromHtml(BookCatalogueApp.getResourceString(R.string.perm_intro) + message, Html.FROM_HTML_MODE_LEGACY))
+                    .setMessage(Html.fromHtml(BookCatalogueApp.getRes().getString(R.string.perm_intro) + message, Html.FROM_HTML_MODE_LEGACY))
                     .setPositiveButton(R.string.button_ok, (dialogInterface, i) -> {
                         if (l != null) {
                             l.launch(list);

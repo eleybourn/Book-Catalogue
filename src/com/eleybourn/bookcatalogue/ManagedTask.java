@@ -66,7 +66,7 @@ abstract public class ManagedTask extends Thread {
 	 * @return		Result
 	 */
 	String getString(int id) {
-		return BookCatalogueApp.getResourceString(id);
+		return BookCatalogueApp.getRes().getString(id);
 	}
 
 	/**

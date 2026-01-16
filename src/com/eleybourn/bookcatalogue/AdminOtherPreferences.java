@@ -197,7 +197,7 @@ public class AdminOtherPreferences extends PreferencesBase {
 		ItemEntries<String> items = new ItemEntries<>();
 
 		Locale l = BookCatalogueApp.getSystemLocale();
-		items.add("", R.string.option_preferred_language_x, BookCatalogueApp.getResourceString(R.string.system_locale), l.getDisplayLanguage());
+		items.add("", R.string.option_preferred_language_x, BookCatalogueApp.getRes().getString(R.string.system_locale), l.getDisplayLanguage());
 
 		for(String loc: BookCatalogueApp.getSupportedLocales()) {
 			l = BookCatalogueApp.localeFromName(loc);

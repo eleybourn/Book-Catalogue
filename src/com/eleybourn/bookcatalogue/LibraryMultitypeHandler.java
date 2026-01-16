@@ -248,7 +248,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
      * @param iconId   icon of menu item
      */
     private void addMenuItem(ArrayList<SimpleDialogItem> items, int id, int stringId, int iconId) {
-        SimpleDialogMenuItem i = new SimpleDialogMenuItem(BookCatalogueApp.getResourceString(stringId), id, iconId);
+        SimpleDialogMenuItem i = new SimpleDialogMenuItem(BookCatalogueApp.getRes().getString(stringId), id, iconId);
         // Add the menu
         items.add(i);
     }
@@ -529,7 +529,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                     rowInfo.setVisibility(View.GONE);
                     return;
                 }
-                view.setText(BookCatalogueApp.getResourceString(emptyStringId));
+                view.setText(BookCatalogueApp.getRes().getString(emptyStringId));
             } else {
                 if (rowInfo != null)
                     rowInfo.setVisibility(View.VISIBLE);
@@ -851,7 +851,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                             if (mLocationCol < 0)
                                 mLocationCol = c.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION);
                             if (mLocationRes == null)
-                                mLocationRes = BookCatalogueApp.getResourceString(R.string.label_location);
+                                mLocationRes = BookCatalogueApp.getRes().getString(R.string.label_location);
 
                             mLocation = mLocationRes + ": " + c.getString(mLocationCol);
                         }
@@ -860,7 +860,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                             if (mPublisherCol < 0)
                                 mPublisherCol = c.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER);
                             if (mPublisherRes == null)
-                                mPublisherRes = BookCatalogueApp.getResourceString(R.string.label_publisher);
+                                mPublisherRes = BookCatalogueApp.getRes().getString(R.string.label_publisher);
 
                             mPublisher = mPublisherRes + ": " + c.getString(mPublisherCol);
                         }
@@ -877,7 +877,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                                     } while (sc.moveToNext());
                                 }
                             }
-                            mShelves = BookCatalogueApp.getResourceString(R.string.shelves) + ": " + shelves;
+                            mShelves = BookCatalogueApp.getRes().getString(R.string.shelves) + ": " + shelves;
                         }
                     } else {
                         // No data, no need for UI thread call.

@@ -459,7 +459,7 @@ public class SearchManager implements TaskManagerListener {
 		
 		// If book is not found or missing required data, warn the user
 		if (authors == null || authors.isEmpty() || title == null || title.isEmpty()) {
-			mTaskManager.doToast(BookCatalogueApp.getResourceString(R.string.book_not_found));
+			mTaskManager.doToast(BookCatalogueApp.getRes().getString(R.string.book_not_found));
 		}
 		// Pass the data back
 		sendSearchFinished();

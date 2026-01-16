@@ -108,7 +108,7 @@ public class PropertyGroup {
 	/** Realize and return the group name */
 	public String getName() {
 		if (mName == null)
-			mName = BookCatalogueApp.getResourceString(nameId);
+			mName = BookCatalogueApp.getRes().getString(nameId);
 		return mName;
 	}
 

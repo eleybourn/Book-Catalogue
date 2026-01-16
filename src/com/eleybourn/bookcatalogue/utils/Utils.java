@@ -1087,12 +1087,12 @@ public class Utils {
     public static String formatFileSize(float space) {
         String sizeFmt;
         if (space < 3072) { // Show 'bytes' if < 3k
-            sizeFmt = BookCatalogueApp.getResourceString(R.string.bytes);
+            sizeFmt = BookCatalogueApp.getRes().getString(R.string.bytes);
         } else if (space < 250 * 1024) { // Show Kb if less than 250kB
-            sizeFmt = BookCatalogueApp.getResourceString(R.string.kilobytes);
+            sizeFmt = BookCatalogueApp.getRes().getString(R.string.kilobytes);
             space = space / 1024;
         } else { // Show MB otherwise...
-            sizeFmt = BookCatalogueApp.getResourceString(R.string.megabytes);
+            sizeFmt = BookCatalogueApp.getRes().getString(R.string.megabytes);
             space = space / (1024 * 1024);
         }
         return String.format(sizeFmt, space);

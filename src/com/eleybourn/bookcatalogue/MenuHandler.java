@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.Menu;
@@ -38,6 +39,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author Philip Warner
  */
 public class MenuHandler {
+    private final Context mContext;
     public static final int FIRST = Menu.FIRST + 13;
     private static final int MENU_ADD_BOOK = Menu.FIRST + 1;
     private static final int MENU_ITEM_ADD_BOOK_MANUAL = Menu.FIRST + 2;
@@ -52,6 +54,10 @@ public class MenuHandler {
     private static final int MENU_ITEM_BOOKSHELVES = Menu.FIRST + 12;
     private int mSort = 0;
 
+    public MenuHandler(Context mContext) {
+        this.mContext = mContext;
+    }
+
     public void init(Menu menu) {
         mSort = 0;
         menu.clear();
@@ -65,7 +71,7 @@ public class MenuHandler {
     public void addCreateBookItems(Menu menu) {
         SubMenu addMenu = menu.addSubMenu(0, MENU_ADD_BOOK, mSort++, BookCatalogueApp.getRes().getString(R.string.title_add_book) + "...");
         addMenu.setIcon(R.drawable.ic_menu_new);
-        addMenu.getItem().setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onPrimary)));
+        addMenu.getItem().setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.theme_onPrimary)));
         addMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         {
             if (Utils.USE_BARCODE) {
@@ -95,7 +101,7 @@ public class MenuHandler {
     public MenuItem addItem(Menu menu, int id, int stringId, int icon) {
         MenuItem item = menu.add(0, id, mSort++, stringId);
         item.setIcon(icon);
-        item.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onPrimary)));
+        item.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.theme_onPrimary)));
         return item;
     }
 
@@ -140,7 +146,7 @@ public class MenuHandler {
     public MenuItem addSearchItem(Menu menu) {
         MenuItem search = menu.add(0, MENU_ITEM_SEARCH, mSort++, R.string.menu_search);
         search.setIcon(R.drawable.ic_menu_search);
-        search.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onPrimary)));
+        search.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.theme_onPrimary)));
         return search;
     }
 
@@ -219,7 +225,7 @@ public class MenuHandler {
      * Load the Admin Activity
      */
     private void adminPage(Activity a) {
-        Intent i = new Intent(BookCatalogueApp.context, MainAdministration.class);
+        Intent i = new Intent(mContext, MainAdministration.class);
         i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
         a.startActivityForResult(i, UniqueId.ACTIVITY_ADMIN);
     }
@@ -228,7 +234,7 @@ public class MenuHandler {
      * Load the Bookshelves Activity
      */
     private void bookshelvesPage(Activity a) {
-        Intent i = new Intent(BookCatalogueApp.context, AdminBookshelf.class);
+        Intent i = new Intent(mContext, AdminBookshelf.class);
         i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
         a.startActivityForResult(i, UniqueId.ACTIVITY_BOOKSHELF);
     }
@@ -237,7 +243,7 @@ public class MenuHandler {
      * Load the About Activity
      */
     private void aboutPage(Activity a) {
-        Intent i = new Intent(BookCatalogueApp.context, MainAbout.class);
+        Intent i = new Intent(mContext, MainAbout.class);
         i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
         a.startActivityForResult(i, UniqueId.ACTIVITY_ABOUT);
     }
@@ -247,7 +253,7 @@ public class MenuHandler {
      */
     private void donatePage(Activity a) {
         if (BuildConfig.IS_DONATE_ALLOWED) {
-            Intent i = new Intent(BookCatalogueApp.context, MainDonate.class);
+            Intent i = new Intent(mContext, MainDonate.class);
             i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
             a.startActivityForResult(i, UniqueId.ACTIVITY_DONATE);
         }
@@ -257,7 +263,7 @@ public class MenuHandler {
      * Load the Main Menu Activity
      */
     private void helpPage(Activity a) {
-        Intent i = new Intent(BookCatalogueApp.context, MainHelp.class);
+        Intent i = new Intent(mContext, MainHelp.class);
         i.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
         a.startActivityForResult(i, UniqueId.ACTIVITY_HELP);
     }

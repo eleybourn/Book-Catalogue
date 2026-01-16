@@ -19,6 +19,8 @@
  */
 package com.eleybourn.bookcatalogue.backup.tar;
 
+import android.content.Context;
+
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.backup.BackupContainer;
 import com.eleybourn.bookcatalogue.backup.BackupReader;
@@ -116,8 +118,8 @@ public class TarBackupContainer implements BackupContainer {
 	}
 
 	@Override
-	public BackupWriter newWriter() throws IOException {
-		return new TarBackupWriter(this);
+	public BackupWriter newWriter(Context context) throws IOException {
+		return new TarBackupWriter(context, this);
 	}
 
 	@Override

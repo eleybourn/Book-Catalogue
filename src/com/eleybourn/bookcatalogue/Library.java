@@ -836,7 +836,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem i;
-        mMenuHandler = new MenuHandler();
+        mMenuHandler = new MenuHandler(this);
         mMenuHandler.init(menu);
         mMenuHandler.addCreateBookItems(menu);
         i = mMenuHandler.addItem(menu, MENU_SORT, R.string.sort_and_style_ellipsis, R.drawable.ic_menu_sort);

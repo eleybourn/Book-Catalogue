@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 
@@ -43,13 +44,15 @@ import com.eleybourn.bookcatalogue.utils.Logger;
  * @author pjw
  */
 public abstract class BackupWriterAbstract implements BackupWriter {
+    private final Context mContext;
 	private final CatalogueDBAdapter mDbHelper;
 
 	/**
 	 * Constructor
 	 */
-	public BackupWriterAbstract() {
-		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
+	public BackupWriterAbstract(Context mContext) {
+        this.mContext = mContext;
+        mDbHelper = new CatalogueDBAdapter(mContext);
 		mDbHelper.open();
 	}
 
@@ -112,7 +115,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	 * Generate a bundle containing the INFO block, and send it to the archive
 	 */
 	private void writeInfo(BackupWriterListener listener, int bookCount, int coverCount) throws IOException {
-		BackupInfo info = BackupInfo.createInfo(getContainer(), mDbHelper, BookCatalogueApp.context, bookCount, coverCount);
+		BackupInfo info = BackupInfo.createInfo(getContainer(), mDbHelper, mContext, bookCount, coverCount);
 		putInfo(info);
 		listener.step(null, 1);
 	}
@@ -154,7 +157,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 
 		// Get a temp file and mark for delete
 		System.out.println("Getting books");
-		File temp = File.createTempFile("bookcat", ".tmp");
+		File temp = File.createTempFile("book-cat", ".tmp");
 		temp.deleteOnExit();
 		FileOutputStream output = null;
 		try {
@@ -173,7 +176,8 @@ public abstract class BackupWriterAbstract implements BackupWriter {
 	/**
 	 * @param exportFile 	the file containing the exported books in CSV format
 	 */
-	private void writeBooks(File exportFile) throws IOException {
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+    private void writeBooks(File exportFile) throws IOException {
 		try {
 			System.out.println("Writing Books");
 			putBooks(exportFile);

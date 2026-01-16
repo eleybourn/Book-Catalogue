@@ -220,7 +220,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
      * Export all data to a CSV file
      */
     private void exportData(DocumentFile file) {
-        ExportThread thread = new ExportThread(getTaskManager(), file);
+        ExportThread thread = new ExportThread(this, getTaskManager(), file);
         thread.start();
     }
 

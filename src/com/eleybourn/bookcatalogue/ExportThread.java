@@ -1,5 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
+import android.content.Context;
+
 import com.eleybourn.bookcatalogue.backup.CsvExporter;
 import com.eleybourn.bookcatalogue.backup.Exporter;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -17,13 +19,14 @@ import androidx.documentfile.provider.DocumentFile;
 public class ExportThread extends ManagedTask {
     // Changed the paths to non-static variable because if this code is called
     // while a phone sync is in progress, they will not be set correctly
-
+    private final Context mContext;
     private static DocumentFile mFile;
 	private CatalogueDBAdapter mDbHelper;
 
-	public ExportThread(TaskManager ctx, DocumentFile file) {
+	public ExportThread(Context context, TaskManager ctx, DocumentFile file) {
 		super(ctx);
-		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
+        mContext = context;
+		mDbHelper = new CatalogueDBAdapter(mContext);
 		mDbHelper.open();
 		mFile = file;
 	}
@@ -67,7 +70,7 @@ public class ExportThread extends ManagedTask {
 		// moot: The file could be local or cloud-backed, for example. The only useful
 		// test here is whether we can open it for writing.
 		try {
-			OutputStream out = BookCatalogueApp.context.getContentResolver().openOutputStream(mFile.getUri());
+			OutputStream out = mContext.getContentResolver().openOutputStream(mFile.getUri());
 			CsvExporter exporter = new CsvExporter();
 			exporter.export(out, mOnExportListener, Exporter.EXPORT_ALL, null);
 			if (out != null) {

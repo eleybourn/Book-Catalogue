@@ -2,7 +2,6 @@ package com.eleybourn.bookcatalogue.compat;
 
 import android.Manifest.permission;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -108,7 +107,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
             return true;
 
         // Now build a message and the list to request
-        PackageManager pm = BookCatalogueApp.context.getPackageManager();
+        PackageManager pm = activity.getApplicationContext().getPackageManager();
         StringBuilder message = new StringBuilder();
         final String[] list = new String[failed.size()];
         int pos = 0;
@@ -164,7 +163,6 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
     }
 
     private static void handleOldFilesTreeCopyResult(DocumentFile f, FragmentManager fm) {
-        Context c = BookCatalogueApp.context;
         if (f != null) {
             FragmentTask task = new FragmentTaskAbstract() {
                 private boolean mOK = false;
@@ -185,12 +183,12 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                         Logger.logError(exception, "Failed to import files");
                     }
                     fragment.setSuccess(mOK);
-                    String msg_dup = c.getString(R.string.old_file_import_status_duplicates, mResult.duplicates);
-                    String msg_not_book = c.getString(R.string.old_file_import_status_not_book, mResult.not_in_db);
+                    String msg_dup = BookCatalogueApp.getRes().getString(R.string.old_file_import_status_duplicates, mResult.duplicates);
+                    String msg_not_book = BookCatalogueApp.getRes().getString(R.string.old_file_import_status_not_book, mResult.not_in_db);
                     String extra = "";
                     if (mResult.duplicates > 0) {
                         if (mResult.not_in_db > 0) {
-                            extra = c.getString(R.string.fragment_a_and_b, msg_dup, msg_not_book);
+                            extra = BookCatalogueApp.getRes().getString(R.string.fragment_a_and_b, msg_dup, msg_not_book);
                         } else {
                             extra = msg_dup;
                         }
@@ -200,7 +198,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                         }
                     }
                     if (!extra.isEmpty()) {
-                        extra = c.getString(R.string.old_file_import_status_of_those, extra);
+                        extra = BookCatalogueApp.getRes().getString(R.string.old_file_import_status_of_those, extra);
                     }
                     int baseId;
                     if (fragment.isCancelled()) {
@@ -208,7 +206,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                     } else {
                         baseId = R.string.old_file_import_complete;
                     }
-                    String msg = c.getString(baseId) + "\n\n" + c.getString(R.string.old_file_import_stats, mResult.processed, mResult.total, extra);
+                    String msg = BookCatalogueApp.getRes().getString(baseId) + "\n\n" + BookCatalogueApp.getRes().getString(R.string.old_file_import_stats, mResult.processed, mResult.total, extra);
                     MessageDialogFragment frag = MessageDialogFragment.newInstance(0, R.string.label_import_old_files, msg, R.string.button_ok, 0, 0);
                     frag.show(fm, null);
                 }

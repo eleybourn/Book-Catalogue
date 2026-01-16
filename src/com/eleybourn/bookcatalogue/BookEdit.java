@@ -498,7 +498,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        mMenuHandler = new MenuHandler();
+        mMenuHandler = new MenuHandler(this);
         mMenuHandler.init(menu);
 
         if (mRowId != 0) {

@@ -92,7 +92,7 @@ public class BackupManager {
 				try {
 					System.out.println("Starting " + requestedFile.getName());
 					TarBackupContainer bkp = new TarBackupContainer(requestedFile);
-					wrt = bkp.newWriter();
+					wrt = bkp.newWriter(context);
 
 					wrt.backup(new BackupWriterListener() {
 						private int mTotalBooks = 0;

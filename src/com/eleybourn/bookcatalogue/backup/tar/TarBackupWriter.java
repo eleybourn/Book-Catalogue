@@ -28,10 +28,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.eleybourn.bookcatalogue.backup.BackupContainer;
@@ -56,8 +58,9 @@ public class TarBackupWriter extends BackupWriterAbstract {
 	 * 
 	 * @param container		Parent
 	 */
-	public TarBackupWriter(TarBackupContainer container) throws IOException {
-		mContainer = container;
+	public TarBackupWriter(Context context, TarBackupContainer container) throws IOException {
+        super(context);
+        mContainer = container;
 		// Open the archive for writing
 		OutputStream out = container.getOutputStream();
 		mOutput = new TarArchiveOutputStream(out);
@@ -104,7 +107,7 @@ public class TarBackupWriter extends BackupWriterAbstract {
 	@Override
 	public void putInfo(BackupInfo info) throws IOException {
 		ByteArrayOutputStream infoData = new ByteArrayOutputStream();
-		BufferedWriter infoOut = new BufferedWriter(new OutputStreamWriter(infoData, TarBackupContainer.UTF8), TarBackupContainer.BUFFER_SIZE);
+		BufferedWriter infoOut = new BufferedWriter(new OutputStreamWriter(infoData, StandardCharsets.UTF_8), TarBackupContainer.BUFFER_SIZE);
 		BackupUtils.bundleToXml(infoOut, info.getBundle());
 		infoOut.close();
 		bytesToArchive(TarBackupContainer.INFO_FILE, infoData.toByteArray());
@@ -129,7 +132,7 @@ public class TarBackupWriter extends BackupWriterAbstract {
 	public void putPreferences(SharedPreferences prefs) throws IOException {
 		// Turn the preferences into an XML file in a byte array
 		ByteArrayOutputStream infoData = new ByteArrayOutputStream();
-		BufferedWriter infoOut = new BufferedWriter(new OutputStreamWriter(infoData, TarBackupContainer.UTF8), TarBackupContainer.BUFFER_SIZE);
+		BufferedWriter infoOut = new BufferedWriter(new OutputStreamWriter(infoData, StandardCharsets.UTF_8), TarBackupContainer.BUFFER_SIZE);
 		BackupUtils.preferencesToXml(infoOut, prefs);
 		infoOut.close();
 		// Save them

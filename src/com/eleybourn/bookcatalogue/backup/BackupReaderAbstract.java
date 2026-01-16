@@ -141,6 +141,7 @@ public abstract class BackupReaderAbstract implements BackupReader {
      * @param cover    Entity containing the cover image
      * @param flags    Import flags
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void restoreCover(BackupReaderListener listener, ReaderEntity cover, int flags) throws IOException {
         listener.step("Processing Covers...", 1);
         final File curr = new File(mCoversDir + "/" + cover.getName());

@@ -19,6 +19,8 @@
  */
 package com.eleybourn.bookcatalogue.backup;
 
+import android.content.Context;
+
 import java.io.IOException;
 
 /**
@@ -39,7 +41,7 @@ public interface BackupContainer {
 	 * 
 	 * @return a new writer
 	 */
-    BackupWriter newWriter() throws IOException;
+    BackupWriter newWriter(Context context) throws IOException;
 
 	/**
 	 * Get the version of the underlying archiver

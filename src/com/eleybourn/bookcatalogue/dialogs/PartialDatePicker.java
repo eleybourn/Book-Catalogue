@@ -20,6 +20,7 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -223,9 +224,9 @@ public class PartialDatePicker extends AlertDialog {
         // Handle YEAR +
         root.findViewById(R.id.button_year_plus).setOnClickListener(v -> {
                     if (mYear != null) {
-                        mYearView.setText((++mYear).toString());
+                        mYearView.setText(String.format(Locale.ROOT, "%d", ++mYear));
                     } else {
-                        mYearView.setText(Calendar.getInstance().get(Calendar.YEAR));
+                        mYearView.setText(String.format(Locale.ROOT, "%d", Calendar.getInstance().get(Calendar.YEAR)));
                     }
                 }
         );
@@ -238,10 +239,10 @@ public class PartialDatePicker extends AlertDialog {
                         // would need to translate -ve years to Epoch settings throughout the app. For now,
                         // not many people have books written before 0AD, so it's a low priority.
                         if (mYear > 0) {
-                            mYearView.setText((--mYear).toString());
+                            mYearView.setText(String.format(Locale.ROOT, "%d", --mYear));
                         }
                     } else {
-                        mYearView.setText(Calendar.getInstance().get(Calendar.YEAR));
+                        mYearView.setText(String.format(Locale.ROOT, "%d", Calendar.getInstance().get(Calendar.YEAR)));
                     }
                 }
         );

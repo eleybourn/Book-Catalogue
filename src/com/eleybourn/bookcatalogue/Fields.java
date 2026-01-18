@@ -1225,9 +1225,10 @@ public class Fields extends ArrayList<Fields.Field> {
                 if (MotionEvent.ACTION_UP == event.getAction()) {
                     if (mAfterFieldChangeListener != null) {
                         mAfterFieldChangeListener.afterFieldChange(Field.this, null);
+                        v.performClick();
                     }
                 }
-                return false;
+                return true;
             });
         }
 

@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -93,6 +94,7 @@ public class AdminUpdateFromInternet extends ActivityWithTasks {
      * This function builds the manage field visibility by adding onClick events
      * to each field checkbox
      */
+    @SuppressLint("SetTextI18n")
     public void setupFields() {
         addIfVisible(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, CatalogueDBAdapter.KEY_AUTHOR_ID, R.string.label_author, Usages.ADD_EXTRA, true);
         addIfVisible(CatalogueDBAdapter.KEY_TITLE, null, R.string.label_title, Usages.COPY_IF_BLANK, false);

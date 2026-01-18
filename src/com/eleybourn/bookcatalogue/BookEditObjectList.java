@@ -194,6 +194,8 @@ public abstract class BookEditObjectList<T extends Serializable> extends BookCat
                 grabber.setOnTouchListener((v, event) -> {
                     if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
                         mItemTouchHelper.startDrag(holder);
+                    } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                        v.performClick();
                     }
                     return false;
                 });

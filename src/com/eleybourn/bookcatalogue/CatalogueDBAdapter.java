@@ -938,18 +938,6 @@ public class CatalogueDBAdapter {
     }
 
     /**
-     * DEBUG ONLY; used when tracking a bug in android 2.1, but kept because
-     * there are still non-fatal anomalies.
-     */
-    public static int printReferenceCount(String msg) {
-        if (mDb != null) {
-            return SynchronizedDb.printRefCount(msg, mDb.getUnderlyingDatabase());
-        } else {
-            return 0;
-        }
-    }
-
-    /**
      * Open the books database. If it cannot be opened, try to create a new
      * instance of the database. If it cannot be created, throw an exception to
      * signal the failure

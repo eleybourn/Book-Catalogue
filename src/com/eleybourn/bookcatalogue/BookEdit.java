@@ -22,7 +22,6 @@ package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
@@ -784,11 +783,11 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                 File thumb = CatalogueDBAdapter.getTempThumbnail();
                 File real = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));
                 thumb.renameTo(real);
-                new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
+                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
             }
         } else {
             mDbHelper.updateBook(mRowId, mBookData, 0);
-            new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
+            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
         }
 
         /*
@@ -1032,7 +1031,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         }
 
         @Override
-        public void onApiComplete(Context context, String request, String message) {
+        public void onApiComplete(String request, String message) {
             BookEdit activity = activityReference.get();
             if (activity == null || activity.isFinishing()) {
                 return;

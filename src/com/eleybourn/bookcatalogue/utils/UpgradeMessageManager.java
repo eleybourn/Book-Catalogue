@@ -113,7 +113,7 @@ public class UpgradeMessageManager {
 	 * 
 	 * @return	Upgrade message (or blank string)
 	 */
-	public static String getUpgradeMessage() {
+	public static String getUpgradeMessage(Context context) {
 		// If cached version exists, return it
 		if (mMessage != null)
 			return mMessage;
@@ -129,12 +129,12 @@ public class UpgradeMessageManager {
 
 			// Up until version 98, messages were handled via the CatalogueDBAdapter object, so create one
 			// and see if there is a message.
-			CatalogueDBAdapter tmpDb = new CatalogueDBAdapter(BookCatalogueApp.context);
+			CatalogueDBAdapter tmpDb = new CatalogueDBAdapter(context);
 			try {
 				// On new installs, there is no upgrade message
 				if (tmpDb.isNewInstall()) {
 					mMessage = "";
-					setMessageAcknowledged();
+					setMessageAcknowledged(context);
 					return mMessage;					
 				}
 				// It's not a new install, so we use the 'old' message format and set the version to the
@@ -161,10 +161,9 @@ public class UpgradeMessageManager {
 		return mMessage;
 	}
 	
-	public static void setMessageAcknowledged() {
+	public static void setMessageAcknowledged(Context c) {
 		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 		try {
-			Context c = BookCatalogueApp.context;
 			int currVersion = c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionCode;
 			prefs.setInt(PREF_LAST_MESSAGE, currVersion);
 		} catch (NameNotFoundException e) {

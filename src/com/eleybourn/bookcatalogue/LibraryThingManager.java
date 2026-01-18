@@ -33,7 +33,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -53,9 +52,6 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  *
  */
 public class LibraryThingManager {
-	/** App context (for prefs) */
-    final Context mAppContext;
-
 	/** Name of preference that contains the dev key for the user */
 	public static final String LT_DEVKEY_PREF_NAME = "lt_devkey";
 	/** Name of preference that controls display of alert about LT */
@@ -87,10 +83,6 @@ public class LibraryThingManager {
 
     // Sizes of thumbnails
 	public enum ImageSizes { SMALL, MEDIUM, LARGE }
-
-    public LibraryThingManager(Context context) {
-		mAppContext = context.getApplicationContext();
-	}
 
 	/**
 	 * Use mLastRequestTime to determine how long until the next request is allowed; and
@@ -685,7 +677,7 @@ public class LibraryThingManager {
 	}
 
 	private String getDevKey() {
-		SharedPreferences prefs = mAppContext.getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
+		SharedPreferences prefs = BookCatalogueApp.mPrefs;
 		String key = prefs.getString(LT_DEVKEY_PREF_NAME, "");
 		return key.replaceAll("[\\r\\t\\n\\s]*", "");
 	}

@@ -37,13 +37,7 @@ import android.widget.AdapterView;
  * @author Philip Warner
  */
 public class BcQueueManager extends QueueManager {
-
-	public BcQueueManager() {
-		super(BookCatalogueApp.context);
-		initializeQueue(QUEUE_MAIN);
-		initializeQueue(QUEUE_SMALL_JOBS);
-	}
-
+    private final Context mContext;
 	/**
 	 * Create the queue we need, if they do not already exist.
 	 * main: long-running tasks, or tasks that can just wait
@@ -51,6 +45,7 @@ public class BcQueueManager extends QueueManager {
 	 */
 	public BcQueueManager(Context context) {
 		super(context);
+        mContext = context;
 		initializeQueue(QUEUE_MAIN);
 		initializeQueue(QUEUE_SMALL_JOBS);
 	}
@@ -135,11 +130,11 @@ public class BcQueueManager extends QueueManager {
 	 */
 	@Override
 	public LegacyTask newLegacyTask(byte[] original) {
-		return new BcLegacyTask(original, BookCatalogueApp.context.getResources().getString(R.string.legacy_task));
+		return new BcLegacyTask(original, mContext.getResources().getString(R.string.legacy_task));
 	}
 
 	@Override
 	public Context getApplicationContext() {
-		return BookCatalogueApp.context;
+		return mContext;
 	}
 }

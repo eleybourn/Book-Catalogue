@@ -104,7 +104,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
                 menu.clear();
                 MenuItem populate = menu.add(0, POPULATE_ID, 0, R.string.populate_anthology_titles);
                 populate.setIcon(R.drawable.ic_menu_search_globe);
-                populate.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onPrimary)));
+                populate.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.theme_onPrimary)));
                 populate.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 

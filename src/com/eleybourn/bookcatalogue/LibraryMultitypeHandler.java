@@ -834,7 +834,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                     }
                 }
                 // Get a DB connection and find the book.
-                CatalogueDBAdapter dba = taskContext.getDb(); //new CatalogueDBAdapter(BookCatalogueApp.context);
+                CatalogueDBAdapter dba = taskContext.getDb();
                 //dba.open();
                 try (BooksCursor c = dba.fetchBookById(mBookId)) {
                     // If we have a book, use it. Otherwise we are done.
@@ -1052,7 +1052,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                 int i = (int) Float.parseFloat(s);
                 // If valid, get the name
                 if (i >= 0 && i <= 5) {
-                    Resources r = BookCatalogueApp.context.getResources();
+                    Resources r = BookCatalogueApp.getRes();
                     s = r.getQuantityString(R.plurals.n_stars, i, i);
                 }
             } catch (Exception e) {

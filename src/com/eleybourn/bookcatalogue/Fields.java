@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -123,23 +122,10 @@ public class Fields extends ArrayList<Fields.Field> {
     // The activity and preferences related to this object.
     private final FieldsContext mContext;
     // The last validator exception caught by this object
-    private final ArrayList<ValidatorException> mValidationExceptions = new ArrayList<>();
     // A list of cross-validators to apply if all fields pass simple validation.
     private final ArrayList<FieldCrossValidator> mCrossValidators = new ArrayList<>();
     SharedPreferences mPrefs;
     private AfterFieldChangeListener mAfterFieldChangeListener = null;
-
-    /**
-     * Constructor
-     *
-     * @param a The parent activity which contains all Views this object
-     *          will manage.
-     */
-    Fields(android.app.Activity a) {
-        super();
-        mContext = new ActivityContext(a);
-        mPrefs = a.getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
-    }
 
     /**
      * Constructor
@@ -228,13 +214,6 @@ public class Fields extends ArrayList<Fields.Field> {
      */
     public SharedPreferences getPreferences() {
         return mPrefs;
-    }
-
-    /**
-     * Provides access to the underlying arrays get() method.
-     */
-    public Field getItem(int index) {
-        return super.get(index);
     }
 
     /**
@@ -379,15 +358,6 @@ public class Fields extends ArrayList<Fields.Field> {
         }
     }
 
-    public void getAll(Bundle b) {
-
-        for (Field fe : this) {
-            if (fe.column != null && !fe.column.isEmpty()) {
-                fe.getValue(b);
-            }
-        }
-    }
-
     /**
      * Internal utility routine to perform one loop validating all fields.
      *
@@ -404,7 +374,6 @@ public class Fields extends ArrayList<Fields.Field> {
                 try {
                     fe.validator.validate(this, fe, values, crossValidating);
                 } catch (ValidatorException e) {
-                    mValidationExceptions.add(e);
                     isOk = false;
                     // Always save the value...even if invalid. Or at least try to.
                     if (!crossValidating)
@@ -444,12 +413,7 @@ public class Fields extends ArrayList<Fields.Field> {
         if (values == null)
             throw new NullPointerException();
 
-        boolean isOk = true;
-        mValidationExceptions.clear();
-
-        // First, just validate individual fields with the cross-val flag set false
-        if (doValidate(values, false))
-            isOk = false;
+        boolean isOk = !doValidate(values, false);
 
         // Now re-run with cross-val set to true.
         if (doValidate(values, true))
@@ -460,33 +424,10 @@ public class Fields extends ArrayList<Fields.Field> {
             try {
                 v.validate(this, values);
             } catch (ValidatorException e) {
-                mValidationExceptions.add(e);
                 isOk = false;
             }
         }
         return isOk;
-    }
-
-    /**
-     * Retrieve the text message associated with the last validation exception t occur.
-     *
-     * @return res The resource manager to use when looking up strings.
-     */
-    public String getValidationExceptionMessage(android.content.res.Resources res) {
-        if (mValidationExceptions.isEmpty())
-            return "No error";
-        else {
-            StringBuilder message = new StringBuilder();
-            Iterator<ValidatorException> i = mValidationExceptions.iterator();
-            int cnt = 1;
-            if (i.hasNext())
-                message = new StringBuilder("(" + cnt + ") " + i.next().getFormattedMessage(res));
-            while (i.hasNext()) {
-                cnt++;
-                message.append(" (").append(cnt).append(") ").append(i.next().getFormattedMessage(res)).append("\n");
-            }
-            return message.toString();
-        }
     }
 
     /**
@@ -639,24 +580,6 @@ public class Fields extends ArrayList<Fields.Field> {
         String extract(Field f, String source);
     }
 
-    private static class ActivityContext implements FieldsContext {
-        private final WeakReference<Activity> mActivity;
-
-        public ActivityContext(Activity a) {
-            mActivity = new WeakReference<>(a);
-        }
-
-        @Override
-        public Object dbgGetOwnerContext() {
-            return mActivity.get();
-        }
-
-        @Override
-        public View findViewById(int id) {
-            return mActivity.get().findViewById(id);
-        }
-    }
-
     private static class FragmentContext implements FieldsContext {
         private final WeakReference<Fragment> mFragment;
 
@@ -771,7 +694,7 @@ public class Fields extends ArrayList<Fields.Field> {
                 if (mFormatHtml && s != null) {
                     v.setText(HtmlCompat.fromHtml(field.format(s), HtmlCompat.FROM_HTML_MODE_LEGACY));
                     v.setFocusable(false);
-                    v.setTextColor(ContextCompat.getColor(BookCatalogueApp.context, R.color.theme_onSurface));
+                    v.setTextColor(ContextCompat.getColor(v.getContext(), R.color.theme_onSurface));
                 } else {
                     v.setText(field.format(s));
                 }
@@ -1258,11 +1181,6 @@ public class Fields extends ArrayList<Fields.Field> {
                     view.setVisibility(View.GONE);
                 }
             }
-        }
-
-        public Field setFormatter(FieldFormatter formatter) {
-            this.formatter = formatter;
-            return this;
         }
 
         /**

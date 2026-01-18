@@ -24,7 +24,7 @@ public class SearchLibraryThingThread extends SearchThread {
 			String isbn = mIsbn;
 			if (!isbn.isEmpty()) {
 				this.doProgress(getString(R.string.searching_library_thing), 0);
-				LibraryThingManager ltm = new LibraryThingManager(BookCatalogueApp.context);
+				LibraryThingManager ltm = new LibraryThingManager();
 				if (ltm.isAvailable()) {
 					try {
 						BookSearchResults result = new BookSearchResults(DataSource.LibraryThing, new Bundle());

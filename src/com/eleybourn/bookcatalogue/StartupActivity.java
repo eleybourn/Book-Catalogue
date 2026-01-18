@@ -316,10 +316,10 @@ public class StartupActivity
         }
 
         // Display upgrade message if necessary, otherwise go on to stage 3
-        if (mUpgradeMessageShown || UpgradeMessageManager.getUpgradeMessage().isEmpty()) {
+        if (mUpgradeMessageShown || UpgradeMessageManager.getUpgradeMessage(this).isEmpty()) {
             stage3Startup();
         } else {
-            upgradePopup(UpgradeMessageManager.getUpgradeMessage());
+            upgradePopup(UpgradeMessageManager.getUpgradeMessage(this));
         }
     }
 
@@ -421,7 +421,7 @@ public class StartupActivity
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.button_ok), (dialog, which) -> alertDialog.dismiss());
         alertDialog.setOnCancelListener(dialog -> alertDialog.dismiss());
         alertDialog.setOnDismissListener(dialog -> {
-            UpgradeMessageManager.setMessageAcknowledged();
+            UpgradeMessageManager.setMessageAcknowledged(this);
             stage3Startup();
         });
         alertDialog.show();

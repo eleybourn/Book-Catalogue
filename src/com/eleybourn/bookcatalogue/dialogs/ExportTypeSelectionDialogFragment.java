@@ -11,7 +11,6 @@ import android.view.View.OnClickListener;
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.backup.Exporter;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
@@ -83,7 +82,7 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
         Bundle args = requireArguments();
         mDialogId = args.getInt("dialogId");
         Uri uri = Uri.parse(args.getString("fileUri"));
-        mDocFile = DocumentFile.fromSingleUri(BookCatalogueApp.context, uri);
+        mDocFile = DocumentFile.fromSingleUri(requireContext(), uri);
 
         View v = requireActivity().getLayoutInflater().inflate(R.layout.dialog_export_type_selection, null);
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.label_backup_to_archive).create();

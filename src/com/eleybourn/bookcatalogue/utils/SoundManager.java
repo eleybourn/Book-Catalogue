@@ -19,7 +19,7 @@ public class SoundManager {
 		try {
 			if (BookCatalogueApp.getAppPreferences().getBoolean(PREF_BEEP_IF_SCANNED_ISBN_INVALID, true)) {
 				MediaPlayer player = initPlayer();
-				AssetFileDescriptor file = BookCatalogueApp.context.getResources().openRawResourceFd(R.raw.beep_low);
+				AssetFileDescriptor file = BookCatalogueApp.getRes().openRawResourceFd(R.raw.beep_low);
 				playFile(player, file);
 			}
 		} catch (Exception e) {
@@ -32,7 +32,7 @@ public class SoundManager {
 		try {
 			if (BookCatalogueApp.getAppPreferences().getBoolean(PREF_BEEP_IF_SCANNED_ISBN_VALID, false)) {
 				MediaPlayer player = initPlayer();
-				AssetFileDescriptor file = BookCatalogueApp.context.getResources().openRawResourceFd(R.raw.beep_high);
+				AssetFileDescriptor file = BookCatalogueApp.getRes().openRawResourceFd(R.raw.beep_high);
 				playFile(player, file);
 			}
 		} catch (Exception e) {

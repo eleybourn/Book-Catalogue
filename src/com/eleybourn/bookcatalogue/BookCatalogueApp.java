@@ -120,11 +120,11 @@ public class BookCatalogueApp extends Application {
         }
         Locale l;
         if (parts.length == 1) {
-            l = Locale.of(parts[0]);
+            l = new Locale(parts[0]);
         } else if (parts.length == 2) {
-            l = Locale.of(parts[0], parts[1]);
+            l = new Locale(parts[0], parts[1]);
         } else {
-            l = Locale.of(parts[0], parts[1], parts[2]);
+            l = new Locale(parts[0], parts[1], parts[2]);
         }
         return l;
     }

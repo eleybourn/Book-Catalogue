@@ -70,7 +70,7 @@
 
     <string name="clone_style">Stil klonen</string>
 
-    <string name="column_is_blank">Die Spalte %1$s ist in Zeile %2$s leer</string>
+    <string name="column_is_blank">Die Spalte %1$s ist in Zeile %2$d leer</string>
 
     <string name="columns_are_blank">Die Spalten %1$s sind in der Zeile %2$d leer</string>
 
@@ -401,7 +401,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
         <item quantity="other">%1$s Cover</item>
     </plurals>
     <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$s erzeugt, %2$s aktualisiert</string>
+    <string name="n_created_m_updated">%1$d erzeugt, %2$d aktualisiert</string>
     <!-- Short text for 'n stars' -->
     <plurals name="n_stars">
         <item quantity="zero">%1$s Sterne</item>

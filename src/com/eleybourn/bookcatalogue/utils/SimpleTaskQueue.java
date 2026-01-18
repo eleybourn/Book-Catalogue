@@ -26,7 +26,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import android.os.Handler;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 
@@ -175,15 +174,6 @@ public class SimpleTaskQueue {
 			synchronized(mCounterSync) {
 				this.id = ++mCounter;
 			}
-		}
-		/**
-		 * Accessor when behaving as a context
-		 */
-		@Override
-		public CatalogueDBAdapter getDb() {
-			if (activeThread == null)
-				throw new RuntimeException("SimpleTaskWrapper can only be used a context during the run() stage");
-			return activeThread.getDb();
 		}
 		@Override
 		public CoversDbHelper getCoversDb() {
@@ -464,7 +454,6 @@ public class SimpleTaskQueue {
 	}
 
 	public interface SimpleTaskContext {
-		CatalogueDBAdapter getDb();
 		/** 'Covers' database helper */
 		CoversDbHelper getCoversDb();
 		/** Utils object */
@@ -533,14 +522,6 @@ public class SimpleTaskQueue {
 						mUtils.close();					
 				} catch (Exception ignored) {}
 			}
-		}
-
-		public CatalogueDBAdapter getDb() {
-			if (mDb == null) {
-				mDb = new CatalogueDBAdapter(BookCatalogueApp.context);
-				mDb.open();
-			}
-			return mDb;
 		}
 
 		public Utils getUtils() {

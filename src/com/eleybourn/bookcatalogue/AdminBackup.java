@@ -162,8 +162,8 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             if (!apiToken.isEmpty()) {
                 token.setText(apiToken);
             }
-            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_COUNT, mApiListener);
-            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_LAST, mApiListener);
+            new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_INFO_COUNT, mApiListener);
+            new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_INFO_LAST, mApiListener);
         }
 
         /* Login */
@@ -255,12 +255,12 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
     public void backup() {
         // Create a new API task to get the count. This will automatically run in the background.
-        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_ALL, mApiListener);
+        new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_BACKUP_ALL, mApiListener);
     }
 
     public void restore() {
         // Create a new API task to get the count. This will automatically run in the background.
-        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_RESTORE_ALL, mApiListener);
+        new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_RESTORE_ALL, mApiListener);
     }
 
     private void reload() {
@@ -271,7 +271,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
     @Override
     public void onCredentialReceived() {
-        new BookCatalogueAPI(BookCatalogueAPI.REQUEST_LOGIN, mApiListener);
+        new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_LOGIN, mApiListener);
     }
 
     @Override
@@ -351,8 +351,8 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 }
                 case BookCatalogueAPI.REQUEST_BACKUP_ALL:
                     // Reload stats after full backup completes
-                    new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_COUNT, this);
-                    new BookCatalogueAPI(BookCatalogueAPI.REQUEST_INFO_LAST, this);
+                    new BookCatalogueAPI(activity.getApplicationContext(), BookCatalogueAPI.REQUEST_INFO_COUNT, this);
+                    new BookCatalogueAPI(activity.getApplicationContext(), BookCatalogueAPI.REQUEST_INFO_LAST, this);
                     break;
                 case BookCatalogueAPI.REQUEST_LOGIN:
                     activity.reload();

@@ -72,23 +72,18 @@ public class BookCatalogueApp extends Application {
      * Set of OnLocaleChangedListeners
      */
     private static final HashSet<WeakReference<OnLocaleChangedListener>> mOnLocaleChangedListeners = new HashSet<>();
-    /**
-     * Not sure this is a good idea. Stores the Application context once created
-     */
-    public static Context context = null;
     public static File externalCacheDir;
     public static File externalFilesDir;
     public static File filesDir;
     public static SharedPreferences mPrefs;
-    private static BookCatalogueApp mInstance;
     private static Resources res;
     /**
      * Flag indicating the collation we use in the current database is case-sensitive
      */
     private static Boolean mCollationCaseSensitive = null;
-    private static BcQueueManager mQueueManager = null;
+    private BcQueueManager mQueueManager = null;
     // User-specified default locale
-    private static Locale mPreferredLocale = null;
+    private static final Locale mPreferredLocale = null;
     /**
      * List of supported locales
      */
@@ -191,7 +186,7 @@ public class BookCatalogueApp extends Application {
         return new BookCataloguePreferences();
     }
 
-    public static boolean hasPermission(String permission) {
+    public static boolean hasPermission(Context context, String permission) {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -236,10 +231,6 @@ public class BookCatalogueApp extends Application {
         return Resources.getSystem().getConfiguration().getLocales().get(0);
     }
 
-    public static BookCatalogueApp getInstance() {
-        return mInstance;
-    }
-
     public static Resources getRes() {
         return res;
     }
@@ -251,13 +242,11 @@ public class BookCatalogueApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        context = getApplicationContext();
         externalCacheDir = getExternalCacheDir();
         externalFilesDir = getExternalFilesDir(null);
         filesDir = getFilesDir();
         mPrefs = getSharedPreferences("bookCatalogue", BookCatalogueApp.MODE_PRIVATE);
         applyLocaleSettings();
-        mInstance = this;
         res = getResources();
 
         Terminator.init();

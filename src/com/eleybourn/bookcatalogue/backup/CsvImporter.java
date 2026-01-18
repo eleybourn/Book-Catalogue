@@ -73,7 +73,7 @@ public class CsvImporter {
 		listener.setMax(export.size() - 1);
 
 		// Container for values.
-		BookData values = new BookData();
+		BookData values = new BookData(context);
 
 		String[] names = returnRow(export.get(0), true);
 

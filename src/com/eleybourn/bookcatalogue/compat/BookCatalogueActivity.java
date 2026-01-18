@@ -96,7 +96,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 
         for (RequiredPermission[] permissions : lists) {
             for (RequiredPermission req : permissions) {
-                if (!BookCatalogueApp.hasPermission(req.permission)) {
+                if (!BookCatalogueApp.hasPermission(activity.getApplicationContext(), req.permission)) {
                     failed.add(req);
                 }
             }

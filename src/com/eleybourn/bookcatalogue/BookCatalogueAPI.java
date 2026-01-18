@@ -16,6 +16,7 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import android.content.Context;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,7 +40,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 public class BookCatalogueAPI implements SimpleTask {
-
+    private final Context mContext;
     private static final SimpleTaskQueue mSyncQueue = new SimpleTaskQueue("BookCatalogueSyncQueue");
     private static final String BASE_URL = "https://book-catalogue.com/api";
     public static final String REQUEST_LOGIN = "login";
@@ -66,8 +67,9 @@ public class BookCatalogueAPI implements SimpleTask {
     private boolean retry = true;
     private long mBookId;
 
-    public BookCatalogueAPI(String request, long book_id, ApiListener listener) {
+    public BookCatalogueAPI(Context context, String request, long book_id, ApiListener listener) {
         Log.d("BookCatalogueAPI", "BookCatalogueAPI");
+        mContext = context;
         mBookId = book_id;
         this.mRequest = request;
         sActiveListener = listener;
@@ -79,8 +81,9 @@ public class BookCatalogueAPI implements SimpleTask {
         mSyncQueue.enqueue(this);
     }
 
-    public BookCatalogueAPI(String request, ApiListener listener) {
+    public BookCatalogueAPI(Context context, String request, ApiListener listener) {
         Log.d("BookCatalogueAPI", "BookCatalogueAPI");
+        mContext = context;
         this.mRequest = request;
         sActiveListener = listener;
         mPrefs = new BookCataloguePreferences();
@@ -205,7 +208,7 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public void runBackupBook() {
-        CatalogueDBAdapter db = mTaskContext.getDb();
+        CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
         // Query all books.
         // Note: Using the raw cursor from the adapter provided by SimpleTaskContext
         try (Cursor bookCursor = db.fetchBookById(mBookId)) {
@@ -217,7 +220,7 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public void runFullBackup() {
-        CatalogueDBAdapter db = mTaskContext.getDb();
+        CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
         // Query all books.
         // Note: Using the raw cursor from the adapter provided by SimpleTaskContext
         try (Cursor bookCursor = db.fetchAllBooks()) {
@@ -485,7 +488,7 @@ public class BookCatalogueAPI implements SimpleTask {
             notifyProgress(0, 1); // Indicate that the process has started
             JSONArray books = getAllBooks(false);
 
-            db = mTaskContext.getDb();
+            db = new CatalogueDBAdapter(mContext);
             db.open(); // Ensure DB is open
 
             int total = books.length();
@@ -505,7 +508,7 @@ public class BookCatalogueAPI implements SimpleTask {
                 }
 
                 JSONObject bookJson = books.getJSONObject(i);
-                BookData values = new BookData();
+                BookData values = new BookData(mContext);
 
                 long bcid = bookJson.getLong("bcid");
                 String uuid = getStringOrEmpty(bookJson, "book_uuid");

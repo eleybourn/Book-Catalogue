@@ -135,7 +135,7 @@ public class StandardDialogs {
                 .setIcon(R.drawable.ic_menu_info)
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> {
                     dbHelper.deleteBook(id);
-                    new BookCatalogueAPI(BookCatalogueAPI.REQUEST_DELETE_BOOK, id, mApiListener);
+                    new BookCatalogueAPI(context, BookCatalogueAPI.REQUEST_DELETE_BOOK, id, mApiListener);
                     onDeleted.run();
                 })
                 .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())

@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -246,7 +247,7 @@ public class StartupActivity
      */
     public void updateProgress(final String message) {
         // If mProgress is null, it has been dismissed. Don't update.
-        if (mProgress == null) {
+        if (mProgress == null || isFinishing()) {
             return;
         }
 
@@ -271,7 +272,9 @@ public class StartupActivity
             }
         } else {
             // If we are NOT in the UI thread, queue it to the UI thread.
-            mHandler.post(() -> updateProgress(message));
+            if (!isFinishing()) {
+                mHandler.post(() -> updateProgress(message));
+            }
         }
     }
 
@@ -475,7 +478,7 @@ public class StartupActivity
         @Override
         public void run(SimpleTaskContext taskContext) {
             // Get a DB to make sure the FTS rebuild flag is set appropriately
-            CatalogueDBAdapter db = taskContext.getDb();
+            CatalogueDBAdapter db = new CatalogueDBAdapter(getActiveActivity());
             BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
             if (prefs.getBoolean(PREF_FTS_REBUILD_REQUIRED, false)) {
                 updateProgress(getString(R.string.rebuilding_search_index));
@@ -494,7 +497,8 @@ public class StartupActivity
 
         @Override
         public void run(SimpleTaskContext taskContext) {
-            CatalogueDBAdapter db = taskContext.getDb();
+            CatalogueDBAdapter db = new CatalogueDBAdapter(getApplicationContext());
+            db.open();
             BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 
             updateProgress(getString(R.string.optimizing_databases));
@@ -524,7 +528,7 @@ public class StartupActivity
 
         @Override
         public void run(SimpleTaskContext taskContext) {
-            CatalogueDBAdapter db = taskContext.getDb();
+            CatalogueDBAdapter db = new CatalogueDBAdapter(getApplicationContext());
 
             updateProgress(getString(R.string.loading));
 

@@ -53,7 +53,7 @@
 
     <string name="clone_style">Klonovat styl</string>
 
-    <string name="column_is_blank">Sloupec %1$s je prázdný na řádku %2$s</string>
+    <string name="column_is_blank">Sloupec %1$s je prázdný na řádku %2$d</string>
 
     <string name="columns_are_blank">Sloupce %1$s jsou prázdné na řádku %2$d</string>
 

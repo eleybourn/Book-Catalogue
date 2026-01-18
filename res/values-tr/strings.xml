@@ -97,7 +97,7 @@
 
     <string name="clone_style">Biçemi çoğalt</string>
 
-    <string name="column_is_blank">Sütun %1$s %2$s numaralı satırda boş</string>
+    <string name="column_is_blank">Sütun %1$s %2$d numaralı satırda boş</string>
 
     <string name="columns_are_blank">%1$s sütunlarının hepsi %2$d satırında boş</string>
 
@@ -433,7 +433,7 @@
         <item quantity="other">%1$s kapak</item>
     </plurals>
     <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$s oluşturuldu, %2$s güncellendi</string>
+    <string name="n_created_m_updated">%1$d oluşturuldu, %2$d güncellendi</string>
     <!-- Short text for 'n stars' -->
     <plurals name="n_stars" tools:ignore="UnusedQuantity">
         <item quantity="zero">%1$s yıldız</item>

@@ -97,7 +97,7 @@
 
     <string name="clone_style">Duplica stile</string>
 
-    <string name="column_is_blank">La colonna %1$s è vuota alla riga %2$s</string>
+    <string name="column_is_blank">La colonna %1$s è vuota alla riga %2$d</string>
 
     <string name="columns_are_blank">Tutte le colonne %1$s sono vuote alla riga %2$d</string>
 
@@ -430,7 +430,7 @@
         <item quantity="many">%1$s copertine</item>
     </plurals>
     <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$s creati, %2$s aggiornati</string>
+    <string name="n_created_m_updated">%1$d creati, %2$d aggiornati</string>
     <!-- Short text for 'n stars' -->
     <plurals name="n_stars" tools:ignore="UnusedQuantity">
         <item quantity="zero">%1$s stelle</item>

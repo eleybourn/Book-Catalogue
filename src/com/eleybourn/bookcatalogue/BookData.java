@@ -21,6 +21,7 @@ package com.eleybourn.bookcatalogue;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -39,7 +40,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  * @author pjw
  */
 public class BookData extends DataManager {
-	
+	private final Context mContext;
 	/** Row ID for book */
 	private long mRowId;
 
@@ -51,13 +52,13 @@ public class BookData extends DataManager {
 	public static final String KEY_ANTHOLOGY = "+IsAnthology";
 
 	/** Constructor */
-	public BookData() {
-		this(0L, null);
+	public BookData(Context context) {
+		this(context, 0L, null);
 	}
 
 	/** Constructor */
-	public BookData(Long rowId) {
-		this(rowId, null);
+	public BookData(Context context, Long rowId) {
+		this(context, rowId, null);
 	}
 
 	/**
@@ -65,8 +66,8 @@ public class BookData extends DataManager {
 	 * 
 	 * @param src		Bundle with book data (may be null)
 	 */
-	public BookData(Bundle src) {
-		this(0L, src);
+	public BookData(Context context, Bundle src) {
+		this(context, 0L, src);
 	}
 
 	/**
@@ -75,7 +76,8 @@ public class BookData extends DataManager {
 	 * @param rowId		ID of book (may be 0 for new)
 	 * @param src		Bundle with book data (may be null)
 	 */
-	public BookData(Long rowId, Bundle src) {
+	public BookData(Context context, Long rowId, Bundle src) {
+        mContext = context;
 		// Save the row, if possible
 		if (rowId == null) {
 			mRowId = 0;
@@ -174,7 +176,7 @@ public class BookData extends DataManager {
 			return;
 
 		// Connect to DB and get cursor for bok details
-		CatalogueDBAdapter db = new CatalogueDBAdapter(BookCatalogueApp.context);
+		CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
 		db.open();
 		try {
             try (BooksCursor book = db.fetchBookById(getRowId())) {

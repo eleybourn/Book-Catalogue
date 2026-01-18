@@ -58,7 +58,7 @@ public class BookUtils {
 			Toast.makeText(activity, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
 		}
 		Intent i = new Intent(activity, BookEdit.class);
-		BookData thisBook = new BookData(rowId);
+		BookData thisBook = new BookData(activity.getApplicationContext(), rowId);
 
 		File currThumb = CatalogueDBAdapter.fetchThumbnailByUuid(thisBook.getString(DOM_BOOK_UUID.name));
 		File tmpThumb = CatalogueDBAdapter.getTempThumbnail();

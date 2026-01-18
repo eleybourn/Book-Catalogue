@@ -45,6 +45,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_UPDAT
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_UPDATE_YEAR;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.util.TypedValue;
@@ -444,28 +445,28 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
 
             // Get book data from its ID
             long bookId = rowView.getBookId();
-            BookData mBookData = new BookData(bookId);
+            BookData mBookData = new BookData(context, bookId);
 
             // Force READ to true
             mBookData.putInt(CatalogueDBAdapter.KEY_READ, 1);
 
             // Update the book into the DB
             dba.updateBook(bookId, mBookData, 0);
-            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_BOOK, bookId, null);
+            new BookCatalogueAPI(context, BookCatalogueAPI.REQUEST_BACKUP_BOOK, bookId, null);
 
         } else if (itemId == R.id.MENU_MARK_AS_UNREAD) {
             // Force the book status to : unread.
 
             // Get book data from its ID
             long bookId = rowView.getBookId();
-            BookData mBookData = new BookData(bookId);
+            BookData mBookData = new BookData(context, bookId);
 
             // Force READ to true
             mBookData.putInt(CatalogueDBAdapter.KEY_READ, 0);
 
             // Update the book into the DB
             dba.updateBook(bookId, mBookData, 0);
-            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_BOOK, bookId, null);
+            new BookCatalogueAPI(context, BookCatalogueAPI.REQUEST_BACKUP_BOOK, bookId, null);
         }
         return false;
     }
@@ -731,7 +732,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                 publisher.setText("");
                 author.setText("");
                 // Queue the task.
-                GetBookExtrasTask t = new GetBookExtrasTask(rowView.getBookId(), this, flags);
+                GetBookExtrasTask t = new GetBookExtrasTask(v.getContext(), rowView.getBookId(), this, flags);
                 mInfoQueue.enqueue(t);
             }
         }
@@ -750,7 +751,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
      * @author Philip Warner
      */
     private static class GetBookExtrasTask implements SimpleTask {
-
+        private final Context mContext;
         public static final int EXTRAS_HANDLED = LibraryStyle.EXTRAS_AUTHOR | LibraryStyle.EXTRAS_LOCATION | LibraryStyle.EXTRAS_PUBLISHER | LibraryStyle.EXTRAS_BOOKSHELVES;
         /**
          * Location resource string
@@ -811,7 +812,8 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
          * @param bookId Book to fetch
          * @param holder View holder of view for the book
          */
-        public GetBookExtrasTask(long bookId, BookHolder holder, int flags) {
+        public GetBookExtrasTask(Context context, long bookId, BookHolder holder, int flags) {
+            mContext = context;
             if ((flags & EXTRAS_HANDLED) == 0)
                 throw new RuntimeException("GetBookExtrasTask called for unhandled extras");
 
@@ -834,7 +836,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                     }
                 }
                 // Get a DB connection and find the book.
-                CatalogueDBAdapter dba = taskContext.getDb();
+                CatalogueDBAdapter dba = new CatalogueDBAdapter(mContext);
                 //dba.open();
                 try (BooksCursor c = dba.fetchBookById(mBookId)) {
                     // If we have a book, use it. Otherwise we are done.

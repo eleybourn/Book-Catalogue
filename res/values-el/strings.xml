@@ -72,7 +72,7 @@
 
     <string name="clone_style">Αντιγραφή στυλ</string>
 
-    <string name="column_is_blank">Η στήλη %1$s είναι κενή στη σειρά %2$s</string>
+    <string name="column_is_blank">Η στήλη %1$s είναι κενή στη σειρά %2$d</string>
 
     <string name="columns_are_blank">Οι στήλες %1$s είναι όλες κενές στη σειρά %2$d</string>
 
@@ -414,7 +414,7 @@
         <item quantity="other">%1$s εξώφυλλα</item>
     </plurals>
     <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$s δημιουργήθηκαν, %2$s ενημερώθηκαν</string>
+    <string name="n_created_m_updated">%1$d δημιουργήθηκαν, %2$d ενημερώθηκαν</string>
     <!-- Short text for 'n stars' -->
     <plurals name="n_stars" tools:ignore="UnusedQuantity">
         <item quantity="zero">%1$s αστέρια</item>

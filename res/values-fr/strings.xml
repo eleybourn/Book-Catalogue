@@ -72,7 +72,7 @@
 
     <string name="clone_style">Cloner le style</string>
 
-    <string name="column_is_blank">La colonne %1$s est vide à la ligne %2$s</string>
+    <string name="column_is_blank">La colonne %1$s est vide à la ligne %2$d</string>
 
     <string name="columns_are_blank">Les colonnes %1$s sont toutes vides à la ligne %2$d</string>
 
@@ -419,7 +419,7 @@
         <item quantity="many">%1$s couvertures</item>
     </plurals>
     <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$s ajoutés, %2$s mis à jour</string>
+    <string name="n_created_m_updated">%1$d ajoutés, %2$d mis à jour</string>
     <!-- Short text for 'n stars' -->
     <plurals name="n_stars" tools:ignore="UnusedQuantity">
         <item quantity="zero">Aucune étoile</item>

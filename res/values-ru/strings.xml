@@ -86,7 +86,7 @@
 
     <string name="clone_style">Клонировать стиль</string>
 
-    <string name="column_is_blank">Столбец %1$s в строке %2$s пуст</string>
+    <string name="column_is_blank">Столбец %1$s в строке %2$d пуст</string>
 
     <string name="columns_are_blank">В строке %2$d столбцы %1$s пусты</string>
 
@@ -373,7 +373,7 @@
         <item quantity="many">%1$s обложек</item>
         <item quantity="other">%1$s обложек</item>
     </plurals>
-    <string name="n_created_m_updated">%1$s создано, %2$s обновлено</string>
+    <string name="n_created_m_updated">%1$d создано, %2$d обновлено</string>
     <plurals name="n_stars" tools:ignore="UnusedQuantity">
         <item quantity="zero">%1$s звезд</item>
         <item quantity="one">%1$s звезда</item>

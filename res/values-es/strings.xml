@@ -72,7 +72,7 @@
 
     <string name="clone_style">Duplicar Estilo</string>
 
-    <string name="column_is_blank">La columna %1$s tiene en blanco la fila %2$s</string>
+    <string name="column_is_blank">La columna %1$s tiene en blanco la fila %2$d</string>
 
     <string name="columns_are_blank">Las columnas %1$s tienen en blanco la fila %2$d</string>
 
@@ -413,7 +413,7 @@ y puede editar el libro utilizando el menú de opciones.
         <item quantity="many">%1$s portadas</item>
     </plurals>
     <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$s creados, %2$s actualizados</string>
+    <string name="n_created_m_updated">%1$d creados, %2$d actualizados</string>
     <!-- Short text for 'n stars' -->
     <plurals name="n_stars" tools:ignore="UnusedQuantity">
         <item quantity="zero">%1$s estrellas</item>

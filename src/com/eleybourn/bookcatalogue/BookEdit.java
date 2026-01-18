@@ -432,10 +432,10 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     private void loadBookData(Long rowId, Bundle bestBundle) {
         if (bestBundle != null && bestBundle.containsKey("bookData")) {
             // If we have saved book data, use it
-            mBookData = new BookData(rowId, bestBundle.getBundle("bookData"));
+            mBookData = new BookData(this, rowId, bestBundle.getBundle("bookData"));
         } else {
             // Just load based on rowId
-            mBookData = new BookData(rowId);
+            mBookData = new BookData(this, rowId);
         }
     }
 
@@ -783,11 +783,11 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                 File thumb = CatalogueDBAdapter.getTempThumbnail();
                 File real = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));
                 thumb.renameTo(real);
-                new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
+                new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
             }
         } else {
             mDbHelper.updateBook(mRowId, mBookData, 0);
-            new BookCatalogueAPI(BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
+            new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
         }
 
         /*

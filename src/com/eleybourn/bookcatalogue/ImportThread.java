@@ -1,5 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
+import android.content.Context;
+
 import com.eleybourn.bookcatalogue.backup.CsvImporter;
 import com.eleybourn.bookcatalogue.backup.Importer;
 import com.eleybourn.bookcatalogue.utils.Logger;
@@ -17,8 +19,8 @@ import androidx.documentfile.provider.DocumentFile;
 public class ImportThread extends ManagedTask {
 	private final DocumentFile mFile;
 	private CatalogueDBAdapter mDbHelper;
-	//private LocalCoverFinder mCoverFinder;
-	
+    private final Context mContext;
+
 	public static class ImportException extends RuntimeException {
 		private static final long serialVersionUID = 1660687786319003483L;
 
@@ -27,14 +29,15 @@ public class ImportThread extends ManagedTask {
 		}
 	}
 
-	public ImportThread(TaskManager manager, DocumentFile file) throws IOException {
+	public ImportThread(Context context, TaskManager manager, DocumentFile file) throws IOException {
 		super(manager);
+        mContext = context;
 		mFile = file;
 		// Changed getCanonicalPath to getAbsolutePath based on this bug in Android 2.1:
 		//     http://code.google.com/p/android/issues/detail?id=4961
 		//mCoversPath = StorageUtils.getBCCovers().getAbsolutePath();
 
-		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
+		mDbHelper = new CatalogueDBAdapter(mContext);
 		mDbHelper.open();
 	}
 
@@ -74,8 +77,8 @@ public class ImportThread extends ManagedTask {
 		
 		InputStream in = null;
 		try {
-			in = BookCatalogueApp.context.getContentResolver().openInputStream(mFile.getUri());
-			importer.importBooks(in, mImportListener, Importer.IMPORT_ALL);
+			in = mContext.getContentResolver().openInputStream(mFile.getUri());
+			importer.importBooks(mContext, in, mImportListener, Importer.IMPORT_ALL);
 			if (isCancelled()) {
 				doToast(getString(R.string.alert_cancelled));
 			} else {

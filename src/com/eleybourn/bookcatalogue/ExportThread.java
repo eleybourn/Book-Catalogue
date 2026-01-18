@@ -72,7 +72,7 @@ public class ExportThread extends ManagedTask {
 		try {
 			OutputStream out = mContext.getContentResolver().openOutputStream(mFile.getUri());
 			CsvExporter exporter = new CsvExporter();
-			exporter.export(out, mOnExportListener, Exporter.EXPORT_ALL, null);
+			exporter.export(mContext, out, mOnExportListener, Exporter.EXPORT_ALL, null);
 			if (out != null) {
 				try {
 					out.close();

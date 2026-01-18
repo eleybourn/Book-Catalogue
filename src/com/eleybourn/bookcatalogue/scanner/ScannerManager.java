@@ -1,5 +1,7 @@
 package com.eleybourn.bookcatalogue.scanner;
 
+import android.content.Context;
+
 import java.util.TreeMap;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
@@ -29,7 +31,7 @@ public class ScannerManager {
 		/** Create a new scanner of the related type */
 		Scanner newInstance();
 		/** Check if this scanner is available */
-		boolean isIntentAvailable();
+		boolean isIntentAvailable(Context context);
 	}
 
 	/**
@@ -47,7 +49,7 @@ public class ScannerManager {
 			}
 
 			@Override
-			public boolean isIntentAvailable() {
+			public boolean isIntentAvailable(Context context) {
 				return true;
 			}});
 
@@ -58,8 +60,8 @@ public class ScannerManager {
 			}
 
 			@Override
-			public boolean isIntentAvailable() {
-				return ZxingScanner.isIntentAvailable(false);
+			public boolean isIntentAvailable(Context context) {
+				return ZxingScanner.isIntentAvailable(context, false);
 			}});
 
 		myScannerFactories.put(SCANNER_ZXING, new ScannerFactory() {
@@ -69,8 +71,8 @@ public class ScannerManager {
 			}
 
 			@Override
-			public boolean isIntentAvailable() {
-				return ZxingScanner.isIntentAvailable(true);
+			public boolean isIntentAvailable(Context context) {
+				return ZxingScanner.isIntentAvailable(context, true);
 			}});
 
 		myScannerFactories.put(SCANNER_PIC2SHOP, new ScannerFactory() {
@@ -80,8 +82,8 @@ public class ScannerManager {
 			}
 
 			@Override
-			public boolean isIntentAvailable() {
-				return Pic2ShopScanner.isIntentAvailable();
+			public boolean isIntentAvailable(Context context) {
+				return Pic2ShopScanner.isIntentAvailable(context);
 			}});
 
 	}
@@ -91,19 +93,19 @@ public class ScannerManager {
 	 * 
 	 * @return	A Scanner
 	 */
-	public static Scanner getScanner() {
+	public static Scanner getScanner(Context context) {
 		// Find out what the user prefers if any
 		int prefScanner = BookCatalogueApp.getAppPreferences().getInt( PREF_PREFERRED_SCANNER, SCANNER_BUILTIN);
 
 		// See if preferred one is present, if so return a new instance
 		ScannerFactory psf = myScannerFactories.get(prefScanner);
-		if (psf != null && psf.isIntentAvailable()) {
+		if (psf != null && psf.isIntentAvailable(context)) {
 			return psf.newInstance();
 		}
 
 		// Search all supported scanners. If none, just return a Builtin one
 		for(ScannerFactory sf: myScannerFactories.values()) {
-			if (sf != psf && sf.isIntentAvailable()) {
+			if (sf != psf && sf.isIntentAvailable(context)) {
 				return sf.newInstance();
 			}
 		}

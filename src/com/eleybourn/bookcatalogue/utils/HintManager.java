@@ -73,11 +73,7 @@ public class HintManager {
 		//.add("hint_amazon_links_blurb", R.string.hint_amazon_links_blurb)
 		;
 
-	public interface HintOwner {
-		int getHint();
-	}
-	
-	/** Reset all hints to that they will be displayed again */
+    /** Reset all hints to that they will be displayed again */
 	public static void resetHints() {
 		Enumeration<Hint> hints = mHints.getHints();
 		while(hints.hasMoreElements()) {
@@ -121,9 +117,9 @@ public class HintManager {
 
 		// Setup the views
         String headingText;
-        headingText = BookCatalogueApp.context.getResources().getString(Objects.requireNonNullElse(headingId, R.string.title_hint), args);
+        headingText = BookCatalogueApp.getRes().getString(Objects.requireNonNullElse(headingId, R.string.title_hint), args);
         header.setText(headingText);
-		String hintText = BookCatalogueApp.context.getResources().getString(stringId, args);
+		String hintText = BookCatalogueApp.getRes().getString(stringId, args);
 		msg.setText(Utils.linkifyHtml(hintText, Linkify.WEB_URLS));
 		// Automatically start a browser (or whatever)
 		msg.setMovementMethod(LinkMovementMethod.getInstance());

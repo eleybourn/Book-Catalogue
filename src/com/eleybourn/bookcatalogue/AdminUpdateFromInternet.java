@@ -251,7 +251,7 @@ public class AdminUpdateFromInternet extends ActivityWithTasks {
     }
 
     private void startUpdate() {
-        UpdateThumbnailsThread t = new UpdateThumbnailsThread(getTaskManager(), mFieldUsages, mThumbnailsHandler);
+        UpdateThumbnailsThread t = new UpdateThumbnailsThread(this, getTaskManager(), mFieldUsages, mThumbnailsHandler);
         mUpdateSenderId = t.getSenderId();
         UpdateThumbnailsThread.getMessageSwitch().addListener(mUpdateSenderId, mThumbnailsHandler, false);
         t.start();

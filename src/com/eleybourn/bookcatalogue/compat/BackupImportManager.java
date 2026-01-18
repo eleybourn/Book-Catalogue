@@ -41,7 +41,7 @@ public class BackupImportManager
 					if (result != null) {
 						DocumentFile f = DocumentFile.fromSingleUri(activity, result);
 						if (f != null) {
-							TarBackupContainer bkp = new TarBackupContainer(f);
+							TarBackupContainer bkp = new TarBackupContainer(activity.getApplicationContext(), f);
 							// Each format should provide a validator of some kind
 							if (!bkp.isValid()) {
 								Toast.makeText(activity,

@@ -11,7 +11,7 @@ import android.content.SharedPreferences.Editor;
  */
 public class BookCataloguePreferences {
 	/** Underlying SharedPreferences */
-	private final SharedPreferences m_prefs = getSharedPreferences();
+	private final SharedPreferences m_prefs = BookCatalogueApp.mPrefs;
 
 	/** Name to use for global preferences; non-global should be moved to appropriate Activity code */
 	public static final String PREF_START_IN_MY_BOOKS = "start_in_my_books";
@@ -110,7 +110,7 @@ public class BookCataloguePreferences {
     /** Get (or create) the static shared preferences */
 	public static SharedPreferences getSharedPreferences() {
 		if (mPrefs == null) {
-            mPrefs = BookCatalogueApp.context.getSharedPreferences("bookCatalogue", BookCatalogueApp.MODE_PRIVATE);
+            mPrefs = BookCatalogueApp.mPrefs;
         }
 		return mPrefs;
 	}

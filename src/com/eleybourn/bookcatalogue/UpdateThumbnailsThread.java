@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -77,9 +78,9 @@ public class UpdateThumbnailsThread extends ManagedTask {
 	 * @param requestedFields	fields to update
 	 * @param listener		Interface object to handle events in this thread.
 	 */
-	public UpdateThumbnailsThread(TaskManager manager, FieldUsages requestedFields, TaskListener listener) {
+	public UpdateThumbnailsThread(Context context, TaskManager manager, FieldUsages requestedFields, TaskListener listener) {
 		super(manager);
-		mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
+		mDbHelper = new CatalogueDBAdapter(context);
 		mDbHelper.open();
 		
 		mRequestedFields = requestedFields;

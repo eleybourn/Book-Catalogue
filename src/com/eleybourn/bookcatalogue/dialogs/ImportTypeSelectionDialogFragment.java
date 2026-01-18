@@ -95,9 +95,11 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 		assert(mDocFile != null);
 
 		BackupInfo info = null;
+        View v = requireActivity().getLayoutInflater().inflate(R.layout.dialog_import_type_selection, null);
+
 		try {
 			BackupReader reader;
-			reader = BackupManager.readBackup(mDocFile);
+			reader = BackupManager.readBackup(v.getContext(), mDocFile);
 			info = reader.getInfo();
 			reader.close();
 			mArchiveHasValidDates = info.getAppVersionCode() >= 152;
@@ -106,7 +108,6 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 			mArchiveHasValidDates = false;
 		}
 
-        View v = requireActivity().getLayoutInflater().inflate(R.layout.dialog_import_type_selection, null);
 		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setIcon(R.drawable.ic_archive).setView(v).setTitle(R.string.label_import_from_archive).create();
 		//alertDialog.setIcon(R.drawable.ic_menu_help);
 		alertDialog.setCanceledOnTouchOutside(false);

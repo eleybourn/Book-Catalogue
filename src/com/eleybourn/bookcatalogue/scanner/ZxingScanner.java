@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
-
 /**
  * This object will start a Zxing compatible scanner and extract the data
  * from the resulting intent when the activity completes.
@@ -33,8 +31,8 @@ public class ZxingScanner implements Scanner {
 	 * Check if we have a valid intent available.
 	 * @return true if present
 	 */
-	public static boolean isIntentAvailable(boolean mustBeZxing) {
-		return isIntentAvailable(BookCatalogueApp.context, ACTION, mustBeZxing ? PACKAGE : null);
+	public static boolean isIntentAvailable(Context context, boolean mustBeZxing) {
+		return isIntentAvailable(context, ACTION, mustBeZxing ? PACKAGE : null);
 	}
 
 	/**

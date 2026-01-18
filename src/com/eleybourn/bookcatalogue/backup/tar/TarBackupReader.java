@@ -19,6 +19,8 @@
  */
 package com.eleybourn.bookcatalogue.backup.tar;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -51,8 +53,9 @@ public class TarBackupReader extends BackupReaderAbstract {
 	 * 
 	 * @param container		Parent
 	 */
-	public TarBackupReader(TarBackupContainer container) throws IOException {
-		mContainer = container;
+	public TarBackupReader(Context context, TarBackupContainer container) throws IOException {
+        super(context);
+        mContainer = container;
 
 		// Open the file and create the archive stream
 		InputStream in = container.getInputStream();

@@ -80,14 +80,14 @@ public class StorageUtils {
      * Accessor
      */
     public static File getBCCache() {
-        return BookCatalogueApp.context.getExternalCacheDir();
+        return BookCatalogueApp.externalCacheDir;
     }
 
     /**
      * Accessor
      */
     public static File getBCCovers() {
-        File dir = new File(BookCatalogueApp.context.getExternalFilesDir(null), "covers");
+        File dir = new File(BookCatalogueApp.externalFilesDir, "covers");
         dir.mkdirs();
         return dir;
     }
@@ -96,7 +96,7 @@ public class StorageUtils {
      * Accessor
      */
     public static File getBCData() {
-        return BookCatalogueApp.context.getFilesDir();
+        return BookCatalogueApp.filesDir;
     }
 
     private static File getBCShared() {
@@ -348,14 +348,14 @@ public class StorageUtils {
         fragment.setMax(files.length);
 
         fragment.onProgress("Copying files...", 0);
-        ContentResolver resolver = BookCatalogueApp.context.getContentResolver();
+        ContentResolver resolver = fragment.requireContext().getContentResolver();
         File backupDir = getBCBackups();
         File cacheDir = getBCCache();
         File coverDir = getBCCovers();
         File sharedDir = getBCShared();
         File toDir;
         String copyingMsg = BookCatalogueApp.getRes().getString(R.string.copying_files);
-        CatalogueDBAdapter db = new CatalogueDBAdapter(BookCatalogueApp.context);
+        CatalogueDBAdapter db = new CatalogueDBAdapter(fragment.getContext());
         db.open();
         for (DocumentFile file : files) {
             if (fragment.isCancelled()) {

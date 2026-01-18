@@ -19,6 +19,8 @@
  */
 package com.eleybourn.bookcatalogue.backup;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.util.Date;
 
@@ -54,13 +56,13 @@ public class BackupManager {
 	 * 
 	 * @throws IOException (inaccessible, invalid other other errors)
 	 */
-	public static BackupReader readBackup(DocumentFile file) throws IOException {
+	public static BackupReader readBackup(Context context, DocumentFile file) throws IOException {
 		if (!file.exists())
 			throw new java.io.FileNotFoundException("Attempt to open non-existent backup file");
 
 		// We only support one backup format; so we use that. In future we would need to
 		// explore the file to determine which format to use
-		TarBackupContainer bkp = new TarBackupContainer(file);
+		TarBackupContainer bkp = new TarBackupContainer(context, file);
 		// Each format should provide a validator of some kind
 		if (!bkp.isValid())
 			throw new IOException("Not a valid backup file");
@@ -91,10 +93,10 @@ public class BackupManager {
 
 				try {
 					System.out.println("Starting " + requestedFile.getName());
-					TarBackupContainer bkp = new TarBackupContainer(requestedFile);
+					TarBackupContainer bkp = new TarBackupContainer(context, requestedFile);
 					wrt = bkp.newWriter(context);
 
-					wrt.backup(new BackupWriterListener() {
+					wrt.backup(fragment.getContext(), new BackupWriterListener() {
 						private int mTotalBooks = 0;
 
 						@Override
@@ -186,7 +188,7 @@ public class BackupManager {
 			public void run(final SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
 				try {
 					System.out.println("Starting " + inputFile.getName());
-					BackupReader rdr = BackupManager.readBackup(inputFile);
+					BackupReader rdr = BackupManager.readBackup(context, inputFile);
 					rdr.restore(new BackupReaderListener() {
 						@Override
 						public void setMax(int max) {

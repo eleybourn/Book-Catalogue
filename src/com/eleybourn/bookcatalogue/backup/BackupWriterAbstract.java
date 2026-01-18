@@ -1,7 +1,7 @@
 /*
  * @copyright 2013 Philip Warner
  * @license GNU General Public License
- * 
+ *
  * This file is part of Book Catalogue.
  *
  * Book Catalogue is free software: you can redistribute it and/or modify
@@ -19,11 +19,6 @@
  */
 package com.eleybourn.bookcatalogue.backup;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Date;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -32,247 +27,254 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
-import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
 import com.eleybourn.bookcatalogue.booklist.BooklistStyles;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
+
 /**
- * Basic implementation of format-agnostic BackupWriter methods using 
+ * Basic implementation of format-agnostic BackupWriter methods using
  * only a limited set of methods from the base interface.
- * 
+ *
  * @author pjw
  */
 public abstract class BackupWriterAbstract implements BackupWriter {
     private final Context mContext;
-	private final CatalogueDBAdapter mDbHelper;
-
-	/**
-	 * Constructor
-	 */
-	public BackupWriterAbstract(Context mContext) {
-        this.mContext = mContext;
-        mDbHelper = new CatalogueDBAdapter(mContext);
-		mDbHelper.open();
-	}
-
-	/**
-	 * Do a full backup, sending progress to the listener
-	 */
-	@Override
-	public void backup(BackupWriterListener listener, final int backupFlags, Date since) throws IOException {
-		
-		try {
-			// Estimate the total steps
-			int estTotal = 1;
-			// First, see how many books in total
-			final int maxBooks = (int) mDbHelper.getBookCount();
-
-			int coverCount;
-			if ((backupFlags & Exporter.EXPORT_COVERS) != 0)
-				coverCount = writeCovers(listener, backupFlags, since, true);
-			else
-				coverCount= 0;
-
-			// If we are doing books, add them
-			if ( (backupFlags & Exporter.EXPORT_DETAILS) != 0)
-				estTotal += maxBooks;
-
-			// If we are doing covers, add them
-			if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_COVERS) != 0)
-				estTotal += coverCount;
-
-			listener.setMax(estTotal);
-
-			// Generate the book list first, so we know how many there are.
-			File temp = generateBooks(listener, backupFlags, since, coverCount);
-
-			listener.setMax(coverCount + listener.getTotalBooks() + 1);
-
-			// Process each component of the Archive, unless we are cancelled, as in Nikita
-			if (!listener.isCancelled())
-				writeInfo(listener, listener.getTotalBooks(), coverCount);
-			if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_DETAILS) != 0)
-				writeBooks(temp);
-			if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_COVERS) != 0)
-				writeCovers(listener, backupFlags, since, false);
-			if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_PREFERENCES) != 0)
-				writePreferences(listener);
-			if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_STYLES) != 0)
-				writeStyles(listener);			
-		} finally {
-			try {
-				close();							
-			} catch (Exception e) {
-				Logger.logError(e, "Failed to close archive");
-			}
-		}
-
-		System.out.println("Closed writer");
-	}
-
-	/**
-	 * Generate a bundle containing the INFO block, and send it to the archive
-	 */
-	private void writeInfo(BackupWriterListener listener, int bookCount, int coverCount) throws IOException {
-		BackupInfo info = BackupInfo.createInfo(getContainer(), mDbHelper, mContext, bookCount, coverCount);
-		putInfo(info);
-		listener.step(null, 1);
-	}
-
-	/**
-	 * Generate a temporary file containing a books export, and send it to the archive
-	 * NOTE: This implementation is built around the TAR format; it is not a fixed design.
-	 * We could for example pass an Exporter to the writer and leave it to decide if a 
-	 * temp file or a stream were appropriate. Sadly, tar archives need to know size before
-	 * the header can be written.
-	 * It IS convenient to do it here because we can capture the progress, but we could also
-	 * have writer.putBooks(exporter, listener) as the method.
-	 */
-	private File generateBooks(final BackupWriterListener listener, final int backupFlags, final Date since, final int numCovers) throws IOException {
-		// This is an estimate only; we actually don't know how many covers
-		// there are in the backup.
-		listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
-
-		Exporter.ExportListener exportListener = new Exporter.ExportListener() {
-			private int mLastPos = 0;
-			@Override
-			public void onProgress(String message, int position) {
-				// The progress is sent periodically and has jumps, so we calculate deltas
-				listener.step(message, position - mLastPos);
-				mLastPos = position;
-			}
-			@Override
-			public boolean isCancelled() {
-				return listener.isCancelled();
-			}
-			@Override
-			public void setMax(int max) {
-				// Save the book count for later
-				listener.setTotalBooks(max);
-				// Update the progress bar to a more reasonable value
-				listener.setMax(numCovers + max + 1);
-			}
-		};
-
-		// Get a temp file and mark for delete
-		System.out.println("Getting books");
-		File temp = File.createTempFile("book-cat", ".tmp");
-		temp.deleteOnExit();
-		FileOutputStream output = null;
-		try {
-			CsvExporter exporter = new CsvExporter();
-			output = new FileOutputStream(temp);
-			exporter.export(output, exportListener, backupFlags, since);
-			output.close();
-		} finally {
-			if (output != null && output.getChannel().isOpen())
-				output.close();
-		}
-
-		return temp;
-	}
-
-	/**
-	 * @param exportFile 	the file containing the exported books in CSV format
-	 */
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-    private void writeBooks(File exportFile) throws IOException {
-		try {
-			System.out.println("Writing Books");
-			putBooks(exportFile);
-		} finally {
-			if (exportFile.exists())
-				exportFile.delete();
-		}
-	}
+    private final CatalogueDBAdapter mDbHelper;
 
     /**
-	 * Write each cover file corresponding to a book to the archive
-	 */
-	private int writeCovers(final BackupWriterListener listener, final int backupFlags, final Date since, boolean dryRun) throws IOException {
-		long sinceTime = 0;
-		if ( since != null && (backupFlags & Exporter.EXPORT_SINCE) != 0) {
-			try {
-				sinceTime = since.getTime();
-			} catch (Exception e) {
-				// Just ignore; backup everything
-				Logger.logError(e);
-			}
-		}
+     * Constructor
+     */
+    public BackupWriterAbstract(Context mContext) {
+        this.mContext = mContext;
+        mDbHelper = new CatalogueDBAdapter(mContext);
+        mDbHelper.open();
+    }
 
-		System.out.println("Writing Images");
-		
-		int ok = 0;
-		int missing = 0;
-		int skipped = 0;
-		String fmt_no_skip = BookCatalogueApp.getRes().getString(R.string.covers_progress);
-		String fmt_skip = BookCatalogueApp.getRes().getString(R.string.covers_progress_increment);
+    /**
+     * Do a full backup, sending progress to the listener
+     */
+    @Override
+    public void backup(Context context, BackupWriterListener listener, final int backupFlags, Date since) throws IOException {
 
-		Cursor c = mDbHelper.getUuidList();
-		try {
-			final int uuidCol = c.getColumnIndex(DatabaseDefinitions.DOM_BOOK_UUID.toString());
-			while(c.moveToNext() && !listener.isCancelled()) {
-				File cover = CatalogueDBAdapter.fetchThumbnailByUuid(c.getString(uuidCol));
-				if (cover.exists()) {
-					if (cover.exists() 
-							&& (since == null || sinceTime < cover.lastModified())) 
-					{
-						if (!dryRun)
-							putCoverFile(cover);
-						ok++;
-					} else {
-						skipped++;
-					}
-				} else {
-					missing++;
-				}
-				if (!dryRun) {
-					String message;
-					if (skipped == 0) {
-						message = String.format(fmt_no_skip, ok, missing);
-					} else {
-						message = String.format(fmt_skip, ok, missing, skipped);
-					}
-					listener.step(message, 1);					
-				}
-			}			
-		} finally {
-			if (c != null && !c.isClosed())
-				c.close();			
-		}
-		if (!dryRun)
-			System.out.println("Wrote " + ok + " Images, "+ missing + " missing, and " + skipped + " skipped");
-		
-		return ok;
-	}
+        try {
+            // Estimate the total steps
+            int estTotal = 1;
+            // First, see how many books in total
+            final int maxBooks = (int) mDbHelper.getBookCount();
 
-	/**
-	 * Get the preferences and save them
-	 */
-	private void writePreferences(final BackupWriterListener listener) throws IOException {
-		SharedPreferences prefs = BookCataloguePreferences.getSharedPreferences();
-		putPreferences(prefs);
-		listener.step(null, 1);
-	}
+            int coverCount;
+            if ((backupFlags & Exporter.EXPORT_COVERS) != 0)
+                coverCount = writeCovers(listener, backupFlags, since, true);
+            else
+                coverCount = 0;
 
-	/**
-	 * Save all USER styles
-	 */
-	private void writeStyles(final BackupWriterListener listener) throws IOException {
-		BooklistStyles styles = BooklistStyles.getAllStyles(mDbHelper);
-		for(LibraryStyle style: styles) {
-			if (style.isUserDefined()) {
-				putBooklistStyle(style);				
-			}
-		}
-		listener.step(null, 1);
-	}
-	
-	/**
-	 * Cleanup
-	 */
-	public void close() throws IOException {
-		mDbHelper.close();
-	}
+            // If we are doing books, add them
+            if ((backupFlags & Exporter.EXPORT_DETAILS) != 0)
+                estTotal += maxBooks;
+
+            // If we are doing covers, add them
+            if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_COVERS) != 0)
+                estTotal += coverCount;
+
+            listener.setMax(estTotal);
+
+            // Generate the book list first, so we know how many there are.
+            File temp = generateBooks(context, listener, backupFlags, since, coverCount);
+
+            listener.setMax(coverCount + listener.getTotalBooks() + 1);
+
+            // Process each component of the Archive, unless we are cancelled, as in Nikita
+            if (!listener.isCancelled())
+                writeInfo(listener, listener.getTotalBooks(), coverCount);
+            if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_DETAILS) != 0)
+                writeBooks(temp);
+            if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_COVERS) != 0)
+                writeCovers(listener, backupFlags, since, false);
+            if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_PREFERENCES) != 0)
+                writePreferences(listener);
+            if (!listener.isCancelled() && (backupFlags & Exporter.EXPORT_STYLES) != 0)
+                writeStyles(listener);
+        } finally {
+            try {
+                close();
+            } catch (Exception e) {
+                Logger.logError(e, "Failed to close archive");
+            }
+        }
+
+        System.out.println("Closed writer");
+    }
+
+    /**
+     * Generate a bundle containing the INFO block, and send it to the archive
+     */
+    private void writeInfo(BackupWriterListener listener, int bookCount, int coverCount) throws IOException {
+        BackupInfo info = BackupInfo.createInfo(getContainer(), mDbHelper, mContext, bookCount, coverCount);
+        putInfo(info);
+        listener.step(null, 1);
+    }
+
+    /**
+     * Generate a temporary file containing a books export, and send it to the archive
+     * NOTE: This implementation is built around the TAR format; it is not a fixed design.
+     * We could for example pass an Exporter to the writer and leave it to decide if a
+     * temp file or a stream were appropriate. Sadly, tar archives need to know size before
+     * the header can be written.
+     * It IS convenient to do it here because we can capture the progress, but we could also
+     * have writer.putBooks(exporter, listener) as the method.
+     */
+    private File generateBooks(Context context, final BackupWriterListener listener, final int backupFlags, final Date since, final int numCovers) throws IOException {
+        // This is an estimate only; we actually don't know how many covers
+        // there are in the backup.
+        listener.setMax((int) (mDbHelper.getBookCount() * 2 + 1));
+
+        Exporter.ExportListener exportListener = new Exporter.ExportListener() {
+            private int mLastPos = 0;
+
+            @Override
+            public void onProgress(String message, int position) {
+                // The progress is sent periodically and has jumps, so we calculate deltas
+                listener.step(message, position - mLastPos);
+                mLastPos = position;
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return listener.isCancelled();
+            }
+
+            @Override
+            public void setMax(int max) {
+                // Save the book count for later
+                listener.setTotalBooks(max);
+                // Update the progress bar to a more reasonable value
+                listener.setMax(numCovers + max + 1);
+            }
+        };
+
+        // Get a temp file and mark for delete
+        System.out.println("Getting books");
+        File temp = File.createTempFile("book-cat", ".tmp");
+        temp.deleteOnExit();
+        FileOutputStream output = null;
+        try {
+            CsvExporter exporter = new CsvExporter();
+            output = new FileOutputStream(temp);
+            exporter.export(context, output, exportListener, backupFlags, since);
+            output.close();
+        } finally {
+            if (output != null && output.getChannel().isOpen())
+                output.close();
+        }
+
+        return temp;
+    }
+
+    /**
+     * @param exportFile the file containing the exported books in CSV format
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void writeBooks(File exportFile) throws IOException {
+        try {
+            System.out.println("Writing Books");
+            putBooks(exportFile);
+        } finally {
+            if (exportFile.exists())
+                exportFile.delete();
+        }
+    }
+
+    /**
+     * Write each cover file corresponding to a book to the archive
+     */
+    private int writeCovers(final BackupWriterListener listener, final int backupFlags, final Date since, boolean dryRun) throws IOException {
+        long sinceTime = 0;
+        if (since != null && (backupFlags & Exporter.EXPORT_SINCE) != 0) {
+            try {
+                sinceTime = since.getTime();
+            } catch (Exception e) {
+                // Just ignore; backup everything
+                Logger.logError(e);
+            }
+        }
+
+        System.out.println("Writing Images");
+
+        int ok = 0;
+        int missing = 0;
+        int skipped = 0;
+        String fmt_no_skip = BookCatalogueApp.getRes().getString(R.string.covers_progress);
+        String fmt_skip = BookCatalogueApp.getRes().getString(R.string.covers_progress_increment);
+
+        Cursor c = mDbHelper.getUuidList();
+        try {
+            final int uuidCol = c.getColumnIndex(DatabaseDefinitions.DOM_BOOK_UUID.toString());
+            while (c.moveToNext() && !listener.isCancelled()) {
+                File cover = CatalogueDBAdapter.fetchThumbnailByUuid(c.getString(uuidCol));
+                if (cover.exists()) {
+                    if (cover.exists()
+                            && (since == null || sinceTime < cover.lastModified())) {
+                        if (!dryRun)
+                            putCoverFile(cover);
+                        ok++;
+                    } else {
+                        skipped++;
+                    }
+                } else {
+                    missing++;
+                }
+                if (!dryRun) {
+                    String message;
+                    if (skipped == 0) {
+                        message = String.format(fmt_no_skip, ok, missing);
+                    } else {
+                        message = String.format(fmt_skip, ok, missing, skipped);
+                    }
+                    listener.step(message, 1);
+                }
+            }
+        } finally {
+            if (c != null && !c.isClosed())
+                c.close();
+        }
+        if (!dryRun)
+            System.out.println("Wrote " + ok + " Images, " + missing + " missing, and " + skipped + " skipped");
+
+        return ok;
+    }
+
+    /**
+     * Get the preferences and save them
+     */
+    private void writePreferences(final BackupWriterListener listener) throws IOException {
+        SharedPreferences prefs = BookCataloguePreferences.getSharedPreferences();
+        putPreferences(prefs);
+        listener.step(null, 1);
+    }
+
+    /**
+     * Save all USER styles
+     */
+    private void writeStyles(final BackupWriterListener listener) throws IOException {
+        BooklistStyles styles = BooklistStyles.getAllStyles(mDbHelper);
+        for (LibraryStyle style : styles) {
+            if (style.isUserDefined()) {
+                putBooklistStyle(style);
+            }
+        }
+        listener.step(null, 1);
+    }
+
+    /**
+     * Cleanup
+     */
+    public void close() throws IOException {
+        mDbHelper.close();
+    }
 }

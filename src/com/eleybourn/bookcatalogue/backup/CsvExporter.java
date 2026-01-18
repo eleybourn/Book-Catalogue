@@ -19,6 +19,7 @@
  */
 package com.eleybourn.bookcatalogue.backup;
 
+import android.content.Context;
 import android.database.Cursor;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
@@ -47,7 +48,7 @@ public class CsvExporter implements Exporter {
 
     private static final int BUFFER_SIZE = 32768;
 
-    public boolean export(OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags, Date since) throws IOException {
+    public boolean export(Context context, OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags, Date since) throws IOException {
         final String UNKNOWN = BookCatalogueApp.getRes().getString(R.string.unknown);
         final String AUTHOR = BookCatalogueApp.getRes().getString(R.string.label_author);
 
@@ -106,7 +107,7 @@ public class CsvExporter implements Exporter {
         StringBuilder row = new StringBuilder();
 
         CatalogueDBAdapter db;
-        db = new CatalogueDBAdapter(BookCatalogueApp.context);
+        db = new CatalogueDBAdapter(context);
         db.open();
 
         BooksCursor books = db.exportBooks(since);

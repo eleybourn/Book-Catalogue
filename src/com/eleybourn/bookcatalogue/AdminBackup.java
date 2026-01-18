@@ -230,7 +230,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     private void importData(DocumentFile f) {
         ImportThread thread;
         try {
-            thread = new ImportThread(getTaskManager(), f);
+            thread = new ImportThread(this, getTaskManager(), f);
         } catch (IOException e) {
             Logger.logError(e);
             Toast.makeText(this, getString(R.string.alert_problem_starting_import_arg, e.getMessage()), Toast.LENGTH_LONG).show();

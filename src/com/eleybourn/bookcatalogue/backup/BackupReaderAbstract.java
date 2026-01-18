@@ -19,9 +19,9 @@
  */
 package com.eleybourn.bookcatalogue.backup;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
@@ -42,13 +42,15 @@ import java.util.Date;
  */
 public abstract class BackupReaderAbstract implements BackupReader {
     private final CatalogueDBAdapter mDbHelper;
+    private final Context mContext;
     private final File mCoversDir = StorageUtils.getBCCovers();
 
     /**
      * Constructor
      */
-    public BackupReaderAbstract() {
-        mDbHelper = new CatalogueDBAdapter(BookCatalogueApp.context);
+    public BackupReaderAbstract(Context context) {
+        mContext = context;
+        mDbHelper = new CatalogueDBAdapter(context);
         mDbHelper.open();
     }
 
@@ -131,7 +133,7 @@ public abstract class BackupReaderAbstract implements BackupReader {
         // Now do the import
         InputStream in = entity.getStream();
         CsvImporter importer = new CsvImporter();
-        importer.importBooks(in, importListener, importFlags);
+        importer.importBooks(mContext, in, importListener, importFlags);
     }
 
     /**

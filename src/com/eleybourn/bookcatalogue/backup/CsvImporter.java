@@ -19,6 +19,7 @@
  */
 package com.eleybourn.bookcatalogue.backup;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.eleybourn.bookcatalogue.data.Author;
@@ -49,7 +50,7 @@ import java.util.Date;
 public class CsvImporter {
 	private static final int BUFFER_SIZE = 32768;
 
-	public void importBooks(InputStream exportStream, Importer.OnImporterListener listener, int importFlags) throws IOException {
+	public void importBooks(Context context, InputStream exportStream, Importer.OnImporterListener listener, int importFlags) throws IOException {
 		ArrayList<String> importedString = new ArrayList<>();
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(exportStream, StandardCharsets.UTF_8), BUFFER_SIZE);
@@ -58,10 +59,10 @@ public class CsvImporter {
 			importedString.add(line);
 		}
 
-		importBooks(importedString, listener, importFlags);
+		importBooks(context, importedString, listener, importFlags);
 	}
 
-	private void importBooks(ArrayList<String> export, Importer.OnImporterListener listener, int importFlags) {
+	private void importBooks(Context context, ArrayList<String> export, Importer.OnImporterListener listener, int importFlags) {
 
 		if (export == null || export.isEmpty())
 			return;
@@ -118,7 +119,7 @@ public class CsvImporter {
 
 		
 		CatalogueDBAdapter db;
-		db = new CatalogueDBAdapter(BookCatalogueApp.context);
+		db = new CatalogueDBAdapter(context);
 		db.open();
 
 		int row = 1; // Start after headings.

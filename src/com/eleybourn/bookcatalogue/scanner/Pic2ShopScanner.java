@@ -1,10 +1,9 @@
 package com.eleybourn.bookcatalogue.scanner;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.scanner.pic2shop.Scan;
 
 /**
@@ -21,14 +20,13 @@ public class Pic2ShopScanner implements Scanner {
 	 * Check if we have a valid intent available.
 	 * @return true if present
 	 */
-	public static boolean isIntentAvailable() {
-		if (com.eleybourn.bookcatalogue.scanner.pic2shop.Utils.isFreeScannerAppInstalled(BookCatalogueApp.context)) {
+	public static boolean isIntentAvailable(Context context) {
+		if (com.eleybourn.bookcatalogue.scanner.pic2shop.Utils.isFreeScannerAppInstalled(context)) {
 			return true;
-		} else return com.eleybourn.bookcatalogue.scanner.pic2shop.Utils.isProScannerAppInstalled(BookCatalogueApp.context);
+		} else return com.eleybourn.bookcatalogue.scanner.pic2shop.Utils.isProScannerAppInstalled(context);
 	}
 
-	private final Handler mHandler = new Handler();
-	/**
+    /**
 	 * Start the activity with the passed request code.
 	 * Note that we always send an intent; the caller should have checked that
 	 * one of the intents is valid, or catch the resulting errors.

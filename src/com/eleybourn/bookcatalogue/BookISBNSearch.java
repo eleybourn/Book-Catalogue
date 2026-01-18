@@ -634,7 +634,7 @@ public class BookISBNSearch extends ActivityWithTasks {
     private void startScannerActivity() {
         //System.out.println(mId + " startScannerActivity");
         if (mScanner == null) {
-            mScanner = ScannerManager.getScanner();
+            mScanner = ScannerManager.getScanner(this);
         }
         if (!mScannerStarted) {
             //System.out.println(mId + " startScannerActivity STARTING");

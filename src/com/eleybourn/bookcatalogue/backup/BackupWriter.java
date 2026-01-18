@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
@@ -58,7 +59,7 @@ public interface BackupWriter {
 	 * all entities in the backup and restore them based on the entity type.
 	 * See BackupWriterAbstract for a default implementation.
 	 */
-	void backup(BackupWriterListener listener, final int backupFlags, final Date since) throws IOException;
+	void backup(Context context, BackupWriterListener listener, final int backupFlags, final Date since) throws IOException;
 	/** Get the containing archive */
 	BackupContainer getContainer();
 	/** Write an info block to the archive */

@@ -21,13 +21,11 @@ package com.eleybourn.bookcatalogue.backup.tar;
 
 import android.content.Context;
 
-import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.backup.BackupContainer;
 import com.eleybourn.bookcatalogue.backup.BackupReader;
 import com.eleybourn.bookcatalogue.backup.BackupWriter;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +49,7 @@ import androidx.documentfile.provider.DocumentFile;
  * @author pjw
  */
 public class TarBackupContainer implements BackupContainer {
+    private final Context mContext;
 	/** Used in the storage and identification of data store in TAR file */
 	public static final String BOOKS_FILE = "books.csv";
 	/** Used in the storage and identification of data store in TAR file */
@@ -76,22 +75,14 @@ public class TarBackupContainer implements BackupContainer {
 	/** Buffer size for buffered streams */
 	public static final int BUFFER_SIZE = 32768;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param file		File to use
-	 */
-	public TarBackupContainer(File file) {
-		this(DocumentFile.fromFile(file));
-	}
-
-	/**
+    /**
 	 * Constructor
 	 *
 	 * @param file		DocumentFile to use
 	 */
-	public TarBackupContainer(DocumentFile file) {
-		mDocFile = file;
+	public TarBackupContainer(Context context, DocumentFile file) {
+		mContext = context;
+        mDocFile = file;
 	}
 
 	/**
@@ -100,7 +91,7 @@ public class TarBackupContainer implements BackupContainer {
 	 * @throws FileNotFoundException	If file not found
 	 */
 	public InputStream getInputStream() throws FileNotFoundException {
-		return BookCatalogueApp.context.getContentResolver().openInputStream(mDocFile.getUri());
+		return mContext.getContentResolver().openInputStream(mDocFile.getUri());
 	}
 
 	/**
@@ -109,12 +100,12 @@ public class TarBackupContainer implements BackupContainer {
 	 * @throws FileNotFoundException	If file not found
 	 */
 	public OutputStream getOutputStream() throws FileNotFoundException {
-		return BookCatalogueApp.context.getContentResolver().openOutputStream(mDocFile.getUri());
+		return mContext.getContentResolver().openOutputStream(mDocFile.getUri());
 	}
 
 	@Override
 	public BackupReader newReader() throws IOException {
-		return new TarBackupReader(this);
+		return new TarBackupReader(mContext, this);
 	}
 
 	@Override
@@ -131,7 +122,7 @@ public class TarBackupContainer implements BackupContainer {
 	public boolean isValid() {
 		// The reader will do basic validation.
 		try {
-			BackupReader reader = new TarBackupReader(this);
+			BackupReader reader = new TarBackupReader(mContext, this);
 			reader.close();
 		} catch (IOException e) {
 			Logger.logError(e);

@@ -320,7 +320,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                                 }
                                 if (f == null) {
                                     // We don't have the right directory, maybe.
-                                    String msg = BookCatalogueApp.context.getString(R.string.selected_dir_wrong_name, LEGACY_NAME);
+                                    String msg = BookCatalogueApp.getRes().getString(R.string.selected_dir_wrong_name, LEGACY_NAME);
                                     MessageDialogFragment frag = MessageDialogFragment.newInstance(
                                             ACTIVITY_REALLY_IMPORT_OLD_FILES,
                                             R.string.label_import_old_files,

@@ -53,6 +53,7 @@ import org.acra.config.ToastConfigurationBuilder;
 import org.acra.config.DialogConfigurationBuilder;
 import org.acra.data.StringFormat;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -75,6 +76,10 @@ public class BookCatalogueApp extends Application {
      * Not sure this is a good idea. Stores the Application context once created
      */
     public static Context context = null;
+    public static File externalCacheDir;
+    public static File externalFilesDir;
+    public static File filesDir;
+    public static SharedPreferences mPrefs;
     private static BookCatalogueApp mInstance;
     private static Resources res;
     /**
@@ -247,6 +252,10 @@ public class BookCatalogueApp extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
+        externalCacheDir = getExternalCacheDir();
+        externalFilesDir = getExternalFilesDir(null);
+        filesDir = getFilesDir();
+        mPrefs = getSharedPreferences("bookCatalogue", BookCatalogueApp.MODE_PRIVATE);
         applyLocaleSettings();
         mInstance = this;
         res = getResources();
@@ -295,8 +304,7 @@ public class BookCatalogueApp extends Application {
             mQueueManager = new BcQueueManager(this.getApplicationContext());
 
         // Watch the preferences and handle changes as necessary
-        SharedPreferences p = BookCataloguePreferences.getSharedPreferences();
-        p.registerOnSharedPreferenceChangeListener(mPrefsListener);
+        mPrefs.registerOnSharedPreferenceChangeListener(mPrefsListener);
     }
 
     private void applyLocaleSettings() {

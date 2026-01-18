@@ -133,7 +133,7 @@ public class LibraryRowView {
 			maxSize = 60;
 		}
 
-		DisplayMetrics metrics = BookCatalogueApp.context.getResources().getDisplayMetrics();
+		DisplayMetrics metrics = BookCatalogueApp.getRes().getDisplayMetrics();
 		maxSize = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, maxSize, metrics));		
 		return maxSize;
 	}
@@ -252,7 +252,7 @@ public class LibraryRowView {
 				int i = Integer.parseInt(s);
 				// If valid, get the name
 				if (i >= 0 && i <= 5) {
-					Resources r = BookCatalogueApp.context.getResources();
+					Resources r = BookCatalogueApp.getRes();
 					s = r.getQuantityString(R.plurals.n_stars, i, i);
 				}				
 			} catch (Exception ignored) {

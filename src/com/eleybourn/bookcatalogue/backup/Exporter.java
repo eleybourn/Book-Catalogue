@@ -19,6 +19,8 @@
  */
 package com.eleybourn.bookcatalogue.backup;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
@@ -39,8 +41,7 @@ public interface Exporter {
 	int EXPORT_DETAILS = 32;
 	/** Flag value to indicate ALL books should be exported */
     int EXPORT_ALL = EXPORT_PREFERENCES | EXPORT_STYLES | EXPORT_COVERS | EXPORT_DETAILS;
-	int EXPORT_ALL_SINCE = EXPORT_PREFERENCES | EXPORT_STYLES | EXPORT_COVERS | EXPORT_DETAILS | EXPORT_SINCE;
-	int EXPORT_MASK = EXPORT_ALL | EXPORT_SINCE;
+    int EXPORT_MASK = EXPORT_ALL | EXPORT_SINCE;
 
 	/**
 	 * Listener interface to get progress messages.
@@ -61,6 +62,6 @@ public interface Exporter {
 	 * 
 	 * @return	true on success
 	 */
-    boolean export(OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags, Date since) throws IOException;
+    boolean export(Context context, OutputStream outputStream, Exporter.ExportListener listener, final int backupFlags, Date since) throws IOException;
 
 }

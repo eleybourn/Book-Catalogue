@@ -98,7 +98,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 
 public class Utils {
-    public static final boolean USE_LT = true;
     public static final boolean USE_BARCODE = true;
     // Used for date parsing and display
     private static final SimpleDateFormat mDateFullHMSSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1411,7 +1410,7 @@ public class Utils {
 
             } catch (Exception e) {
                 // Default if we die
-                localSignedBy = new StringBuilder(e.getMessage());
+                localSignedBy = new StringBuilder(Objects.requireNonNull(e.getMessage()));
             }
         }
         mSignedBy = localSignedBy.toString();

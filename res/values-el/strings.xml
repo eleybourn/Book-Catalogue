@@ -101,13 +101,9 @@
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_increment">%1$d εξώφυλλα επεξεργάστηκαν (%2$d λείπουν, %3$d παρελείφθησαν)</string>
 
-    <string name="crash_dialog_comment_prompt">Τα σχόλιά σας (ή αφήστε το κενό):</string>
     <string name="crash_dialog_ok_toast">Ευχαριστούμε!</string>
     <string name="crash_dialog_text">Φαίνεται πως το BookCatalogue σταμάτησε να λειτουργεί. Εαν είναι δυνατό περιγράψτε παρακάτω ό,τι πιστεύετε πως είναι σχετικό και πατήστε ΟΚ για μας στείλετε email με πληροφορίες για την βλάβη. Θα δείτε το email πρωτού αποσταλεί.</string>
     <string name="crash_dialog_title">Βλάβη του BookCatalogue</string>
-    <string name="crash_notif_text">Παρακαλούμε πατήστε εδώ για λεπτομέρειες</string>
-    <string name="crash_notif_ticker_text">Το BookCatalogue σταμάτησε να λειτουργεί</string>
-    <string name="crash_notif_title">Βλάβη του BookCatalogue</string>
     <string name="crash_toast_text">Η λειτουργία του BookCatalogue διακόπηκε. Παρακαλούμε βοηθήστε μας να βελτιώσουμε την εφαρμογή στέλνοντας την αναφορά της διακοπής.</string>
 
     <string name="customize_ellipsis">Προσαρμογή…</string>
@@ -709,7 +705,6 @@
     <string name="searching_book_catalogue">Αναζήτηση στο book-catalogue.com</string>
     <string name="searching_ellipsis">Γίνεται αναζήτηση…</string>
     <string name="searching_google_books">Αναζήτηση στο Google Books</string>
-    <string name="searching_library_thing">Αναζήτηση στο LibraryThing</string>
 
     <string name="select_based_on_read_status">Επιλογή με βάση την κατάσταση του πεδίου \'Αναγνωσμένο\'</string>
     <string name="select_style">Επιλογή Στυλ</string>

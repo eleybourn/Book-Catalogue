@@ -20,8 +20,6 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.nio.channels.ClosedByInterruptException;
-
 import com.eleybourn.bookcatalogue.messaging.MessageSwitch;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
@@ -41,7 +39,7 @@ abstract public class ManagedTask extends Thread {
 	protected TaskManager mManager;
 	// Flag indicating the main onRun method has completed. Set in call do doFinish() in the UI thread.
 	private boolean mFinished = false;
-	// Indicates the user has requested a cancel. Up to subclass to decice what to do. Set by TaskManager.
+	// Indicates the user has requested a cancel. Up to subclass to decide what to do. Set by TaskManager.
 	private boolean mCancelFlg = false;
 
 	//
@@ -50,7 +48,7 @@ abstract public class ManagedTask extends Thread {
 	// will be called in the reconnect() call.
 	//
 	// The subclass must return 'true' if it was able to execute all required code in any required
-	// TaskHandler. It does not matter if that code failed or succeeded, only that the Taskhandler 
+	// TaskHandler. It does not matter if that code failed or succeeded, only that the TaskHandler
 	// was executed (if necessary). TaskHandler objects will be cleared by the disconnect() call
 	// and reset by the reconnect() call.
 	//
@@ -59,7 +57,7 @@ abstract public class ManagedTask extends Thread {
 	abstract protected void onRun() throws InterruptedException;
 
 	/**
-	 * Utility routine to ask the Taskmanager to get a String from a resource ID.
+	 * Utility routine to ask the TaskManager to get a String from a resource ID.
 	 * 
 	 * @param id	Resource ID
 	 * 

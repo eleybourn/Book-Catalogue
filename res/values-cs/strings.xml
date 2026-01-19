@@ -70,13 +70,9 @@
     <string name="cover_detail">Detail obálky</string>
     <string name="cover_options_cc_ellipsis">Možnosti obálky…</string>
 
-    <string name="crash_dialog_comment_prompt">Váš komentář (nepovinné):</string>
     <string name="crash_dialog_ok_toast">Děkujeme!</string>
     <string name="crash_dialog_text">Vypadá to, že došlo k neočekávanému pádu aplikace BookCatalogue. Napište nám prosím o tomto problému všechny informace, které považujete za relevantní, a tlačítkem "OK" nám je odešlete. Před odesláním mailu budete mít ještě možnost jej zkontrolovat.</string>
     <string name="crash_dialog_title">BookCatalogue spadl</string>
-    <string name="crash_notif_text">Klikněte zde pro více informací</string>
-    <string name="crash_notif_ticker_text">BookCatalogue spadl</string>
-    <string name="crash_notif_title">BookCatalogue spadl</string>
     <string name="crash_toast_text">Došlo k neočekávanému pádu aplikace BookCatalogue. Prosím pomozte nám zlepšit aplikaci a informujte nás o tomto problému.</string>
 
     <string name="customize_ellipsis">Přizpůsobit…</string>
@@ -336,7 +332,6 @@
 
     <string name="searching_book_catalogue">Vyhledávám na book-catalogue.com</string>
     <string name="searching_google_books">Vyhledávám na Google Books</string>
-    <string name="searching_library_thing">Vyhledávám na LibraryThing</string>
 
     <string name="select_based_on_read_status">Výběr založený na statusu \'Přečtení\'</string>
     <string name="select_style">Zvolit styl</string>

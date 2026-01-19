@@ -101,13 +101,9 @@
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_increment">%1$d portadas procesadas (%2$d no encontradas, %3$d saltadas)</string>
 
-    <string name="crash_dialog_comment_prompt">Sus comentarios (puede dejarlos en blanco):</string>
     <string name="crash_dialog_ok_toast">¡Muchas gracias!</string>
     <string name="crash_dialog_text">Parece que BookCatalogue se ha detenido. Si es posible, indique cualquier detalle que usted considere relevante y pulse OK para enviarnos un correo electrónico sobre el problema. Podrá revisar el correo antes de que se envíe.</string>
     <string name="crash_dialog_title">Error de BookCatalogue</string>
-    <string name="crash_notif_text">Pulse para ver más detalles</string>
-    <string name="crash_notif_ticker_text">BookCatalogue se ha detenido</string>
-    <string name="crash_notif_title">Error de BookCatalogue</string>
     <string name="crash_toast_text">BookCatalogue se ha detenido de forma inesperada. Por favor, ayúdenos a mejorar la aplicación reportando este problema.</string>
 
     <string name="customize_ellipsis">Configurar…</string>
@@ -694,7 +690,6 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="searching_book_catalogue">Buscando en book-catalogue.com</string>
     <string name="searching_ellipsis">Buscando…</string>
     <string name="searching_google_books">Buscando en Google Books</string>
-    <string name="searching_library_thing">Buscando en LibraryThing</string>
 
     <string name="select_based_on_read_status">Seleccionar en función del estado \'Leído\'</string>
     <string name="select_style">Seleccionar Estilo</string>

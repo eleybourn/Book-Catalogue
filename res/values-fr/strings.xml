@@ -101,13 +101,9 @@
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_increment">%1$d couvertures enregistrées (%2$d manquantes, %3$d ignorées)</string>
 
-    <string name="crash_dialog_comment_prompt">Votre commentaire (ou laisser vide) :</string>
     <string name="crash_dialog_ok_toast">Merci !</string>
     <string name="crash_dialog_text">Book Catalogue a planté. Décrivez ci-dessous tout ce qui vous semble opportun et pressez « OK » pour nous envoyer un courriel à propos de ce plantage. Vous pourrez lire votre courriel avant son envoi.</string>
     <string name="crash_dialog_title">Plantage de Book Catalogue</string>
-    <string name="crash_notif_text">Merci de cliquer ici pour obtenir des détails</string>
-    <string name="crash_notif_ticker_text">Book Catalogue a planté.</string>
-    <string name="crash_notif_title">Plantage de Book Catalogue</string>
     <string name="crash_toast_text">Book Catalogue a planté. Merci de nous aider en reportant ce crash.</string>
 
     <string name="customize_ellipsis">Personnaliser…</string>
@@ -713,7 +709,6 @@
     <string name="searching_book_catalogue">Recherche en cours sur book-catalogue.com</string>
     <string name="searching_ellipsis">Recherche en cours…</string>
     <string name="searching_google_books">Recherche en cours sur Google Books</string>
-    <string name="searching_library_thing">Recherche en cours sur LibraryThing</string>
 
     <string name="select_based_on_read_status">Sélectionner en utilisant le statut « lu »</string>
     <string name="select_style">Sélectionner un style</string>

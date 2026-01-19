@@ -1022,19 +1022,10 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
         @Override
         public void onApiProgress(String request, int current, int total) {
-            BookEdit activity = activityReference.get();
-            // Only update UI if the activity is still alive
-            if (activity == null || activity.isFinishing()) {
-                return;
-            }
         }
 
         @Override
         public void onApiComplete(String request, String message) {
-            BookEdit activity = activityReference.get();
-            if (activity == null || activity.isFinishing()) {
-                return;
-            }
         }
 
         @Override

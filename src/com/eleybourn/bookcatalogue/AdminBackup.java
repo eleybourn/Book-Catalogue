@@ -342,8 +342,10 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
             // Disable buttons if backup or restore is running
             if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL) || request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
-                activity.mBackupNowButton.setEnabled(false);
-                activity.mRestoreNowButton.setEnabled(false);
+                if (current != total) {
+                    activity.mBackupNowButton.setEnabled(false);
+                    activity.mRestoreNowButton.setEnabled(false);
+                }
             }
 
         }

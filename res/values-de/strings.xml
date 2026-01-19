@@ -98,13 +98,9 @@
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_increment">%1$d Cover bearbeitet (%2$d fehlen, %3$d übersprungen)</string>
 
-    <string name="crash_dialog_comment_prompt">Ihr Kommentar (darf auch leer bleiben):</string>
     <string name="crash_dialog_ok_toast">Danke!</string>
     <string name="crash_dialog_text">Anscheinend ist BookCatalogue abgestürzt. Beschreiben Sie nach Möglichkeit alle relevanten Hinweise und drücken Sie "OK", um uns eine E-Mail zu diesem Absturz zu senden. Sie werden das E-Mail vor dem Versand sehen können.</string>
     <string name="crash_dialog_title">BookCatalogue-Absturz</string>
-    <string name="crash_notif_text">Bitte klicken Sie hier für Details</string>
-    <string name="crash_notif_ticker_text">BookCatalogue ist abgestürzt</string>
-    <string name="crash_notif_title">BookCatalogue-Absturz</string>
     <string name="crash_toast_text">BookCatalogue ist abgestürzt. Bitte helfen Sie uns bei der Verbesserung der App, indem Sie diesen Absturz melden.</string>
 
     <string name="customize_ellipsis">Anpassen…</string>
@@ -740,7 +736,6 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <string name="searching_book_catalogue">Suche bei book-catalogue.com</string>
     <string name="searching_ellipsis">Suche…</string>
     <string name="searching_google_books">Suche bei Google Books</string>
-    <string name="searching_library_thing">Suche bei LibraryThing</string>
 
     <string name="select_based_on_read_status">Auswahl auf Basis des Status \'Gelesen\'</string>
     <string name="select_style">Stil wählen</string>

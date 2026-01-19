@@ -126,13 +126,9 @@
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_increment">%1$d copertine elaborate (%2$d mancanti, %3$d saltate)</string>
 
-    <string name="crash_dialog_comment_prompt">I tuoi commenti (o lascia in bianco):</string>
     <string name="crash_dialog_ok_toast">Grazie!</string>
     <string name="crash_dialog_text">BookCatalogue sembra essersi bloccato. Se possibile, comunicaci qui sotto qualsiasi cosa ritieni pertinente e clicca \"OK\" per inviarci un\'email relativa al blocco. Potrai verificare l\'email prima dell\'invio.</string>
     <string name="crash_dialog_title">Blocco di BookCatalogue</string>
-    <string name="crash_notif_text">Cliccare qui per i dettagli</string>
-    <string name="crash_notif_ticker_text">BookCatalogue si è bloccato</string>
-    <string name="crash_notif_title">Blocco di BookCatalogue</string>
     <string name="crash_toast_text">BookCatalogue si è bloccato in modo anomalo. Aiutaci a migliorare il programma informandoci del problema.</string>
 
     <string name="customize_ellipsis">Personalizza…</string>
@@ -727,7 +723,6 @@
     <string name="searching_book_catalogue">Ricerca in book-catalogue.com</string>
     <string name="searching_ellipsis">Ricerca…</string>
     <string name="searching_google_books">Ricerca in Google Books</string>
-    <string name="searching_library_thing">Ricerca in LibraryThing</string>
 
     <string name="select_based_on_read_status">Seleziona in base allo stato \'Letto\'</string>
     <string name="select_style">Seleziona Stile</string>

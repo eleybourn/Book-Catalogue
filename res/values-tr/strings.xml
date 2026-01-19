@@ -126,13 +126,9 @@
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_increment">%1$d kapak işlendi (%2$d bulunamadı, %3$d atlandı)</string>
 
-    <string name="crash_dialog_comment_prompt">Yorumlarınız (isteğe bağlı):</string>
     <string name="crash_dialog_ok_toast">Sağ olun!</string>
     <string name="crash_dialog_text">Sanırız BookCatalogue çöktü. Eğer bu çökme ile ilgili olabileceğini düşündüğünüz bir şeyler varsa lütfen "Tamam"a basarak bu çökme hakkında bir e-posta gönderin. Göndermeden önce e-postayı göreceksiniz.</string>
     <string name="crash_dialog_title">BookCatalogue çöktü</string>
-    <string name="crash_notif_text">Ayrıntılar için buraya basın</string>
-    <string name="crash_notif_ticker_text">BookCatalogue çöktü</string>
-    <string name="crash_notif_title">BookCatalogue çöktü</string>
     <string name="crash_toast_text">BookCatalogue bilinmeyen bir nedenle çöktü. Uygulamanın kalitesini iyileştirebilmemiz için lütfen bu çökmeyi rapor edin.</string>
 
     <string name="customize_ellipsis">Kişiselleştir…</string>
@@ -703,7 +699,6 @@
     <string name="searching_book_catalogue">book-catalogue.com aranıyor</string>
     <string name="searching_ellipsis">Aranıyor…</string>
     <string name="searching_google_books">Google Kitaplar aranıyor</string>
-    <string name="searching_library_thing">LibraryThing aranıyor</string>
 
     <string name="select_based_on_read_status">\'Okunma\' durumuna göre seç</string>
     <string name="select_style">Biçem seç</string>

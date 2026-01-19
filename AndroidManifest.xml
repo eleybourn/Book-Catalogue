@@ -175,8 +175,6 @@
         <activity
             android:name=".cropper.CropMonitoredActivity"
             android:windowSoftInputMode="adjustResize" />
-<!--        <activity
-            android:name=".filechooser.BackupChooser" /> -->
     </application>
 
 </manifest>

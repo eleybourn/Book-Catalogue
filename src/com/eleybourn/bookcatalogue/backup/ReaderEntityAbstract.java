@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -55,7 +56,8 @@ public abstract class ReaderEntityAbstract implements ReaderEntity {
 		saveToFile(output);
 	}
 
-	@Override
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+    @Override
 	public void saveToFile(File outFile) throws IOException {
 		// Open output and copy bytes.
 		FileOutputStream out = new FileOutputStream(outFile);
@@ -84,7 +86,7 @@ public abstract class ReaderEntityAbstract implements ReaderEntity {
 	 * Read the input as XML and put it into a Bundle
 	 */
 	public Bundle getBundle() throws IOException {
-		BufferedReader in = new BufferedReaderNoClose(new InputStreamReader(getStream(), TarBackupContainer.UTF8), TarBackupContainer.BUFFER_SIZE);
+		BufferedReader in = new BufferedReaderNoClose(new InputStreamReader(getStream(), StandardCharsets.UTF_8), TarBackupContainer.BUFFER_SIZE);
 		return BackupUtils.bundleFromXml(in);
 	}
 
@@ -92,7 +94,7 @@ public abstract class ReaderEntityAbstract implements ReaderEntity {
 	 * Read the input as XML and put it into a SharedPreferences
 	 */
 	public void getPreferences(SharedPreferences prefs) throws IOException {
-		BufferedReader in = new BufferedReaderNoClose(new InputStreamReader(getStream(), TarBackupContainer.UTF8), TarBackupContainer.BUFFER_SIZE);
+		BufferedReader in = new BufferedReaderNoClose(new InputStreamReader(getStream(), StandardCharsets.UTF_8), TarBackupContainer.BUFFER_SIZE);
 		BackupUtils.preferencesFromXml(in, prefs);
 	}
 

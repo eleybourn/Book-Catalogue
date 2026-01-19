@@ -101,13 +101,9 @@
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_increment">%1$d boekomslagen verwerkt (%2$d missend, %3$d overgeslagen)</string>
 
-    <string name="crash_dialog_comment_prompt">Uw commentaar (of laat dit leeg):</string>
     <string name="crash_dialog_ok_toast">Dank u!</string>
     <string name="crash_dialog_text">Het lijkt er op dat BookCatalogue is gecrasht. Beschrijf indien mogelijk hieronder wat de oorzaak kan zijn en druk op "OK" om ons een e-mail te sturen over deze crash. U kunt het bericht inzien voordat het wordt verzonden.</string>
     <string name="crash_dialog_title">BookCatalogue crash</string>
-    <string name="crash_notif_text">Tik hier voor details</string>
-    <string name="crash_notif_ticker_text">BookCatalogue is gecrasht</string>
-    <string name="crash_notif_title">BookCatalogue crash</string>
     <string name="crash_toast_text">BookCatalogue is onverwacht gecrasht. Help ons aub de toepassing beter te maken door deze crash te melden.</string>
 
     <string name="customize_ellipsis">Aanpassen…</string>
@@ -729,7 +725,6 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="searching_book_catalogue">Zoek bij book-catalogue.com</string>
     <string name="searching_ellipsis">Aan \'t zoeken…</string>
     <string name="searching_google_books">Zoeken bij Google Books</string>
-    <string name="searching_library_thing">Zoeken bij LibraryThing</string>
 
     <string name="select_based_on_read_status">Selecteer op \'Gelezen\' status</string>
     <string name="select_style">Selecteer stijl</string>

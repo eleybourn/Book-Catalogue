@@ -241,19 +241,10 @@ public class StandardDialogs {
 
         @Override
         public void onApiProgress(String request, int current, int total) {
-            Context context = contextReference.get();
-            // Only update UI if the activity is still alive
-            if (context == null) {
-                return;
-            }
         }
 
         @Override
         public void onApiComplete(String request, String message) {
-            Context context = contextReference.get();
-            if (context == null) {
-                return;
-            }
         }
 
         @Override

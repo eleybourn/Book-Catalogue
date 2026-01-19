@@ -66,7 +66,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
     // - The (subset) of fields relevant to the current book
     private FieldUsages mCurrFieldUsages;
     // Active search manager
-    private SearchManager mSearchManager;
+    private final SearchManager mSearchManager;
 
     /**
      * Constructor.

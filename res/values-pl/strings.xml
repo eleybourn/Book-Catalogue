@@ -201,7 +201,6 @@
 
     <string name="searching_book_catalogue">Przeszukiwanie book-catalogue.com</string>
     <string name="searching_google_books">Przeszukiwanie Google Books</string>
-    <string name="searching_library_thing">Przeszukiwanie LibraryThing</string>
 
     <string name="series_already_in_list">Seria (tom) jest na liście</string>
     <string name="series_is_blank">Pole serii(tomu) jest puste</string>

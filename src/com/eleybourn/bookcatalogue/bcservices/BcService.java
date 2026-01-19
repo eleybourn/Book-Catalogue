@@ -141,8 +141,7 @@ public class BcService {
 		Post
 	}
 
-	private static final String UTF8 = "UTF-8";
-	private static final int API_TIMEOUT = 30000;
+    private static final int API_TIMEOUT = 30000;
 
 	private static InputStream openUrl(
 			String urlString, Methods method,
@@ -153,9 +152,9 @@ public class BcService {
 			for (Map.Entry<String, String> nv : params.entrySet()) {
 				if (args.length() > 0)
 					args.append('&');
-				args.append(URLEncoder.encode(nv.getKey(), UTF8));
+				args.append(URLEncoder.encode(nv.getKey(), StandardCharsets.UTF_8));
 				args.append('=');
-				args.append(URLEncoder.encode(nv.getValue(), UTF8));
+				args.append(URLEncoder.encode(nv.getValue(), StandardCharsets.UTF_8));
 			}
 		}
 
@@ -179,7 +178,7 @@ public class BcService {
         HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
         // Tell the URLConnection to use a SocketFactory from our SSLContext
         urlConnection.setRequestMethod(method == Methods.Post ? "POST" : "GET");
-        urlConnection.setRequestProperty("Accept-Language", UTF8);
+        urlConnection.setRequestProperty("Accept-Language", String.valueOf(StandardCharsets.UTF_8));
         // Set a timeout
         urlConnection.setConnectTimeout(API_TIMEOUT);
 

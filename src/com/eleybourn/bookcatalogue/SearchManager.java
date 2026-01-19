@@ -53,10 +53,8 @@ public class SearchManager implements TaskManagerListener {
 	public static final int SEARCH_GOOGLE = 1;
 	/** Flag indicating a search source to use */
 	public static final int SEARCH_BC = 2;
-	/** Flag indicating a search source to use */
-	public static final int SEARCH_LIBRARY_THING = 4;
     /** Mask including all search sources */
-	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_BC;  // | SEARCH_LIBRARY_THING ;
+	public static final int SEARCH_ALL = SEARCH_GOOGLE | SEARCH_BC;
 	
 	// ENHANCE: Allow user to change the default search data priority
 	// NOTE: BCDB search will return AMAZON, GOOGLE, BCDB and OPEN_LIBRARY
@@ -172,7 +170,7 @@ public class SearchManager implements TaskManagerListener {
 	/**
 	 * Start an Amazon search
 	 */
-	private boolean startAmazon() {
+	private boolean startBCSearch() {
 		if (!mCancelledFlg) {
 			startOne( new SearchBCThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail) );
 			return true;
@@ -190,17 +188,6 @@ public class SearchManager implements TaskManagerListener {
 			return true;
 		} else {
 			return false;			
-		}
-	}
-	/**
-	 * Start an Amazon search
-	 */
-	private boolean startLibraryThing(){
-		if (!mCancelledFlg && mHasIsbn) {
-			startOne( new SearchLibraryThingThread(mTaskManager, mAuthor, mTitle, mIsbn, mFetchThumbnail));		
-			return true;
-		} else {
-			return false;
 		}
 	}
 
@@ -221,10 +208,6 @@ public class SearchManager implements TaskManagerListener {
 
 		// Save the flags
 		mSearchFlags = searchFlags;
-		if (!Utils.USE_LT) {
-			mSearchFlags &= ~SEARCH_LIBRARY_THING;
-		}
-
 		// Save the input and initialize
 		mBookData = new Bundle();
 		mSearchResults = new Hashtable<>();
@@ -520,9 +503,7 @@ public class SearchManager implements TaskManagerListener {
             case SEARCH_GOOGLE:
                 return startGoogle();
             case SEARCH_BC:
-                return startAmazon();
-            case SEARCH_LIBRARY_THING:
-                return startLibraryThing();
+                return startBCSearch();
             default:
                 throw new RuntimeException("Unexpected search source: " + source);
         }

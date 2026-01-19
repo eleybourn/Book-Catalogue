@@ -102,13 +102,9 @@
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
     <string name="covers_progress_increment">%1$d covers processed (%2$d missing, %3$d skipped)</string>
 
-    <string name="crash_dialog_comment_prompt">Your comments (or just leave blank):</string>
     <string name="crash_dialog_ok_toast">Thank you!</string>
     <string name="crash_dialog_text">It looks like BookCatalogue has crashed. If possible describe anything you think may be relevant below and press "OK" to send us an email about the crash. You will see the email before it is sent.</string>
     <string name="crash_dialog_title">BookCatalogue Crash</string>
-    <string name="crash_notif_text">Please click here for details</string>
-    <string name="crash_notif_ticker_text">BookCatalogue has crashed</string>
-    <string name="crash_notif_title">BookCatalogue Crash</string>
     <string name="crash_toast_text">BookCatalogue has crashed unexpectedly. Please help us to make the application better by reporting this crash.</string>
 
     <string name="customize_ellipsis">Customize…</string>
@@ -713,7 +709,6 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="searching_book_catalogue">Pesquisando book-catalogue.com</string>
     <string name="searching_ellipsis">Searching…</string>
     <string name="searching_google_books">Pesquisando Google Livros</string>
-    <string name="searching_library_thing">Pesquisando LibraryThing</string>
 
     <string name="select_based_on_read_status">Select based on \'Read\' status</string>
     <string name="select_style">Select Style</string>

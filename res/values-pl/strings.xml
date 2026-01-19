@@ -124,7 +124,7 @@
     <string name="label_search_for_books">Szukaj książek</string>
     <string name="label_series">Seria</string>
     <string name="label_series_num">tom#</string>
-    <string name="label_set_authors">Przypisz autorów...</string>
+    <string name="label_set_authors">Przypisz autorów…</string>
     <string name="label_signed">Czy książka jest podpisana</string>
     <string name="label_sourcecode">Kod źródłowy:</string>
     <string name="label_thumbnail">Okładka</string>
@@ -135,24 +135,24 @@
 
     <string name="list_and">i</string>
 
-    <string name="loading">Pobieram...</string>
+    <string name="loading">Pobieram…</string>
 
     <string name="megabytes">%.2fMB</string>
 
-    <string name="menu_add_thumb_gallery">Z galerii...</string>
-    <string name="menu_add_thumb_photo">Z aparatu...</string>
+    <string name="menu_add_thumb_gallery">Z galerii…</string>
+    <string name="menu_add_thumb_photo">Z aparatu…</string>
     <string name="menu_delete_anthology">Usuń pozycję z antologii</string>
     <string name="menu_delete_book">Usuń książkę</string>
     <string name="menu_delete_bs">Usuń półkę</string>
-    <string name="menu_delete_series">Usuń serię...</string>
+    <string name="menu_delete_series">Usuń serię…</string>
     <string name="menu_delete_thumb">Usuń okładkę</string>
     <string name="menu_duplicate">Duplikuj książkę</string>
-    <string name="menu_edit_author">Edytuj autora...</string>
+    <string name="menu_edit_author">Edytuj autora…</string>
     <string name="menu_edit_book">Edytuj książkę</string>
-    <string name="menu_edit_series">Edytuj serię...</string>
+    <string name="menu_edit_series">Edytuj serię…</string>
     <string name="menu_insert_bs">Utwórz półkę</string>
-    <string name="menu_replace_thumb">Zmień okładkę...</string>
-    <string name="menu_rotate_thumb">Obróć okładkę...</string>
+    <string name="menu_replace_thumb">Zmień okładkę…</string>
+    <string name="menu_rotate_thumb">Obróć okładkę…</string>
     <string name="menu_rotate_thumb_180">Do góry nogami</string>
     <string name="menu_rotate_thumb_ccw">Obróć odwrotnie do wsk. zegara</string>
     <string name="menu_rotate_thumb_cw">Obróć zgodnie ze wsk. zegara</string>
@@ -206,7 +206,7 @@
     <string name="series_already_in_list">Seria (tom) jest na liście</string>
     <string name="series_is_blank">Pole serii(tomu) jest puste</string>
 
-    <string name="set_series">Ustaw serię (tom)...</string>
+    <string name="set_series">Ustaw serię (tom)…</string>
 
     <string name="skip_title">Pomiń - %s</string>
 

@@ -30,17 +30,6 @@ public class SearchGoogleThread extends SearchThread {
 
 			// Look for series name and clear KEY_TITLE
 			checkForSeriesName();
-
-			//// Debugging search results
-			//if (BuildConfig.DEBUG) {
-			//	result.data.putString("_DBGSRC_", "GB");
-			//	ArrayList<String> keys = new ArrayList<>(result.data.keySet());
-			//	Collections.sort(keys);
-			//	for(String k: keys) {
-			//		System.out.println("SANITY:GOOGLE-RAW    " + k + " => " + result.data.get(k).toString());
-			//	}
-			//}
-
 		} catch (Exception e) {
 			Logger.logError(e);
 			showException(R.string.search_fail, e);

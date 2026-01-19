@@ -276,7 +276,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
     @Override
     public void onCredentialError(String errorMessage) {
-
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
     }
 
     /**

@@ -163,7 +163,7 @@ public class SearchGoogleBooksHandler extends DefaultHandler {
 			entry = false;
 			done = true;
 		}
-		if (entry && id.equals("")) {
+		if (entry && id.isEmpty()) {
 			if (localName.equalsIgnoreCase(ID)){
 				id = builder.toString();
 			}

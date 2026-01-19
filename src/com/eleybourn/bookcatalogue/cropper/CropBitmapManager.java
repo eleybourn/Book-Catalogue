@@ -164,18 +164,6 @@ public class CropBitmapManager {
 		notifyAll();
 	}
 
-	// /**
-	// * A debugging routine.
-	// */
-	// public synchronized void dump() {
-	// Iterator<Map.Entry<Thread, ThreadStatus>> i =
-	// mThreadStatus.entrySet().iterator();
-	//
-	// while (i.hasNext()) {
-	// Map.Entry<Thread, ThreadStatus> entry = i.next();
-	// }
-	// }
-
 	public static synchronized CropBitmapManager instance() {
 		if (sManager == null) {
 			sManager = new CropBitmapManager();

@@ -189,7 +189,8 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
                 TextView pt = v.findViewById(R.id.row_position);
                 if (pt != null) {
                     mHasPosition = true;
-                    pt.setText(Long.toString(position + 1));
+                    String formattedPosition = String.format(getContext().getResources().getConfiguration().getLocales().get(0), "%d", position + 1);
+                    pt.setText(formattedPosition);
                 }
             }
 

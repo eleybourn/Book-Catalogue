@@ -301,9 +301,6 @@ public class CoversDbHelper {
 	public void analyze() {
 		SynchronizedDb db = this.getDb();
 		String sql;
-		// Don't do VACUUM -- it's a complete rebuild
-		//sql = "vacuum";
-		//db.execSQL(sql);
 		sql = "analyze";
 		db.execSQL(sql);
 	}

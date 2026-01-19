@@ -111,7 +111,6 @@ public class BookCatalogueAPICredentials {
                 GoogleIdTokenCredential googleId = GoogleIdTokenCredential.createFrom(customCredential.getData());
                 //String idToken = googleId.getIdToken();
                 email = googleId.getId(); // Or extract email if distinct from ID
-                Log.d("APICredentials", "Successfully obtained ID token for: " + email);
             } catch (Exception e) {
                 Log.e("APICredentials", "Failed to create GoogleIdTokenCredential from data", e);
                 if (mListener != null) {

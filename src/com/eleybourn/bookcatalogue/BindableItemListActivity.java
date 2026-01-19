@@ -106,7 +106,6 @@ public abstract class BindableItemListActivity extends AppCompatActivity impleme
 
         ListView lv = this.findViewById(R.id.list);
 
-        lv.setOnItemClickListener(BindableItemListActivity.this::onListItemClick);
         lv.setOnItemLongClickListener(BindableItemListActivity.this::onListItemLongClick);
 
         //} catch (Exception e) {
@@ -141,10 +140,6 @@ public abstract class BindableItemListActivity extends AppCompatActivity impleme
     protected void refreshData() {
         mBindableItems.requery();
         m_listAdapter.notifyDataSetChanged();
-    }
-
-    public void onListItemClick(AdapterView<?> parent, View v, int position, long id) {
-        // Do nothing
     }
 
     public boolean onListItemLongClick(AdapterView<?> parent, View v, int position, long id) {

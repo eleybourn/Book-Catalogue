@@ -32,6 +32,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -166,7 +167,17 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                         if (result.getResultCode() == RESULT_OK) {
                             Intent intent = result.getData();
                             if (intent != null && intent.hasExtra(BooklistStylePropertiesActivity.KEY_STYLE)) {
-                                LibraryStyle style = (LibraryStyle) intent.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE);
+                                LibraryStyle style;
+                                // Check if running on Android 13 (Tiramisu) or newer
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    // Use the new, type-safe method
+                                    style = intent.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE, LibraryStyle.class);
+                                } else {
+                                    // Use the old, deprecated method for older APIs
+                                    @SuppressWarnings({"deprecation", "RedundantSuppression"})
+                                    LibraryStyle deprecatedStyle = (LibraryStyle) intent.getSerializableExtra(BooklistStylePropertiesActivity.KEY_STYLE);
+                                    style = deprecatedStyle;
+                                }
                                 if (style != null)
                                     mCurrentStyle = style;
                             }

@@ -68,7 +68,6 @@ public class BookCatalogueAPI implements SimpleTask {
     private long mBookId;
 
     public BookCatalogueAPI(Context context, String request, long book_id, ApiListener listener) {
-        Log.d("BookCatalogueAPI", "BookCatalogueAPI");
         mContext = context;
         mBookId = book_id;
         this.mRequest = request;
@@ -82,7 +81,6 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public BookCatalogueAPI(Context context, String request, ApiListener listener) {
-        Log.d("BookCatalogueAPI", "BookCatalogueAPI");
         mContext = context;
         this.mRequest = request;
         sActiveListener = listener;
@@ -407,7 +405,6 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public void runDeleteBook() {
-        Log.d("BookCatalogueAPI", "runDeleteBook");
         try {
             if (mApiToken.isEmpty()) {
                 throw new Exception("No API Token set for runDeleteBook");
@@ -678,7 +675,6 @@ public class BookCatalogueAPI implements SimpleTask {
             // --- ROBUST FINALLY BLOCK ---
             // This ensures the transaction is always closed, even on error.
             if (db != null && txLock != null) {
-                Log.d("BookCatalogueAPI", "Executing finally block: Ending transaction.");
                 db.endTransaction(txLock);
             }
         }

@@ -33,6 +33,7 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Represents the underlying data for a book.
@@ -90,11 +91,7 @@ public class BookData extends DataManager {
     public BookData(Context context, Long rowId, Bundle src) {
         mContext = context;
         // Save the row, if possible
-        if (rowId == null) {
-            mRowId = 0;
-        } else {
-            mRowId = rowId;
-        }
+        mRowId = Objects.requireNonNullElse(rowId, 0L);
         // Load from bundle or database
         if (src != null) {
             putAll(src);
@@ -343,7 +340,7 @@ public class BookData extends DataManager {
         addAccessor(CatalogueDBAdapter.KEY_ROW_ID, new DataAccessor() {
             @Override
             public Object get(DataManager data, Datum datum, Bundle rawData) {
-                return Datum.objectToLong(rawData.get(datum.getKey()));
+                return Datum.objectToLong(rawData.getLong(datum.getKey()));
             }
 
             @Override

@@ -355,9 +355,6 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 			cursorEntry.getValue().close();
 		}
 		mCursors.clear();
-//		if (mActiveCursor != null)
-//			mActiveCursor.close();
-
 		mActiveCursor = null;
 
         Arrays.fill(mMruList, -1);

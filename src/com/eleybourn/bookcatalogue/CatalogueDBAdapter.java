@@ -678,9 +678,7 @@ public class CatalogueDBAdapter {
         for (InstanceRef ref : mInstances) {
             CatalogueDBAdapter refDb = ref.get();
             if (refDb == null) {
-                System.out.println("<-- **** Missing ref (not closed?) ****");
-                ref.getCreationException().printStackTrace();
-                System.out.println("--> **** Missing ref (not closed?) ****");
+                Logger.logError(ref.getCreationException(), "<-- **** Missing ref (not closed?) ****");
             } else {
                 if (refDb == db) {
                     toDelete.add(ref);
@@ -695,13 +693,7 @@ public class CatalogueDBAdapter {
     public static void dumpInstances() {
         for (InstanceRef ref : mInstances) {
             CatalogueDBAdapter db = ref.get();
-            if (db == null) {
-                System.out.println("<-- **** Missing ref (not closed?) ****");
-                ref.getCreationException().printStackTrace();
-                System.out.println("--> **** Missing ref (not closed?) ****");
-            } else {
-                ref.getCreationException().printStackTrace();
-            }
+            Logger.logError(ref.getCreationException(), "<-- **** Missing ref (not closed?) ****");
         }
     }
 
@@ -5293,12 +5285,14 @@ public class CatalogueDBAdapter {
                     //table does not exist
                     db.execSQL(DATABASE_CREATE_AUTHORS);
                 }
+                results57.close();
                 results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKSHELF + "'", new String[]{});
                 if (results57.getCount() == 0) {
                     //table does not exist
                     db.execSQL(DATABASE_CREATE_BOOKSHELF);
                     db.execSQL(DATABASE_CREATE_BOOKSHELF_DATA);
                 }
+                results57.close();
                 results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_SERIES + "'", new String[]{});
                 if (results57.getCount() == 0) {
                     //table does not exist
@@ -5318,26 +5312,31 @@ public class CatalogueDBAdapter {
                     }
                     results57_2.close();
                 }
+                results57.close();
                 results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOKS + "'", new String[]{});
                 if (results57.getCount() == 0) {
                     //table does not exist
                     db.execSQL(DATABASE_CREATE_BOOKS_63);
                 }
+                results57.close();
                 results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_LOAN + "'", new String[]{});
                 if (results57.getCount() == 0) {
                     //table does not exist
                     db.execSQL(DATABASE_CREATE_LOAN);
                 }
+                results57.close();
                 results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_ANTHOLOGY + "'", new String[]{});
                 if (results57.getCount() == 0) {
                     //table does not exist
                     db.execSQL(DATABASE_CREATE_ANTHOLOGY);
                 }
+                results57.close();
                 results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_BOOKSHELF_WEAK + "'", new String[]{});
                 if (results57.getCount() == 0) {
                     //table does not exist
                     db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
                 }
+                results57.close();
                 results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_SERIES + "'", new String[]{});
                 if (results57.getCount() == 0) {
                     //table does not exist
@@ -5348,6 +5347,7 @@ public class CatalogueDBAdapter {
                             + " Join " + DB_TB_SERIES + " s On Upper(s." + KEY_SERIES_NAME + ") = Upper(b." + KEY_SERIES_OLD + ")" + COLLATION
                             + " Where Coalesce(b." + KEY_SERIES_OLD + ", '') <> ''");
                 }
+                results57.close();
                 results57 = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + DB_TB_BOOK_AUTHOR + "'", new String[]{});
                 if (results57.getCount() == 0) {
                     //table does not exist
@@ -5355,6 +5355,7 @@ public class CatalogueDBAdapter {
                     db.execSQL("INSERT INTO " + DB_TB_BOOK_AUTHOR + " (" + KEY_BOOK + ", " + KEY_AUTHOR_ID + ", " + KEY_AUTHOR_POSITION + ") "
                             + "SELECT b." + KEY_ROW_ID + ", b." + KEY_AUTHOR_OLD + ", 1 FROM " + DB_TB_BOOKS + " b ");
                 }
+                results57.close();
                 Cursor results57_3 = db.rawQuery("SELECT * FROM " + DB_TB_BOOKS, new String[]{});
                 if (results57_3.getCount() > 0) {
                     if (results57_3.getColumnIndex(KEY_SERIES_OLD) > -1) {
@@ -5372,7 +5373,6 @@ public class CatalogueDBAdapter {
                     }
                 }
                 results57_3.close();
-                results57.close();
             }
             if (curVersion == 58) {
                 curVersion++;

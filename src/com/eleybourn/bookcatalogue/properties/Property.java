@@ -79,8 +79,6 @@ public abstract class Property {
 	 * Get the string name of this property
 	 */
 	public String getName() {
-//		if (mName == null)
-//			mName = BookCatalogueApp.getRes().getString(mNameResourceId);
 		return BookCatalogueApp.getRes().getString(mNameResourceId);
 	}
 

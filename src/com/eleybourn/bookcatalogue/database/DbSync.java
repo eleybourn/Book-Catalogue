@@ -170,8 +170,6 @@ public class DbSync {
             while (true) {
                 // Cleanup any old threads that are dead.
                 purgeOldLocks();
-                //System.out.println(t.getName() + " requesting EXCLUSIVE lock with " + mSharedOwners.size() + " shared locks (attempt #" + i + ")");
-                //System.out.println("Lock held by " + mLock.getHoldCount());
                 try {
                     // Simple case -- no locks held, just return and keep the lock
                     if (mSharedOwners.isEmpty())
@@ -199,13 +197,9 @@ public class DbSync {
          * Release the lock previously taken
          */
         public void releaseExclusiveLock() {
-            //final Thread t = Thread.currentThread();
-            //System.out.println(t.getName() + " releasing EXCLUSIVE lock");
             if (!mLock.isHeldByCurrentThread())
                 throw new RuntimeException("Exclusive Lock is not held by this thread");
             mLock.unlock();
-            //System.out.println("Release lock held by " + mLock.getHoldCount());
-            //System.out.println(t.getName() + " released EXCLUSIVE lock");
         }
 
         /**
@@ -333,18 +327,9 @@ public class DbSync {
                 int refs = (Integer) f.get(db); //IllegalAccessException
                 if (msg != null) {
                     System.out.println("DBRefs (" + msg + "): " + refs);
-                    //if (refs < 100) {
-                    //	System.out.println("DBRefs (" + msg + "): " + refs + " <-- TOO LOW (< 100)!");
-                    //} else if (refs < 1001) {
-                    //	System.out.println("DBRefs (" + msg + "): " + refs + " <-- TOO LOW (< 1000)!");
-                    //} else {
-                    //	System.out.println("DBRefs (" + msg + "): " + refs);
-                    //}
                 }
                 return refs;
-            } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException ignored) {
             }
             return 0;
         }

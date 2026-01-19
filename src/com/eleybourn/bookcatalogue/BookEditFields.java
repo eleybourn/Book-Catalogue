@@ -20,12 +20,10 @@
 
 package com.eleybourn.bookcatalogue;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.SQLException;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +51,9 @@ import com.eleybourn.bookcatalogue.dialogs.TextFieldEditorFragment.OnTextFieldEd
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.widgets.SafeSpannedTextView;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class BookEditFields extends BookAbstract
@@ -236,6 +237,8 @@ public class BookEditFields extends BookAbstract
      * 2. If fields have been passed from another activity (e.g. ISBNSearch) it will populate the fields from the bundle
      * 3. It will leave the fields blank for new books.
      */
+    // TODO: remove this suppression once TIRAMISU is the standard. i.e. minSdkVersion = 33
+    @SuppressWarnings({"deprecation", "RedundantSuppression"})
     private void populateFields() {
         double t0 = System.currentTimeMillis();
         assert getActivity() != null;
@@ -250,13 +253,18 @@ public class BookEditFields extends BookAbstract
                     if (extras.containsKey("book")) {
                         throw new RuntimeException("[book] array passed in Intent");
                     } else {
-                        Bundle values = extras.getParcelable("bookData");
+                        Bundle values;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            values = extras.getParcelable("bookData", Bundle.class);
+                        } else {
+                            // Use the deprecated method for older APIs
+                            values = extras.getParcelable("bookData");
+                        }
                         if (values == null)
                             throw new RuntimeException("[bookData] data not present");
                         for (Field f : mFields) {
                             if (!f.column.isEmpty() && values.containsKey(f.column)) {
                                 try {
-                                    // Need to use get().toString() to avoid bundle failing to return a string value for a numeric
                                     f.setValue(Objects.requireNonNull(values.get(f.column)).toString());
                                 } catch (Exception e) {
                                     String msg = "Populate field " + f.column + " failed: " + e.getMessage();

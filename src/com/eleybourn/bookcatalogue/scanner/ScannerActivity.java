@@ -118,10 +118,12 @@ public class ScannerActivity
                         for (int i = 0; i < sz; i++) {
                             Barcode bc = barcodes.get(barcodes.keyAt(i));
                             if (bc.isRecognized && IsbnUtils.isValid(bc.displayValue)) {
-                                Intent intent = getIntent();
-                                intent.putExtra(KEY_ISBN, bc.displayValue);
-                                setResult(Activity.RESULT_OK, intent);
+                                Intent resultIntent = new Intent();
+                                resultIntent.putExtra(KEY_ISBN, bc.displayValue);
+                                setResult(Activity.RESULT_OK, resultIntent);
                                 finish();
+                                // Once we have a valid ISBN, we can stop processing.
+                                return;
                             }
                         }
                     });

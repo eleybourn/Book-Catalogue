@@ -60,14 +60,7 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
 		}
 	}
 
-	/**
-	 * Frees the result (which is not null) when the task has been canceled.
-	 */
-	protected void freeCanceledResult(T result) {
-		// Do nothing by default;
-	}
-
-	private boolean isInStates(int states) {
+    private boolean isInStates(int states) {
 		return (states & mState) != 0;
 	}
 
@@ -116,9 +109,6 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
 			if (mState == STATE_EXECUTING)
 				mState = STATE_COMPLETE;
 			notifyAll();
-			if (mState == STATE_CANCELED && mResult != null) {
-				freeCanceledResult(mResult);
-			}
 			return handleTerminalStates();
 		}
 	}

@@ -61,7 +61,7 @@ public class FastScrollListView extends ListView {
 		@Override
 		public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 			if (mScroller != null)
-				mScroller.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+				mScroller.onScroll(firstVisibleItem, visibleItemCount, totalItemCount);
 			if (mOnScrollListener != null)
 				mOnScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
 		}
@@ -104,7 +104,7 @@ public class FastScrollListView extends ListView {
 	protected void  onSizeChanged(int w, int h, int old_w, int old_h) {
 		super.onSizeChanged(w, h, old_w, old_h);
 		if (mScroller != null)
-			mScroller.onSizeChanged(w, h, old_w, old_h);
+			mScroller.onSizeChanged(w, h);
 	}
 	/**
 	 * Pass to scroller if defined, otherwise perform default actions.

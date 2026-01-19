@@ -17,7 +17,9 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
@@ -32,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowMetrics;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -652,7 +655,17 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     private void setDisplayMetrics() {
         mMetrics = new android.util.DisplayMetrics();
         assert getActivity() != null;
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = getActivity().getWindowManager().getCurrentWindowMetrics();
+            Rect bounds = windowMetrics.getBounds();
+            mMetrics.widthPixels = bounds.width();
+            mMetrics.heightPixels = bounds.height();
+            // densityDpi and other fields will use default values which is acceptable
+            // for the calculations in initThumbSizes().
+        } else {
+            // Use the deprecated method for older APIs
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
+        }
     }
 
     /**

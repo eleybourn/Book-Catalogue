@@ -1,9 +1,5 @@
 package com.eleybourn.bookcatalogue.amazon;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +9,10 @@ import com.amazon.device.associates.AssociatesAPI;
 import com.amazon.device.associates.LinkService;
 import com.amazon.device.associates.OpenSearchPageRequest;
 import com.eleybourn.bookcatalogue.utils.Logger;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Wrappers for Amazon API
@@ -25,49 +25,49 @@ import com.eleybourn.bookcatalogue.utils.Logger;
  */
 public class AmazonUtils {
 
-	public static final String AMAZON_LINK_EXTRAS = "&tag=bookcatalogue-20&linkCode=da5";
-	public static final String AMAZON_BOOKS_BASE = "https://www.amazon.com/s?i=stripbooks&k=";
+    public static final String AMAZON_LINK_EXTRAS = "&tag=bookcatalogue-20&linkCode=da5";
+    public static final String AMAZON_BOOKS_BASE = "https://www.amazon.com/s?i=stripbooks&k=";
 
-	public static void openLink(Activity context, String author, String series) {
-		// Build the URL and args
-		String url = AMAZON_BOOKS_BASE;
+    public static void openLink(Activity context, String author, String series) {
+        // Build the URL and args
+        String url = AMAZON_BOOKS_BASE;
 
-		author = cleanupSearchString(author);
-		series = cleanupSearchString(series);
+        author = cleanupSearchString(author);
+        series = cleanupSearchString(series);
 
-		String extra = AmazonUtils.buildSearchArgs(author, series);
+        String extra = AmazonUtils.buildSearchArgs(author, series);
 
-		if (extra != null && !extra.trim().isEmpty()) {
-			url += extra;
-		}
+        if (extra != null && !extra.trim().isEmpty()) {
+            url += extra;
+        }
 
-		WebView wv = new WebView(context);
+        WebView wv = new WebView(context);
 
-		LinkService linkService;
+        LinkService linkService;
 
-		// Try to setup the API calls; if not possible, just open directly and return
-		try {
-			// Init Amazon API
-			AssociatesAPI.initialize(new AssociatesAPI.Config(AmazonAppKey.KEY, context));
-			linkService = AssociatesAPI.getLinkService();
-			try {
-				linkService.overrideLinkInvocation(wv, url);
-			} catch(Exception e2) {
-				OpenSearchPageRequest request = new OpenSearchPageRequest("books", author + " " + series);
-				linkService.openRetailPage(request);
-			}
-		} catch (Exception e) {
-			Logger.logError(e, "Unable to use Amazon API");
-			Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse(url + AMAZON_LINK_EXTRAS));
-			context.startActivity(loadWeb);
-		}
-	}
+        // Try to setup the API calls; if not possible, just open directly and return
+        try {
+            // Init Amazon API
+            AssociatesAPI.initialize(new AssociatesAPI.Config(AmazonAppKey.KEY, context));
+            linkService = AssociatesAPI.getLinkService();
+            try {
+                linkService.overrideLinkInvocation(wv, url);
+            } catch (Exception e2) {
+                OpenSearchPageRequest request = new OpenSearchPageRequest("books", author + " " + series);
+                linkService.openRetailPage(request);
+            }
+        } catch (Exception e) {
+            Logger.logError(e, "Unable to use Amazon API");
+            Intent loadWeb = new Intent(Intent.ACTION_VIEW, Uri.parse(url + AMAZON_LINK_EXTRAS));
+            context.startActivity(loadWeb);
+        }
+    }
 
-	@SuppressWarnings("CharsetObjectCanBeUsed")
+    @SuppressWarnings("CharsetObjectCanBeUsed")
     public static String buildSearchArgs(String author, String series) {
-		// This code works, but Amazon have a nasty tendency to cancel Associate IDs...
-		//String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarner-20";
-		String extra = "";
+        // This code works, but Amazon have a nasty tendency to cancel Associate IDs...
+        //String baseUrl = "http://www.amazon.com/gp/search?index=books&tag=philipwarneri-20&tracking_id=philipwarner-20";
+        String extra = "";
         try {
             if (author != null && !author.trim().isEmpty()) {
                 author = author.replaceAll("\\.,+", " ");
@@ -83,27 +83,27 @@ public class AmazonUtils {
             // This should not happen with UTF-8, which is a standard charset
             Logger.logError(e, "Error encoding URL parameters");
         }
-		return extra;
+        return extra;
 
     }
 
-	private static String cleanupSearchString(String search) {
-		if (search == null)
-			return "";
+    private static String cleanupSearchString(String search) {
+        if (search == null)
+            return "";
 
-		StringBuilder out = new StringBuilder(search.length());
-		char prev = ' ';
-		for(char curr: search.toCharArray()) {
-			if (Character.isLetterOrDigit(curr) ) {
-				out.append(curr);
-			} else {
-				curr = ' ';
-				if (!Character.isWhitespace(prev)) {
-					out.append(curr);
-				}
-			}
-			prev = curr;
-		}
-		return out.toString();
-	}
+        StringBuilder out = new StringBuilder(search.length());
+        char prev = ' ';
+        for (char curr : search.toCharArray()) {
+            if (Character.isLetterOrDigit(curr)) {
+                out.append(curr);
+            } else {
+                curr = ' ';
+                if (!Character.isWhitespace(prev)) {
+                    out.append(curr);
+                }
+            }
+            prev = curr;
+        }
+        return out.toString();
+    }
 }

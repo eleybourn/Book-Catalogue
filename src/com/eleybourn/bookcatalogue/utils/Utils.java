@@ -203,10 +203,6 @@ public class Utils {
         return mDateDisplaySdf.format(d);
     }
 
-    public static String toPrettyDateTime(Date d) {
-        return DateFormat.getDateTimeInstance().format(d);
-    }
-
     /**
      * Attempt to parse a date string based on a range of possible formats.
      *

@@ -22,7 +22,11 @@ package com.eleybourn.bookcatalogue.utils;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+
+import androidx.core.content.pm.PackageInfoCompat;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.BookCataloguePreferences;
@@ -164,8 +168,16 @@ public class UpgradeMessageManager {
 	public static void setMessageAcknowledged(Context c) {
 		BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 		try {
-			int currVersion = c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionCode;
-			prefs.setInt(PREF_LAST_MESSAGE, currVersion);
+            PackageManager pm = c.getPackageManager();
+            String packageName = c.getPackageName();
+            PackageInfo packageInfo = pm.getPackageInfo(packageName, 0);
+
+            // Use PackageInfoCompat to get the version code in a backward-compatible way.
+            long longVersionCode = PackageInfoCompat.getLongVersionCode(packageInfo);
+
+            // The preference manager expects an int, so we cast it.
+            // This is safe as version codes are not expected to exceed Integer.MAX_VALUE.
+            prefs.setInt(PREF_LAST_MESSAGE, (int) longVersionCode);
 		} catch (NameNotFoundException e) {
 			Logger.logError(e, "Failed to get package version code");
 		}		

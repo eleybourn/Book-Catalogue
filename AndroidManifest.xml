@@ -27,6 +27,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme"
+        android:supportsRtl="true"
         android:windowSoftInputMode="adjustResize" >
         <!-- Fixed orientation so camera does not mess up -->
         <activity
@@ -42,7 +43,8 @@
 
         <provider
             android:name=".SearchSuggestionProvider"
-            android:authorities="com.eleybourn.bookcatalogue.SearchSuggestionProvider" />
+            android:authorities="com.eleybourn.bookcatalogue.SearchSuggestionProvider"
+            android:exported="true" />
         <provider
             android:name=".utils.GenericFileProvider"
             android:authorities="${applicationId}.fileprovider"

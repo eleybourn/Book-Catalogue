@@ -15,14 +15,14 @@ package com.eleybourn.bookcatalogue.widgets;
  * scrollable lists: a thumb at 50% in any scrollable list should result in the list being at
  * the mid-point. With an expandableListView, this needs to take into account the total
  * number of items (groups and children), NOT just the summary groups. Doing what the original
- * implementaion did is not only counter-intuitive, but also makes the thumb unusable in the case of
+ * implementation did is not only counter-intuitive, but also makes the thumb unusable in the case of
  * n groups, where one of those n has O(n) children, and is expanded. In this case, the entire set
  * of children will move through the screen based on the same finger movement as moving between
  * two unexpanded groups. In the more general case it can be characterised as uneven scrolling
  * if sections have widely varying sizes.
  *
  * Finally, the original would fail to correctly place the overlay if setFastScrollEnabled was
- * called after the Activity had been fuly drawn: this is because the only place that set the
+ * called after the Activity had been fully drawn: this is because the only place that set the
  * overlay position was in the onSizeChanged event.
  *
  * Combine this with the desire to display more than a single letter in the overlay,
@@ -219,13 +219,14 @@ public class FastScroller {
         mPaint.setAntiAlias(true);
         mPaint.setTextAlign(Paint.Align.CENTER);
         mPaint.setTextSize((float) mOverlaySize / 3);
-        TypedArray ta = context.getTheme().obtainStyledAttributes(new int[]{
-                android.R.attr.textColorPrimary});
-        ColorStateList textColor = ta.getColorStateList(ta.getIndex(0));
-        assert textColor != null;
-        int textColorNormal = textColor.getDefaultColor();
-        mPaint.setColor(textColorNormal);
-        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        try (TypedArray ta = context.getTheme().obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary})) {
+            ColorStateList textColor = ta.getColorStateList(ta.getIndex(0));
+            assert textColor != null;
+            int textColorNormal = textColor.getDefaultColor();
+            mPaint.setColor(textColorNormal);
+            mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        } catch (Exception ignored) {
+        }
 
         mState = STATE_NONE;
 
@@ -233,7 +234,7 @@ public class FastScroller {
         // this is called after Activity is stable
         final int w = mList.getWidth();
         final int h = mList.getHeight();
-        onSizeChanged(w, h, w, h);
+        onSizeChanged(w, h);
     }
 
     void stop() {
@@ -241,10 +242,6 @@ public class FastScroller {
         // No need for these any more.
         mOverlayDrawable = null;
         mThumbDrawable = null;
-    }
-
-    boolean isVisible() {
-        return !(mState == STATE_NONE);
     }
 
     public void draw(final Canvas canvas) {
@@ -288,7 +285,7 @@ public class FastScroller {
                 has2Lines = false;
                 line1 = mSectionTextV1;
             } else {
-                // If using V2 data, make sure line 1 is a valid straing
+                // If using V2 data, make sure line 1 is a valid string
                 if (mSectionTextV2[0] == null)
                     line1 = "";
                 else
@@ -316,9 +313,9 @@ public class FastScroller {
 
             // Draw the first line
             final String text1 = TextUtils.ellipsize(line1, paint, (mOverlayPos.right - mOverlayPos.left) * 0.8f, TextUtils.TruncateAt.END).toString();
-            canvas.drawText(text1, (int) (rectF.left + rectF.right) / 2,
+            canvas.drawText(text1, ((rectF.left + rectF.right) / 2),
                     // Base of text at: (middle) + (half text height) - descent : so it is vertically centred
-                    (int) (rectF.bottom + rectF.top) / 2 + mOverlaySize / 6 - descent,
+                    (rectF.bottom + rectF.top) / 2 + ((float) mOverlaySize / 6) - descent,
                     paint);
 
             if (has2Lines) {
@@ -326,9 +323,9 @@ public class FastScroller {
                 float s = paint.getTextSize();
                 paint.setTextSize(s * 0.7f);
                 final String text2 = TextUtils.ellipsize(line2, paint, (mOverlayPos.right - mOverlayPos.left) * 0.8f, TextUtils.TruncateAt.END).toString();
-                canvas.drawText(text2, (int) (rectF.left + rectF.right) / 2,
+                canvas.drawText(text2, (int) ((rectF.left + rectF.right) / 2),
                         // Base of text at: (middle) + (half text height) - descent : so it is vertically centred
-                        (int) (rectF.bottom + rectF.top) / 2 + mOverlaySize / 6 + s,
+                        (rectF.bottom + rectF.top) / 2 + (float) (mOverlaySize / 6) + s,
                         paint);
                 paint.setTextSize(s);
             }
@@ -342,19 +339,14 @@ public class FastScroller {
         }
     }
 
-    void onSizeChanged(int w, int h, int oldw, int oldh) {
+    void onSizeChanged(int w, int h) {
         if (mThumbDrawable != null) {
             mThumbDrawable.setBounds(w - mThumbW, 0, w, mThumbH);
         }
         final RectF pos = mOverlayPos;
-        // Original: width was equal to height, controlled by mOverlaySize.
-        //    pos.left = (w - mOverlaySize) / 2;
-        //    pos.right = pos.left + mOverlaySize;
-        //
-        // Now, Make it 75% of total available space
-        pos.left = (w / 8);
-        pos.right = pos.left + w * 3 / 4;
-        pos.top = h / 10; // 10% from top
+        pos.left = ((float) w / 8);
+        pos.right = pos.left + (float) ((w * 3) / 4);
+        pos.top = (float) h / 10; // 10% from top
         pos.bottom = pos.top + mOverlaySize;
         if (mOverlayDrawable != null) {
             mOverlayDrawable.setBounds((int) pos.left, (int) pos.top,
@@ -362,7 +354,7 @@ public class FastScroller {
         }
     }
 
-    void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+    void onScroll(int firstVisibleItem, int visibleItemCount,
                   int totalItemCount) {
         // Are there enough pages to require fast scroll? Recompute only if total count changes
         if (mItemCount != totalItemCount && visibleItemCount > 0) {
@@ -449,17 +441,11 @@ public class FastScroller {
                 else
                     mSectionTextV1 = null;
             } else {
-                sectionIndex = -1;
                 mSectionTextV1 = null;
             }
         }
 
-        if ((mSectionTextV2 != null) || (mSectionTextV1 != null && !mSectionTextV1.isEmpty())) {
-            mDrawOverlay = true; //(mSectionText.length() != 1 || mSectionText.charAt(0) != ' ')
-            //&& sectionIndex < sections.length;
-        } else {
-            mDrawOverlay = false;
-        }
+        mDrawOverlay = (mSectionTextV2 != null) || (mSectionTextV1 != null && !mSectionTextV1.isEmpty());
     }
 
     private void cancelFling() {

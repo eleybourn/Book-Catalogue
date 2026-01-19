@@ -1027,7 +1027,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             if (activity == null || activity.isFinishing()) {
                 return;
             }
-            Log.d("BookEdit", "API Progress for " + request + ": " + current + "/" + total);
         }
 
         @Override
@@ -1036,7 +1035,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             if (activity == null || activity.isFinishing()) {
                 return;
             }
-            Log.d("BookEdit", "API Complete for " + request + ": " + message);
         }
 
         @Override

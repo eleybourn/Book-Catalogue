@@ -246,7 +246,6 @@ public class StandardDialogs {
             if (context == null) {
                 return;
             }
-            Log.d("StandardDialogs", "API Progress for " + request + ": " + current + "/" + total);
         }
 
         @Override
@@ -255,7 +254,6 @@ public class StandardDialogs {
             if (context == null) {
                 return;
             }
-            Log.d("StandardDialogs", "API Complete for " + request + ": " + message);
         }
 
         @Override

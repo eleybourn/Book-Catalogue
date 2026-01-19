@@ -34,13 +34,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.eleybourn.bookcatalogue.BookCatalogueAPI.ApiListener;
+import com.eleybourn.bookcatalogue.BookCatalogueAPICredentials.CredentialListener;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.ExportSettings;
 import com.eleybourn.bookcatalogue.dialogs.ExportTypeSelectionDialogFragment.OnExportTypeSelectionDialogResultListener;
 import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment.OnImportTypeSelectionDialogResultListener;
-import com.eleybourn.bookcatalogue.BookCatalogueAPI.ApiListener;
-import com.eleybourn.bookcatalogue.BookCatalogueAPICredentials.CredentialListener;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.google.android.material.appbar.MaterialToolbar;
 
@@ -56,11 +56,12 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     private BookCatalogueAPICredentials mApiCredentials;
     private ProgressBar mSyncProgressBar;
     private TextView mBackupStatsField;
+    private Button mBackupNowButton;
+    private Button mRestoreNowButton;
     private TextView mLastBackupDateField;
     private ApiListener mApiListener;
     private ActivityResultLauncher<String[]> mCsvImportPickerLauncher;
     private ActivityResultLauncher<String> mCsvExportPickerLauncher;
-
 
     @Override
     protected RequiredPermission[] getRequiredPermissions() {
@@ -174,13 +175,23 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         Button logout = findViewById(R.id.log_out_button);
         logout.setOnClickListener(v -> logout());
         /* OptIn */
+        // ... inside onCreate() ...
+        /* OptIn */
         optInView.setOnClickListener(v -> optIn(optInView.isChecked()));
         /* Backup Now */
-        Button backupNow = findViewById(R.id.backup_now);
-        backupNow.setOnClickListener(v -> backup());
+        mBackupNowButton = findViewById(R.id.backup_now); // Use the member variable
+        mBackupNowButton.setOnClickListener(v -> {
+            backup();
+            mBackupNowButton.setEnabled(false); // Disable backup button
+            mRestoreNowButton.setEnabled(false); // Disable restore button
+        });
         /* Restore Now */
-        Button restoreNow = findViewById(R.id.restore_now);
-        restoreNow.setOnClickListener(v -> restore());
+        mRestoreNowButton = findViewById(R.id.restore_now); // Use the member variable
+        mRestoreNowButton.setOnClickListener(v -> {
+            restore();
+            mBackupNowButton.setEnabled(false); // Disable backup button
+            mRestoreNowButton.setEnabled(false); // Disable restore button
+        });
     }
 
     @Override
@@ -328,6 +339,13 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 activity.mSyncProgressBar.setProgress(current);
                 activity.mSyncProgressBar.setVisibility(View.VISIBLE);
             }
+
+            // Disable buttons if backup or restore is running
+            if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL) || request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
+                activity.mBackupNowButton.setEnabled(false);
+                activity.mRestoreNowButton.setEnabled(false);
+            }
+
         }
 
         @Override
@@ -363,6 +381,16 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             if (!request.equals(BookCatalogueAPI.REQUEST_INFO_COUNT) && !request.equals(BookCatalogueAPI.REQUEST_INFO_LAST)) {
                 activity.mSyncProgressBar.setVisibility(View.GONE);
             }
+
+            // Re-enable buttons after backup or restore is complete
+            if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL) || request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
+                if (activity.mBackupNowButton != null) {
+                    activity.mBackupNowButton.setEnabled(true);
+                }
+                if (activity.mRestoreNowButton != null) {
+                    activity.mRestoreNowButton.setEnabled(true);
+                }
+            }
         }
 
         @Override
@@ -378,6 +406,15 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 Toast.makeText(activity, "Error: " + error, Toast.LENGTH_LONG).show();
             }
             activity.mSyncProgressBar.setVisibility(View.GONE);
+            if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL) || request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
+                if (activity.mBackupNowButton != null) {
+                    activity.mBackupNowButton.setEnabled(true);
+                }
+                if (activity.mRestoreNowButton != null) {
+                    activity.mRestoreNowButton.setEnabled(true);
+                }
+                Toast.makeText(activity, "Error: " + error, Toast.LENGTH_LONG).show(); // Show error for backup/restore
+            }
         }
     }
 

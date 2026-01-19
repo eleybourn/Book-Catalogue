@@ -652,6 +652,14 @@
 				<li> Many bug fixes
 				</ul></p>
 		]]></string>
+    <string name="new_in_700"><![CDATA[
+			<p><b>New in 7.0.0</b>\n\n<ul><li> Completely new and modern interface based on Android material design.</li>
+			    <li> Improvements to ISBN search to replace sources (such as Amazon) that are no longer available. </li>
+			    <li> Discontinued support for Android Nougat (2016) and earlier.</li>
+			    <li> Many bug fixes.</li>
+			    <li> The next upgrade will contain enable the most requested feature - online backup and sync.</li>
+				</ul></p>
+		]]></string>
     <string name="new_style">New style</string>
 
     <string name="no_author">(no author)</string>
@@ -946,7 +954,7 @@
     <string name="button_logout">Logout</string>
     <string name="button_backup_now">Backup Now</string>
     <string name="title_local_backup">Export and Backup Locally</string>
-    <string name="button_restore_now">Restore From Backup</string>
+    <string name="button_restore_now">Restore Backup</string>
     <string name="alert_could_not_load_backup_statistics">Could not load backup statistics.</string>
     <string name="move_down">Move Down</string>
     <string name="move_up">Move Up</string>

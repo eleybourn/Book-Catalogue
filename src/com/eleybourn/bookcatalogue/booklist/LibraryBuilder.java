@@ -1141,7 +1141,7 @@ public class LibraryBuilder {
         SyncLock l = null;
 
         try {
-            if (!mDb.inTransaction())
+            if (mDb.outsideTransaction())
                 l = mDb.beginTransaction(true);
 
             int kind = mStyle.getGroupAt(0).kind;
@@ -1396,7 +1396,7 @@ public class LibraryBuilder {
     public void saveListNodeSettings() {
         SyncLock l = null;
         try {
-            if (!mDb.inTransaction())
+            if (mDb.outsideTransaction())
                 l = mDb.beginTransaction(true);
 
             deleteListNodeSettings();
@@ -1425,7 +1425,7 @@ public class LibraryBuilder {
         SyncLock l = null;
 
         try {
-            if (!mDb.inTransaction())
+            if (mDb.outsideTransaction())
                 l = mDb.beginTransaction(true);
 
             int kind = mStyle.getGroupAt(0).kind;
@@ -1449,7 +1449,7 @@ public class LibraryBuilder {
     private void saveListNodeSetting(long rowId) {
         SyncLock l = null;
         try {
-            if (!mDb.inTransaction())
+            if (mDb.outsideTransaction())
                 l = mDb.beginTransaction(true);
 
             deleteListNodeSetting(rowId);

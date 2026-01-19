@@ -3865,7 +3865,7 @@ public class CatalogueDBAdapter {
     private void globalReplacePositionedBookItem(String tableName, String objectIdField, String positionField, long oldId, long newId) {
         String sql;
 
-        if (!mDb.inTransaction())
+        if (mDb.outsideTransaction())
             throw new RuntimeException("globalReplacePositionedBookItem must be called in a transaction");
 
         // Update books but prevent duplicate index errors - update books for which the new ID is not already present
@@ -4326,7 +4326,7 @@ public class CatalogueDBAdapter {
 
         // Start an update TX
         SyncLock l = null;
-        if (!mDb.inTransaction())
+        if (mDb.outsideTransaction())
             l = mDb.beginTransaction(true);
         try {
             // Compile statement and get books cursor
@@ -4360,7 +4360,7 @@ public class CatalogueDBAdapter {
         BooksCursor books = null;
 
         SyncLock l = null;
-        if (!mDb.inTransaction())
+        if (mDb.outsideTransaction())
             l = mDb.beginTransaction(true);
         try {
             // Compile statement and get cursor
@@ -4407,7 +4407,7 @@ public class CatalogueDBAdapter {
         BooksCursor c = null;
 
         SyncLock l = null;
-        if (!mDb.inTransaction())
+        if (mDb.outsideTransaction())
             l = mDb.beginTransaction(true);
         try {
             // Drop and recreate our temp copy

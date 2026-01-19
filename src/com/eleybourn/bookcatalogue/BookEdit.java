@@ -101,7 +101,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     private long mRowId;
     private BookData mBookData;
     private boolean mIsReadOnly;
-    private ApiListener mApiListener;
     /**
      * Listener to handle 'fling' events; we could handle others but need to be
      * careful about possible clicks and scrolling.
@@ -132,6 +131,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             }
         }
     };
+    private ApiListener mApiListener;
     private BookEditPagerAdapter mAdapter;
     private MenuHandler mMenuHandler;
     private ArrayList<String> mPublishers;
@@ -497,29 +497,42 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      * Run each time the menu button is pressed. This will setup the options menu
      */
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         mMenuHandler = new MenuHandler(this);
         mMenuHandler.init(menu);
-
-        if (mRowId != 0) {
-            MenuItem delete = menu.add(0, R.id.MENU_DELETE_BOOK, 0, R.string.menu_delete_book);
-            delete.setIcon(R.drawable.ic_menu_edit);
-
-            MenuItem duplicate = menu.add(0, R.id.MENU_DUPLICATE_BOOK, 0, R.string.menu_duplicate);
-            duplicate.setIcon(R.drawable.ic_menu_new);
-        }
-
-        // TODO: Consider allowing Tweets (or other sharing methods) to work on un-added books.
-        MenuItem tweet = menu.add(0, R.id.MENU_SHARE, 0, R.string.menu_share_this);
-        tweet.setIcon(R.drawable.ic_menu_share);
-        // Very rarely used, and easy to miss-click.
-        //tweet.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         if (mIsReadOnly) {
             MenuItem edit = menu.add(0, R.id.MENU_EDIT_BOOK, 0, R.string.menu_edit_book)
                     .setIcon(R.drawable.ic_menu_edit);
             edit.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             edit.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
+        }
+        //MenuItem thumbCancel = menu.add(0, R.id.MENU_CANCEL, 0, R.string.button_cancel);
+        //thumbCancel.setIcon(R.drawable.ic_button_cancel);
+        //thumbCancel.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        //thumbCancel.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
+        //MenuItem thumbSave = menu.add(0, R.id.MENU_SAVE, 0, R.string.button_confirm_add);
+        //thumbSave.setIcon(R.drawable.ic_menu_checkmark_unchecked);
+        //thumbSave.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        //thumbSave.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
+
+        if (mRowId != 0) {
+            boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(AdminFieldVisibility.prefix + "thumbnail", true);
+            if (thumbVisible) {
+                MenuItem thumbOptions = menu.add(0, R.id.MENU_THUMBNAIL_OPTIONS, 0, R.string.cover_options_cc_ellipsis);
+                thumbOptions.setIcon(R.drawable.ic_menu_camera);
+                //thumbOptions.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                thumbOptions.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
+            }
+
+            MenuItem delete = menu.add(0, R.id.MENU_DELETE_BOOK, 0, R.string.menu_delete_book);
+            delete.setIcon(R.drawable.ic_menu_edit);
+
+            MenuItem duplicate = menu.add(0, R.id.MENU_DUPLICATE_BOOK, 0, R.string.menu_duplicate);
+            duplicate.setIcon(R.drawable.ic_menu_new);
+
+            MenuItem tweet = menu.add(0, R.id.MENU_SHARE, 0, R.string.menu_share_this);
+            tweet.setIcon(R.drawable.ic_menu_share);
         }
 
         boolean hasAuthor = !this.getBookData().getAuthorList().isEmpty();
@@ -533,21 +546,11 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                 MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_BY_AUTHOR_IN_SERIES, 0, R.string.menu_amazon_books_by_author_in_series);
                 item.setIcon(R.drawable.ic_menu_search_globe);
             }
-            {
-                MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_IN_SERIES, 0, R.string.menu_amazon_books_in_series);
-                item.setIcon(R.drawable.ic_menu_search_globe);
-            }
+            MenuItem item = menu.add(0, R.id.MENU_AMAZON_BOOKS_IN_SERIES, 0, R.string.menu_amazon_books_in_series);
+            item.setIcon(R.drawable.ic_menu_search_globe);
         }
 
-        boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(AdminFieldVisibility.prefix + "thumbnail", true);
-        if (thumbVisible) {
-            MenuItem thumbOptions = menu.add(0, R.id.MENU_THUMBNAIL_OPTIONS, 0, R.string.cover_options_cc_ellipsis);
-            thumbOptions.setIcon(R.drawable.ic_menu_camera);
-            thumbOptions.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            thumbOptions.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
-        }
-
-        return super.onPrepareOptionsMenu(menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -590,6 +593,20 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                     String series = getSeriesFromBook();
                     Utils.openAmazonSearchPage(this, author, series);
                     return true;
+                } else if (id == R.id.MENU_SAVE) {
+                    saveState(new DoConfirmAction());
+                } else if (id == R.id.MENU_CANCEL) {
+                    // Cleanup because we may have made global changes
+                    mDbHelper.purgeAuthors();
+                    mDbHelper.purgeSeries();
+                    // We're done.
+                    setResult(Activity.RESULT_OK);
+
+                    if (isDirty()) {
+                        StandardDialogs.showConfirmUnsavedEditsDialog(BookEdit.this, null);
+                    } else {
+                        finish();
+                    }
                 }
             } catch (NullPointerException e) {
                 Logger.logError(e);

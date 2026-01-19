@@ -20,6 +20,8 @@
     <item name="MENU_SEND_BOOK_TO_GR" type="id"/>
     <item name="MENU_SHARE" type="id"/>
     <item name="MENU_THUMBNAIL_OPTIONS" type="id"/>
+    <item name="MENU_SAVE" type="id"/>
+    <item name="MENU_CANCEL" type="id"/>
 
     <item name="NOTIFICATION" type="id"/>
 

@@ -29,7 +29,8 @@ import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -91,6 +92,7 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -98,12 +100,13 @@ import javax.xml.parsers.SAXParserFactory;
 
 
 public class Utils {
+    private static final ConcurrentHashMap<String, Object> urlLocks = new ConcurrentHashMap<>();
     public static final boolean USE_BARCODE = true;
     // Used for date parsing and display
-    private static final SimpleDateFormat mDateFullHMSSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static final SimpleDateFormat mDateFullHMSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    private static final SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
-    private static final SimpleDateFormat mLocalDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat mDateFullHMSSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+    private static final SimpleDateFormat mDateFullHMSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
+    private static final SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    private static final SimpleDateFormat mLocalDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     private static final ArrayList<SimpleDateFormat> mParseDateFormats = new ArrayList<>();
     // Used for formatting dates for sql; everything is assumed to be UTC, or converted to UTC since
     // UTC is the default SQLite TZ.
@@ -180,7 +183,7 @@ public class Utils {
      * Add a format to the parser list; if nedEnglish is set, also add the localized english version
      */
     private static void addParseDateFormat(boolean needEnglish, String format) {
-        mParseDateFormats.add(new SimpleDateFormat(format));
+        mParseDateFormats.add(new SimpleDateFormat(format, Locale.ROOT));
         if (needEnglish)
             mParseDateFormats.add(new SimpleDateFormat(format, Locale.ENGLISH));
     }
@@ -575,9 +578,12 @@ public class Utils {
      *
      * @param url URL to retrieve
      */
+    @SuppressWarnings("BusyWait")
     static public InputStream getInputStream(URL url) throws UnknownHostException {
+        String urlString = url.toString();
+        Object lock = urlLocks.computeIfAbsent(urlString, k -> new Object());
 
-        synchronized (url) {
+        synchronized (lock) {
 
             int retries = 3;
             while (true) {
@@ -627,7 +633,7 @@ public class Utils {
                 } catch (java.net.UnknownHostException e) {
                     Logger.logError(e);
                     retries--;
-                    if (retries-- == 0)
+                    if (retries <= 0)
                         throw e;
                     try {
                         Thread.sleep(500);
@@ -647,14 +653,18 @@ public class Utils {
      * @return boolean return true if the application can access the internet
      */
     public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null) {
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-            for (NetworkInfo networkInfo : info) {
-                if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {
-                    return true;
-                }
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            Network network = connectivityManager.getActiveNetwork();
+            if (network == null) {
+                return false;
             }
+            NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
+            return capabilities != null &&
+                    (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) ||
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN));
         }
         return false;
     }
@@ -1067,7 +1077,7 @@ public class Utils {
 
     public static String getMonthName(int month) {
         if (mMonthNameFormatter == null)
-            mMonthNameFormatter = new SimpleDateFormat("MMMM");
+            mMonthNameFormatter = new SimpleDateFormat("MMMM", Locale.US);
         // Create static calendar if necessary
         if (mCalendar == null)
             mCalendar = Calendar.getInstance();
@@ -1280,7 +1290,7 @@ public class Utils {
         if (year == null) {
             value = "";
         } else {
-            value = String.format("%04d", year);
+            value = String.format(Locale.ROOT, "%04d", year);
             if (month != null && month > 0) {
                 String mm = month.toString();
                 if (mm.length() == 1) {
@@ -1463,6 +1473,7 @@ public class Utils {
         return v;
     }
 
+    @SuppressWarnings("DataFlowIssue")
     public static boolean objectToBoolean(Object o) {
         if (o instanceof Boolean) {
             return (Boolean) o;

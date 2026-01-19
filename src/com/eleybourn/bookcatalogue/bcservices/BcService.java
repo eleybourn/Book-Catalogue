@@ -152,9 +152,9 @@ public class BcService {
 			for (Map.Entry<String, String> nv : params.entrySet()) {
 				if (args.length() > 0)
 					args.append('&');
-				args.append(URLEncoder.encode(nv.getKey(), StandardCharsets.UTF_8));
+				args.append(URLEncoder.encode(nv.getKey(), "UTF-8"));
 				args.append('=');
-				args.append(URLEncoder.encode(nv.getValue(), StandardCharsets.UTF_8));
+				args.append(URLEncoder.encode(nv.getValue(), "UTF-8"));
 			}
 		}
 
@@ -212,6 +212,9 @@ public class BcService {
 		while (keysIterator.hasNext()) {
 			String key = keysIterator.next();
 			String value = result.getString(key);
+            if (value.equals("null")) {
+                continue;
+            }
 			switch (key) {
 				case ISBN:
 					addIfNotPresent(bookData, CatalogueDBAdapter.KEY_ISBN, value);

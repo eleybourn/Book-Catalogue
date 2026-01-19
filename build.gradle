@@ -121,7 +121,7 @@ android {
             dimension "distributor"
 //            applicationIdSuffix ".full"
             versionNameSuffix "-distoth"
-            buildConfigField 'boolean', 'IS_DONATE_ALLOWED', 'true'
+            buildConfigField 'boolean', 'IS_DONATE_ALLOWED', 'false'
         }
     }
     compileOptions {

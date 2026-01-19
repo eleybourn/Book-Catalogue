@@ -66,6 +66,9 @@ public class BookCatalogueAPI implements SimpleTask {
     private SimpleTaskContext mTaskContext;
     private boolean retry = true;
     private long mBookId;
+    public static volatile boolean isBackupRunning = false;
+    public static volatile boolean isRestoreRunning = false;
+
 
     public BookCatalogueAPI(Context context, String request, long book_id, ApiListener listener) {
         mContext = context;

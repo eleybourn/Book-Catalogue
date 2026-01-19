@@ -99,8 +99,6 @@
                 android:layout_marginHorizontal="@dimen/p_md"
                 android:text="@string/button_logout" />
 
-
-
             <CheckBox
                 android:id="@+id/field_opt_in"
                 android:layout_width="wrap_content"
@@ -148,8 +146,8 @@
                 android:text="@string/title_local_backup"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
-                android:textColor="@color/theme_onSecondary"
-                android:background="@color/theme_secondary" />
+                android:textColor="@color/theme_onPrimary"
+                android:background="@color/theme_primary" />
 
             <LinearLayout
                 android:layout_width="match_parent"

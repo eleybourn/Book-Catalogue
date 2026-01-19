@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -63,13 +62,8 @@ public class ScannerActivity
 						.setBarcodeFormats(Barcode.EAN_13)
 						.build();
 
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int width = displayMetrics.widthPixels;
-        int height = displayMetrics.heightPixels;
-
 		mCameraSource = new CameraSource
 				.Builder(this, barcodeDetector)
-				.setRequestedPreviewSize(width, height)
 				.setFacing(CameraSource.CAMERA_FACING_BACK)
 				.setAutoFocusEnabled(true)
 				.build();

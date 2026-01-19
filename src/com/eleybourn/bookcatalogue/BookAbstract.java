@@ -196,7 +196,6 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
     }
 
-
     /**
      * Listener for creating context menu for book thumbnail.
      */

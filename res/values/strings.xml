@@ -265,7 +265,7 @@
 
     <string name="kilobytes">%.2fkB</string>
 
-    <string name="label_about">About this App</string>
+    <string name="label_about">About</string>
     <string name="label_add">Add</string>
     <string name="label_add_manually">Add Manually</string>
     <string name="label_added_day">Added Day</string>

@@ -53,6 +53,8 @@ import java.lang.ref.WeakReference;
 public class AdminBackup extends ActivityWithTasks implements CredentialListener,
         OnImportTypeSelectionDialogResultListener,
         OnExportTypeSelectionDialogResultListener {
+    public static volatile boolean isBackupRunning = false;
+    public static volatile boolean isRestoreRunning = false;
     private BookCatalogueAPICredentials mApiCredentials;
     private ProgressBar mSyncProgressBar;
     private TextView mBackupStatsField;
@@ -182,15 +184,11 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         mBackupNowButton = findViewById(R.id.backup_now); // Use the member variable
         mBackupNowButton.setOnClickListener(v -> {
             backup();
-            mBackupNowButton.setEnabled(false); // Disable backup button
-            mRestoreNowButton.setEnabled(false); // Disable restore button
         });
         /* Restore Now */
         mRestoreNowButton = findViewById(R.id.restore_now); // Use the member variable
         mRestoreNowButton.setOnClickListener(v -> {
             restore();
-            mBackupNowButton.setEnabled(false); // Disable backup button
-            mRestoreNowButton.setEnabled(false); // Disable restore button
         });
     }
 
@@ -200,7 +198,16 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         // When the activity becomes active, set it as the current listener.
         // Any running background task will now send updates to this activity.
         BookCatalogueAPI.setActiveListener(mApiListener);
+        // Disable buttons if a backup or restore is currently in progress
+        if (BookCatalogueAPI.isBackupRunning || BookCatalogueAPI.isRestoreRunning) {
+            mBackupNowButton.setEnabled(false);
+            mRestoreNowButton.setEnabled(false);
+        } else {
+            mBackupNowButton.setEnabled(true);
+            mRestoreNowButton.setEnabled(true);
+        }
     }
+
 
     @Override
     protected void onPause() {
@@ -266,10 +273,16 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
     public void backup() {
         // Create a new API task to get the count. This will automatically run in the background.
+        mBackupNowButton.setEnabled(false);
+        mRestoreNowButton.setEnabled(false);
+        BookCatalogueAPI.isBackupRunning = true;
         new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_BACKUP_ALL, mApiListener);
     }
 
     public void restore() {
+        mBackupNowButton.setEnabled(false);
+        mRestoreNowButton.setEnabled(false);
+        BookCatalogueAPI.isRestoreRunning = true;
         // Create a new API task to get the count. This will automatically run in the background.
         new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_RESTORE_ALL, mApiListener);
     }
@@ -287,7 +300,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
     @Override
     public void onCredentialError(String errorMessage) {
-        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+        runOnUiThread(() -> Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show());
     }
 
     /**
@@ -373,6 +386,10 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                     // Reload stats after full backup completes
                     new BookCatalogueAPI(activity.getApplicationContext(), BookCatalogueAPI.REQUEST_INFO_COUNT, this);
                     new BookCatalogueAPI(activity.getApplicationContext(), BookCatalogueAPI.REQUEST_INFO_LAST, this);
+                    BookCatalogueAPI.isBackupRunning = false;
+                    break;
+                case BookCatalogueAPI.REQUEST_RESTORE_ALL:
+                    BookCatalogueAPI.isRestoreRunning = false;
                     break;
                 case BookCatalogueAPI.REQUEST_LOGIN:
                     activity.reload();
@@ -382,16 +399,6 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             // Hide progress bar on completion of any task except count/last_backup
             if (!request.equals(BookCatalogueAPI.REQUEST_INFO_COUNT) && !request.equals(BookCatalogueAPI.REQUEST_INFO_LAST)) {
                 activity.mSyncProgressBar.setVisibility(View.GONE);
-            }
-
-            // Re-enable buttons after backup or restore is complete
-            if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL) || request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
-                if (activity.mBackupNowButton != null) {
-                    activity.mBackupNowButton.setEnabled(true);
-                }
-                if (activity.mRestoreNowButton != null) {
-                    activity.mRestoreNowButton.setEnabled(true);
-                }
             }
         }
 

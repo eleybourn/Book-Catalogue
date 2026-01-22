@@ -211,6 +211,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         return new RequiredPermission[0];
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void onCreate(Bundle savedInstanceState) {
         Tracker.enterOnCreate(this);
         super.onCreate(savedInstanceState);
@@ -219,6 +220,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
         // Register the back press callback
         getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @SuppressWarnings("ResultOfMethodCallIgnored")
             @Override
             public void handleOnBackPressed() {
                 // If there are unsaved changes, ask for confirmation
@@ -227,6 +229,8 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                 } else {
                     // No changes, disable this callback so the default 'finish' behavior happens
                     // or call our custom finish logic
+                    File thumb = CatalogueDBAdapter.getTempThumbnail();
+                    thumb.delete();
                     setEnabled(false);
                     doFinish();
                 }
@@ -319,6 +323,8 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             if (isDirty()) {
                 StandardDialogs.showConfirmUnsavedEditsDialog(BookEdit.this, null);
             } else {
+                File thumb = CatalogueDBAdapter.getTempThumbnail();
+                thumb.delete();
                 finish();
             }
         });
@@ -556,6 +562,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     /**
      * This will be called when a menu item is selected.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mMenuHandler != null && !mMenuHandler.onMenuItemSelected(this, item)) {
@@ -605,6 +612,8 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                     if (isDirty()) {
                         StandardDialogs.showConfirmUnsavedEditsDialog(BookEdit.this, null);
                     } else {
+                        File thumb = CatalogueDBAdapter.getTempThumbnail();
+                        thumb.delete();
                         finish();
                     }
                 }
@@ -1039,6 +1048,11 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
         @Override
         public void onApiProgress(String request, int current, int total) {
+            onApiProgress(request, current, total, "");
+        }
+
+        @Override
+        public void onApiProgress(String request, int current, int total, String message) {
         }
 
         @Override

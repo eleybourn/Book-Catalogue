@@ -53,8 +53,6 @@ import java.lang.ref.WeakReference;
 public class AdminBackup extends ActivityWithTasks implements CredentialListener,
         OnImportTypeSelectionDialogResultListener,
         OnExportTypeSelectionDialogResultListener {
-    public static volatile boolean isBackupRunning = false;
-    public static volatile boolean isRestoreRunning = false;
     private BookCatalogueAPICredentials mApiCredentials;
     private ProgressBar mSyncProgressBar;
     private TextView mBackupStatsField;
@@ -165,8 +163,10 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             if (!apiToken.isEmpty()) {
                 token.setText(apiToken);
             }
-            new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_INFO_COUNT, mApiListener);
-            new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_INFO_LAST, mApiListener);
+            if (!BookCatalogueAPI.isBackupRunning && !BookCatalogueAPI.isRestoreRunning) {
+                new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_INFO_COUNT, mApiListener);
+                new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_INFO_LAST, mApiListener);
+            }
         }
 
         /* Login */
@@ -182,14 +182,10 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         optInView.setOnClickListener(v -> optIn(optInView.isChecked()));
         /* Backup Now */
         mBackupNowButton = findViewById(R.id.backup_now); // Use the member variable
-        mBackupNowButton.setOnClickListener(v -> {
-            backup();
-        });
+        mBackupNowButton.setOnClickListener(v -> backup());
         /* Restore Now */
         mRestoreNowButton = findViewById(R.id.restore_now); // Use the member variable
-        mRestoreNowButton.setOnClickListener(v -> {
-            restore();
-        });
+        mRestoreNowButton.setOnClickListener(v -> restore());
     }
 
     @Override
@@ -331,6 +327,11 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
         @Override
         public void onApiProgress(String request, int current, int total) {
+            onApiProgress(request, current, total, "");
+        }
+
+        @Override
+        public void onApiProgress(String request, int current, int total, String message) {
             AdminBackup activity = activityReference.get();
             // Only update UI if the activity is still alive
             if (activity == null || activity.isFinishing()) {
@@ -346,7 +347,12 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             }
 
             if (request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
-                String statsText = current + " of " + total + " books restored";
+                String statsText = "";
+                if (message.isEmpty()) {
+                    statsText = current + " of " + total + " books restored";
+                } else {
+                    statsText = current + " of " + total + " " + message;
+                }
                 activity.mBackupStatsField.setText(statsText);
                 activity.mSyncProgressBar.setMax(total);
                 activity.mSyncProgressBar.setProgress(current);

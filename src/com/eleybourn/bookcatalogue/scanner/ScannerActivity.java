@@ -111,7 +111,7 @@ public class ScannerActivity
                         int sz = barcodes.size();
                         for (int i = 0; i < sz; i++) {
                             Barcode bc = barcodes.get(barcodes.keyAt(i));
-                            if (bc.isRecognized && IsbnUtils.isValid(bc.displayValue)) {
+                            if (IsbnUtils.isValid(bc.displayValue)) {
                                 Intent resultIntent = new Intent();
                                 resultIntent.putExtra(KEY_ISBN, bc.displayValue);
                                 setResult(Activity.RESULT_OK, resultIntent);

@@ -44,6 +44,7 @@ import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -54,6 +55,7 @@ public class StandardDialogs {
     /**
      * Show a dialog asking if unsaved edits should be ignored. Finish if so.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void showConfirmUnsavedEditsDialog(final Activity a, final Runnable r) {
         AlertDialog.Builder dialog = new Builder(a);
 
@@ -62,6 +64,8 @@ public class StandardDialogs {
 
         dialog.setPositiveButton(R.string.exit, (dialog1, which) -> {
             dialog1.dismiss();
+            File thumb = CatalogueDBAdapter.getTempThumbnail();
+            thumb.delete();
             if (r != null) {
                 r.run();
             } else {
@@ -241,6 +245,11 @@ public class StandardDialogs {
 
         @Override
         public void onApiProgress(String request, int current, int total) {
+            onApiProgress(request, current, total, "");
+        }
+
+        @Override
+        public void onApiProgress(String request, int current, int total, String message) {
         }
 
         @Override

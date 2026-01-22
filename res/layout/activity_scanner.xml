@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/AppTheme"
     tools:context=".scanner.ScannerActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -13,10 +12,7 @@
         android:id="@+id/cameraView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:keepScreenOn="true"
-        android:textColor="@color/theme_onSurface"
-        android:textSize="50sp"
-        android:textStyle="bold" />
+        android:layout_gravity="center"
+        android:keepScreenOn="true" />
 
-</merge>
+</FrameLayout>

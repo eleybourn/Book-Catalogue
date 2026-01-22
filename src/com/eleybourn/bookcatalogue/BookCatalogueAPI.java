@@ -1,5 +1,6 @@
 package com.eleybourn.bookcatalogue;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,7 +17,6 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTask;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import com.eleybourn.bookcatalogue.utils.Utils;
-import android.content.Context;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,38 +36,40 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 
 public class BookCatalogueAPI implements SimpleTask {
-    private final Context mContext;
-    private static final SimpleTaskQueue mSyncQueue = new SimpleTaskQueue("BookCatalogueSyncQueue");
-    private static final String BASE_URL = "https://book-catalogue.com/api";
     public static final String REQUEST_LOGIN = "login";
     public static final String REQUEST_INFO_COUNT = "count";
     public static final String REQUEST_INFO_LAST = "last_backup";
     public static final String REQUEST_BACKUP_ALL = "full_backup";
     public static final String REQUEST_BACKUP_BOOK = "backup_book";
     public static final String REQUEST_RESTORE_ALL = "restore";
-    public static String REQUEST_GET_BOOKS = "get_books";
-    public static String REQUEST_GET_BOOK = "get_book";
     public static final String REQUEST_DELETE_BOOK = "delete_book";
     public static final String METHOD_POST = "POST";
     public static final String METHOD_GET = "GET";
     public static final String METHOD_DEL = "DELETE";
+    private static final SimpleTaskQueue mSyncQueue = new SimpleTaskQueue("BookCatalogueSyncQueue");
+    private static final String BASE_URL = "https://book-catalogue.com/api";
+    public static String REQUEST_GET_BOOKS = "get_books";
+    public static String REQUEST_GET_BOOK = "get_book";
     public static String METHOD_PUT = "PUT";
+    public static volatile boolean isBackupRunning = false;
+    public static volatile boolean isRestoreRunning = false;
     private static String mEmail;
     private static boolean mOptIn;
     private static String mApiToken;
     private static BookCataloguePreferences mPrefs;
     // Add a static field to hold the currently active listener.
     private static ApiListener sActiveListener;
+    private final Context mContext;
     private final String mRequest;
     private SimpleTaskContext mTaskContext;
     private boolean retry = true;
     private long mBookId;
-    public static volatile boolean isBackupRunning = false;
-    public static volatile boolean isRestoreRunning = false;
 
 
     public BookCatalogueAPI(Context context, String request, long book_id, ApiListener listener) {
@@ -265,6 +267,17 @@ public class BookCatalogueAPI implements SimpleTask {
 
             } while (bookCursor.moveToNext());
         }
+    }
+
+    /**
+     * Helper to notify progress safely on UI thread
+     */
+    private void notifyProgress(int current, int total, String message) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (sActiveListener != null) {
+                sActiveListener.onApiProgress(mRequest, current, total, message);
+            }
+        });
     }
 
     /**
@@ -483,9 +496,10 @@ public class BookCatalogueAPI implements SimpleTask {
     public void runRestoreAll() {
         CatalogueDBAdapter db = null;
         DbSync.Synchronizer.SyncLock txLock = null;
+        ArrayList<HashMap<String, String>> thumbnailTasks = new ArrayList<>();
 
         try {
-            notifyProgress(0, 1); // Indicate that the process has started
+            notifyProgress(0, 1, "Getting restore information..."); // Indicate that the process has started
             JSONArray books = getAllBooks(false);
 
             db = new CatalogueDBAdapter(mContext);
@@ -493,8 +507,8 @@ public class BookCatalogueAPI implements SimpleTask {
 
             int total = books.length();
             Log.d("BookCatalogueAPI", "Importing " + total + " books");
-            final int NOTIFY_INTERVAL = 10; // Update UI thread every 50 books
-            final int BATCH_SIZE = 50;      // Commit transaction every 100 books
+            final int NOTIFY_INTERVAL = 50; // Update UI thread every 50 books
+            final int BATCH_SIZE = 50;      // Commit transaction every 50 books
             txLock = db.startTransaction(true);
 
             for (int i = 0; i < total; i++) {
@@ -596,14 +610,6 @@ public class BookCatalogueAPI implements SimpleTask {
                     values.setBookshelfList(bookshelves_list.toString());
                 }
 
-                String backup_filename = getStringOrEmpty(bookJson, "thumbnail");
-                if (!backup_filename.isEmpty()) {
-                    String filename = Utils.saveThumbnailFromUrl(backup_filename, "");
-                    if (!filename.isEmpty()) {
-                        values.putString(CatalogueDBAdapter.KEY_THUMBNAIL, filename);
-                    }
-                }
-
                 try {
                     boolean exists = false;
                     if (bcid > 0) {
@@ -620,6 +626,15 @@ public class BookCatalogueAPI implements SimpleTask {
                         }
                     }
                     values.putString(CatalogueDBAdapter.KEY_ROW_ID, Long.toString(bcid));
+
+                    // Defer thumbnail download
+                    String backup_filename = getStringOrEmpty(bookJson, "thumbnail");
+                    if (!backup_filename.isEmpty()) {
+                        HashMap<String, String> task = new HashMap<>();
+                        task.put("bcid", Long.toString(bcid));
+                        task.put("url", backup_filename);
+                        thumbnailTasks.add(task);
+                    }
 
                     if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
                         db.deleteLoan(bcid, false);
@@ -658,7 +673,6 @@ public class BookCatalogueAPI implements SimpleTask {
                             }
                         }
                     }
-
                 } catch (Exception e) {
                     Logger.logError(e, "Import at row " + i);
                 }
@@ -670,6 +684,28 @@ public class BookCatalogueAPI implements SimpleTask {
             // Commit the final batch
             Log.d("BookCatalogueAPI", "Committing final batch.");
             db.setTransactionSuccessful();
+
+            // --- Download Thumbnails ---
+            Log.d("BookCatalogueAPI", "Starting thumbnail downloads.");
+
+            for (int i = 0; i < thumbnailTasks.size(); i++) {
+                HashMap<String, String> task = thumbnailTasks.get(i);
+                try {
+                    long bcid = Long.parseLong(Objects.requireNonNull(task.get("bcid")));
+                    String url = task.get("url");
+
+                    String filename = Utils.saveThumbnailFromUrl(url, "");
+                    if (!filename.isEmpty()) {
+                        BookData thumbValues = new BookData(mContext);
+                        thumbValues.putString(CatalogueDBAdapter.KEY_THUMBNAIL, filename);
+                        db.updateBook(bcid, thumbValues, CatalogueDBAdapter.BOOK_UPDATE_SKIP_PURGE_REFERENCES);
+                    }
+                } catch (Exception e) {
+                    Log.e("BookCatalogueAPI", "Failed to download or save thumbnail", e);
+                }
+                // Notify progress for thumbnail download as well
+                notifyProgress(i + 1, thumbnailTasks.size(), "thumbnails restored");
+            }
             notifyComplete("Restore completed successfully.");
         } catch (Exception e) {
             Log.e("BookCatalogueAPI", "Restore failed", e);
@@ -783,6 +819,7 @@ public class BookCatalogueAPI implements SimpleTask {
             String response;
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 response = readStream(conn.getInputStream());
+                Log.d("BookCatalogueAPI", "Response: " + response);
                 if (response.isEmpty()) return null; // Handle empty success response
                 return response;
             } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && retry) {
@@ -866,6 +903,8 @@ public class BookCatalogueAPI implements SimpleTask {
 
     // Callback interface to update the UI (MainMenu)
     public interface ApiListener {
+        void onApiProgress(String request, int current, int total, String message);
+
         void onApiProgress(String request, int current, int total);
 
         void onApiComplete(String request, String message);

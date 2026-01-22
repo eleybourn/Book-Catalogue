@@ -126,7 +126,7 @@ public class AdminOtherPreferences extends PreferencesBase {
 		.setGroup(PropertyGroup.GRP_SCANNER) )
 		
 	.add(new IntegerListProperty( mRotationListItems, BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES)
-		.setDefaultValue(90)
+		.setDefaultValue(0)
 		.setPreferenceKey(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES)
 		.setGlobal(true)
 		.setNameResourceId(R.string.preference_auto_rotate_camera_images)

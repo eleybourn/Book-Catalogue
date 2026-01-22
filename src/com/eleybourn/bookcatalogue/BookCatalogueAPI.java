@@ -684,6 +684,8 @@ public class BookCatalogueAPI implements SimpleTask {
             // Commit the final batch
             Log.d("BookCatalogueAPI", "Committing final batch.");
             db.setTransactionSuccessful();
+            db.endTransaction(txLock);
+            txLock = null; // Mark transaction as ended
 
             // --- Download Thumbnails ---
             Log.d("BookCatalogueAPI", "Starting thumbnail downloads.");
@@ -715,6 +717,10 @@ public class BookCatalogueAPI implements SimpleTask {
             // This ensures the transaction is always closed, even on error.
             if (db != null && txLock != null) {
                 db.endTransaction(txLock);
+            }
+            // Close the database connection if it's open
+            if (db != null) {
+                db.close();
             }
         }
     }

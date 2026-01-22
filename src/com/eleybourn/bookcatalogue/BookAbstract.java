@@ -114,7 +114,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
                     try {
                         // Apply rotation preference
                         Matrix m = new Matrix();
-                        m.postRotate(BookCatalogueApp.getAppPreferences().getInt(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES, 90));
+                        m.postRotate(BookCatalogueApp.getAppPreferences().getInt(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES, 0));
                         Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
 
                         File cameraFile = getCameraImageFile();

@@ -71,12 +71,12 @@ public class AmazonUtils {
         try {
             if (author != null && !author.trim().isEmpty()) {
                 author = author.replaceAll("\\.,+", " ");
-                author = author.replaceAll(" *", "+");
+                //author = author.replaceAll(" +", "+");
                 extra += URLEncoder.encode(author, StandardCharsets.UTF_8.name());
             }
             if (series != null && !series.trim().isEmpty()) {
                 series = series.replaceAll("\\.,+", " ");
-                series = series.replaceAll(" *", "+");
+                //series = series.replaceAll(" +", "+");
                 extra += " " + URLEncoder.encode(series, StandardCharsets.UTF_8.name());
             }
         } catch (UnsupportedEncodingException e) {

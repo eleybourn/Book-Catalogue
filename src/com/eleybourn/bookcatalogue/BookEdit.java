@@ -527,7 +527,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             if (thumbVisible) {
                 MenuItem thumbOptions = menu.add(0, R.id.MENU_THUMBNAIL_OPTIONS, 0, R.string.cover_options_cc_ellipsis);
                 thumbOptions.setIcon(R.drawable.ic_menu_camera);
-                //thumbOptions.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 thumbOptions.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
             }
 
@@ -570,10 +569,8 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                 int id = item.getItemId();
 
                 if (id == R.id.MENU_THUMBNAIL_OPTIONS) {
-                    if (!mIsReadOnly) {
-                        showCoverContextMenu();
-                        return true;
-                    }
+                    showCoverContextMenu();
+                    return true;
                 } else if (id == R.id.MENU_SHARE) {
                     BookUtils.shareBook(this, mDbHelper, mRowId);
                     return true;

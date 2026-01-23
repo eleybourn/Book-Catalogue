@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/row_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:background="@color/theme_primary"
     android:paddingHorizontal="@dimen/p_md">
 
     <ImageView
@@ -23,18 +23,16 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:paddingHorizontal="2dp"
-        android:text="Some text"
+        android:text="@string/not_set"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/theme_onPrimary"
-        android:textStyle="bold"
-        tools:ignore="HardcodedText" />
+        android:textStyle="bold" />
 
     <ImageView
         android:layout_width="10dp"
         android:layout_height="10dp"
         android:layout_gravity="center"
         android:importantForAccessibility="no"
-        android:paddingHorizontal="2dp"
         android:src="@drawable/ic_separator"
         app:tint="@color/theme_onPrimary" />
 </LinearLayout>

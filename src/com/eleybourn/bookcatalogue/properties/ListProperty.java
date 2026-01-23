@@ -244,7 +244,7 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 				else if (curr != null && curr.equals(e.value))
 					selected = true;
 				// Make the view for this item
-				View v = inflater.inflate(R.layout.property_value_list_item, null);
+				View v = inflater.inflate(R.layout.property_value_list_item, grp, false);
 				TextView name = v.findViewById(R.id.field_name);
 				RadioButton sel = v.findViewById(R.id.selector);
 				//Set the various values

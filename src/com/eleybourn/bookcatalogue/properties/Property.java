@@ -33,7 +33,7 @@ import com.eleybourn.bookcatalogue.BookCatalogueApp;
 public abstract class Property {
 	/**
 	 * Counter used to generate unique View IDs. Needed to prevent some fields being overwritten when
-	 * screen is rotated (if thay all have the same ID).
+	 * screen is rotated (if they all have the same ID).
 	 * ENHANCE: allow topological sort of parameters to allow arbitrary grouping and sorting.
 	 * NOTE ABOUT SERIALIZATION
 	 * It is very tempting to make these serializable, but fraught with danger. Specifically, these

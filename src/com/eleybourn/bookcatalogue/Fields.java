@@ -25,6 +25,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -886,6 +887,7 @@ public class Fields extends ArrayList<Fields.Field> {
      */
     static public class RatingBarAccessor implements FieldDataAccessor {
         public void set(Field field, Cursor c) {
+            Log.d("BookCatalogue", "RBA set1");
             RatingBar v = (RatingBar) field.getView();
             int column = c.getColumnIndex(field.column);
             if (field.formatter != null) {
@@ -904,6 +906,7 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public void set(Field field, String s) {
+            Log.d("BookCatalogue", "RBA set2 " + s);
             RatingBar v = (RatingBar) field.getView();
             float f = 0.0f;
             try {
@@ -915,6 +918,7 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public void get(Field field, Bundle values) {
+            Log.d("BookCatalogue", "RBA get1");
             RatingBar v = (RatingBar) field.getView();
             if (field.formatter != null)
                 values.putString(field.column, field.extract("" + v.getRating()));
@@ -923,6 +927,7 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public void get(Field field, DataManager values) {
+            Log.d("BookCatalogue", "RBA get2");
             RatingBar v = (RatingBar) field.getView();
             if (field.formatter != null)
                 values.putString(field.column, field.extract("" + v.getRating()));
@@ -931,6 +936,7 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public Object get(Field field) {
+            Log.d("BookCatalogue", "RBA get3");
             RatingBar v = (RatingBar) field.getView();
             return v.getRating();
         }

@@ -92,9 +92,9 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
             //FieldValidator blankOrDateValidator = new Fields.OrValidator(new Fields.BlankValidator(), new Fields.DateValidator());
             FieldFormatter dateFormatter = new Fields.DateFieldFormatter();
 
-            mFields.add(R.id.field_rating, CatalogueDBAdapter.KEY_RATING, null);
-            mFields.add(R.id.label_rating, "", CatalogueDBAdapter.KEY_RATING, null);
             mFields.add(R.id.field_read, CatalogueDBAdapter.KEY_READ, null);
+            mFields.add(R.id.label_rating, "", CatalogueDBAdapter.KEY_RATING, null);
+            mFields.add(R.id.field_rating, CatalogueDBAdapter.KEY_RATING, null);
             mFields.add(R.id.field_notes, CatalogueDBAdapter.KEY_NOTES, null);
 
             ArrayAdapter<String> location_adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_dropdown_item_1line, getLocations());
@@ -130,14 +130,6 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
             }
 
             mFields.setAfterFieldChangeListener((field, newValue) -> mEditManager.setDirty(true));
-
-            RatingBar ratingBar = view.findViewById(R.id.field_rating);
-            ratingBar.setOnRatingBarChangeListener((ratingBar1, rating, fromUser) -> {
-                Log.d("BookEditNotes", "rating changed " + rating);
-                if (fromUser) {
-                    mFields.getField(R.id.field_rating).setValue(String.valueOf(rating));
-                }
-            });
 
         } catch (Exception e) {
             Logger.logError(e);

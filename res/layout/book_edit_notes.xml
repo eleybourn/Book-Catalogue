@@ -27,10 +27,12 @@
 
         <RatingBar
             android:id="@+id/field_rating"
+            style="@style/Widget.AppCompat.RatingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:numStars="5" />
+            android:numStars="5"
+            android:stepSize="1.0" />
 
         <RelativeLayout
             android:id="@+id/row_read_start"

@@ -53,6 +53,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 
 /**
  * This is the class that manages data and views for an activity; access to the data that
@@ -117,7 +118,7 @@ public class Fields extends ArrayList<Fields.Field> {
     // Java likes this
     private static final long serialVersionUID = 1L;
     // Used for date parsing
-    static final java.text.SimpleDateFormat mDateSqlSdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+    static final java.text.SimpleDateFormat mDateSqlSdf = new java.text.SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
     static final java.text.DateFormat mDateDisplaySdf = java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
     // The activity and preferences related to this object.
     private final FieldsContext mContext;

@@ -116,11 +116,11 @@ import java.util.Locale;
  *
  */
 public class Fields extends ArrayList<Fields.Field> {
-    // Java likes this
-    private static final long serialVersionUID = 1L;
     // Used for date parsing
     static final java.text.SimpleDateFormat mDateSqlSdf = new java.text.SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
     static final java.text.DateFormat mDateDisplaySdf = java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+    // Java likes this
+    private static final long serialVersionUID = 1L;
     // The activity and preferences related to this object.
     private final FieldsContext mContext;
     // The last validator exception caught by this object
@@ -147,8 +147,8 @@ public class Fields extends ArrayList<Fields.Field> {
      * Could be generalized even further if desired by supporting more formats.
      *
      * @param s String to parse
+     * @return Parsed date
      * @throws ParseException If parse failed.
-     * @return        Parsed date
      */
     static Date parseDate(String s) throws ParseException {
         Date d;
@@ -224,7 +224,7 @@ public class Fields extends ArrayList<Fields.Field> {
      * @param fieldId        Layout ID
      * @param sourceColumn   Source DB column (can be blank)
      * @param fieldValidator Field Validator (can be null)
-     * @return                    The resulting Field.
+     * @return The resulting Field.
      */
     public Field add(int fieldId, String sourceColumn, FieldValidator fieldValidator) {
         return add(fieldId, sourceColumn, sourceColumn, fieldValidator, null);
@@ -237,7 +237,7 @@ public class Fields extends ArrayList<Fields.Field> {
      * @param sourceColumn   Source DB column (can be blank)
      * @param fieldValidator Field Validator (can be null)
      * @param formatter      Formatter to use
-     * @return                    The resulting Field.
+     * @return The resulting Field.
      */
     public Field add(int fieldId, String sourceColumn, FieldValidator fieldValidator, FieldFormatter formatter) {
         return add(fieldId, sourceColumn, sourceColumn, fieldValidator, formatter);
@@ -263,7 +263,7 @@ public class Fields extends ArrayList<Fields.Field> {
      * @param visibilityGroup Group name to determine visibility.
      * @param fieldValidator  Field Validator (can be null)
      * @param formatter       Formatter to use
-     * @return                    The resulting Field.
+     * @return The resulting Field.
      */
     public Field add(int fieldId, String sourceColumn, String visibilityGroup, FieldValidator fieldValidator, FieldFormatter formatter) {
         Field fe = new Field(this, fieldId, sourceColumn, visibilityGroup, fieldValidator, formatter);
@@ -569,7 +569,7 @@ public class Fields extends ArrayList<Fields.Field> {
          * // Format a string for applying to a View
          *
          * @param source Input value
-         * @return            The formatted value
+         * @return The formatted value
          */
         String format(Field f, String source);
 
@@ -577,7 +577,7 @@ public class Fields extends ArrayList<Fields.Field> {
          * Extract a formatted string from the display version
          *
          * @param source The value to be back-translated
-         * @return            The extracted value
+         * @return The extracted value
          */
         String extract(Field f, String source);
     }
@@ -887,7 +887,7 @@ public class Fields extends ArrayList<Fields.Field> {
      */
     static public class RatingBarAccessor implements FieldDataAccessor {
         public void set(Field field, Cursor c) {
-            Log.d("BookCatalogue", "RBA set1");
+            Log.d("BC", "set 1");
             RatingBar v = (RatingBar) field.getView();
             int column = c.getColumnIndex(field.column);
             if (field.formatter != null) {
@@ -906,7 +906,7 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public void set(Field field, String s) {
-            Log.d("BookCatalogue", "RBA set2 " + s);
+            Log.d("BC", "set 2");
             RatingBar v = (RatingBar) field.getView();
             float f = 0.0f;
             try {
@@ -918,7 +918,7 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public void get(Field field, Bundle values) {
-            Log.d("BookCatalogue", "RBA get1");
+            Log.d("BC", "get 1");
             RatingBar v = (RatingBar) field.getView();
             if (field.formatter != null)
                 values.putString(field.column, field.extract("" + v.getRating()));
@@ -927,7 +927,7 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public void get(Field field, DataManager values) {
-            Log.d("BookCatalogue", "RBA get2");
+            Log.d("BC", "get 2");
             RatingBar v = (RatingBar) field.getView();
             if (field.formatter != null)
                 values.putString(field.column, field.extract("" + v.getRating()));
@@ -936,7 +936,7 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public Object get(Field field) {
-            Log.d("BookCatalogue", "RBA get3");
+            Log.d("BC", "get 3");
             RatingBar v = (RatingBar) field.getView();
             return v.getRating();
         }
@@ -1076,13 +1076,17 @@ public class Fields extends ArrayList<Fields.Field> {
          */
         public final String group;
         /**
-         * FieldFormatter to use (can be null)
-         */
-        public FieldFormatter formatter;
-        /**
          * Validator to use (can be null)
          */
         public final FieldValidator validator;
+        /**
+         * Owning collection
+         */
+        final WeakReference<Fields> mFields;
+        /**
+         * FieldFormatter to use (can be null)
+         */
+        public FieldFormatter formatter;
         /**
          * Has the field been set to invisible
          **/
@@ -1092,10 +1096,6 @@ public class Fields extends ArrayList<Fields.Field> {
          * Cursor. This is usually done for synthetic fields needed when saving the data
          */
         public boolean doNoFetch = false;
-        /**
-         * Owning collection
-         */
-        final WeakReference<Fields> mFields;
         /**
          * Accessor to use (automatically defined)
          */
@@ -1141,6 +1141,9 @@ public class Fields extends ArrayList<Fields.Field> {
 
             // Lookup the view
             final View view = c.findViewById(id);
+            Log.d("BC", sourceColumn + " " + fieldId + " " + visibilityGroupName);
+            boolean x = view instanceof RatingBar;
+            Log.d("BC", String.valueOf(x));
 
             // Set the appropriate accessor
             if (view == null) {
@@ -1179,6 +1182,12 @@ public class Fields extends ArrayList<Fields.Field> {
                     mAccessor = new TextViewAccessor(false);
                 } else if (view instanceof RatingBar) {
                     mAccessor = new RatingBarAccessor();
+                    ((RatingBar) view).setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+                        Log.d("BC", "listener");
+                        if (fromUser) {
+                            Field.this.setValue(Float.toString(rating));
+                        }
+                    });
                     addTouchSignalsDirty(view);
                 } else {
                     throw new IllegalArgumentException();
@@ -1253,7 +1262,7 @@ public class Fields extends ArrayList<Fields.Field> {
         /**
          * Get the view associated with this Field, if available.
          *
-         * @return        Resulting View, or null.
+         * @return Resulting View, or null.
          */
         View getView() {
             Fields fs = mFields.get();
@@ -1272,7 +1281,7 @@ public class Fields extends ArrayList<Fields.Field> {
         /**
          * Return the current value of the tag field.
          *
-         * @return    Current value of tag.
+         * @return Current value of tag.
          */
         public Object getTag() {
             return mTag;
@@ -1288,7 +1297,7 @@ public class Fields extends ArrayList<Fields.Field> {
         /**
          * Return the current value of this field.
          *
-         * @return    Current value in native form.
+         * @return Current value in native form.
          */
         public Object getValue() {
             return mAccessor.get(this);
@@ -1324,7 +1333,7 @@ public class Fields extends ArrayList<Fields.Field> {
          * Utility function to call the formatters format() method if present, or just return the raw value.
          *
          * @param s String to format
-         * @return        Formatted value
+         * @return Formatted value
          */
         public String format(String s) {
             if (formatter == null)

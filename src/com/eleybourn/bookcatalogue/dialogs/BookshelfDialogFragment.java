@@ -170,6 +170,7 @@ public class BookshelfDialogFragment extends BookCatalogueDialogFragment {
                     int bookshelf = bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF);
                     String db_bookshelf = bookshelves_for_book.getString(bookshelf).trim();
                     Log.d("BookCatalogue", "bookshelf " + db_bookshelf);
+                    Log.d("BookCatalogue", "bookshelf " + bookshelves_for_book.getString(bookshelf));
                     String db_encoded_bookshelf = Utils.encodeListItem(db_bookshelf, BOOKSHELF_SEPARATOR);
                     if (shelves.contains(BOOKSHELF_SEPARATOR + db_encoded_bookshelf + BOOKSHELF_SEPARATOR)) {
                         checked = true;

@@ -7,15 +7,17 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+
 import java.util.List;
 
 @Dao
 public interface BookshelfDAO {
     // LiveData automatically updates the UI when data changes
-    @Query("SELECT * FROM bookshelves ORDER BY bookshelf ASC")
+    @Query("SELECT * FROM " + CatalogueDBAdapter.DB_TB_BOOKSHELF + " ORDER BY bookshelf ASC")
     LiveData<List<Bookshelf>> getAllBookshelves();
 
-    @Query("SELECT * FROM bookshelves WHERE _id = :id LIMIT 1")
+    @Query("SELECT * FROM " + CatalogueDBAdapter.DB_TB_BOOKSHELF + " WHERE " + CatalogueDBAdapter.KEY_ROW_ID + " = :id LIMIT 1")
     LiveData<Bookshelf> getBookshelfById(long id);
 
     @Insert
@@ -24,7 +26,7 @@ public interface BookshelfDAO {
     @Delete
     void delete(Bookshelf bookshelf);
 
-    @Query("DELETE FROM bookshelves WHERE _id = :id")
+    @Query("DELETE FROM " + CatalogueDBAdapter.DB_TB_BOOKSHELF + " WHERE " + CatalogueDBAdapter.KEY_ROW_ID + " = :id")
     void deleteById(long id);
 
     @Update

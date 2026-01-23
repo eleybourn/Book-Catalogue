@@ -312,4 +312,10 @@
     <style name="DialogDividerTheme">
         <item name="android:background">@android:color/holo_blue_light</item>
     </style>
+
+    <style name="AppAlertDialogTheme" parent="Theme.Material3.DayNight.Dialog.Alert">
+        <!-- The header's text appearance is controlled here -->
+        <item name="materialAlertDialogTitleTextStyle">@style/layout_title</item>
+        <item name="android:background">@color/theme_primary</item>
+    </style>
 </resources>

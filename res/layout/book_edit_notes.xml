@@ -49,7 +49,7 @@
                 android:id="@+id/field_read_start"
                 style="@style/layout_button_large"
                 android:layout_below="@+id/label_read_start"
-                android:text="@string/not_set" />
+                android:contentDescription="@string/label_read_start" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -67,7 +67,7 @@
                 android:id="@+id/field_read_end"
                 style="@style/layout_button_large"
                 android:layout_below="@+id/label_read_end"
-                android:text="@string/not_set" />
+                android:contentDescription="@string/label_read_end" />
         </RelativeLayout>
 
         <RelativeLayout

@@ -47,5 +47,6 @@
         <item name="colorSurfaceContainerHigh">@color/theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/theme_surfaceContainerHighest</item>
         <item name="android:statusBarColor">@color/theme_primary</item>
+        <item name="alertDialogTheme">@style/AppAlertDialogTheme</item>
     </style>
 </resources>

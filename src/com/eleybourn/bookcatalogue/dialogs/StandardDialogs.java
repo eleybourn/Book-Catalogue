@@ -153,7 +153,7 @@ public class StandardDialogs {
      */
     public static void selectItemDialog(LayoutInflater inflater, String message, ArrayList<SimpleDialogItem> items, SimpleDialogItem selectedItem, final SimpleDialogOnClickListener handler) {
         // Get the view and the radio group
-        final View root = inflater.inflate(R.layout.select_list_dialog, null);
+        final View root = inflater.inflate(R.layout.dialog_select_list, null);
         TextView msg = root.findViewById(R.id.message);
 
         // Build the base dialog

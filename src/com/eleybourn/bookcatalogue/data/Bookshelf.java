@@ -6,10 +6,10 @@ import androidx.room.PrimaryKey;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 
-@Entity(tableName = "bookshelves") // Replace with your actual table name from DBAdapter
+@Entity(tableName = CatalogueDBAdapter.DB_TB_BOOKSHELF) // Replace with your actual table name from DBAdapter
 public class Bookshelf {
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id") // Mapping internal ID to standard Android row ID
+    @ColumnInfo(name = CatalogueDBAdapter.KEY_ROW_ID) // Mapping internal ID to standard Android row ID
     public long id;
 
     @ColumnInfo(name = CatalogueDBAdapter.KEY_BOOKSHELF) // Replace with CatalogueDBAdapter.KEY_BOOKSHELF

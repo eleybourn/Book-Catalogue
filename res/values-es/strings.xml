@@ -360,8 +360,6 @@ y puede editar el libro utilizando el menú de opciones.
 
     <string name="list_and">y</string>
 
-    <string name="loading">Cargando…</string>
-
     <string name="megabytes">%.2fMB</string>
 
     <string name="menu_add_thumb_gallery">Desde la galería…</string>

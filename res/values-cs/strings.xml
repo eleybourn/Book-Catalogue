@@ -222,8 +222,6 @@
 
     <string name="list_and">a</string>
 
-    <string name="loading">Načítání…</string>
-
     <string name="megabytes">%.2fMB</string>
 
     <string name="menu_add_thumb_gallery">Z galerie…</string>

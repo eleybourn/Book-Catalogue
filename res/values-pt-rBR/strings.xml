@@ -362,8 +362,6 @@ and you can edit the book via the options menu using the menu button or overflow
 
     <string name="list_and">and</string>
 
-    <string name="loading">Loading…</string>
-
     <string name="loaned_to_2">\u2192</string>
 
     <string name="megabytes">%.2fMB</string>

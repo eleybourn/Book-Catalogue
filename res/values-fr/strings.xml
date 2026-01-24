@@ -362,8 +362,6 @@
 
     <string name="list_and">et</string>
 
-    <string name="loading">Chargement…</string>
-
     <string name="megabytes">%.2f Mo</string>
 
     <string name="menu_add_thumb_gallery">À partir de Gallery…</string>

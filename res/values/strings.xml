@@ -229,9 +229,6 @@
     										it is a built-in style).</string>
     <!-- End: Added/Updated in 6.0.0 -->
     <!-- Begin: Added/Updated in 6.0.7 -->
-    <string name="hint_missing_covers"><![CDATA[
-        <p><b>PLEASE READ THIS MESSAGE CAREFULLY</b></p><p>Based on a random sampling we have detected that you may be missing some covers after a recent upgrade.</p><p>This probably happened as a result of an upgrade message not being displayed, or being ignored.</p><p>You can import old missing covers via:</p><p>\'%1$s\'\u2192\'%2$s\'.</p>
-        			]]></string>
     <string name="hint_series_book_may_appear_more_than_once">If shown in every series, a single book may appear more than once in a list. In such a case deleting one of those books will delete all instances from the list.</string>
     <string name="hint_startup_screen">This is the standard BookCatalogue startup screen. If you prefer, you can startup directly in \'My Books\'; the preferred startup screen can be changed in Settings.</string>
     <string name="hint_startup_screen_heading">Thank You For Installing BookCatalogue.</string>
@@ -395,8 +392,6 @@
     <string name="legacy_task">Legacy Task</string>
 
     <string name="list_and">and</string>
-
-    <string name="loading">Loading…</string>
 
     <string name="loaned_to_2">\u2192</string>
 

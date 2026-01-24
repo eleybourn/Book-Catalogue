@@ -347,8 +347,6 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
 
     <string name="list_and">und</string>
 
-    <string name="loading">Lade…</string>
-
     <string name="megabytes">%.2f MB</string>
 
     <string name="menu_add_thumb_gallery">Aus der Fotogalerie…</string>

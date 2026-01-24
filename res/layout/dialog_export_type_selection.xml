@@ -39,8 +39,8 @@
                 android:text="@string/option_all_books" />
 
             <TextView
-                android:layout_width="match_parent"
                 style="@style/book_text_small"
+                android:textIsSelectable="false"
                 android:layout_alignStart="@id/all_books"
                 android:layout_alignEnd="@id/all_books"
                 android:layout_below="@+id/all_books"
@@ -76,6 +76,7 @@
 
             <TextView
                 style="@style/book_text_small"
+                android:textIsSelectable="false"
                 android:layout_alignStart="@+id/advanced_options"
                 android:layout_alignEnd="@+id/advanced_options"
                 android:layout_below="@+id/advanced_options"

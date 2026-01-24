@@ -156,10 +156,6 @@ public class LibraryBuilder {
      */
     private static final Object sBooklistBuilderIdLock = new Object();
     /**
-     * Debug counter
-     */
-    private static final Object sInstanceLock = new Object();
-    /**
      * Counter for 'flattened' book temp tables
      */
     private static final Object sFlatNavLock = new Object();
@@ -181,7 +177,6 @@ public class LibraryBuilder {
 
     // List of columns for the group-by clause, including COLLATE clauses. Set by build() method.
     //private String mGroupColumnList;
-    private static Integer mInstanceCount = 0;
     private static Integer mFlatNavCounter = 0;
     /**
      * Collection of statements created by this Builder
@@ -249,10 +244,6 @@ public class LibraryBuilder {
      * @param style   Book list style to use
      */
     public LibraryBuilder(CatalogueDBAdapter adapter, LibraryStyle style) {
-        synchronized (sInstanceLock) {
-            mInstanceCount++;
-        }
-
         // Allocate ID
         synchronized (sBooklistBuilderIdLock) {
             mBooklistBuilderId = ++mBooklistBuilderIdCounter;
@@ -504,8 +495,6 @@ public class LibraryBuilder {
     public void build(int preferredState, long markId, String bookshelf, String authorWhere, String bookWhere, String loaned_to, String seriesName, String searchText) {
         Tracker.handleEvent(this, "build-" + getId(), Tracker.States.Enter);
         try {
-            long t0 = System.currentTimeMillis();
-
             // Cleanup searchText
             //
             // Because FTS does not understand locales in all android up to 4.2,
@@ -584,8 +573,6 @@ public class LibraryBuilder {
             // Build a sort mask based on if triggers are used; we can not
             // reverse sort if they are not used.
             final int sortDescendingMask = SummaryBuilder.FLAG_SORT_DESCENDING;
-
-            long t0a = System.currentTimeMillis();
 
             // Process each group in the style
             for (LibraryGroup g : mStyle) {
@@ -818,7 +805,6 @@ public class LibraryBuilder {
                 // down each level so that the top has fewest groups and the bottom level has groups for all levels.
                 g.groupDomains = summary.cloneGroups();
             }
-            long t0b = System.currentTimeMillis();
 
             // Want the UUID for the book so we can get thumbs
             summary.addDomain(DOM_BOOK_UUID, TBL_BOOKS.dot(DOM_BOOK_UUID), SummaryBuilder.FLAG_NONE);
@@ -849,7 +835,6 @@ public class LibraryBuilder {
                     flags = SummaryBuilder.FLAG_NONE;
                 summary.addDomain(info.domain, info.sourceExpression, flags);
             }
-            long t0c = System.currentTimeMillis();
 
             //
             // Build the initial insert statement: 'insert into <tbl> (col-list) select (expr-list) from'.
@@ -863,8 +848,6 @@ public class LibraryBuilder {
             // Aside: The sql used prior to using DbUtils is included as comments below the code that replaced it.
             //
             SqlComponents sqlCmp = summary.buildSqlComponents(mStyle.getGroupAt(0).getCompoundKey());
-
-            long t0d = System.currentTimeMillis();
 
             //
             // Now build the 'join' statement based on the groups and extra criteria
@@ -912,7 +895,6 @@ public class LibraryBuilder {
             //
             // Now build the 'where' clause.
             //
-            long t0e = System.currentTimeMillis();
             String where = "";
 
             if (!bookshelf.isEmpty()) {
@@ -981,7 +963,6 @@ public class LibraryBuilder {
                 sqlCmp.where = "";
             }
 
-            long t1 = System.currentTimeMillis();
             // Check if the collation we use is case sensitive; bug introduced in ICS was to make UNICODE not CI.
             // Due to bugs in other language sorting, we are now forced to use a different collation  anyway, but
             // we still check if it is CI.
@@ -1004,27 +985,20 @@ public class LibraryBuilder {
             }
 
             // We are good to go.
-            long t1a = System.currentTimeMillis();
             //mDb.execSQL("PRAGMA synchronous = OFF"); -- Has very little effect
             SyncLock txLock = mDb.beginTransaction(true);
-            long t1b = System.currentTimeMillis();
             try {
                 mLevelBuildStmt = new ArrayList<>();
 
                 // Build the lowest level summary using our initial insert statement
-                long t2;
-
                 // If we are using triggers, then we insert them in order and rely on the
                 // triggers to build the summary rows in the correct place.
                 String tgt = makeTriggers(summary, flatTriggers);
                 mBaseBuildStmt = mStatements.add("mBaseBuildStmt", "Insert Into " + tgt + "(" + sqlCmp.destinationColumns + ") " + sqlCmp.select + "\n From\n" + sqlCmp.join + sqlCmp.where + " order by " + sortColNameList);
                 mBaseBuildStmt.execute();
-                t2 = System.currentTimeMillis();
 
                 // Analyze the table
-                long t3a = System.currentTimeMillis();
                 mDb.execSQL("analyze " + mListTable);
-                long t3b = System.currentTimeMillis();
 
                 // Now build a lookup table to match row sort position to row ID. This is used to match a specific
                 // book (or other row in result set) to a position directly without having to scan the database. This
@@ -1069,7 +1043,6 @@ public class LibraryBuilder {
                     navStmt.execute();
                 }
 
-                long t4 = System.currentTimeMillis();
                 // Create index on nav table
                 {
                     String sql = "Create Index " + mNavTable + "_IX1" + " On " + mNavTable + "(" + DOM_LEVEL + "," + DOM_EXPANDED + "," + DOM_ROOT_KEY + ")";
@@ -1078,7 +1051,6 @@ public class LibraryBuilder {
                     ixStmt.execute();
                 }
 
-                long t4a = System.currentTimeMillis();
                 {
                     // Essential for main query! If not present, will make getCount() take ages because main query is a cross with no index.
                     String sql = "Create Unique Index " + mNavTable + "_IX2" + " On " + mNavTable + "(" + DOM_REAL_ROW_ID + ")";
@@ -1087,17 +1059,7 @@ public class LibraryBuilder {
                     ixStmt.execute();
                 }
 
-                long t4b = System.currentTimeMillis();
                 mDb.execSQL("analyze " + mNavTable);
-                long t4c = System.currentTimeMillis();
-
-                long t8 = System.currentTimeMillis();
-                long t9 = System.currentTimeMillis();
-                //mDb.execSQL(ix2Sql);
-                long t10 = System.currentTimeMillis();
-                //mDb.execSQL("analyze " + mTableName);
-                long t11 = System.currentTimeMillis();
-
                 mDb.setTransactionSuccessful();
 
                 mSummary = summary;
@@ -1526,32 +1488,30 @@ public class LibraryBuilder {
      * logical count of rows using a simple query rather than scanning the entire result set.
      */
     public int getPseudoCount() {
-        return pseudoCount("NavTable", "Select count(*) from " + mNavTable + " Where " + DOM_VISIBLE + " = 1");
+        return pseudoCount("Select count(*) from " + mNavTable + " Where " + DOM_VISIBLE + " = 1");
     }
 
     /**
      * Get the number of book records in the list
      */
     public int getBookCount() {
-        return pseudoCount("ListTableBooks", "Select count(*) from " + mListTable + " Where " + DOM_LEVEL + " = " + (mStyle.size() + 1));
+        return pseudoCount("Select count(*) from " + mListTable + " Where " + DOM_LEVEL + " = " + (mStyle.size() + 1));
     }
 
     /**
      * Get the number of unique book records in the list
      */
     public int getUniqueBookCount() {
-        return pseudoCount("ListTableUniqueBooks", "Select count(distinct " + DOM_BOOK + ") from " + mListTable + " Where " + DOM_LEVEL + " = " + (mStyle.size() + 1));
+        return pseudoCount("Select count(distinct " + DOM_BOOK + ") from " + mListTable + " Where " + DOM_LEVEL + " = " + (mStyle.size() + 1));
     }
 
     /**
      * Utility routine to perform a single count query.
      */
-    private int pseudoCount(String name, String foo) {
-        long tc0 = System.currentTimeMillis();
+    private int pseudoCount(String foo) {
         SynchronizedStatement fooStmt = mDb.compileStatement(foo);
         int cnt = (int) fooStmt.simpleQueryForLong();
         fooStmt.close();
-        long tc1 = System.currentTimeMillis();
         return cnt;
     }
 
@@ -1671,7 +1631,6 @@ public class LibraryBuilder {
      * For COLLAPSE: Mark all non-root rows as invisible/unexpanded and mark all root nodes as visible/unexpanded.
      */
     public void expandAll(boolean expand) {
-        long t0 = System.currentTimeMillis();
         if (expand) {
             String sql = "Update " + mNavTable + " Set expanded = 1, visible = 1";
             mDb.execSQL(sql);
@@ -1683,7 +1642,6 @@ public class LibraryBuilder {
             mDb.execSQL(sql);
             deleteListNodeSettings();
         }
-        long t1 = System.currentTimeMillis() - t0;
     }
 
     /**
@@ -1739,7 +1697,7 @@ public class LibraryBuilder {
     /**
      * General cleanup routine called by both 'close()' and 'finalize()'
      */
-    private void cleanup(final boolean isFinalize) {
+    private void cleanup() {
         if (mStatements.size() != 0) {
             try {
                 mStatements.close();
@@ -1766,9 +1724,6 @@ public class LibraryBuilder {
 
         if (!mReferenceDecremented) {
             // Only de-reference once!
-            synchronized (sInstanceLock) {
-                mInstanceCount--;
-            }
             mReferenceDecremented = true;
         }
     }
@@ -1777,11 +1732,11 @@ public class LibraryBuilder {
      * Close the builder.
      */
     public void close() {
-        cleanup(false);
+        cleanup();
     }
 
     protected void finalize() {
-        cleanup(true);
+        cleanup();
     }
 
     /**
@@ -1955,12 +1910,8 @@ public class LibraryBuilder {
          * Drop and recreate the underlying temp table
          */
         public void recreateTable() {
-            //mListTable.setIsTemporary(true);
-            long t0 = System.currentTimeMillis();
             mListTable.drop(mDb);
-            long t1 = System.currentTimeMillis();
             mListTable.create(mDb, false);
-            long t2 = System.currentTimeMillis();
         }
 
         /**

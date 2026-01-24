@@ -21,7 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -209,7 +209,7 @@ public class AdminUpdateFromInternet extends ActivityWithTasks {
 
             if (thumbnail_check) {
                 // Verify - this can be a dangerous operation
-                new AlertDialog.Builder(AdminUpdateFromInternet.this)
+                new MaterialAlertDialogBuilder(this)
                         .setTitle(R.string.label_update_fields)
                         .setMessage(R.string.description_overwrite_thumbnail)
                         .setIcon(R.drawable.ic_menu_info)
@@ -219,13 +219,13 @@ public class AdminUpdateFromInternet extends ActivityWithTasks {
                             startUpdate();
                         })
                         // Neutral Button (formerly setButton3) -> No
-                        .setNeutralButton(R.string.option_no, (dialog, which) -> {
-                            Objects.requireNonNull(mFieldUsages.get(CatalogueDBAdapter.KEY_THUMBNAIL)).usage = Usages.COPY_IF_BLANK;
-                            startUpdate();
+                        .setNeutralButton(R.string.button_cancel, (dialog, which) -> {
+                            // do nothing
                         })
                         // Negative Button (formerly setButton2) -> Cancel
-                        .setNegativeButton(R.string.button_cancel, (dialog, which) -> {
-                            // do nothing
+                        .setNegativeButton(R.string.option_no, (dialog, which) -> {
+                            Objects.requireNonNull(mFieldUsages.get(CatalogueDBAdapter.KEY_THUMBNAIL)).usage = Usages.COPY_IF_BLANK;
+                            startUpdate();
                         })
                         .show();
             } else {

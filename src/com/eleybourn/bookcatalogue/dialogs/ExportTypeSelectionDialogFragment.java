@@ -1,6 +1,6 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
-import android.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.eleybourn.bookcatalogue.R;
@@ -85,7 +86,7 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
         mDocFile = DocumentFile.fromSingleUri(requireContext(), uri);
 
         View v = requireActivity().getLayoutInflater().inflate(R.layout.dialog_export_type_selection, null);
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.label_backup_to_archive).create();
+        AlertDialog alertDialog = new MaterialAlertDialogBuilder(requireActivity()).setView(v).setTitle(R.string.label_backup_to_archive).create();
         alertDialog.setIcon(R.drawable.ic_menu_save);
         alertDialog.setCanceledOnTouchOutside(false);
 

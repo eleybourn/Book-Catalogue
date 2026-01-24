@@ -19,36 +19,33 @@
  */
 package com.eleybourn.bookcatalogue.dialogs;
 
-import java.util.Calendar;
-import java.util.Locale;
-
-import android.app.AlertDialog;
 import android.content.Context;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.R;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 /**
- * Dialog class to allow for selection of partial dates from 0AD to 9999AD.
- * The constructors and interface are now protected because this really should
- * only be called as part of the fragment version.
+ * View class to allow for selection of partial dates from 0AD to 9999AD.
  *
  * @author pjw
  */
-public class PartialDatePicker extends AlertDialog {
+public class PartialDatePicker extends FrameLayout {
     /**
      * Calling context
      */
@@ -68,11 +65,6 @@ public class PartialDatePicker extends AlertDialog {
     private Integer mDay;
 
     /**
-     * Listener to be called when date is set or dialog cancelled
-     */
-    private OnDateSetListener mListener;
-
-    /**
      * Local ref to month spinner
      */
     private final Spinner mMonthSpinner;
@@ -89,52 +81,23 @@ public class PartialDatePicker extends AlertDialog {
      */
     private final EditText mYearView;
 
-    /**
-     * Listener to receive notifications when dialog is closed by any means.
-     *
-     * @author pjw
-     */
-    protected interface OnDateSetListener {
-        void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day);
-
-        void onCancel(PartialDatePicker dialog);
+    public PartialDatePicker(Context context) {
+        this(context, null);
     }
 
-    /**
-     * Constructor
-     *
-     * @param context Calling context
-     */
-    protected PartialDatePicker(Context context) {
-        this(context, null, null, null);
+    public PartialDatePicker(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    /**
-     * Constructor
-     *
-     * @param context Calling context
-     * @param year    Starting year
-     * @param month   Starting month
-     * @param day     Starting day
-     */
-    protected PartialDatePicker(Context context, Integer year, Integer month, Integer day) {
-        super(context);
-
+    public PartialDatePicker(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         mContext = context;
 
-        mYear = year;
-        mMonth = month;
-        mDay = day;
-
-        // Get the layout
-        LayoutInflater inf = this.getLayoutInflater();
-        View root = inf.inflate(R.layout.dialog_date_picker, null);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View root = inflater.inflate(R.layout.dialog_date_picker, this, true);
 
         // Ensure components match current locale order
         reorderPickers(root);
-
-        // Set the view
-        setView(root);
 
         // Get UI components for later use
         mYearView = root.findViewById(R.id.field_year);
@@ -170,7 +133,7 @@ public class PartialDatePicker extends AlertDialog {
         }
 
         // Handle selections from the MONTH spinner
-        mMonthSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+        mMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                                                     @Override
                                                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -186,7 +149,7 @@ public class PartialDatePicker extends AlertDialog {
         );
 
         // Handle selections from the DAY spinner
-        mDaySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+        mDaySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                                                   @Override
                                                   public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -275,37 +238,10 @@ public class PartialDatePicker extends AlertDialog {
                 }
         );
 
-        // Handle OK
-        root.findViewById(R.id.button_ok).setOnClickListener(v -> {
-                    // Ensure the date is 'hierarchically valid'; require year, if month is non-null, require month if day non-null
-                    if (mDay != null && mDay > 0 && (mMonth == null || mMonth == 0)) {
-                        Toast.makeText(mContext, R.string.if_day_is_specified_month_and_year_must_be, Toast.LENGTH_LONG).show();
-                    } else if (mMonth != null && mMonth > 0 && mYear == null) {
-                        Toast.makeText(mContext, R.string.if_month_is_specified_year_must_be, Toast.LENGTH_LONG).show();
-                    } else {
-                        if (mListener != null)
-                            mListener.onDateSet(PartialDatePicker.this, mYear, mMonth, mDay);
-                    }
-                }
-        );
-
-        // Handle Cancel
-        root.findViewById(R.id.button_cancel).setOnClickListener(v -> {
-                    if (mListener != null)
-                        mListener.onCancel(PartialDatePicker.this);
-                }
-        );
-
-        // Handle any other form of cancellation
-        this.setOnCancelListener(arg0 -> {
-            if (mListener != null)
-                mListener.onCancel(PartialDatePicker.this);
-        });
+        // Hide buttons
+        root.findViewById(R.id.bottom_buttons).setVisibility(View.GONE);
 
         // We are all set up!
-
-        // Set the initial date
-        setDate(year, month, day);
     }
 
     /**
@@ -331,8 +267,6 @@ public class PartialDatePicker extends AlertDialog {
         Selection.setSelection(e, e.length(), e.length());
         if (yearVal.isEmpty()) {
             mYearView.requestFocus();
-            assert getWindow() != null;
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
 
         if (month == null || month == 0) {
@@ -369,6 +303,23 @@ public class PartialDatePicker extends AlertDialog {
     public Integer getDay() {
         return mDay;
     }
+
+    /**
+     * Check if the date is valid.
+     * @return true if valid, false otherwise.
+     */
+    public boolean isDateValid() {
+        // Ensure the date is 'hierarchically valid'; require year, if month is non-null, require month if day non-null
+        if (mDay != null && mDay > 0 && (mMonth == null || mMonth == 0)) {
+            Toast.makeText(mContext, R.string.if_day_is_specified_month_and_year_must_be, Toast.LENGTH_LONG).show();
+            return false;
+        } else if (mMonth != null && mMonth > 0 && mYear == null) {
+            Toast.makeText(mContext, R.string.if_month_is_specified_year_must_be, Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * Handle changes to the YEAR field.
@@ -518,9 +469,4 @@ public class PartialDatePicker extends AlertDialog {
             }
         }
     }
-
-    protected void setOnDateSetListener(OnDateSetListener listener) {
-        mListener = listener;
-    }
-
 }

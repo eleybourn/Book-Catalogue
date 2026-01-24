@@ -37,6 +37,8 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -513,9 +515,7 @@ public class Utils {
             return null;
 
         BitmapFactory.Options options = new BitmapFactory.Options();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-        String s = "Array " + bytes.length + " bytes, bitmap " + bitmap.getHeight() + "x" + bitmap.getWidth();
-        return bitmap;
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
     }
 
     /**
@@ -1116,7 +1116,7 @@ public class Utils {
     public static void setCacheColorHintSafely(ListView lv, int hint) {
         try {
             lv.setCacheColorHint(hint);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
     }
 
@@ -1316,12 +1316,14 @@ public class Utils {
      */
     public static void prepareDateDialogFragment(PartialDatePickerFragment dialog, Object current) {
         String dateString = current == null ? "" : current.toString();
+        Log.d("BC", "Prepare " + dateString);
+
         // get the current date
         Integer yyyy = null;
         Integer mm = null;
         Integer dd = null;
         try {
-            String[] dateAndTime = dateString.split(" ");
+            String[] dateAndTime = dateString.split("T");
             String[] date = dateAndTime[0].split("-");
             yyyy = Integer.parseInt(date[0]);
             mm = Integer.parseInt(date[1]);
@@ -1851,6 +1853,14 @@ public class Utils {
         public boolean isClosed() {
             return mIsClosed;
         }
+    }
+
+    public static int backgroundFlash(Context context) {
+        // Make line flash when clicked.
+        TypedValue outValue = new TypedValue();
+        context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        return outValue.resourceId;
+
     }
 
 

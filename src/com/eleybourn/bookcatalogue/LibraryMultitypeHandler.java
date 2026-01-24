@@ -1006,7 +1006,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                     // Create static formatter if necessary
                     s = Utils.getMonthName(i);
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             // Display whatever text we have
             setText(text, s, R.string.unknown_uc, level);
@@ -1056,7 +1056,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                     Resources r = BookCatalogueApp.getRes();
                     s = r.getQuantityString(R.plurals.n_stars, i, i);
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             // Display whatever text we have
             setText(text, s, R.string.unknown_uc, level);

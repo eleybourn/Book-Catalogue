@@ -21,7 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
@@ -764,25 +764,20 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                      * If it exists, show a dialog and use it to perform the
                      * next action, according to the users choice.
                      */
-                    SaveAlert alert = new SaveAlert();
-                    alert.setMessage(getResources().getString(R.string.duplicate_book_message));
-                    alert.setTitle(R.string.duplicate_book_title);
-                    alert.setIcon(R.drawable.ic_menu_info);
-
-                    // Modern replacement for setButton2 (Negative)
-                    alert.setButton(android.content.DialogInterface.BUTTON_NEGATIVE,
-                            this.getResources().getString(R.string.button_ok),
-                            (dialog, which) -> {
+                    new MaterialAlertDialogBuilder(this)
+                            .setMessage(R.string.duplicate_book_message)
+                            .setTitle(R.string.duplicate_book_title)
+                            .setIcon(R.drawable.ic_menu_info)
+                            .setPositiveButton(R.string.button_ok, (dialog1, which) -> {
+                                dialog1.dismiss();
                                 updateOrCreate();
                                 nextStep.success();
-                            });
-
-                    // Modern replacement for setButton (Positive)
-                    alert.setButton(android.content.DialogInterface.BUTTON_POSITIVE,
-                            this.getResources().getString(R.string.button_cancel),
-                            (dialog, which) -> nextStep.failure());
-
-                    alert.show();
+                            })
+                            .setNegativeButton(R.string.button_cancel, (dialog2, which) -> {
+                                dialog2.dismiss();
+                                nextStep.failure();
+                            })
+                            .create().show();
                     return;
                 }
             }
@@ -943,6 +938,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      */
     @Override
     public void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day) {
+        Log.d("BC", "BE " + day);
         ViewPager2 viewPager = findViewById(R.id.view_pager);
         Fragment frag = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
         if (frag instanceof OnPartialDatePickerListener) {
@@ -1063,13 +1059,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                 return;
             }
             Log.e("BookEdit", "API Error for " + request + ": " + error);
-        }
-    }
-
-    private class SaveAlert extends AlertDialog {
-
-        protected SaveAlert() {
-            super(BookEdit.this);
         }
     }
 

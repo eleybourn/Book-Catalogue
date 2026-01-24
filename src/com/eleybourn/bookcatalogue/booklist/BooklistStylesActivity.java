@@ -20,7 +20,6 @@
 
 package com.eleybourn.bookcatalogue.booklist;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -38,6 +37,7 @@ import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 
@@ -204,23 +204,22 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
             csa[i] = items.get(i);
 
         // Show the dialog
-        final AlertDialog dialog = new AlertDialog.Builder(getLayoutInflater().getContext()).setItems(csa, (dialog1, which) -> {
-            int id = items.get(which).getId();
-            if (id == R.id.MENU_DELETE_STYLE) {
-                style.deleteFromDb(mDb);
-                // Refresh the list
-                setList(getList());
-                dialog1.dismiss();
-            } else if (id == R.id.MENU_EDIT_STYLE) {
-                editStyle(position, style, false);
-                dialog1.dismiss();
-            } else if (id == R.id.MENU_CLONE_STYLE) {
-                editStyle(position, style, true);
-                dialog1.dismiss();
-            }
-        }).create();
-
-        dialog.show();
+        new MaterialAlertDialogBuilder(getLayoutInflater().getContext())
+                .setItems(csa, (dialog1, which) -> {
+                    int id = items.get(which).getId();
+                    if (id == R.id.MENU_DELETE_STYLE) {
+                        style.deleteFromDb(mDb);
+                        // Refresh the list
+                        setList(getList());
+                        dialog1.dismiss();
+                    } else if (id == R.id.MENU_EDIT_STYLE) {
+                        editStyle(position, style, false);
+                        dialog1.dismiss();
+                    } else if (id == R.id.MENU_CLONE_STYLE) {
+                        editStyle(position, style, true);
+                        dialog1.dismiss();
+                    }
+                }).create().show();
     }
 
     /**

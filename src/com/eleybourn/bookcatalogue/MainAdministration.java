@@ -20,12 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
 
@@ -37,8 +33,6 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.google.android.material.appbar.MaterialToolbar;
 
-import java.util.ArrayList;
-
 /**
  * This is the Administration page. It contains details about the app, links
  * to my website and email, functions to export and import books and functions to
@@ -48,9 +42,7 @@ import java.util.ArrayList;
  */
 public class MainAdministration extends ActivityWithTasks
         implements OnMessageDialogResultListener {
-    public static final String DO_AUTO = "do_auto";
     private CatalogueDBAdapter mDbHelper;
-    private boolean finish_after = false;
 
     @Override
     protected RequiredPermission[] getRequiredPermissions() {
@@ -72,18 +64,6 @@ public class MainAdministration extends ActivityWithTasks
             topAppBar.setTitle(R.string.title_settings);
             topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-            Bundle extras = getIntent().getExtras();
-            if (extras != null && extras.containsKey(DO_AUTO)) {
-                try {
-                    if (extras.getString(DO_AUTO, "").equals("export")) {
-                        finish_after = true;
-                    } else {
-                        throw new RuntimeException("Unsupported DO_AUTO option");
-                    }
-                } catch (NullPointerException e) {
-                    Logger.logError(e);
-                }
-            }
             setupAdmin();
         } catch (Exception e) {
             Logger.logError(e);
@@ -101,22 +81,17 @@ public class MainAdministration extends ActivityWithTasks
     public void setupAdmin() {
         /* Bookshelf Link */
         View bookshelf = findViewById(R.id.bookshelfLabel);
-        // Make line flash when clicked.
-        TypedValue outValue = new TypedValue();
-        this.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
-        bookshelf.setBackgroundResource(outValue.resourceId);
+        bookshelf.setBackgroundResource(Utils.backgroundFlash(this));
         bookshelf.setOnClickListener(v -> manageBookshelves());
 
         /* Manage Fields Link */
         View fields = findViewById(R.id.fieldsLabel);
-        // Make line flash when clicked.
-        fields.setBackgroundResource(android.R.drawable.list_selector_background);
+        fields.setBackgroundResource(Utils.backgroundFlash(this));
         fields.setOnClickListener(v -> manageFields());
 
         /* Book List Preferences Link */
         View blPrefs = findViewById(R.id.booklistPreferencesLabel);
-        // Make line flash when clicked.
-        blPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
+        blPrefs.setBackgroundResource(Utils.backgroundFlash(this));
         blPrefs.setOnClickListener(v -> BookCatalogueApp.startPreferencesActivity(MainAdministration.this));
 
         /* Book List Preferences Link */
@@ -237,78 +212,6 @@ public class MainAdministration extends ActivityWithTasks
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    /**
-     * Called when any background task completes
-     */
-    @Override
-    public void onTaskEnded(ManagedTask task) {
-        // If it's an export, then handle it
-        if (task instanceof ExportThread) {
-            onExportFinished((ExportThread) task);
-        }
-    }
-
-    public void onExportFinished(final ExportThread task) {
-        if (task.isCancelled()) {
-            if (finish_after)
-                finish();
-            return;
-        }
-        AlertDialog alertDialog = new AlertDialog.Builder(MainAdministration.this).create();
-        alertDialog.setTitle(R.string.label_email_export);
-        alertDialog.setIcon(R.drawable.ic_menu_send);
-        alertDialog.setButton(
-                DialogInterface.BUTTON_NEGATIVE,
-                getResources().getString(R.string.button_ok),
-                (dialog, which) -> {
-                    // setup the mail message
-                    final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                    emailIntent.setType("plain/text");
-                    String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.label_export_to_csv);
-                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-                    //has to be an ArrayList
-                    ArrayList<Uri> uris = new ArrayList<>();
-                    // Find all files of interest to send
-                    try {
-                        uris.add(task.getFile().getUri());
-                        // Send it, if there are any files to send.
-                        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-                        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-                    } catch (NullPointerException e) {
-                        Logger.logError(e);
-                        Toast.makeText(MainAdministration.this, R.string.alert_export_failed_sdcard, Toast.LENGTH_LONG).show();
-                    }
-
-                    dialog.dismiss();
-                });
-        alertDialog.setButton(
-                DialogInterface.BUTTON_POSITIVE,
-                getResources().getString(R.string.button_cancel),
-                (dialog, which) -> {
-                    //do nothing
-                    dialog.dismiss();
-                });
-
-        alertDialog.setOnDismissListener(
-                dialog -> {
-                    if (finish_after)
-                        finish();
-                });
-
-        if (!isFinishing()) {
-            try {
-                //
-                // Catch errors resulting from 'back' being pressed multiple times so that the activity is destroyed
-                // before the dialog can be shown.
-                // See http://code.google.com/p/android/issues/detail?id=3953
-                //
-                alertDialog.show();
-            } catch (Exception e) {
-                Logger.logError(e);
-            }
-        }
     }
 
     /**

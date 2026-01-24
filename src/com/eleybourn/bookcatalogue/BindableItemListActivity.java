@@ -20,7 +20,7 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import net.philipwarner.taskqueue.BindableItemCursorAdapter;
@@ -154,7 +155,7 @@ public abstract class BindableItemListActivity extends AppCompatActivity impleme
      */
     protected void showContextDialogue(String title, ArrayList<ContextDialogItem> items) {
         if (!items.isEmpty()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
             builder.setTitle(title);
 
             final ContextDialogItem[] itemArray = new ContextDialogItem[items.size()];

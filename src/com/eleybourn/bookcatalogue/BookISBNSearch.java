@@ -20,7 +20,7 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -318,10 +318,9 @@ public class BookISBNSearch extends ActivityWithTasks {
                     }
                 } catch (java.lang.SecurityException | ActivityNotFoundException e) {
                     // Verify - this can be a dangerous operation
-                    AlertDialog alertDialog = getAlertDialog();
+                    getAlertDialog();
                     // Prevent the activity result from closing this activity.
                     mDisplayingAlert = true;
-                    alertDialog.show();
                 }
             }
 
@@ -334,26 +333,21 @@ public class BookISBNSearch extends ActivityWithTasks {
         }
     }
 
-    private AlertDialog getAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(BookISBNSearch.this);
-        builder.setMessage(R.string.bad_scanner);
-        builder.setTitle(R.string.install_scan_title);
-        builder.setIcon(R.drawable.ic_menu_info);
-
-        // setButton2 -> setNegativeButton
-        builder.setNegativeButton("ZXing", (dialog, which) -> {
-            Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.zxing.client.android"));
-            startActivity(marketIntent);
-            finish();
-        });
-
-        // setButton -> setPositiveButton
-        builder.setPositiveButton("Cancel", (dialog, which) -> {
-            //do nothing
-            finish();
-        });
-
-        return builder.create();
+    private void getAlertDialog() {
+        new MaterialAlertDialogBuilder(this)
+                .setMessage(R.string.bad_scanner)
+                .setTitle(R.string.install_scan_title)
+                .setPositiveButton(R.string.button_cancel, (dialog1, which) -> {
+                    dialog1.dismiss();
+                    finish();
+                })
+                .setNegativeButton("ZXing", (dialog2, which) -> {
+                    dialog2.dismiss();
+                    Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.zxing.client.android"));
+                    startActivity(marketIntent);
+                    finish();
+                })
+                .create().show();
     }
 
     /*
@@ -428,7 +422,7 @@ public class BookISBNSearch extends ActivityWithTasks {
                     final long existingId = mDbHelper.getIdFromIsbn(isbn, true);
                     if (existingId > 0) {
                         // Verify - this can be a dangerous operation
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
                         builder.setMessage(R.string.duplicate_book_message);
                         builder.setTitle(R.string.duplicate_book_title);
                         builder.setIcon(R.drawable.ic_menu_info);

@@ -114,14 +114,8 @@ public class BookEditFields extends BookAbstract
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         Tracker.enterOnActivityCreated(this);
-        double t0 = System.currentTimeMillis();
-        double t1 = 0;
-        double t2 = 0;
-
         try {
-            t1 = System.currentTimeMillis();
             super.onViewCreated(view, savedInstanceState);
-            t2 = System.currentTimeMillis();
 
             if (savedInstanceState != null) {
                 mEditManager.setDirty(savedInstanceState.getBoolean("Dirty"));
@@ -209,7 +203,6 @@ public class BookEditFields extends BookAbstract
             Tracker.exitOnActivityCreated(this);
         }
 
-        double tn = System.currentTimeMillis();
     }
 
     private void showDescriptionDialog() {
@@ -236,7 +229,6 @@ public class BookEditFields extends BookAbstract
     // TODO: remove this suppression once TIRAMISU is the standard. i.e. minSdkVersion = 33
     @SuppressWarnings({"deprecation", "RedundantSuppression"})
     private void populateFields() {
-        double t0 = System.currentTimeMillis();
         assert getActivity() != null;
         Bundle extras = getActivity().getIntent().getExtras();
         final BookData book = mEditManager.getBookData();
@@ -351,6 +343,7 @@ public class BookEditFields extends BookAbstract
      */
     @Override
     public void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day) {
+        Log.d("BC", "BEF " + day);
         String value = Utils.buildPartialDate(year, month, day);
         mFields.getField(dialogId).setValue(value);
         dialog.dismiss();

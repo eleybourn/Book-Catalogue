@@ -21,20 +21,21 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import com.eleybourn.bookcatalogue.BookCatalogueAPI;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
@@ -57,25 +58,22 @@ public class StandardDialogs {
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void showConfirmUnsavedEditsDialog(final Activity a, final Runnable r) {
-        AlertDialog.Builder dialog = new Builder(a);
-
-        dialog.setTitle(R.string.details_have_changed);
-        dialog.setMessage(R.string.you_have_unsaved_changes);
-
-        dialog.setPositiveButton(R.string.exit, (dialog1, which) -> {
-            dialog1.dismiss();
-            File thumb = CatalogueDBAdapter.getTempThumbnail();
-            thumb.delete();
-            if (r != null) {
-                r.run();
-            } else {
-                a.finish();
-            }
-        });
-
-        dialog.setNegativeButton(R.string.continue_editing, (dialog2, which) -> dialog2.dismiss());
-        dialog.setCancelable(false);
-        dialog.create().show();
+        new MaterialAlertDialogBuilder(a)
+                .setTitle(R.string.details_have_changed)
+                .setMessage(R.string.you_have_unsaved_changes)
+                .setCancelable(false)
+                .setPositiveButton(R.string.exit, (dialog1, which) -> {
+                    dialog1.dismiss();
+                    File thumb = CatalogueDBAdapter.getTempThumbnail();
+                    thumb.delete();
+                    if (r != null) {
+                        r.run();
+                    } else {
+                        a.finish();
+                    }
+                })
+                .setNegativeButton(R.string.button_continue_editing, (dialog2, which) -> dialog2.dismiss())
+                .create().show();
     }
 
     public static void deleteSeriesAlert(Context context, final CatalogueDBAdapter dbHelper, final Series series, final Runnable onDeleted) {
@@ -88,7 +86,7 @@ public class StandardDialogs {
             Logger.logError(e);
         }
         // Modern Builder approach
-        new AlertDialog.Builder(context)
+        new MaterialAlertDialogBuilder(context)
                 .setMessage(message)
                 .setTitle(R.string.delete_series)
                 .setIcon(R.drawable.ic_menu_info)
@@ -133,7 +131,7 @@ public class StandardDialogs {
 
         String message = String.format(format, title, authors);
         // Modern Builder approach
-        new AlertDialog.Builder(context)
+        new MaterialAlertDialogBuilder(context)
                 .setMessage(message)
                 .setTitle(R.string.menu_delete_book)
                 .setIcon(R.drawable.ic_menu_info)
@@ -157,7 +155,7 @@ public class StandardDialogs {
         TextView msg = root.findViewById(R.id.message);
 
         // Build the base dialog
-        final AlertDialog.Builder builder = new AlertDialog.Builder(inflater.getContext()).setView(root);
+        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(inflater.getContext()).setView(root);
         if (message != null && !message.isEmpty()) {
             msg.setText(message);
         } else {

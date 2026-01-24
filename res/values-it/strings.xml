@@ -110,7 +110,7 @@
 
     <string name="contact2">philip.warner@rhyme.com.au</string>
 
-    <string name="continue_editing">Annulla</string>
+    <string name="button_continue_editing">Annulla</string>
 
     <string name="could_not_copy_image">Impossibile copiare l\'immagine</string>
 

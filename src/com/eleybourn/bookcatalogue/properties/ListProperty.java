@@ -20,7 +20,7 @@
 
 package com.eleybourn.bookcatalogue.properties;
 
-import android.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +30,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
@@ -222,7 +223,7 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 		// Get the current value
 		T curr = get();
 
-		final AlertDialog dialog = new AlertDialog.Builder(inflater.getContext()).setView(root).create();
+		final AlertDialog dialog = new MaterialAlertDialogBuilder(inflater.getContext()).setView(root).create();
 
 		// Create a listener that responds to any click on the list
 		OnClickListener l = v -> {

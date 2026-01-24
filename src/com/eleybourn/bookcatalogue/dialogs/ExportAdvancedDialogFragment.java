@@ -1,7 +1,7 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.eleybourn.bookcatalogue.R;
@@ -84,17 +85,13 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
         mFile = DocumentFile.fromSingleUri(requireContext(), uri);
 
         View v = requireActivity().getLayoutInflater().inflate(R.layout.dialog_export_advanced_options, null);
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).setTitle(R.string.label_advanced_options).create();
+        AlertDialog alertDialog = new MaterialAlertDialogBuilder(requireActivity()).setView(v).setTitle(R.string.label_advanced_options).create();
         alertDialog.setIcon(R.drawable.ic_menu_help);
         alertDialog.setCanceledOnTouchOutside(false);
-
         v.findViewById(R.id.button_cancel).setOnClickListener(v1 -> dismiss());
-
         v.findViewById(R.id.button_ok).setOnClickListener(this::handleClick);
-
         setRelatedView(v, R.id.field_export_books, R.id.all_books_row);
         setRelatedView(v, R.id.field_export_covers, R.id.covers_row);
-
         return alertDialog;
     }
 

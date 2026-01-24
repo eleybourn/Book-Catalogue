@@ -85,7 +85,7 @@
 
     <string name="contact2">philip.warner@rhyme.com.au</string>
 
-    <string name="continue_editing">Doorgaan met bewerken</string>
+    <string name="button_continue_editing">Doorgaan met bewerken</string>
 
     <string name="could_not_copy_image">Kon afbeelding niet kopiëren</string>
 

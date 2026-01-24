@@ -25,8 +25,11 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
+import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 /**
  * Fragment wrapper for the PartialDatePicker dialog
@@ -54,20 +57,11 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
      * ID passed from caller to identify this dialog
      */
     private int mDialogId;
-    /**
-     * The callback received when the user "sets" the date in the dialog.
-     * The event is passed on the the calling activity
-     */
-    private final PartialDatePicker.OnDateSetListener mDialogListener = new PartialDatePicker.OnDateSetListener() {
-        public void onDateSet(PartialDatePicker dialog, Integer year, Integer month, Integer day) {
-            ((OnPartialDatePickerListener) requireActivity()).onPartialDatePickerSet(mDialogId, PartialDatePickerFragment.this, year, month, day);
-        }
 
-        @Override
-        public void onCancel(PartialDatePicker dialog) {
-            ((OnPartialDatePickerListener) requireActivity()).onPartialDatePickerCancel(mDialogId, PartialDatePickerFragment.this);
-        }
-    };
+    /**
+     * The date picker view
+     */
+    private PartialDatePicker mPicker;
 
     /**
      * Constructor
@@ -115,13 +109,25 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
             mDialogId = savedInstanceState.getInt("dialogId");
         }
 
-        // Create the dialog and listen (locally) for its events
-        PartialDatePicker editor = new PartialDatePicker(getActivity());
-        editor.setDate(mYear, mMonth, mDay);
-        editor.setOnDateSetListener(mDialogListener);
+        // Create the picker
+        mPicker = new PartialDatePicker(getActivity());
+        mPicker.setDate(mYear, mMonth, mDay);
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
         if (mTitleId != 0)
-            editor.setTitle(mTitleId);
-        return editor;
+            builder.setTitle(mTitleId);
+        builder.setView(mPicker);
+
+        builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
+            if (mPicker.isDateValid()) {
+                ((OnPartialDatePickerListener) requireActivity()).onPartialDatePickerSet(mDialogId, PartialDatePickerFragment.this, mPicker.getYear(), mPicker.getMonth(), mPicker.getDay());
+            }
+        });
+        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> ((OnPartialDatePickerListener) requireActivity()).onPartialDatePickerCancel(mDialogId, PartialDatePickerFragment.this));
+        builder.setOnCancelListener(dialog -> ((OnPartialDatePickerListener) requireActivity()).onPartialDatePickerCancel(mDialogId, PartialDatePickerFragment.this));
+
+
+        return builder.create();
     }
 
     /**
@@ -143,7 +149,7 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
      */
     public void setTitle(int title) {
         mTitleId = title;
-        PartialDatePicker d = (PartialDatePicker) getDialog();
+        AlertDialog d = (AlertDialog) getDialog();
         if (d != null) {
             d.setTitle(mTitleId);
         }
@@ -156,16 +162,21 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
         mYear = year;
         mMonth = month;
         mDay = day;
-        PartialDatePicker d = (PartialDatePicker) getDialog();
-        if (d != null) {
-            d.setDate(mYear, mMonth, mDay);
+        if (mPicker != null) {
+            mPicker.setDate(mYear, mMonth, mDay);
         }
     }
 
     @Override
-    public void onSaveInstanceState(Bundle state) {
+    public void onSaveInstanceState(@NonNull Bundle state) {
+        super.onSaveInstanceState(state);
         state.putInt("title", mTitleId);
         state.putInt("dialogId", mDialogId);
+        if (mPicker != null) {
+            mYear = mPicker.getYear();
+            mMonth = mPicker.getMonth();
+            mDay = mPicker.getDay();
+        }
         if (mYear != null)
             state.putInt("year", mYear);
         if (mMonth != null)
@@ -180,11 +191,10 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        PartialDatePicker d = (PartialDatePicker) getDialog();
-        if (d != null) {
-            mYear = d.getYear();
-            mMonth = d.getMonth();
-            mDay = d.getDay();
+        if (mPicker != null) {
+            mYear = mPicker.getYear();
+            mMonth = mPicker.getMonth();
+            mDay = mPicker.getDay();
         }
     }
 

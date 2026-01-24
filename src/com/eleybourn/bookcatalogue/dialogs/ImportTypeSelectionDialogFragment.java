@@ -1,6 +1,7 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
-import androidx.appcompat.app.AlertDialog;
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
@@ -21,10 +22,12 @@ import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.documentfile.provider.DocumentFile;
 
 public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragment {
@@ -114,45 +117,47 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 			mArchiveHasValidDates = false;
 		}
 
-		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setIcon(R.drawable.ic_menu_upload).setView(v).setTitle(R.string.label_import_from_archive).create();
-		//alertDialog.setIcon(R.drawable.ic_menu_help);
-		alertDialog.setCanceledOnTouchOutside(false);
+        TextView mainText = v.findViewById(R.id.import_books_blurb);
+        Resources r = getResources();
+        String s;
 
-		TextView mainText = v.findViewById(R.id.import_books_blurb);
-		Resources r = getResources();
-		String s;
+        if (info != null) {
+            String books = r.getQuantityString(R.plurals.n_books, info.getBookCount(), info.getBookCount());
+            if (info.hasCoverCount()) {
+                String covers = r.getQuantityString(R.plurals.n_covers,
+                        info.getCoverCount(),
+                        info.getCoverCount());
+                s = r.getString(R.string.fragment_a_and_b, books, covers);
+            } else {
+                s = books;
+            }
+            String size = Utils.formatFileSize(mDocFile.length());
+            String date = DateFormat.getDateTimeInstance().format(info.getCreateDate());
+            String s_info = r.getString(R.string.para_selected_archive_info, size, date);
+            s = s_info +"\n\n" + r.getString(R.string.para_selected_archive_contains, s);
+        } else {
+            String size = Utils.formatFileSize(mDocFile.length());
+            String date = DateFormat.getDateTimeInstance().format(mDocFile.lastModified());
+            s = r.getString(R.string.para_selected_archive_info, size, date);
+        }
+        s = s + "\n\n" + r.getString(R.string.description_import_books_blurb);
+        mainText.setText(s);
 
-		if (info != null) {
-			String books = r.getQuantityString(R.plurals.n_books, info.getBookCount(), info.getBookCount());
-			if (info.hasCoverCount()) {
-				String covers = r.getQuantityString(R.plurals.n_covers,
-													info.getCoverCount(),
-													info.getCoverCount());
-				s = r.getString(R.string.fragment_a_and_b, books, covers);
-			} else {
-				s = books;
-			}
-			String size = Utils.formatFileSize(mDocFile.length());
-			String date = DateFormat.getDateTimeInstance().format(info.getCreateDate());
-			String s_info = r.getString(R.string.para_selected_archive_info, size, date);
-			s = s_info +"\n\n" + r.getString(R.string.para_selected_archive_contains, s);
-		} else {
-			String size = Utils.formatFileSize(mDocFile.length());
-			String date = DateFormat.getDateTimeInstance().format(mDocFile.lastModified());
-			s = r.getString(R.string.para_selected_archive_info, size, date);
-		}
-		s = s + "\n\n" + r.getString(R.string.description_import_books_blurb);
-		mainText.setText(s);
+        setOnClickListener(v, R.id.all_books_row);
+        if (mArchiveHasValidDates) {
+            setOnClickListener(v, R.id.new_and_changed_books_row);
+        } else {
+            TextView blurb = v.findViewById(R.id.new_and_changed_books_blurb);
+            blurb.setText(R.string.alert_old_archive_blurb);
+        }
 
-		setOnClickListener(v, R.id.all_books_row);
-		if (mArchiveHasValidDates) {
-			setOnClickListener(v, R.id.new_and_changed_books_row);
-		} else {
-			TextView blurb = v.findViewById(R.id.new_and_changed_books_blurb);
-			blurb.setText(R.string.alert_old_archive_blurb);
-		}
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(R.string.label_import_from_archive)
+                .setView(v)
+                .setIcon(R.drawable.ic_menu_upload)
+                .setCancelable(false);
 
-        return alertDialog;
+        return builder.create();
     }
 
     private void handleClick(View v) {

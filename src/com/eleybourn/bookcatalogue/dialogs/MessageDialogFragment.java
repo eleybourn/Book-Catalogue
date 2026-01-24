@@ -1,12 +1,14 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.R;
@@ -81,12 +83,16 @@ public class MessageDialogFragment extends BookCatalogueDialogFragment {
         int btnNeg = getArguments().getInt("buttonNegativeTextId");
         int btnNeut = getArguments().getInt("buttonNeutralTextId");
 
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setMessage(msg).create();
-        alertDialog.setTitle(title);
-        alertDialog.setIcon(R.drawable.ic_menu_info);
+        AlertDialog alertDialog = new MaterialAlertDialogBuilder(requireActivity())
+                .setMessage(msg)
+                .setTitle(title)
+                .setIcon(R.drawable.ic_menu_info)
+                .setPositiveButton(getString(btnPos), (dialog1, which) -> {
+                    dialog1.dismiss();
+                    handleButton(AlertDialog.BUTTON_POSITIVE);
+                })
+                .create();
         alertDialog.setCanceledOnTouchOutside(false);
-
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(btnPos), (dialog, which) -> handleButton(AlertDialog.BUTTON_POSITIVE));
 
         if (btnNeg != 0) {
             alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(btnNeg), (dialog, which) -> handleButton(AlertDialog.BUTTON_NEGATIVE));

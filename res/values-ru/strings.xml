@@ -99,7 +99,7 @@
 
     <string name="contact2">philip.warner@rhyme.com.au</string>
 
-    <string name="continue_editing">Продолжить редактирование</string>
+    <string name="button_continue_editing">Продолжить редактирование</string>
 
     <string name="could_not_copy_image">Не возможно скопировать изображение</string>
 

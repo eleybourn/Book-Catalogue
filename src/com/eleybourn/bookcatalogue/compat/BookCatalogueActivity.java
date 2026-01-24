@@ -17,7 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTre
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.documentfile.provider.DocumentFile;
@@ -135,7 +135,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 
         if (message.length() > 0) {
             // Show reasons, rinse and repeat.
-            new AlertDialog.Builder(activity)
+            new MaterialAlertDialogBuilder(activity)
                     .setTitle(R.string.perm_required)
                     .setMessage(Html.fromHtml(BookCatalogueApp.getRes().getString(R.string.perm_intro) + message, Html.FROM_HTML_MODE_LEGACY))
                     .setPositiveButton(R.string.button_ok, (dialogInterface, i) -> {

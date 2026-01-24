@@ -17,7 +17,7 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -317,7 +317,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
             anthology_title.append("* ").append(titles.get(j)).append("\n");
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
         builder.setMessage(anthology_title.toString());
         builder.setTitle(R.string.anthology_confirm);
         builder.setIcon(R.drawable.ic_menu_info);

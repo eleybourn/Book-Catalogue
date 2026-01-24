@@ -7,7 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.credentials.Credential;
 import androidx.credentials.CredentialManager;
 import androidx.credentials.CustomCredential;
@@ -131,7 +131,7 @@ public class BookCatalogueAPICredentials {
      * Shows a dialog asking the user to opt-in to sharing data.
      */
     private void showOptInDialog(final String email) {
-        new AlertDialog.Builder(mContext)
+        new MaterialAlertDialogBuilder(mContext)
                 .setTitle(R.string.title_enhance_search)
                 .setMessage(R.string.para_enhance_search)
                 .setPositiveButton("Yes, I'll help", (dialog, which) -> savePreferences(email, true))

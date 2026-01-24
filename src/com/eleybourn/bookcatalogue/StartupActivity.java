@@ -20,8 +20,9 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -266,7 +267,7 @@ public class StartupActivity
      * onCreate() completes, so a race condition is not possible. Equally well, tasks should only
      * be queued in onCreate().
      */
-    private void taskCompleted(SimpleTask task) {
+    private void taskCompleted() {
         if (!mTaskQueue.hasActiveTasks()) {
             stage2Startup();
         }
@@ -281,7 +282,7 @@ public class StartupActivity
         if (mTaskQueue == null) {
             mTaskQueue = new SimpleTaskQueue("startup-tasks", 1);
             // Listen for task completions
-            mTaskQueue.setTaskFinishListener((task, e) -> taskCompleted(task));
+            mTaskQueue.setTaskFinishListener((task, e) -> taskCompleted());
         }
         return mTaskQueue;
     }
@@ -347,7 +348,7 @@ public class StartupActivity
         //mExportRequired = false;
         //
         //	if (opened == 0) {
-        //		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.backup_request).create();
+        //		AlertDialog alertDialog = new MaterialAlertDialogBuilder(this).setMessage(R.string.backup_request).create();
         //		alertDialog.setCanceledOnTouchOutside(false);
         //		alertDialog.setTitle(R.string.backup_title);
         //		alertDialog.setIcon(R.drawable.ic_menu_info);
@@ -397,17 +398,16 @@ public class StartupActivity
      * @param message The message to display in the popup
      */
     public void upgradePopup(String message) {
-        AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY)).create();
-        alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.setTitle(R.string.upgrade_title);
-        alertDialog.setIcon(R.drawable.ic_menu_info);
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.button_ok), (dialog, which) -> alertDialog.dismiss());
-        alertDialog.setOnCancelListener(dialog -> alertDialog.dismiss());
-        alertDialog.setOnDismissListener(dialog -> {
+        new MaterialAlertDialogBuilder(this).setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY))
+        .setTitle(R.string.upgrade_title)
+        .setIcon(R.drawable.ic_menu_info)
+        .setPositiveButton(getString(R.string.button_ok), (dialog, which) -> dialog.dismiss())
+        .setOnCancelListener(DialogInterface::dismiss)
+        .setOnDismissListener(dialog -> {
             UpgradeMessageManager.setMessageAcknowledged(this);
             stage3Startup();
-        });
-        alertDialog.show();
+        })
+        .create().show();
         mUpgradeMessageShown = true;
     }
 

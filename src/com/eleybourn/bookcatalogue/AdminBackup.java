@@ -20,8 +20,8 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.eleybourn.bookcatalogue.BookCatalogueAPI.ApiListener;
@@ -46,6 +47,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 /*
  * A book catalogue application that integrates with Google Books.
@@ -124,20 +126,16 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         imports.setOnClickListener(
                 v -> {
                     // Verify - this can be a dangerous operation
-                    AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.alert_import).create();
-                    alertDialog.setTitle(R.string.label_import_books);
-                    alertDialog.setIcon(R.drawable.ic_menu_upload);
-                    alertDialog.setButton(
-                            AlertDialog.BUTTON_POSITIVE,
-                            this.getResources().getString(R.string.button_ok),
-                            (dialog, which) -> launchCsvImportPicker());
-                    alertDialog.setButton(
-                            AlertDialog.BUTTON_NEGATIVE,
-                            this.getResources().getString(R.string.button_cancel),
-                            (dialog, which) -> {
-                                //do nothing
-                            });
-                    alertDialog.show();
+                    new MaterialAlertDialogBuilder(this)
+                            .setMessage(R.string.alert_import)
+                            .setTitle(R.string.label_import_books)
+                            .setIcon(R.drawable.ic_menu_upload)
+                            .setPositiveButton(R.string.button_ok, (dialog1, which) -> {
+                                dialog1.dismiss();
+                                launchCsvImportPicker();
+                            })
+                            .setNegativeButton(R.string.button_cancel, (dialog2, which) -> dialog2.dismiss())
+                            .create().show();
                 });
 
         BookCataloguePreferences mPrefs = new BookCataloguePreferences();
@@ -347,7 +345,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             }
 
             if (request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
-                String statsText = "";
+                String statsText;
                 if (message.isEmpty()) {
                     statsText = current + " of " + total + " books restored";
                 } else {
@@ -429,6 +427,62 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                     activity.mRestoreNowButton.setEnabled(true);
                 }
                 Toast.makeText(activity, "Error: " + error, Toast.LENGTH_LONG).show(); // Show error for backup/restore
+            }
+        }
+    }
+
+    /**
+     * Called when any background task completes
+     */
+    @Override
+    public void onTaskEnded(ManagedTask task) {
+        // If it's an export, then handle it
+        if (task instanceof ExportThread) {
+            onExportFinished((ExportThread) task);
+        }
+    }
+
+    public void onExportFinished(final ExportThread task) {
+        if (!isFinishing()) {
+            try {
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.label_email_export)
+                        .setIcon(R.drawable.ic_menu_send)
+                        .setPositiveButton(
+                                getResources().getString(R.string.button_ok),
+                                (dialog, which) -> {
+                                    // setup the mail message
+                                    final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                                    emailIntent.setType("plain/text");
+                                    String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.label_export_to_csv);
+                                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                                    //has to be an ArrayList
+                                    ArrayList<Uri> uris = new ArrayList<>();
+                                    // Find all files of interest to send
+                                    try {
+                                        uris.add(task.getFile().getUri());
+                                        // Send it, if there are any files to send.
+                                        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+                                        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                                    } catch (NullPointerException e) {
+                                        Logger.logError(e);
+                                        Toast.makeText(this, R.string.alert_export_failed_sdcard, Toast.LENGTH_LONG).show();
+                                    }
+
+                                    dialog.dismiss();
+                                })
+                        .setNegativeButton(
+                                getResources().getString(R.string.button_cancel),
+                                (dialog, which) -> {
+                                    //do nothing
+                                    dialog.dismiss();
+                                })
+                        // Catch errors resulting from 'back' being pressed multiple times so that the activity is destroyed
+                        // before the dialog can be shown.
+                        // See http://code.google.com/p/android/issues/detail?id=3953
+                        .create().show();
+            } catch (Exception e) {
+                Logger.logError(e);
             }
         }
     }

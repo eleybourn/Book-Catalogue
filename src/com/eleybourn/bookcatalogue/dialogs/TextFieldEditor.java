@@ -19,12 +19,13 @@
  */
 package com.eleybourn.bookcatalogue.dialogs;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.eleybourn.bookcatalogue.R;
 

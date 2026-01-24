@@ -25,7 +25,7 @@ import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.DOM_TITLE
 import static com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions.TBL_BOOKS;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,6 +52,8 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.eleybourn.bookcatalogue.LibraryMultitypeHandler.BooklistChangeListener;
 import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
@@ -481,7 +483,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         if (mUniqueBooks != 0)
             empty.setVisibility(View.GONE);
 
-        long t0 = System.currentTimeMillis();
         // Save the old list so we can close it later, and set the new list locally
         BooklistPseudoCursor oldList = mList;
         mList = newList;
@@ -613,7 +614,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                 oldList.getBuilder().close();
             oldList.close();
         }
-        long t1 = System.currentTimeMillis();
     }
 
     /**
@@ -982,8 +982,11 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         RadioGroup group = root.findViewById(R.id.radio_buttons);
         LinearLayout main = root.findViewById(R.id.menu);
 
-        final AlertDialog sortDialog = new AlertDialog.Builder(this).setView(root).create();
-        sortDialog.setTitle(R.string.select_style);
+        AlertDialog sortDialog = new MaterialAlertDialogBuilder(this)
+                .setView(root)
+                .setTitle(R.string.select_style)
+                .setNegativeButton(R.string.button_cancel, (dialog2, which) -> dialog2.dismiss())
+                .create();
         sortDialog.show();
 
         Iterator<LibraryStyle> i;
@@ -1109,10 +1112,8 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         @Override
         public void run(SimpleTaskContext taskContext) {
             try {
-                long t0 = System.currentTimeMillis();
                 // Build the underlying data
                 LibraryBuilder b = buildBooklist(mIsFullRebuild);
-                long t1 = System.currentTimeMillis();
                 // Try to sync the previously selected book ID
                 if (mMarkBookId != 0) {
                     // get all positions of the book
@@ -1144,7 +1145,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                     }
                 } else
                     mTargetRows = null;
-                long t2 = System.currentTimeMillis();
 
                 // Now we have expanded groups as needed, get the list cursor
                 mTempList = b.getList();
@@ -1155,13 +1155,8 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                 // get a count() from the cursor in background task because the setAdapter() call
                 // will do a count() and potentially block the UI thread while it pages through the
                 // entire cursor. If we do it here, subsequent calls will be fast.
-                long t3 = System.currentTimeMillis();
-                int count = mTempList.getCount();
-                long t4 = System.currentTimeMillis();
                 mUniqueBooks = mTempList.getUniqueBookCount();
-                long t5 = System.currentTimeMillis();
                 mTotalBooks = mTempList.getBookCount();
-                long t6 = System.currentTimeMillis();
                 // Save a flag to say list was loaded at least once successfully
                 mListHasBeenLoaded = true;
 

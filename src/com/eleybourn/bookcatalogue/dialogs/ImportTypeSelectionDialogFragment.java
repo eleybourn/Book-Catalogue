@@ -1,13 +1,11 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,12 +20,10 @@ import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.documentfile.provider.DocumentFile;
 
 public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragment {
@@ -81,7 +77,6 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 	 * @param id		Sub-View ID
 	 */
 	private void setOnClickListener(View root, int id) {
-        Log.d("BC", "setOnClickListener " + id);
 		View v = root.findViewById(id);
 		v.setOnClickListener(mRowClickListener);
 		// Get selectable item background from theme
@@ -161,7 +156,6 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
     }
 
     private void handleClick(View v) {
-        Log.d("BC", "handleClick " + v.getId());
         if (!mArchiveHasValidDates && v.getId() == R.id.new_and_changed_books_row) {
     		Toast.makeText(getActivity(), R.string.alert_old_archive_blurb, Toast.LENGTH_LONG).show();
     		return;

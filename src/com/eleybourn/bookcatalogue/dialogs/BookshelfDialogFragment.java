@@ -25,7 +25,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -150,7 +149,6 @@ public class BookshelfDialogFragment extends BookCatalogueDialogFragment {
             final View rootView = getView();
 
             bookshelves_for_book = db.fetchAllBookshelves(mRowId);
-            Log.d("BookCatalogue", "getBookShelves");
 
             // Handle the OK button
             assert rootView != null;
@@ -162,15 +160,12 @@ public class BookshelfDialogFragment extends BookCatalogueDialogFragment {
 
             // Loop through all bookshelves and build the checkbox list
             if (bookshelves_for_book.moveToFirst()) {
-                Log.d("BookCatalogue", "bookshelf ");
                 final String shelves = BOOKSHELF_SEPARATOR + mCurrList + BOOKSHELF_SEPARATOR;
                 do {
                     final CheckBox cb = new CheckBox(getActivity());
                     boolean checked = false;
                     int bookshelf = bookshelves_for_book.getColumnIndex(CatalogueDBAdapter.KEY_BOOKSHELF);
                     String db_bookshelf = bookshelves_for_book.getString(bookshelf).trim();
-                    Log.d("BookCatalogue", "bookshelf " + db_bookshelf);
-                    Log.d("BookCatalogue", "bookshelf " + bookshelves_for_book.getString(bookshelf));
                     String db_encoded_bookshelf = Utils.encodeListItem(db_bookshelf, BOOKSHELF_SEPARATOR);
                     if (shelves.contains(BOOKSHELF_SEPARATOR + db_encoded_bookshelf + BOOKSHELF_SEPARATOR)) {
                         checked = true;

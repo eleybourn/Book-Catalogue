@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.database.SQLException;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -296,7 +295,6 @@ public class BookEditFields extends BookAbstract
     }
 
     private void setupUi() {
-        Log.d("BC", "setupUI");
         assert getView() != null;
         final CheckBox cb = getView().findViewById(R.id.field_anthology);
         cb.setOnClickListener(view -> mEditManager.setShowAnthology(cb.isChecked()));
@@ -343,7 +341,6 @@ public class BookEditFields extends BookAbstract
      */
     @Override
     public void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day) {
-        Log.d("BC", "BEF " + day);
         String value = Utils.buildPartialDate(year, month, day);
         mFields.getField(dialogId).setValue(value);
         dialog.dismiss();

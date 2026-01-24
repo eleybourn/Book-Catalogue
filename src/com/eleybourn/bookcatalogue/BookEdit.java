@@ -938,7 +938,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      */
     @Override
     public void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day) {
-        Log.d("BC", "BE " + day);
         ViewPager2 viewPager = findViewById(R.id.view_pager);
         Fragment frag = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
         if (frag instanceof OnPartialDatePickerListener) {

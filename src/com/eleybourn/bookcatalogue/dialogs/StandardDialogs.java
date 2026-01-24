@@ -23,7 +23,6 @@ package com.eleybourn.bookcatalogue.dialogs;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -257,11 +256,6 @@ public class StandardDialogs {
 
         @Override
         public void onApiError(String request, String error) {
-            Context context = contextReference.get();
-            if (context == null) {
-                return;
-            }
-            Log.e("StandardDialogs", "API Error for " + request + ": " + error);
         }
     }
 

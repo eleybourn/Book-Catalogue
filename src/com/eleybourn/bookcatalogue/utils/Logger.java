@@ -56,10 +56,8 @@ public class Logger {
 			"In Phone " + Build.MODEL + " (" + Build.VERSION.SDK_INT + ") \n" + 
 			msg + "\n" +
                 sw;
-		//Log.e("BookCatalogue", error);
 		
 		try {
-			// RELEASE Remove Log.e! Replace with ACRA?
 			Log.e("BC Logger", error);
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(StorageUtils.getErrorLog()), StandardCharsets.UTF_8), 8192);
 			out.write(error);

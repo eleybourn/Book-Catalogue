@@ -37,7 +37,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1316,7 +1315,6 @@ public class Utils {
      */
     public static void prepareDateDialogFragment(PartialDatePickerFragment dialog, Object current) {
         String dateString = current == null ? "" : current.toString();
-        Log.d("BC", "Prepare " + dateString);
 
         // get the current date
         Integer yyyy = null;

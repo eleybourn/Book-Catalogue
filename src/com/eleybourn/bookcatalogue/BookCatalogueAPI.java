@@ -432,7 +432,6 @@ public class BookCatalogueAPI implements SimpleTask {
                 // Retrieve the count from the JSON response.
                 String bcid = book.getString("deleted_book_id");
                 notifyComplete("Deleted book " + bcid);
-                Log.d("BookCatalogueAPI", "Deleted book " + bcid);
             } else {
                 // Handle cases where the JSON is null or doesn't have the "count" key
                 throw new Exception("Invalid response from /book/<id> endpoint. JSON: " + book);
@@ -459,7 +458,6 @@ public class BookCatalogueAPI implements SimpleTask {
                 if (notifyComplete) {
                     notifyComplete(bcid);
                 }
-                Log.d("BookCatalogueAPI", "Found book " + bcid);
             } else {
                 // Handle cases where the JSON is null or doesn't have the "count" key
                 throw new Exception("Invalid response from /books/count endpoint. JSON: " + book);
@@ -481,7 +479,6 @@ public class BookCatalogueAPI implements SimpleTask {
             String response = connection("/books", METHOD_GET);
             books = new JSONArray(response);
             int total = books.length();
-            Log.d("BookCatalogueAPI", "Found " + total + " books");
             if (notifyComplete) {
                 notifyComplete(String.valueOf(total));
             }
@@ -506,7 +503,6 @@ public class BookCatalogueAPI implements SimpleTask {
             db.open(); // Ensure DB is open
 
             int total = books.length();
-            Log.d("BookCatalogueAPI", "Importing " + total + " books");
             final int NOTIFY_INTERVAL = 50; // Update UI thread every 50 books
             final int BATCH_SIZE = 50;      // Commit transaction every 50 books
             txLock = db.startTransaction(true);
@@ -515,7 +511,6 @@ public class BookCatalogueAPI implements SimpleTask {
                 if (mTaskContext.isTerminating()) break;
 
                 if (i > 0 && i % BATCH_SIZE == 0) {
-                    Log.d("BookCatalogueAPI", "Committing batch at book " + i);
                     db.setTransactionSuccessful();
                     db.endTransaction(txLock);
                     txLock = db.startTransaction(true);
@@ -527,10 +522,6 @@ public class BookCatalogueAPI implements SimpleTask {
                 long bcid = bookJson.getLong("bcid");
                 String uuid = getStringOrEmpty(bookJson, "book_uuid");
                 String title = getStringOrEmpty(bookJson, "title");
-                // Only log every Nth book to reduce logcat spam
-                if (i % NOTIFY_INTERVAL == 0) {
-                    Log.d("BookCatalogueAPI", "Importing book " + (i + 1) + "/" + total + ": " + title);
-                }
 
                 values.putLong(CatalogueDBAdapter.KEY_ROW_ID, bcid);
                 values.putString(CatalogueDBAdapter.KEY_TITLE, title);
@@ -682,14 +673,11 @@ public class BookCatalogueAPI implements SimpleTask {
                 }
             }
             // Commit the final batch
-            Log.d("BookCatalogueAPI", "Committing final batch.");
             db.setTransactionSuccessful();
             db.endTransaction(txLock);
             txLock = null; // Mark transaction as ended
 
             // --- Download Thumbnails ---
-            Log.d("BookCatalogueAPI", "Starting thumbnail downloads.");
-
             for (int i = 0; i < thumbnailTasks.size(); i++) {
                 HashMap<String, String> task = thumbnailTasks.get(i);
                 try {
@@ -784,7 +772,7 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public String connection(String urlEndPoint, String method, ArrayList<String> fields, ArrayList<String> values, File thumbnailFile) {
-        Log.d("BookCatalogueAPI", "API " + urlEndPoint);
+        //Log.d("BookCatalogueAPI", "API " + urlEndPoint);
         HttpURLConnection conn = null;
         try {
             String boundary = UUID.randomUUID().toString();
@@ -825,7 +813,6 @@ public class BookCatalogueAPI implements SimpleTask {
             String response;
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 response = readStream(conn.getInputStream());
-                Log.d("BookCatalogueAPI", "Response: " + response);
                 if (response.isEmpty()) return null; // Handle empty success response
                 return response;
             } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && retry) {
@@ -853,7 +840,6 @@ public class BookCatalogueAPI implements SimpleTask {
     public void run(SimpleTaskContext taskContext) throws Exception {
         this.mTaskContext = taskContext;
         if (mEmail.isEmpty()) {
-            Log.d("BookCatalogueAPI", "No email address set");
             return;
         }
 

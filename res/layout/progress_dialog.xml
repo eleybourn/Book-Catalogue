@@ -3,7 +3,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@android:drawable/dialog_holo_light_frame"
     android:orientation="vertical"
     android:padding="20dp">
 
@@ -39,8 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="20dp"
-            android:textAppearance="?android:attr/textAppearance"
-            android:textColor="@android:color/black" />
+            android:textAppearance="?android:attr/textAppearance" />
     </LinearLayout>
 
     <LinearLayout 
@@ -55,8 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:textAppearance="?android:attr/textAppearance"
-            android:textColor="@android:color/black" />
+            android:textAppearance="?android:attr/textAppearance" />
         
         <ProgressBar
             android:id="@+id/progress_horizontal"

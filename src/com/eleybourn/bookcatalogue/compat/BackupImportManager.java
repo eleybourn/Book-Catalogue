@@ -1,5 +1,6 @@
 package com.eleybourn.bookcatalogue.compat;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.ID;
@@ -65,7 +66,9 @@ public class BackupImportManager
 	@Override
 	public void onImportTypeSelectionDialogResult(int dialogId, ImportTypeSelectionDialogFragment dialog, int rowId, DocumentFile file) {
 		BookCatalogueActivity activity = (BookCatalogueActivity) dialog.requireActivity();
-		if (rowId == R.id.all_books_row) {
+        Log.d("BC", "onImportTypeSelectionDialogResult " + rowId);
+
+        if (rowId == R.id.all_books_row) {
 			BackupManager.restoreCatalogue(activity, file, ID.TASK_ID_OPEN, Importer.IMPORT_ALL, this);
 		} else if (rowId == R.id.new_and_changed_books_row) {
 			BackupManager.restoreCatalogue(activity, file, ID.TASK_ID_OPEN, Importer.IMPORT_NEW_OR_UPDATED, this);

@@ -6,13 +6,16 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 // 1. Annotate the class to be a Room Database
 // Declare all your entities here (Bookshelf.class, etc.)
 // Increment 'version' if you change the schema later
-@Database(entities = {Bookshelf.class}, version = 1, exportSchema = false)
+@Database(entities = {Bookshelf.class}, version = CatalogueDBAdapter.DATABASE_VERSION, exportSchema = false)
 public abstract class CatalogueDatabase extends RoomDatabase {
 
     // 2. Expose DAOs
@@ -32,8 +35,10 @@ public abstract class CatalogueDatabase extends RoomDatabase {
         if (INSTANCE == null) {
             synchronized (CatalogueDatabase.class) {
                 if (INSTANCE == null) {
+                    String dbName = StorageUtils.getDatabaseName();
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    CatalogueDatabase.class, "book_catalogue_database")
+                                    CatalogueDatabase.class, dbName)
+                            .createFromAsset("database/" + dbName)
                             // .addMigrations(...) // Add migrations here later if needed
                             // .fallbackToDestructiveMigration() // Use this only during dev to wipe DB on schema change
                             .build();
@@ -42,4 +47,5 @@ public abstract class CatalogueDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+
 }

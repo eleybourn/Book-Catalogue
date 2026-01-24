@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -76,9 +78,13 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 	 * @param id		Sub-View ID
 	 */
 	private void setOnClickListener(View root, int id) {
+        Log.d("BC", "setOnClickListener " + id);
 		View v = root.findViewById(id);
 		v.setOnClickListener(mRowClickListener);
-		v.setBackgroundResource(android.R.drawable.list_selector_background);
+		// Get selectable item background from theme
+		TypedValue outValue = new TypedValue();
+		requireContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+		v.setBackgroundResource(outValue.resourceId);
 	}
 
 	/**
@@ -108,7 +114,7 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 			mArchiveHasValidDates = false;
 		}
 
-		AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setIcon(R.drawable.ic_menu_upload).setView(v).setTitle(R.string.label_import_from_archive).create();
+		AlertDialog alertDialog = new AlertDialog.Builder(getActivity(), R.style.AppAlertDialogTheme).setIcon(R.drawable.ic_menu_upload).setView(v).setTitle(R.string.label_import_from_archive).create();
 		//alertDialog.setIcon(R.drawable.ic_menu_help);
 		alertDialog.setCanceledOnTouchOutside(false);
 
@@ -150,7 +156,8 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
     }
 
     private void handleClick(View v) {
-    	if (!mArchiveHasValidDates && v.getId() == R.id.new_and_changed_books_row) {
+        Log.d("BC", "handleClick " + v.getId());
+        if (!mArchiveHasValidDates && v.getId() == R.id.new_and_changed_books_row) {
     		Toast.makeText(getActivity(), R.string.alert_old_archive_blurb, Toast.LENGTH_LONG).show();
     		return;
     	}

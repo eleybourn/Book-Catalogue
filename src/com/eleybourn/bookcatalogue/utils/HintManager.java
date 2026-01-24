@@ -69,8 +69,6 @@ public class HintManager {
 		.add("hint_view_only_help", R.string.hint_view_only_help)
 		.add("hint_tempus_locum", R.string.hint_tempus_locum)
 		.add("hint_book_list", R.string.hint_library)
-		.add("hint_missing_covers", R.string.hint_missing_covers, false)
-		//.add("hint_amazon_links_blurb", R.string.hint_amazon_links_blurb)
 		;
 
     /** Reset all hints to that they will be displayed again */

@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.database.SQLException;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -170,7 +171,6 @@ public class BookEditFields extends BookAbstract
 
             Field bookshelfButtonFe = mFields.getField(R.id.field_bookshelf);
             bookshelfButtonFe.getView().setOnClickListener(v4 -> {
-
                 BookshelfDialogFragment frag = BookshelfDialogFragment.newInstance(
                         R.id.field_bookshelf,
                         mEditManager.getBookData().getRowId(),
@@ -179,8 +179,13 @@ public class BookEditFields extends BookAbstract
                 );
 
                 frag.show(getParentFragmentManager(), "bookshelves_dialog");
-
             });
+
+            boolean anthologyVisible = BookCatalogueApp.getAppPreferences().getBoolean(AdminFieldVisibility.prefix + CatalogueDBAdapter.KEY_ANTHOLOGY_MASK, true);
+            Log.d("BC", "anthologyVisible: " + anthologyVisible);
+            if (!anthologyVisible) {
+                getView().findViewById(R.id.field_anthology).setVisibility(View.GONE);
+            }
 
             // Build the label for the book description if this is first time, otherwise will be built later
             if (savedInstanceState == null)

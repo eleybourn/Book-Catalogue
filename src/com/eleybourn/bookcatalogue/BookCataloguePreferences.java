@@ -32,8 +32,6 @@ public class BookCataloguePreferences {
 	public static final String PREF_LAST_BACKUP_FILE = "Backup.LastFile";
 	/** Preferred interface locale */
 	public static final String PREF_APP_LOCALE = "App.Locale";
-	/** Preferred interface locale */
-	private static final String PREF_CHECKED_MISSING_COVERS = "App.CheckedMissingCovers";
     public static final String PREF_ACCOUNT_EMAIL = "Account.Email";
     public static final String PREF_ACCOUNT_OPT_IN = "Account.OptIn";
     public static final String PREF_ACCOUNT_API_TOKEN = "Account.ApiToken";
@@ -113,14 +111,6 @@ public class BookCataloguePreferences {
             mPrefs = BookCatalogueApp.mPrefs;
         }
 		return mPrefs;
-	}
-
-	public boolean hasCheckedForMissingCovers() {
-		return getBoolean(PREF_CHECKED_MISSING_COVERS, false);
-	}
-
-	public void setCheckedForMissingCovers(boolean checked) {
-		setBoolean(PREF_CHECKED_MISSING_COVERS, checked);
 	}
 
     /** Get stored account email */

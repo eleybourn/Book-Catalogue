@@ -1,19 +1,24 @@
 package com.eleybourn.bookcatalogue.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 
-@Entity(tableName = CatalogueDBAdapter.DB_TB_BOOKSHELF) // Replace with your actual table name from DBAdapter
+@Entity(tableName = CatalogueDBAdapter.DB_TB_BOOKSHELF, indices = {@Index(value = {CatalogueDBAdapter.KEY_BOOKSHELF}, name = "bookshelf_bookshelf")})
 public class Bookshelf {
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = CatalogueDBAdapter.KEY_ROW_ID) // Mapping internal ID to standard Android row ID
-    public long id;
+    @PrimaryKey
+    @ColumnInfo(name = CatalogueDBAdapter.KEY_ROW_ID)
+    public Long id;
 
-    @ColumnInfo(name = CatalogueDBAdapter.KEY_BOOKSHELF) // Replace with CatalogueDBAdapter.KEY_BOOKSHELF
+    @NonNull
+    @ColumnInfo(name = CatalogueDBAdapter.KEY_BOOKSHELF)
     public String name;
 
-    // Add other columns if your existing table has them
+    public Bookshelf() {
+        name = "";
+    }
 }

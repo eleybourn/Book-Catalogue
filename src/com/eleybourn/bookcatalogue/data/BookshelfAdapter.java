@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eleybourn.bookcatalogue.R;
 
+import java.util.Objects;
+
 public class BookshelfAdapter extends ListAdapter<Bookshelf, BookshelfAdapter.BookshelfViewHolder> {
     private final OnItemClickListener listener;
     private final OnItemLongClickListener longListener; // 1. Add Long Click Listener
@@ -71,7 +73,7 @@ public class BookshelfAdapter extends ListAdapter<Bookshelf, BookshelfAdapter.Bo
     static class DiffCallback extends DiffUtil.ItemCallback<Bookshelf> {
         @Override
         public boolean areItemsTheSame(@NonNull Bookshelf oldItem, @NonNull Bookshelf newItem) {
-            return oldItem.id == newItem.id;
+            return Objects.equals(oldItem.id, newItem.id);
         }
 
         @Override

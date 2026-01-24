@@ -887,7 +887,6 @@ public class Fields extends ArrayList<Fields.Field> {
      */
     static public class RatingBarAccessor implements FieldDataAccessor {
         public void set(Field field, Cursor c) {
-            Log.d("BC", "set 1");
             RatingBar v = (RatingBar) field.getView();
             int column = c.getColumnIndex(field.column);
             if (field.formatter != null) {
@@ -906,7 +905,6 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public void set(Field field, String s) {
-            Log.d("BC", "set 2");
             RatingBar v = (RatingBar) field.getView();
             float f = 0.0f;
             try {
@@ -918,7 +916,6 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public void get(Field field, Bundle values) {
-            Log.d("BC", "get 1");
             RatingBar v = (RatingBar) field.getView();
             if (field.formatter != null)
                 values.putString(field.column, field.extract("" + v.getRating()));
@@ -927,7 +924,6 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public void get(Field field, DataManager values) {
-            Log.d("BC", "get 2");
             RatingBar v = (RatingBar) field.getView();
             if (field.formatter != null)
                 values.putString(field.column, field.extract("" + v.getRating()));
@@ -936,7 +932,6 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public Object get(Field field) {
-            Log.d("BC", "get 3");
             RatingBar v = (RatingBar) field.getView();
             return v.getRating();
         }
@@ -1141,9 +1136,6 @@ public class Fields extends ArrayList<Fields.Field> {
 
             // Lookup the view
             final View view = c.findViewById(id);
-            Log.d("BC", sourceColumn + " " + fieldId + " " + visibilityGroupName);
-            boolean x = view instanceof RatingBar;
-            Log.d("BC", String.valueOf(x));
 
             // Set the appropriate accessor
             if (view == null) {
@@ -1183,12 +1175,10 @@ public class Fields extends ArrayList<Fields.Field> {
                 } else if (view instanceof RatingBar) {
                     mAccessor = new RatingBarAccessor();
                     ((RatingBar) view).setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
-                        Log.d("BC", "listener");
                         if (fromUser) {
                             Field.this.setValue(Float.toString(rating));
                         }
                     });
-                    addTouchSignalsDirty(view);
                 } else {
                     throw new IllegalArgumentException();
                 }

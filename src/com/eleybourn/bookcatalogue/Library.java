@@ -339,9 +339,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             if (savedInstanceState == null) {
                 HintManager.displayHint(this, R.string.hint_view_only_book_details, null, null);
                 HintManager.displayHint(this, R.string.hint_library, null, null);
-                // This hint is only displayed for users with missing covers who might have upgraded from an earlier version and missed the update message
-                // that explains how to update covers...
-                HintManager.displayHint(this, R.string.hint_missing_covers, null, null, getString(R.string.title_settings), getString(R.string.label_import_old_files));
             }
 
             if (intent.getBooleanExtra("com.eleybourn.bookcatalogue.START_SEARCH", false)) {

@@ -45,6 +45,7 @@
                 android:layout_below="@+id/all_books"
                 android:layout_alignStart="@id/all_books"
                 android:layout_alignEnd="@id/all_books"
+                android:textIsSelectable="false"
                 android:text="@string/description_all_books_blurb" />
         </RelativeLayout>
 

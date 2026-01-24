@@ -70,8 +70,8 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         topAppBar.setNavigationIcon(null);
 
         // Setup handlers for items. It's just a menu after all.
-        setOnClickListener(R.id.cardLibrary, mBrowseHandler);
         setOnClickListener(R.id.cardAddBook, mAddBookHandler);
+        setOnClickListener(R.id.cardLibrary, mBrowseHandler);
         setOnClickListener(R.id.cardSearch, mSearchHandler);
         setOnClickListener(R.id.cardSync, mSyncHandler);
         setOnClickListener(R.id.cardSettings, mAdminHandler);

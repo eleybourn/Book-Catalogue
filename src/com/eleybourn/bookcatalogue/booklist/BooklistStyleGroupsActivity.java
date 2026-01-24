@@ -36,6 +36,7 @@ import com.eleybourn.bookcatalogue.booklist.BooklistStyleGroupsActivity.GroupWra
 import com.eleybourn.bookcatalogue.properties.Properties;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 /**
@@ -170,7 +171,7 @@ public class BooklistStyleGroupsActivity extends BookEditObjectList<GroupWrapper
 			ViewTagger.setTag(target, R.id.TAG_HOLDER, h);
 			ViewTagger.setTag(h.present, R.id.TAG_HOLDER, h);
 			// Make it flash
-			//target.setBackgroundResource(android.R.drawable.list_selector_background);
+			target.setBackgroundResource(Utils.backgroundFlash(this));
 
 			// Handle a click on the tick/cross
 			h.present.setOnClickListener(v -> {

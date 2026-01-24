@@ -1,5 +1,6 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
+import com.eleybourn.bookcatalogue.utils.Utils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.app.Dialog;
 import android.content.Context;
@@ -71,7 +72,7 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
     private void setOnClickListener(View root, int id) {
         View v = root.findViewById(id);
         v.setOnClickListener(mRowClickListener);
-        v.setBackgroundResource(android.R.drawable.list_selector_background);
+        v.setBackgroundResource(Utils.backgroundFlash(v.getContext()));
     }
 
     /**

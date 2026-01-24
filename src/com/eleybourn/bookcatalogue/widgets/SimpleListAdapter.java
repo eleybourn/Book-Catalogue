@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 import java.util.ArrayList;
@@ -228,7 +229,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
             } catch (Exception e) {
                 Logger.logError(e);
             }
-            v.setBackgroundResource(android.R.drawable.list_selector_background);
+            v.setBackgroundResource(Utils.backgroundFlash(v.getContext()));
 
             mCheckedFields = true;
         }

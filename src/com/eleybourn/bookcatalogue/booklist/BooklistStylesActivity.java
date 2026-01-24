@@ -36,6 +36,7 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
+import com.eleybourn.bookcatalogue.utils.Utils;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -151,7 +152,7 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
             ViewTagger.setTag(h.preferred, R.id.TAG_HOLDER, h);
 
             // Make it flash
-            //target.setBackgroundResource(android.R.drawable.list_selector_background);
+            target.setBackgroundResource(Utils.backgroundFlash(this));
 
             // Handle clicks on the tick/cross
             h.preferred.setOnClickListener(v -> {

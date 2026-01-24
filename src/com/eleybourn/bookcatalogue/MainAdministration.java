@@ -97,21 +97,21 @@ public class MainAdministration extends ActivityWithTasks
         /* Book List Preferences Link */
         View blBackupPrefs = findViewById(R.id.backupSyncLabel);
         // Make line flash when clicked.
-        blBackupPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
+        blBackupPrefs.setBackgroundResource(Utils.backgroundFlash(this));
         blBackupPrefs.setOnClickListener(v -> manageBackup());
 
         // Edit Book list styles
         {
             View lbl = findViewById(R.id.editStylesLabel);
             // Make line flash when clicked.
-            lbl.setBackgroundResource(android.R.drawable.list_selector_background);
+            lbl.setBackgroundResource(Utils.backgroundFlash(this));
             lbl.setOnClickListener(v -> BooklistStyles.startEditActivity(MainAdministration.this));
         }
 
         /* Other Prefs Link */
         View otherPrefs = findViewById(R.id.otherPrefsLabel);
         // Make line flash when clicked.
-        otherPrefs.setBackgroundResource(android.R.drawable.list_selector_background);
+        otherPrefs.setBackgroundResource(Utils.backgroundFlash(this));
         otherPrefs.setOnClickListener(v -> {
             Intent i = new Intent(MainAdministration.this, AdminOtherPreferences.class);
             startActivity(i);
@@ -121,7 +121,7 @@ public class MainAdministration extends ActivityWithTasks
             /* Update Fields Link */
             View thumb = findViewById(R.id.thumbLabel);
             // Make line flash when clicked.
-            thumb.setBackgroundResource(android.R.drawable.list_selector_background);
+            thumb.setBackgroundResource(Utils.backgroundFlash(this));
             thumb.setOnClickListener(v -> updateThumbnails());
         }
 
@@ -129,7 +129,7 @@ public class MainAdministration extends ActivityWithTasks
             /* Reset Hints Link */
             View hints = findViewById(R.id.resetHintsLabel);
             // Make line flash when clicked.
-            hints.setBackgroundResource(android.R.drawable.list_selector_background);
+            hints.setBackgroundResource(Utils.backgroundFlash(this));
             hints.setOnClickListener(v -> {
                 HintManager.resetHints();
                 Toast.makeText(MainAdministration.this, R.string.alert_hints_have_been_reset, Toast.LENGTH_LONG).show();
@@ -140,7 +140,7 @@ public class MainAdministration extends ActivityWithTasks
         {
             View erase = findViewById(R.id.eraseCoverCacheLabel);
             // Make line flash when clicked.
-            erase.setBackgroundResource(android.R.drawable.list_selector_background);
+            erase.setBackgroundResource(Utils.backgroundFlash(this));
             erase.setOnClickListener(v -> {
                 Utils utils = new Utils();
                 try {
@@ -156,7 +156,7 @@ public class MainAdministration extends ActivityWithTasks
             /* Backup Link */
             View backup = findViewById(R.id.backupLabel);
             // Make line flash when clicked.
-            backup.setBackgroundResource(android.R.drawable.list_selector_background);
+            backup.setBackgroundResource(Utils.backgroundFlash(this));
             backup.setOnClickListener(v -> {
                 if (mDbHelper.backupDbFile() != null) {
                     Toast.makeText(MainAdministration.this, R.string.alert_backup_success, Toast.LENGTH_LONG).show();
@@ -170,7 +170,7 @@ public class MainAdministration extends ActivityWithTasks
             /* Import old files */
             View imp = findViewById(R.id.importOldFilesLabel);
             // Make line flash when clicked.
-            imp.setBackgroundResource(android.R.drawable.list_selector_background);
+            imp.setBackgroundResource(Utils.backgroundFlash(this));
             imp.setOnClickListener(v -> startImportOldFiles());
         }
 

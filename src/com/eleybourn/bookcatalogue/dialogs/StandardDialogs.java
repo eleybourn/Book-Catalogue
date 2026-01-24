@@ -35,6 +35,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import com.eleybourn.bookcatalogue.utils.Utils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import com.eleybourn.bookcatalogue.BookCatalogueAPI;
@@ -186,7 +187,7 @@ public class StandardDialogs {
         LinearLayout list = root.findViewById(R.id.list);
         for (SimpleDialogItem item : items) {
             View v = item.getView(inflater, list);
-            v.setBackgroundResource(android.R.drawable.list_selector_background);
+            v.setBackgroundResource(Utils.backgroundFlash(v.getContext()));
             ViewTagger.setTag(v, R.id.TAG_DIALOG_ITEM, item);
             list.addView(v);
             v.setOnClickListener(listener);

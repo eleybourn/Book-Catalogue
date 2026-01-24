@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
 
@@ -101,7 +102,9 @@ public class MainAdministration extends ActivityWithTasks
         /* Bookshelf Link */
         View bookshelf = findViewById(R.id.bookshelfLabel);
         // Make line flash when clicked.
-        bookshelf.setBackgroundResource(android.R.drawable.list_selector_background);
+        TypedValue outValue = new TypedValue();
+        this.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        bookshelf.setBackgroundResource(outValue.resourceId);
         bookshelf.setOnClickListener(v -> manageBookshelves());
 
         /* Manage Fields Link */

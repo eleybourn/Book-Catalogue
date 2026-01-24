@@ -46,5 +46,34 @@
         <item name="colorSurfaceContainer">@color/theme_surfaceContainer</item>
         <item name="colorSurfaceContainerHigh">@color/theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/theme_surfaceContainerHighest</item>
+
+        <!-- AlertDialog theme -->
+        <item name="alertDialogTheme">@style/AppTheme.AlertDialogTheme</item>
+    </style>
+
+    <style name="AppTheme.AlertDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurfaceVariant">@color/theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/theme_onSurfaceVariant</item>
+        <item name="colorPrimary">@color/theme_primary</item>
+        <item name="colorOnPrimary">@color/theme_onPrimary</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AppTheme.AlertDialogTitleTextStyle</item>
+        <item name="materialAlertDialogTitlePanelStyle">@style/AppTheme.AlertDialogTitlePanelStyle</item>
+        <item name="materialAlertDialogTitleIconStyle">@style/AppTheme.AlertDialogTitleIconStyle</item>
+    </style>
+
+    <style name="AppTheme.AlertDialogTitleTextStyle" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textColor">@color/theme_onPrimary</item>
+    </style>
+
+    <style name="AppTheme.AlertDialogTitlePanelStyle" parent="MaterialAlertDialog.Material3.Title.Panel">
+        <item name="android:background">@color/theme_primary</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">64dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="AppTheme.AlertDialogTitleIconStyle" parent="MaterialAlertDialog.Material3.Title.Icon">
+        <item name="tint">@color/theme_onPrimary</item>
     </style>
 </resources>

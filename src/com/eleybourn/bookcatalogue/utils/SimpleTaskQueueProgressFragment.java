@@ -241,7 +241,6 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
         // If no tasks left, exit
         if (!mQueue.hasActiveTasks()) {
-            System.out.println("Simple Task Queue: Tasks finished while activity absent, closing");
             dismiss();
         }
     }
@@ -356,7 +355,6 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
      * Refresh the dialog, or post a refresh to the UI thread
      */
     private void requestUpdateProgress() {
-        System.out.println("Simple Task Queue: " + mMessage + " (" + mProgress + "/" + mMax + ")");
         if (Thread.currentThread() == mHandler.getLooper().getThread()) {
             updateProgress();
         } else {

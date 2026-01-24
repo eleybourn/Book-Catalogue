@@ -292,7 +292,6 @@ public class SimpleTaskQueue {
 		} catch (InterruptedException e) {
 			// Ignore. This happens if the queue object is being terminated.
 		}
-		//System.out.println("SimpleTaskQueue(added): " + mQueue.size());
 		synchronized(this) {
 			int qSize = mQueue.size();
 			int nThreads = mThreads.size();
@@ -500,8 +499,6 @@ public class SimpleTaskQueue {
 							}
 						}
 					}
-
-					//System.out.println("SimpleTaskQueue(run): " + mQueue.size());						
 					handleRequest(this, req);
 				}
 			} catch (InterruptedException e) {

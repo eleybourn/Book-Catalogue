@@ -92,7 +92,6 @@ public class BackupManager {
 				BackupWriter wrt = null;
 
 				try {
-					System.out.println("Starting " + requestedFile.getName());
 					TarBackupContainer bkp = new TarBackupContainer(context, requestedFile);
 					wrt = bkp.newWriter(context);
 
@@ -125,12 +124,10 @@ public class BackupManager {
 						}}, backupFlags, since);
 
 					if (fragment.isCancelled()) {
-						System.out.println("Cancelled " + requestedFile.getName());
 						if (requestedFile.exists())
                             requestedFile.delete();
 					} else {
 						mBackupOk = true;
-						System.out.println("Finished " + requestedFile.getName() + ", size = " + requestedFile.length());
 					}
 				} catch (Exception e) {
 					Logger.logError(e);
@@ -187,7 +184,6 @@ public class BackupManager {
 			@Override
 			public void run(final SimpleTaskQueueProgressFragment fragment, SimpleTaskContext taskContext) {
 				try {
-					System.out.println("Starting " + inputFile.getName());
 					BackupReader rdr = BackupManager.readBackup(context, inputFile);
 					rdr.restore(new BackupReaderListener() {
 						@Override
@@ -208,7 +204,6 @@ public class BackupManager {
 					Logger.logError(e);
 					throw new RuntimeException("Error during restore", e);
 				}
-				System.out.println("Finished " + inputFile.getName() + ", size = " + inputFile.length());
 			}
 
 			@Override

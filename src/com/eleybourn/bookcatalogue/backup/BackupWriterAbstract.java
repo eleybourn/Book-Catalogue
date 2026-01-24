@@ -107,8 +107,6 @@ public abstract class BackupWriterAbstract implements BackupWriter {
                 Logger.logError(e, "Failed to close archive");
             }
         }
-
-        System.out.println("Closed writer");
     }
 
     /**
@@ -159,7 +157,6 @@ public abstract class BackupWriterAbstract implements BackupWriter {
         };
 
         // Get a temp file and mark for delete
-        System.out.println("Getting books");
         File temp = File.createTempFile("book-cat", ".tmp");
         temp.deleteOnExit();
         FileOutputStream output = null;
@@ -182,7 +179,6 @@ public abstract class BackupWriterAbstract implements BackupWriter {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void writeBooks(File exportFile) throws IOException {
         try {
-            System.out.println("Writing Books");
             putBooks(exportFile);
         } finally {
             if (exportFile.exists())
@@ -203,8 +199,6 @@ public abstract class BackupWriterAbstract implements BackupWriter {
                 Logger.logError(e);
             }
         }
-
-        System.out.println("Writing Images");
 
         int ok = 0;
         int missing = 0;
@@ -243,8 +237,6 @@ public abstract class BackupWriterAbstract implements BackupWriter {
             if (c != null && !c.isClosed())
                 c.close();
         }
-        if (!dryRun)
-            System.out.println("Wrote " + ok + " Images, " + missing + " missing, and " + skipped + " skipped");
 
         return ok;
     }

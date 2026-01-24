@@ -528,7 +528,6 @@ public class CatalogueDBAdapter {
     public CatalogueDBAdapter(Context ctx) {
         synchronized (mInstanceCount) {
             mInstanceCount++;
-            System.out.println("CatDBA instances: " + mInstanceCount);
             if (DEBUG_INSTANCES) {
                 addInstance(this);
             }
@@ -985,7 +984,6 @@ public class CatalogueDBAdapter {
 
             synchronized (mInstanceCount) {
                 mInstanceCount--;
-                System.out.println("CatDBA instances: " + mInstanceCount);
                 if (DEBUG_INSTANCES) {
                     removeInstance(this);
                 }
@@ -4461,7 +4459,6 @@ public class CatalogueDBAdapter {
         }
 
         long t1 = System.currentTimeMillis();
-        System.out.println("books reindexed in " + (t1 - t0) + "ms");
     }
 
     /**

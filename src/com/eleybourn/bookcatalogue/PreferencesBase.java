@@ -45,7 +45,6 @@ public abstract class PreferencesBase extends BookCatalogueActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
-			System.out.println("In onCreate in PreferencesBase");
 			setContentView(this.getLayout());
             MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
             setSupportActionBar(topAppBar);

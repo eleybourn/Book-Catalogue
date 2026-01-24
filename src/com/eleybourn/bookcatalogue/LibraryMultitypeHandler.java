@@ -1007,7 +1007,6 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                     s = Utils.getMonthName(i);
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
             }
             // Display whatever text we have
             setText(text, s, R.string.unknown_uc, level);
@@ -1058,7 +1057,6 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                     s = r.getQuantityString(R.plurals.n_stars, i, i);
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
             }
             // Display whatever text we have
             setText(text, s, R.string.unknown_uc, level);

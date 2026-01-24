@@ -294,7 +294,6 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
             mLastLocale = curr;
             //BookCatalogueApp.setLocale(this);
             Intent intent = getIntent();
-            System.out.println("Restarting " + this.getClass().getSimpleName());
             finish();
             startActivity(intent);
         }

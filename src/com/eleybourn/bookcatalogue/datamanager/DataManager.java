@@ -281,8 +281,6 @@ public class DataManager {
                 // THIS IS NOT IDEAL!
                 if (o != null) {
                     putString(key, o.toString());
-                } else {
-                    System.out.println("NULL value for key '" + key + "'");
                 }
             }
         }

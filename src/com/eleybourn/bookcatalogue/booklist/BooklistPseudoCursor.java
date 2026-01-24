@@ -137,7 +137,6 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 		synchronized(this) {
 			if (!mCursors.containsKey(cursorId)) {
 				// Get a new cursor
-				System.out.println("Getting cursor at " + cursorId);
 				mCursors.put(cursorId, mBuilder.getOffsetCursor(cursorStartPos, CURSOR_SIZE));
 
 				// Add this cursor id to the 'top' of the MRU list.
@@ -189,12 +188,6 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 				}
 
 			}
-			// DEBUG: Remove dump of MRU list!
-			//System.out.print("MRU: ");
-			//for(int i = 0; i < MRU_LIST_SIZE; i++)
-			//	System.out.print(mMruList[(mMruListPos+1+i)%MRU_LIST_SIZE] + " ");
-			//System.out.println();
-
 			// Set the active cursor, and set its position correctly
 			mActiveCursor = mCursors.get(cursorId);
             assert mActiveCursor != null;
@@ -223,7 +216,6 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 		}
 		// Purge them
 		for(Integer i: toPurge) {
-			System.out.println("Removing cursor at " + i);
 			BooklistCursor c = mCursors.remove(i);
             assert c != null;
             c.close();

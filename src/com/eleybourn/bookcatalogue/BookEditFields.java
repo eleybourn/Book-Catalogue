@@ -181,12 +181,6 @@ public class BookEditFields extends BookAbstract
                 frag.show(getParentFragmentManager(), "bookshelves_dialog");
             });
 
-            boolean anthologyVisible = BookCatalogueApp.getAppPreferences().getBoolean(AdminFieldVisibility.prefix + CatalogueDBAdapter.KEY_ANTHOLOGY_MASK, true);
-            Log.d("BC", "anthologyVisible: " + anthologyVisible);
-            if (!anthologyVisible) {
-                getView().findViewById(R.id.field_anthology).setVisibility(View.GONE);
-            }
-
             // Build the label for the book description if this is first time, otherwise will be built later
             if (savedInstanceState == null)
                 buildDescription();
@@ -216,9 +210,6 @@ public class BookEditFields extends BookAbstract
         }
 
         double tn = System.currentTimeMillis();
-        System.out.println("BEF oAC(super): " + (t2 - t1));
-        System.out.println("BEF oAC: " + (tn - t0));
-
     }
 
     private void showDescriptionDialog() {
@@ -292,8 +283,6 @@ public class BookEditFields extends BookAbstract
 
         // Restore default visibility and hide unused/unwanted and empty fields
         showHideFields(false);
-
-        System.out.println("BEF popF: " + (System.currentTimeMillis() - t0));
     }
 
     /**
@@ -315,6 +304,7 @@ public class BookEditFields extends BookAbstract
     }
 
     private void setupUi() {
+        Log.d("BC", "setupUI");
         assert getView() != null;
         final CheckBox cb = getView().findViewById(R.id.field_anthology);
         cb.setOnClickListener(view -> mEditManager.setShowAnthology(cb.isChecked()));

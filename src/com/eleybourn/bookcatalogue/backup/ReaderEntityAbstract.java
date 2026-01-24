@@ -77,7 +77,6 @@ public abstract class ReaderEntityAbstract implements ReaderEntity {
 				outFile.setLastModified(this.getDateModified().getTime());
 			} catch (Exception e) {
 				// Ignore...it's nice to set the date, but not mandatory
-				System.out.println(e.getMessage());
 			}
 		}
 	}

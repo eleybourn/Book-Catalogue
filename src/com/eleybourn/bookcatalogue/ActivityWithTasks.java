@@ -178,7 +178,6 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
             // RELEASE: Remove these lines!
             String dbgMsg = count + "/" + max + ", '" + message.replace("\n", "\\n") + "'";
             Tracker.handleEvent(ActivityWithTasks.this, "SearchProgress " + dbgMsg, States.Running);
-            System.out.println("PRG: " + dbgMsg);
 
             // Save the details
             mProgressCount = count;

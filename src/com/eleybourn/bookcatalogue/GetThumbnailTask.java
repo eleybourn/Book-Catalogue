@@ -210,7 +210,6 @@ public class GetThumbnailTask implements SimpleTask {
         }
 
         mView.clear();
-        //System.out.println("Set image for ID " + mBookId);
     }
 
 }

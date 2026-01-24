@@ -251,7 +251,6 @@ public class LibraryBuilder {
     public LibraryBuilder(CatalogueDBAdapter adapter, LibraryStyle style) {
         synchronized (sInstanceLock) {
             mInstanceCount++;
-            System.out.println("Builder instances: " + mInstanceCount);
         }
 
         // Allocate ID
@@ -1019,7 +1018,6 @@ public class LibraryBuilder {
                 // triggers to build the summary rows in the correct place.
                 String tgt = makeTriggers(summary, flatTriggers);
                 mBaseBuildStmt = mStatements.add("mBaseBuildStmt", "Insert Into " + tgt + "(" + sqlCmp.destinationColumns + ") " + sqlCmp.select + "\n From\n" + sqlCmp.join + sqlCmp.where + " order by " + sortColNameList);
-                //System.out.println("Base Build:\n" + sql);
                 mBaseBuildStmt.execute();
                 t2 = System.currentTimeMillis();
 
@@ -1099,26 +1097,6 @@ public class LibraryBuilder {
                 long t10 = System.currentTimeMillis();
                 //mDb.execSQL("analyze " + mTableName);
                 long t11 = System.currentTimeMillis();
-
-                System.out.println("T0a: " + (t0a - t0));
-                System.out.println("T0b: " + (t0b - t0a));
-                System.out.println("T0c: " + (t0c - t0b));
-                System.out.println("T0d: " + (t0d - t0c));
-                System.out.println("T0e: " + (t0e - t0d));
-                System.out.println("T1: " + (t1 - t0));
-                System.out.println("T1a: " + (t1a - t1));
-                System.out.println("T1b: " + (t1b - t1a));
-                System.out.println("T1c: " + (t2 - t1b));
-                System.out.println("T3a: " + (t3a - t2));
-                System.out.println("T3b: " + (t3b - t3a));
-                System.out.println("T4: " + (t4 - t3b));
-                System.out.println("T4a: " + (t4a - t4));
-                System.out.println("T4b: " + (t4b - t4a));
-                System.out.println("T4c: " + (t4c - t4b));
-                System.out.println("T8: " + (t8 - t4c));
-                System.out.println("T9: " + (t9 - t8));
-                System.out.println("T10: " + (t10 - t9));
-                System.out.println("T11: " + (t11 - t10));
 
                 mDb.setTransactionSuccessful();
 
@@ -1574,7 +1552,6 @@ public class LibraryBuilder {
         int cnt = (int) fooStmt.simpleQueryForLong();
         fooStmt.close();
         long tc1 = System.currentTimeMillis();
-        System.out.println("Pseudo-count (" + name + ") = " + cnt + " completed in " + (tc1 - tc0) + "ms");
         return cnt;
     }
 
@@ -1707,7 +1684,6 @@ public class LibraryBuilder {
             deleteListNodeSettings();
         }
         long t1 = System.currentTimeMillis() - t0;
-        System.out.println("Expand All: " + t1);
     }
 
     /**
@@ -1765,9 +1741,6 @@ public class LibraryBuilder {
      */
     private void cleanup(final boolean isFinalize) {
         if (mStatements.size() != 0) {
-            if (isFinalize) {
-                System.out.println("Finalizing LibraryBuilder with active statements");
-            }
             try {
                 mStatements.close();
             } catch (Exception e) {
@@ -1775,9 +1748,6 @@ public class LibraryBuilder {
             }
         }
         if (mNavTable != null) {
-            if (isFinalize) {
-                System.out.println("Finalizing LibraryBuilder with nav table");
-            }
             try {
                 mNavTable.close();
                 mNavTable.drop(mDb);
@@ -1786,9 +1756,6 @@ public class LibraryBuilder {
             }
         }
         if (mListTable != null) {
-            if (isFinalize) {
-                System.out.println("Finalizing LibraryBuilder with list table");
-            }
             try {
                 mListTable.close();
                 mListTable.drop(mDb);
@@ -1801,7 +1768,6 @@ public class LibraryBuilder {
             // Only de-reference once!
             synchronized (sInstanceLock) {
                 mInstanceCount--;
-                System.out.println("Builder instances: " + mInstanceCount);
             }
             mReferenceDecremented = true;
         }
@@ -1995,8 +1961,6 @@ public class LibraryBuilder {
             long t1 = System.currentTimeMillis();
             mListTable.create(mDb, false);
             long t2 = System.currentTimeMillis();
-            System.out.println("Drop = " + (t1 - t0));
-            System.out.println("Create = " + (t2 - t1));
         }
 
         /**

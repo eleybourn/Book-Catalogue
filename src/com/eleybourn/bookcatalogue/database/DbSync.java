@@ -104,9 +104,7 @@ public class DbSync {
          */
         public SyncLock getSharedLock() {
             final Thread t = Thread.currentThread();
-            //System.out.println(t.getName() + " requesting SHARED lock");
             mLock.lock();
-            //System.out.println(t.getName() + " locked lock held by " + mLock.getHoldCount());
             purgeOldLocks();
             try {
                 int count;
@@ -116,11 +114,9 @@ public class DbSync {
                     count = 1;
                 }
                 mSharedOwners.put(t, count);
-                //System.out.println(t.getName() + " " + count + " SHARED threads");
                 return mSharedLock;
             } finally {
                 mLock.unlock();
-                //System.out.println(t.getName() + " unlocked lock held by " + mLock.getHoldCount());
             }
         }
 
@@ -129,13 +125,10 @@ public class DbSync {
          */
         public void releaseSharedLock() {
             final Thread t = Thread.currentThread();
-            //System.out.println(t.getName() + " releasing SHARED lock");
             mLock.lock();
-            //System.out.println(t.getName() + " locked lock held by " + mLock.getHoldCount());
             try {
                 if (mSharedOwners.containsKey(t)) {
                     int count = mSharedOwners.get(t) - 1;
-                    //System.out.println(t.getName() + " now has " + count + " SHARED locks");
                     if (count < 0)
                         throw new RuntimeException("Release a lock count already zero");
                     if (count != 0) {
@@ -149,7 +142,6 @@ public class DbSync {
                 }
             } finally {
                 mLock.unlock();
-                //System.out.println(t.getName() + " unlocked lock held by " + mLock.getHoldCount());
             }
         }
 
@@ -178,7 +170,6 @@ public class DbSync {
                         return mExclusiveLock;
                     }
                     // Someone else has it. Wait.
-                    //System.out.println("Thread " + t.getName() + " waiting for DB access");
                     mReleased.await();
                 } catch (Exception e) {
                     // Probably happens because thread was interrupted. Just die.

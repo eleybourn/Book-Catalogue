@@ -162,8 +162,6 @@ public class StartupActivity
         super.onCreate(savedInstanceState);
         setTitle("");
 
-        System.out.println("Startup isTaskRoot() = " + isTaskRoot());
-
         mUiThread = Thread.currentThread();
 
         // Create a progress dialog; we may not use it...but we need it to be created in the UI thread.
@@ -269,9 +267,7 @@ public class StartupActivity
      * be queued in onCreate().
      */
     private void taskCompleted(SimpleTask task) {
-        System.out.println("Task Completed: " + task.getClass().getSimpleName());
         if (!mTaskQueue.hasActiveTasks()) {
-            System.out.println("Task Completed - no more");
             stage2Startup();
         }
     }

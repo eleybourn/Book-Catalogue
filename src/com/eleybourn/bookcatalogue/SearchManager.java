@@ -120,7 +120,6 @@ public class SearchManager implements TaskManagerListener {
 	@Override
 	public void onTaskEnded(TaskManager manager, ManagedTask task) {
 		int size;
-		//System.out.println(task.getClass().getSimpleName() + "(" +  + task.getId() + ") FINISHED starting");
 
 		// Handle the result, and optionally queue another task
 		if (task instanceof SearchThread)
@@ -135,11 +134,9 @@ public class SearchManager implements TaskManagerListener {
 			// Stop listening FIRST...otherwise, if sendResults() calls a listener that starts
 			// a new task, we will stop listening for the new task.
 			TaskManager.getMessageSwitch().removeListener(mTaskManager.getSenderId(), this);
-			System.out.println("Not listening(1)");
 			// Notify the listeners.
 			sendResults();
 		}
-		//System.out.println(task.getClass().getSimpleName() + "(" +  + task.getId() + ") FINISHED Exiting");
 	}
 
 	/**
@@ -162,7 +159,6 @@ public class SearchManager implements TaskManagerListener {
 		synchronized(mRunningTasks) {
 			mRunningTasks.add(thread);
 			mTaskManager.addTask(thread);
-			//System.out.println(thread.getClass().getSimpleName() + "(" +  + thread.getId() + ") STARTING");
 		}
 		thread.start();
 	}
@@ -230,11 +226,9 @@ public class SearchManager implements TaskManagerListener {
 	private void doSearch() {
 		// List for task ends
 		TaskManager.getMessageSwitch().addListener(mTaskManager.getSenderId(), this, false);
-		//System.out.println("Listening");
 
 		// We really want to ensure we get the same book from each, so if isbn is not present, do
 		// these in series.
-
 		boolean tasksStarted = false;
 		mSearchingAsin = false;
 		try {
@@ -260,7 +254,6 @@ public class SearchManager implements TaskManagerListener {
 			if (!tasksStarted) {
 				sendResults();
 				TaskManager.getMessageSwitch().removeListener(mTaskManager.getSenderId(), this);
-				//System.out.println("Not listening(2)");
 			}
 		}
 

@@ -145,7 +145,6 @@ public class CoversDbHelper {
 		}
 		synchronized(mInstanceCount) {
 			mInstanceCount++;
-			System.out.println("CovDBA instances: " + mInstanceCount);
 		}
 	}
 
@@ -309,7 +308,6 @@ public class CoversDbHelper {
 		mStatements.close();
 		synchronized(mInstanceCount) {
 			mInstanceCount--;
-			System.out.println("CovDBA instances: " + mInstanceCount);
 		}
 	}
 	

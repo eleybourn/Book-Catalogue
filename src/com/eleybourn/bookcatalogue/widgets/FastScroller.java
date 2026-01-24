@@ -157,8 +157,6 @@ public class FastScroller {
     }
 
     public void setState(int state) {
-
-        //System.out.println("State: " + state);
         switch (state) {
             case STATE_NONE:
                 mHandler.removeCallbacks(mScrollFade);

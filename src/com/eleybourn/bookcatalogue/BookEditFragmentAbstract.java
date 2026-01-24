@@ -22,6 +22,7 @@ package com.eleybourn.bookcatalogue;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -184,6 +185,13 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
      */
     protected void showHideFields(boolean hideIfEmpty) {
         mFields.resetVisibility();
+
+        boolean anthologyVisible = BookCatalogueApp.getAppPreferences().getBoolean(AdminFieldVisibility.prefix + CatalogueDBAdapter.KEY_ANTHOLOGY_MASK, true);
+        Log.d("BC", "anthologyVisible: " + anthologyVisible);
+        if (!anthologyVisible) {
+            assert getView() != null;
+            getView().findViewById(R.id.field_anthology).setVisibility(View.GONE);
+        }
 
         // Check publishing information; in reality only one of these fields will exist
         showHideField(hideIfEmpty, R.id.field_publisher, R.id.label_publishing, R.id.row_publisher);

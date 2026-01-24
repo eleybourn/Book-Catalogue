@@ -132,8 +132,6 @@ public class BookISBNSearch extends ActivityWithTasks {
             if (savedInstanceState != null)
                 mSearchManagerId = savedInstanceState.getLong("SearchManagerId");
 
-            //System.out.println("BookISBNSearch OnCreate SIS=" + (savedInstanceState == null? "N" : "Y"));
-
             //do we have a network connection?
             boolean network_available = Utils.isNetworkAvailable(this);
             if (!network_available) {
@@ -191,7 +189,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 
             Button mConfirmButton;
             if (mIsbn != null) {
-                //System.out.println(mId + " OnCreate got ISBN");
                 //ISBN has been passed by another component
                 setContentView(R.layout.search_isbn);
                 mIsbnText = findViewById(R.id.field_isbn);
@@ -264,7 +261,6 @@ public class BookISBNSearch extends ActivityWithTasks {
                     go(mIsbn, "", "");
                 });
             } else if (by.equals("name")) {
-                // System.out.println(mId + " OnCreate BY NAME");
                 setContentView(R.layout.search_name);
                 this.setTitle(R.string.label_search_by);
 
@@ -303,7 +299,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 
                 });
             } else if (by.equals("scan")) {
-                // System.out.println(mId + " OnCreate BY SCAN");
                 // Use the scanner to get ISBNs
                 mMode = MODE_SCAN;
                 setContentView(R.layout.search_isbn);
@@ -392,7 +387,6 @@ public class BookISBNSearch extends ActivityWithTasks {
      * @param isbn The ISBN to search
      */
     protected void go(String isbn, String author, String title) {
-        //System.out.println(mId + " GO: isbn=" + isbn + ", author=" + author + ", title=" + title);
 
         // Save the details because we will do some async processing or an alert
         mIsbn = isbn;
@@ -473,7 +467,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void doSearchBook() {
-        // System.out.println(mId + " doSearchBook");
         /* Delete any hanging around temporary thumbs */
         try {
             File thumb = CatalogueDBAdapter.getTempThumbnail();
@@ -483,7 +476,6 @@ public class BookISBNSearch extends ActivityWithTasks {
         }
 
         if ((mAuthor != null && !mAuthor.isEmpty()) || (mTitle != null && !mTitle.isEmpty()) || (mIsbn != null && !mIsbn.isEmpty())) {
-            //System.out.println(mId + " doSearchBook searching");
             /* Get the book */
             try {
                 // Start the lookup in background.
@@ -504,7 +496,6 @@ public class BookISBNSearch extends ActivityWithTasks {
                 finish();
             }
         } else {
-            // System.out.println(mId + " doSearchBook no criteria");
             if (mMode == MODE_SCAN)
                 startScannerActivity();
         }
@@ -515,7 +506,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 
         Tracker.handleEvent(this, "onSearchFinished" + mSearchManagerId, Tracker.States.Running);
         try {
-            //System.out.println(mId + " onSearchFinished");
             if (cancelled || bookData == null) {
                 if (mMode == MODE_SCAN)
                     startScannerActivity();
@@ -575,7 +565,6 @@ public class BookISBNSearch extends ActivityWithTasks {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        //System.out.println("BookISBNSearch onActivityResult " + resultCode);
         super.onActivityResult(requestCode, resultCode, intent);// Only handle legacy Scanner requests here now
         if (requestCode == UniqueId.ACTIVITY_SCAN) {
             mScannerStarted = false;
@@ -632,12 +621,10 @@ public class BookISBNSearch extends ActivityWithTasks {
      * Start scanner activity.
      */
     private void startScannerActivity() {
-        //System.out.println(mId + " startScannerActivity");
         if (mScanner == null) {
             mScanner = ScannerManager.getScanner(this);
         }
         if (!mScannerStarted) {
-            //System.out.println(mId + " startScannerActivity STARTING");
             mScannerStarted = true;
             mScanner.startActivityForResult(this, UniqueId.ACTIVITY_SCAN);
         }
@@ -648,8 +635,6 @@ public class BookISBNSearch extends ActivityWithTasks {
      */
     @Override
     protected void onRestoreInstanceState(Bundle inState) {
-        //System.out.println(mId + " onRestoreInstanceState");
-
         mSearchManagerId = inState.getLong("SearchManagerId");
 
         // Now do 'standard' stuff

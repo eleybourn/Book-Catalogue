@@ -89,7 +89,6 @@ public class Terminator {
 
 		@Override
 		public void run(SimpleTaskContext taskContext) {
-			System.out.println("Terminator starting");
 			do {
 				Event e;
 				long delay;
@@ -135,7 +134,6 @@ public class Terminator {
 
 		@Override
 		public void onFinish(Exception e) {
-			System.out.println("Terminator terminating. I'll be back.");
 		}
 		
 	}

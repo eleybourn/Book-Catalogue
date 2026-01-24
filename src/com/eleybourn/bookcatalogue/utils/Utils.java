@@ -515,7 +515,6 @@ public class Utils {
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
         String s = "Array " + bytes.length + " bytes, bitmap " + bitmap.getHeight() + "x" + bitmap.getWidth();
-        System.out.println(s);
         return bitmap;
     }
 
@@ -1118,8 +1117,6 @@ public class Utils {
         try {
             lv.setCacheColorHint(hint);
         } catch (IndexOutOfBoundsException e) {
-            // Ignore
-            System.out.println("Android Bug avoided");
         }
     }
 

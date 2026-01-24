@@ -264,8 +264,6 @@ public class UpdateThumbnailsThread extends ManagedTask {
      * Called in the main thread for this object when a search has completed.
      */
     private boolean handleSearchFinished(Bundle bookData, boolean cancelled) {
-        System.out.println("onSearchFinished (cancel = " + cancelled + ")");
-
         // Set cancelled flag if the task was cancelled
         if (cancelled) {
             cancelTask();

@@ -597,12 +597,10 @@ public class Fields extends ArrayList<Fields.Field> {
         @Override
         public View findViewById(int id) {
             if (mFragment.get() == null) {
-                System.out.println("Fragment is NULL");
                 return null;
             }
             View v = mFragment.get().getView();
             if (v == null) {
-                System.out.println("View is NULL");
                 return null;
             }
 
@@ -1257,12 +1255,10 @@ public class Fields extends ArrayList<Fields.Field> {
         View getView() {
             Fields fs = mFields.get();
             if (fs == null) {
-                System.out.println("Fields is NULL");
                 return null;
             }
             FieldsContext c = fs.getContext();
             if (c == null) {
-                System.out.println("Context is NULL");
                 return null;
             }
             return c.findViewById(this.id);

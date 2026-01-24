@@ -255,7 +255,6 @@ public class CsvExporter implements Exporter {
             }
 
         } finally {
-            System.out.println("Books Exported: " + num);
             if (displayingStartupMessage)
                 try {
                     listener.onProgress("", 0);

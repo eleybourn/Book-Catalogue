@@ -375,7 +375,6 @@ public class LibraryRowView {
 			if (mTitleCol < 0)
 				throw new RuntimeException("Column " + DOM_TITLE + " not present in cursor");
 		}
-		//System.out.println("LibraryRowView(" + mId + ") title at " + mTitleCol + " in cursor " + mCursor.getId());
 		return mCursor.getString(mTitleCol);
 	}
 	/**

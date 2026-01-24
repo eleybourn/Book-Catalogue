@@ -77,7 +77,6 @@ public class TrackedCursor extends SynchronizedCursor  {
 		if (DEBUG_TRACKED_CURSOR) {
 			synchronized(mInstanceCount) {
 				mInstanceCount++;
-				System.out.println("Cursor instances: " + mInstanceCount);
 			}
 
 			// Record who called us. It's only from about the 7th element that matters.
@@ -108,7 +107,6 @@ public class TrackedCursor extends SynchronizedCursor  {
 			if (!mIsClosedFlg) {
 				synchronized(mInstanceCount) {
 					mInstanceCount--;
-					System.out.println("Cursor instances: " + mInstanceCount);
 				}
 				if (mWeakRef != null)
 					synchronized(mCursors) {
@@ -202,9 +200,7 @@ public class TrackedCursor extends SynchronizedCursor  {
 	public static void dumpCursors() {
 		if (DEBUG_TRACKED_CURSOR) {			
 			for(TrackedCursor c : getCursors()) {
-				System.out.println("Cursor " + c.getCursorId());
 				for (StackTraceElement s : c.getStackTrace()) {
-					System.out.println(s.getFileName() + "    Line " + s.getLineNumber() + " Method " + s.getMethodName());
 				}
 			}			
 		}

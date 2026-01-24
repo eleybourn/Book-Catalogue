@@ -230,7 +230,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         super();
         synchronized (sInstanceLock) {
             mInstanceCount--;
-            System.out.println("BoB instances: " + mInstanceCount);
         }
     }
 
@@ -525,7 +524,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                 int first = lv.getFirstVisiblePosition();
                 int last = lv.getLastVisiblePosition();
                 int centre = (last + first) / 2;
-                System.out.println("New List: (" + first + ", " + last + ")<-" + centre);
                 // Get the first 'target' and make it 'best candidate'
                 BookRowInfo best = targetRows.get(0);
                 int dist = Math.abs(best.listPosition - centre);
@@ -539,10 +537,8 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                     }
                 }
 
-                System.out.println("Best @" + best.listPosition);
                 // Try to put at top if not already visible, or only partially visible
                 if (first >= best.listPosition || last <= best.listPosition) {
-                    System.out.println("Adjusting position");
                     //
                     // setSelectionFromTop does not seem to always do what is expected.
                     // But adding smoothScrollToPosition seems to get the job done reasonably well.
@@ -618,7 +614,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             oldList.close();
         }
         long t1 = System.currentTimeMillis();
-        System.out.println("displayList: " + (t1 - t0));
     }
 
     /**
@@ -655,12 +650,10 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     private LibraryBuilder buildBooklist(boolean isFullRebuild) {
         // If not a full rebuild then just use the current builder to requery the underlying data
         if (mList != null && !isFullRebuild) {
-            System.out.println("Doing rebuild()");
             LibraryBuilder b = mList.getBuilder();
             b.rebuild();
             return b;
         } else {
-            System.out.println("Doing full reconstruct");
             // Make sure we have a style chosen
             BooklistStyles styles = BooklistStyles.getAllStyles(mDb);
             if (mCurrentStyle == null) {
@@ -724,7 +717,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     public void onPause() {
         Tracker.enterOnPause(this);
         super.onPause();
-        System.out.println("onPause");
         if (mSearchText == null || mSearchText.isEmpty())
             savePosition();
 
@@ -743,7 +735,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     public void onDestroy() {
         Tracker.enterOnDestroy(this);
         super.onDestroy();
-        System.out.println("onDestroy");
         mIsDead = true;
 
         mTaskQueue.finish();
@@ -768,7 +759,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         mBookshelfAdapter = null;
         synchronized (sInstanceLock) {
             mInstanceCount--;
-            System.out.println("BoB instances: " + mInstanceCount);
         }
         TrackedCursor.dumpCursors();
         Tracker.exitOnDestroy(this);
@@ -911,7 +901,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        System.out.println("In onActivityResult for BooksOnBookshelf for request " + requestCode);
 
         mMarkBookId = 0;
 
@@ -1173,13 +1162,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                 long t5 = System.currentTimeMillis();
                 mTotalBooks = mTempList.getBookCount();
                 long t6 = System.currentTimeMillis();
-
-                System.out.println("Build: " + (t1 - t0));
-                System.out.println("Position: " + (t2 - t1));
-                System.out.println("Select: " + (t3 - t2));
-                System.out.println("Count(" + count + "): " + (t4 - t3) + "/" + (t5 - t4) + "/" + (t6 - t5));
-                System.out.println("====== ");
-                System.out.println("Total: " + (t6 - t0));
                 // Save a flag to say list was loaded at least once successfully
                 mListHasBeenLoaded = true;
 

@@ -100,8 +100,6 @@ public abstract class BackupReaderAbstract implements BackupReader {
             entity = nextEntity();
         }
         close();
-
-        System.out.println("Restored " + coverCount + " covers");
     }
 
     /**

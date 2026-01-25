@@ -14,6 +14,13 @@
         style="@style/layout_main"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <TextView
+            style="@style/layout_paragraph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/para_cloud_sync_coming_soon" />
+
         <!-- Logged-out View -->
         <!-- This group is shown when the user is not logged in. -->
         <LinearLayout

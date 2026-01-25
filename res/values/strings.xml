@@ -373,6 +373,7 @@
     <string name="label_sourcecode">Source Code:</string>
     <!-- Heading in 'about' dialog -->
     <string name="label_special_thanks">Special Thanks</string>
+    <string name="label_sync_tmp">Backup and Restore</string>
     <string name="label_sync">Online Backup</string>
     <string name="label_sync_description">Never lose your book catalogue</string>
     <string name="label_thumbnail">Cover Thumbnail</string>
@@ -938,6 +939,7 @@
 
     <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
     <string name="title_backup_preferences"><![CDATA[Backup & Sync]]></string>
+    <string name="title_backup_preferences_tmp"><![CDATA[Backup & Restore]]></string>
     <string name="button_login_with_google">Login with Google</string>
     <string name="para_backup_logged_out_message">Log in with your Google account to automatically back up your book catalogue. This will keep your data safe and allow you to restore it on any device.</string>
     <string name="para_backup_logged_in_as">You are logged in and your data is being backed up as:</string>
@@ -949,4 +951,5 @@
     <string name="move_down">Move Down</string>
     <string name="move_up">Move Up</string>
     <string name="fragment_bracketed_string">(%s)</string>
+    <string name="para_cloud_sync_coming_soon">"The ability to backup and sync your book catalogue online is coming very soon. "</string>
 </resources>

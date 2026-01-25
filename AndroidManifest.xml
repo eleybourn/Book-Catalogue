@@ -121,7 +121,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".AdminBackup"
-            android:label="@string/title_backup_preferences"
+            android:label="@string/title_backup_preferences_tmp"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".AdminBookshelfEdit"

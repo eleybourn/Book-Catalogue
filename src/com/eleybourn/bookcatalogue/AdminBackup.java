@@ -79,7 +79,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         setContentView(R.layout.admin_backup_preferences);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
-        topAppBar.setTitle(R.string.title_backup_preferences);
+        topAppBar.setTitle(R.string.title_backup_preferences_tmp);
         topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         registerBackupExportPickerLauncher(ID.DIALOG_OPEN_IMPORT_TYPE);
@@ -150,11 +150,14 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         TextView emailView = findViewById(R.id.field_user_email);
         CheckBox optInView = findViewById(R.id.field_opt_in);
         if (email.isEmpty()) {
-            findViewById(R.id.logged_out_view).setVisibility(View.VISIBLE);
+            // TODO: Enable the visibility of the login screen
+            //findViewById(R.id.logged_out_view).setVisibility(View.VISIBLE);
+            findViewById(R.id.logged_out_view).setVisibility(View.GONE);
             findViewById(R.id.logged_in_view).setVisibility(View.GONE);
         } else {
             findViewById(R.id.logged_out_view).setVisibility(View.GONE);
-            findViewById(R.id.logged_in_view).setVisibility(View.VISIBLE);
+            //findViewById(R.id.logged_in_view).setVisibility(View.VISIBLE);
+            findViewById(R.id.logged_in_view).setVisibility(View.GONE);
             emailView.setText(email);
             optInView.setChecked(optIn);
             TextView token = findViewById(R.id.field_api_token);

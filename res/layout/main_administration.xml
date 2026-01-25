@@ -76,7 +76,7 @@
                 style="@style/layout_menu_list"
                 app:drawableLeftCompat="@drawable/ic_menu_upload"
                 android:drawablePadding="@dimen/p_lg"
-                android:text="@string/title_backup_preferences" />
+                android:text="@string/title_backup_preferences_tmp" />
 
             <TextView
                 android:id="@+id/backupCatalogueLabel"

@@ -5619,7 +5619,7 @@ public class CatalogueDBAdapter {
         }
 
         public ColumnInfo getColumn(String name) {
-            String lcName = name.toLowerCase();
+            String lcName = name.toLowerCase(Locale.ROOT);
             if (!mColumns.containsKey(lcName))
                 return null;
             return mColumns.get(lcName);

@@ -64,7 +64,7 @@
 
     <style name="AppTheme.AlertDialogTitleTextStyle" parent="MaterialAlertDialog.Material3.Title.Text">
         <item name="android:textColor">@color/theme_onPrimary</item>
-        <item name="android:textSize">?android:attr/textAppearanceMedium</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="AppTheme.AlertDialogTitlePanelStyle" parent="MaterialAlertDialog.Material3.Title.Panel">

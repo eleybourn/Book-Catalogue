@@ -77,6 +77,19 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mFields = new Fields(this);
+
+        // Defer until view is loaded
+        view.post(() -> {
+            // Load the data and preserve the isDirty() setting
+            mFields.setAfterFieldChangeListener(null);
+            final boolean wasDirty = mEditManager.isDirty();
+            BookData book = mEditManager.getBookData();
+            onLoadBookDetails(book);
+            mEditManager.setDirty(wasDirty);
+
+            // Set the listener to monitor edits
+            mFields.setAfterFieldChangeListener((field, newValue) -> mEditManager.setDirty(true));
+        });
     }
 
     @Override
@@ -102,19 +115,7 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
 
     @Override
     public void onResume() {
-        //double t0 = System.currentTimeMillis();
-
         super.onResume();
-
-        // Load the data and preserve the isDirty() setting
-        mFields.setAfterFieldChangeListener(null);
-        final boolean wasDirty = mEditManager.isDirty();
-        BookData book = mEditManager.getBookData();
-        onLoadBookDetails(book);
-        mEditManager.setDirty(wasDirty);
-
-        // Set the listener to monitor edits
-        mFields.setAfterFieldChangeListener((field, newValue) -> mEditManager.setDirty(true));
     }
 
     /**
@@ -188,11 +189,13 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
         boolean anthologyVisible = BookCatalogueApp.getAppPreferences().getBoolean(AdminFieldVisibility.prefix + CatalogueDBAdapter.KEY_ANTHOLOGY_MASK, true);
         if (!anthologyVisible) {
             assert getView() != null;
-            getView().findViewById(R.id.field_anthology).setVisibility(View.GONE);
+            final View anthologyField = getView().findViewById(R.id.field_anthology);
+            if (anthologyField != null) {
+                anthologyField.setVisibility(View.GONE);
+            }
         }
 
         // Check publishing information; in reality only one of these fields will exist
-        showHideField(hideIfEmpty, R.id.field_publisher, R.id.label_publishing, R.id.row_publisher);
         showHideField(hideIfEmpty, R.id.field_publisher, R.id.label_publishing, R.id.row_publisher);
 
         showHideField(hideIfEmpty, R.id.button_date_published, R.id.row_date_published);
@@ -211,7 +214,7 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
         // Check ISBN
         showHideField(hideIfEmpty, R.id.field_isbn, R.id.row_isbn);
 
-        // Check ISBN
+        // Check Series
         showHideField(hideIfEmpty, R.id.field_series, R.id.row_series, R.id.label_series);
 
         // Check list price
@@ -220,8 +223,7 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
         // Check description
         showHideField(hideIfEmpty, R.id.field_description, R.id.heading_description, R.id.description_divider);
 
-        // **** MY COMMENTS SECTION ****
-        // Check notes
+        // Personal notes section
         showHideField(hideIfEmpty, R.id.field_notes, R.id.label_notes, R.id.row_notes);
 
         // Check date start reading
@@ -231,7 +233,7 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
         showHideField(hideIfEmpty, R.id.field_read_end, R.id.row_read_end);
 
         // Check location
-        showHideField(hideIfEmpty, R.id.field_location, R.id.row_location, R.id.row_location);
+        showHideField(hideIfEmpty, R.id.field_location, R.id.row_location);
 
         // Check signed flag
         showHideField(hideIfEmpty, R.id.field_signed, R.id.row_signed);

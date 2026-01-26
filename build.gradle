@@ -4,7 +4,7 @@ apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 // For custom app signing config, set BookCatalogue.signing in local.properties to the
 // path f a gradle file with the Android signing config. eg.
 //
-//    BookCatalogue.signing=O\:/Documents/BookCatalogue Dev/KeyStore/bcSigningConfig.gradle
+//    BookCatalogue.signing=O\\:/Documents/BookCatalogue Dev/KeyStore/bcSigningConfig.gradle
 //
 def SigningProperty = "BookCatalogue.signing"
 Properties properties = new Properties()
@@ -60,7 +60,7 @@ android {
     namespace = 'com.eleybourn.bookcatalogue'
 //    signingConfigs {
 //        Default {
-//            storeFile file('O:\\Documents\\BookCatalogue Dev\\KeyStore\\bc_key_evan')
+//            storeFile file('O:\\\\Documents\\\\BookCatalogue Dev\\\\KeyStore\\\\bc_key_evan')
 //            storePassword 'foobar'
 //            keyAlias = 'bookcatalogue'
 //            keyPassword 'foobar'
@@ -69,7 +69,12 @@ android {
 //
     buildTypes {
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", properties.getProperty("GOOGLE_OAUTH_CLIENT_ID", "\"\"")
+            ndk {
+                debugSymbolLevel 'SYMBOL_TABLE'
+            }
         }
         debug {
             buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", properties.getProperty("GOOGLE_OAUTH_CLIENT_ID", "\"\"")

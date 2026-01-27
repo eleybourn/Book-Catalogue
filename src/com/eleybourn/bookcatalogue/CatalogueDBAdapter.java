@@ -5619,7 +5619,7 @@ public class CatalogueDBAdapter {
         }
 
         public ColumnInfo getColumn(String name) {
-            String lcName = name.toLowerCase(Locale.ROOT);
+            String lcName = name.toLowerCase(Locale.US);
             if (!mColumns.containsKey(lcName))
                 return null;
             return mColumns.get(lcName);
@@ -5657,7 +5657,7 @@ public class CatalogueDBAdapter {
                     col.allowNull = colCsr.getInt(3) == 0;
                     col.defaultValue = colCsr.getString(4);
                     col.isPrimaryKey = colCsr.getInt(5) == 1;
-                    String tName = col.typeName.toLowerCase();
+                    String tName = col.typeName.toLowerCase(Locale.US);
                     switch (tName) {
                         case "int":
                         case "integer":

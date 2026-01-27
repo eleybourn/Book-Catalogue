@@ -501,7 +501,7 @@ public class DbUtils {
         public TableDefinition addDomains(DomainDefinition... domains) {
             for (DomainDefinition d : domains)
                 addDomain(d);
-            return this.mName;
+            return this;
         }
 
         /**

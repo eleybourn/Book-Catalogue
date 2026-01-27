@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/layout_dialog" >
+    style="@style/layout_dialog">
 
     <TextView
         android:id="@+id/dialog_title"
         style="@style/layout_dialog_title"
-        android:text="@string/label_select_bookshelves"/>
-
-    <LinearLayout
-        android:id="@+id/bookshelf_dialog_root"
-        style="@style/layout_main"
-        android:layout_width="wrap_content"
-        android:layout_below="@+id/dialog_title" >
-
-    </LinearLayout>
+        android:layout_alignParentTop="true"
+        android:text="@string/label_select_bookshelves" />
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/p_lg"
+        android:layout_alignParentBottom="true"
         android:gravity="center"
-        android:layout_below="@+id/bookshelf_dialog_root" >
+        android:padding="@dimen/p_lg">
+
         <Button
             android:id="@+id/bookshelf_dialog_button"
             style="@style/layout_button"
             android:text="@string/button_ok" />
     </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/bookshelf_dialog_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_buttons"
+        android:layout_below="@+id/dialog_title">
+
+        <LinearLayout
+            android:id="@+id/bookshelf_dialog_root"
+            style="@style/layout_main"
+            android:layout_width="wrap_content" />
+    </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>

@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 /**
@@ -483,7 +484,7 @@ public class DbUtils {
             if (mDomainCheck.contains(domain))
                 return;
             // Make sure one with same name is not already in table
-            if (mDomainNameCheck.contains(domain.name.toLowerCase()))
+            if (mDomainNameCheck.contains(domain.name.toLowerCase(Locale.US)))
                 throw new RuntimeException("A domain with that name has already been added");
             // Add it
             mDomains.add(domain);
@@ -500,7 +501,7 @@ public class DbUtils {
         public TableDefinition addDomains(DomainDefinition... domains) {
             for (DomainDefinition d : domains)
                 addDomain(d);
-            return this;
+            return this.mName;
         }
 
         /**
@@ -574,10 +575,10 @@ public class DbUtils {
             s.append(mName);
             s.append(" (\n");
 
-            s.append("	");
+            s.append("\t");
             s.append(domains[0]);
             for (int i = 1; i < domains.length; i++) {
-                s.append(",\n	");
+                s.append(",\n\t");
                 s.append(domains[i].toString());
             }
             s.append(")");
@@ -619,11 +620,11 @@ public class DbUtils {
             s.append(mName);
             s.append(" Set\n");
 
-            s.append("	");
+            s.append("\t");
             s.append(domains[0]);
             s.append(" = ?");
             for (int i = 1; i < domains.length; i++) {
-                s.append(",\n	");
+                s.append(",\n\t");
                 s.append(domains[i].toString());
                 s.append(" = ?");
             }
@@ -633,7 +634,7 @@ public class DbUtils {
 
         /**
          * Get a base 'INSERT or REPLACE' statement for this table using the passed list of domains. Returns partial
-         * SQL of the form: 'INSERT or REPLACE INTO [table-name] ( [domain-1] ) Values (?, ..., ?)'.
+         * SQL of the form: 'INSERT or REPLACE INTO [table-name] ( [domain-1] ) Values (?, ..., ?)'
          *
          * @param domains List of domains to use
          * @return    SQL fragment
@@ -651,7 +652,7 @@ public class DbUtils {
 
                 sPlaceholders.append(", ?");
             }
-            s.append(")\n	values (");
+            s.append(")\n\tvalues (");
             s.append(sPlaceholders);
             s.append(")\n");
             return s.toString();

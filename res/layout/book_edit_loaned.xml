@@ -16,7 +16,7 @@
         android:text="@string/option_nobody" />
 
     <Button
-        android:id="@+id/button_confirm"
+        android:id="@+id/button_loan"
         style="@style/layout_button"
         android:width="150sp"
         android:text="@string/button_returned" />

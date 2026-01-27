@@ -146,7 +146,7 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 
         //askPermission(sv);
 
-		Button mConfirmButton = sv.findViewById(R.id.button_confirm);
+		Button mConfirmButton = sv.findViewById(R.id.button_loan);
 		mConfirmButton.setOnClickListener(view -> {
             String friend = saveLoan();
             loaned(friend);
@@ -188,7 +188,7 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
 
 		TextView mWhoText = sv.findViewById(R.id.field_loaned_to);
 		mWhoText.setText(user);
-		Button mConfirmButton = sv.findViewById(R.id.button_confirm);
+		Button mConfirmButton = sv.findViewById(R.id.button_loan);
 		mConfirmButton.setOnClickListener(view -> {
             removeLoan();
             loanTo();

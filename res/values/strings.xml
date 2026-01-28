@@ -789,6 +789,11 @@
     <string name="preference_global_opening_book_mode">Open book in read-only mode</string>
     <string name="preference_library_state">Library state</string>
     <string name="preference_prefer_large_thumbnails">Prefer large thumbnails</string>
+    <string name="preference_theme_default">Use System Default</string>
+    <string name="preference_theme_light">Use Light Mode</string>
+    <string name="preference_theme_dark">Use Dark Mode</string>
+    <string name="preference_theme_previous">Earlier Background</string>
+    <string name="preference_theme">Change Theme</string>
     <!-- End: Added/Updated in 5.1.1 -->
     <!-- Begin: Added/Updated in 5.1.2 -->
     <!-- A heading in the 'about' dialog -->

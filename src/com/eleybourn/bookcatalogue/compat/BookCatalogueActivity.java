@@ -11,12 +11,16 @@ import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+
+import com.eleybourn.bookcatalogue.BookCataloguePreferences;
+import com.eleybourn.bookcatalogue.utils.Utils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -38,6 +42,7 @@ import com.eleybourn.bookcatalogue.utils.StorageUtils.FileCopyStatus;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Class introduced to reduce the future pain when we remove sherlock (once we no longer
@@ -240,6 +245,12 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                 bar.setLogo(0);
         }
         checkPermissions();
+        if (Objects.equals(BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_THEME, BookCataloguePreferences.PREF_THEME_DEFAULT), BookCataloguePreferences.PREF_THEME_PREVIOUS)) {
+            Utils.initBackground(this, false);
+            try {
+                findViewById(R.id.bg_bookshelf).setVisibility(View.GONE);
+            } catch (Exception ignored) {}
+        }
     }
 
     private void checkPermissions() {
@@ -281,6 +292,12 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         reloadIfLocaleChanged();
+        if (Objects.equals(BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_THEME, BookCataloguePreferences.PREF_THEME_DEFAULT), BookCataloguePreferences.PREF_THEME_PREVIOUS)) {
+            Utils.initBackground(this, false);
+            try {
+                findViewById(R.id.bg_bookshelf).setVisibility(View.GONE);
+            } catch (Exception ignored) {}
+        }
         super.onResume();
     }
 

@@ -3,17 +3,17 @@
  * @license GNU General Public License
  * 
  * This file is part of Book Catalogue.
- *
+ * 
  * Book Catalogue is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * Book Catalogue is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -53,6 +53,13 @@ public class AdminOtherPreferences extends PreferencesBase {
 	/** List of supported locales */
 	private static final ItemEntries<String> mInterfaceLanguageListItems = getLanguageListItems();
 
+	/** Theme property values */
+	private static final ItemEntries<String> mThemeListItems = new ItemEntries<String>()
+            .add(BookCataloguePreferences.PREF_THEME_DEFAULT, R.string.preference_theme_default)
+            .add(BookCataloguePreferences.PREF_THEME_LIGHT, R.string.preference_theme_light)
+			.add(BookCataloguePreferences.PREF_THEME_DARK, R.string.preference_theme_dark)
+            .add(BookCataloguePreferences.PREF_THEME_PREVIOUS, R.string.preference_theme_previous);
+
 	/** Preferred Scanner property values */
 	private static final ItemEntries<Integer> mScannerListItems = new ItemEntries<Integer>()
 			.add(null, R.string.option_use_default_setting)
@@ -75,6 +82,13 @@ public class AdminOtherPreferences extends PreferencesBase {
             .setGlobal(true)
             .setWeight(0)
             .setNameResourceId(R.string.preference_start_in_my_books)
+            .setGroup(PropertyGroup.GRP_USER_INTERFACE))
+
+        .add(new StringListProperty(mThemeListItems, BookCataloguePreferences.PREF_THEME, PropertyGroup.GRP_USER_INTERFACE, R.string.preference_theme)
+            .setDefaultValue(BookCataloguePreferences.PREF_THEME_DEFAULT)
+            .setPreferenceKey(BookCataloguePreferences.PREF_THEME)
+            .setGlobal(true)
+            .setWeight(10)
             .setGroup(PropertyGroup.GRP_USER_INTERFACE))
 	
 		/*

@@ -39,6 +39,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 
 import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
@@ -96,6 +97,8 @@ public class BookCatalogueApp extends Application {
     private final SharedPreferences.OnSharedPreferenceChangeListener mPrefsListener = (sharedPreferences, key) -> {
         if (key != null && key.equals(BookCataloguePreferences.PREF_APP_LOCALE)) {
             applyLocaleSettings();
+        } else if (key != null && key.equals(BookCataloguePreferences.PREF_THEME)) {
+            applyTheme();
         }
     };
 
@@ -247,6 +250,7 @@ public class BookCatalogueApp extends Application {
         filesDir = getFilesDir();
         mPrefs = getSharedPreferences("bookCatalogue", BookCatalogueApp.MODE_PRIVATE);
         applyLocaleSettings();
+        applyTheme();
         res = getResources();
 
         Terminator.init();
@@ -294,6 +298,26 @@ public class BookCatalogueApp extends Application {
 
         // Watch the preferences and handle changes as necessary
         mPrefs.registerOnSharedPreferenceChangeListener(mPrefsListener);
+    }
+
+    private void applyTheme() {
+        String theme = getAppPreferences().getString(BookCataloguePreferences.PREF_THEME, BookCataloguePreferences.PREF_THEME_DEFAULT);
+        switch (theme) {
+            case BookCataloguePreferences.PREF_THEME_LIGHT:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case BookCataloguePreferences.PREF_THEME_DARK:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case BookCataloguePreferences.PREF_THEME_PREVIOUS:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            default:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+        }
     }
 
     private void applyLocaleSettings() {

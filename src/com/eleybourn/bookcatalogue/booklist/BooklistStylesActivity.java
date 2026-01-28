@@ -205,7 +205,7 @@ public class BooklistStylesActivity extends BookEditObjectList<LibraryStyle> {
             csa[i] = items.get(i);
 
         // Show the dialog
-        new MaterialAlertDialogBuilder(getLayoutInflater().getContext())
+        new MaterialAlertDialogBuilder(target.getContext())
                 .setItems(csa, (dialog1, which) -> {
                     int id = items.get(which).getId();
                     if (id == R.id.MENU_DELETE_STYLE) {

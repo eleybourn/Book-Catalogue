@@ -45,4 +45,5 @@
     <color name="theme_surfaceContainer">#E9EFF0</color>
     <color name="theme_surfaceContainerHigh">#E3E9EB</color>
     <color name="theme_surfaceContainerHighest">#DEE3E5</color>
+    <color name="previous_background_grey">#2D2D2D</color>
 </resources>

@@ -28,6 +28,12 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Shader.TileMode;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -45,6 +51,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.core.text.HtmlCompat;
+import androidx.fragment.app.Fragment;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
@@ -99,20 +106,19 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-
 public class Utils {
-    private static final ConcurrentHashMap<String, Object> urlLocks = new ConcurrentHashMap<>();
     public static final boolean USE_BARCODE = true;
+    // Used for formatting dates for sql; everything is assumed to be UTC, or converted to UTC since
+    // UTC is the default SQLite TZ.
+    static final TimeZone tzUtc = TimeZone.getTimeZone("UTC");
+    static final DateFormat mDateDisplaySdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+    private static final ConcurrentHashMap<String, Object> urlLocks = new ConcurrentHashMap<>();
     // Used for date parsing and display
     private static final SimpleDateFormat mDateFullHMSSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
     private static final SimpleDateFormat mDateFullHMSqlSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
     private static final SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     private static final SimpleDateFormat mLocalDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     private static final ArrayList<SimpleDateFormat> mParseDateFormats = new ArrayList<>();
-    // Used for formatting dates for sql; everything is assumed to be UTC, or converted to UTC since
-    // UTC is the default SQLite TZ.
-    static final TimeZone tzUtc = TimeZone.getTimeZone("UTC");
-    static final DateFormat mDateDisplaySdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
     private static ArrayUtils<Author> mAuthorUtils = null;
     private static ArrayUtils<Series> mSeriesUtils = null;
     /**
@@ -210,7 +216,7 @@ public class Utils {
      * Attempt to parse a date string based on a range of possible formats.
      *
      * @param s String to parse
-     * @return        Resulting date if parsed, otherwise null
+     * @return Resulting date if parsed, otherwise null
      */
     public static Date parseDate(String s) {
         Date d;
@@ -228,7 +234,7 @@ public class Utils {
      *
      * @param s        String to parse
      * @param forceUtc True if forcing UTC format
-     * @return            Resulting date if parsed, otherwise null
+     * @return Resulting date if parsed, otherwise null
      */
     public static Date parseDate(String s, boolean forceUtc) {
         Date d;
@@ -248,7 +254,7 @@ public class Utils {
      * @param s        String to parse
      * @param lenient  True if parsing should be lenient
      * @param forceUtc True if forcing UTC format
-     * @return                Resulting date if parsed, otherwise null
+     * @return Resulting date if parsed, otherwise null
      */
     private static Date parseDate(String s, boolean lenient, boolean forceUtc) {
         Date d;
@@ -297,7 +303,7 @@ public class Utils {
      *
      * @param s         String to convert
      * @param delimiter The list delimiter to encode (if found).
-     * @return        Converted string
+     * @return Converted string
      */
     public static String encodeListItem(String s, char delimiter) {
         StringBuilder ns = new StringBuilder();
@@ -328,7 +334,7 @@ public class Utils {
      * This is used to build text lists separated by 'delimiter'.
      *
      * @param sa String array to convert
-     * @return        Converted string
+     * @return Converted string
      */
     @SuppressWarnings("unused")
     static String encodeList(ArrayList<String> sa, char delimiter) {
@@ -408,7 +414,7 @@ public class Utils {
      *
      * @param urlText        Image file URL
      * @param filenameSuffix Suffix to add
-     * @return    Downloaded filespec
+     * @return Downloaded filespec
      */
     static public String saveThumbnailFromUrl(String urlText, String filenameSuffix) {
         // Get the URL
@@ -458,7 +464,7 @@ public class Utils {
      *
      * @param in  InputStream to read
      * @param out File to save
-     * @return            true if successful
+     * @return true if successful
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     static public boolean saveInputToFile(InputStream in, File out) {
@@ -496,7 +502,7 @@ public class Utils {
      * Given a URL, get an image and return as a bitmap.
      *
      * @param urlText Image file URL
-     * @return    Downloaded bitmap
+     * @return Downloaded bitmap
      */
     @SuppressWarnings("unused")
     static public Bitmap getBitmapFromUrl(String urlText) {
@@ -521,7 +527,7 @@ public class Utils {
      * Given a URL, get an image and return as a byte array.
      *
      * @param urlText Image file URL
-     * @return    Downloaded byte[]
+     * @return Downloaded byte[]
      */
     static public byte[] getBytesFromUrl(String urlText) {
         // Get the URL
@@ -753,7 +759,7 @@ public class Utils {
      *
      * @param sa        Array of strings to join
      * @param delimiter Delimiter to place between entries
-     * @return            The joined strings
+     * @return The joined strings
      */
     public static String join(String[] sa, String delimiter) {
         // Simple case, return empty string
@@ -903,7 +909,7 @@ public class Utils {
      * Convert a array of objects to a string.
      *
      * @param a Array
-     * @return        Resulting string
+     * @return Resulting string
      */
     @SuppressWarnings("unused")
     public static <T> String ArrayToString(ArrayList<T> a) {
@@ -1123,7 +1129,7 @@ public class Utils {
      * Format the passed bundle in a way that is convenient for display
      *
      * @param b Bundle to format
-     * @return        Formatted string
+     * @return Formatted string
      */
     public static String bundleToString(Bundle b) {
         StringBuilder sb = new StringBuilder();
@@ -1227,7 +1233,7 @@ public class Utils {
      * @param vh     Collection of all views
      * @param nextId ID of 'next' view to get
      * @param getter Interface to lookup 'next' ID given a view
-     * @return            ID if first visible 'next' view
+     * @return ID if first visible 'next' view
      */
     private static int getNextView(Hashtable<Integer, View> vh, int nextId, INextView getter) {
         final View v = vh.get(nextId);
@@ -1244,7 +1250,7 @@ public class Utils {
      * Passed a parent View return a collection of all child views that have IDs.
      *
      * @param v Parent View
-     * @return    Hashtable of descendants with ID != NO_ID
+     * @return Hashtable of descendants with ID != NO_ID
      */
     private static Hashtable<Integer, View> getViews(View v) {
         Hashtable<Integer, View> vh = new Hashtable<>();
@@ -1279,7 +1285,7 @@ public class Utils {
     /**
      * Passed date components build a (partial) SQL format date string.
      *
-     * @return        Formatted date, eg. '2011-11-01' or '2011-11'
+     * @return Formatted date, eg. '2011-11-01' or '2011-11'
      */
     public static String buildPartialDate(Integer year, Integer month, Integer day) {
         String value;
@@ -1336,7 +1342,7 @@ public class Utils {
      * Utility routine to get an author list from the intent extras
      *
      * @param b Bundle to read
-     * @return        List of authors
+     * @return List of authors
      */
     @SuppressWarnings("unchecked")
     public static ArrayList<Author> getAuthorsFromBundle(Bundle b) {
@@ -1347,7 +1353,7 @@ public class Utils {
      * Utility routine to get a series list from the intent extras
      *
      * @param b Bundle with series list
-     * @return        List of series
+     * @return List of series
      */
     @SuppressWarnings("unchecked")
     public
@@ -1429,7 +1435,7 @@ public class Utils {
      *
      * @param s            String to convert
      * @param emptyIsFalse TODO
-     * @return        Boolean value
+     * @return Boolean value
      */
     public static boolean stringToBoolean(String s, boolean emptyIsFalse) {
         boolean v;
@@ -1548,6 +1554,102 @@ public class Utils {
         }
     }
 
+    public static int backgroundFlash(Context context) {
+        // Make line flash when clicked.
+        TypedValue outValue = new TypedValue();
+        context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        return outValue.resourceId;
+
+    }
+
+    /**
+     * Set the passed Activity background based on user preferences
+     */
+    public static void initBackground(Activity a, boolean bright) {
+        View rootView = ((ViewGroup) a.findViewById(android.R.id.content)).getChildAt(0);
+        initBackground(rootView, bright);
+    }
+
+    public static void initBackground(Fragment f, boolean bright) {
+        assert f.getView() != null;
+        View rootView = ((ViewGroup) f.getView().findViewById(android.R.id.content)).getChildAt(0);
+        initBackground(rootView, bright);
+    }
+
+    /**
+     * Set the passed Activity background based on user preferences
+     */
+    public static void initBackground(Activity a, int rootId, boolean bright) {
+        initBackground(a.findViewById(rootId), bright);
+    }
+
+    public static void initBackground(View root, boolean bright) {
+        try {
+            final int backgroundColor = BookCatalogueApp.getRes().getColor(R.color.previous_background_grey);
+
+            if (root instanceof ListView) {
+                ListView lv = ((ListView) root);
+                setCacheColorHintSafely(lv, 0x00000000);
+            }
+            Drawable d = makeTiledBackground(bright);
+
+            root.setBackgroundDrawable(d);
+            root.invalidate();
+        } catch (Exception e) {
+            // Usually the errors result from memory problems; do a gc just in case.
+            System.gc();
+            // This is a purely cosmetic function; just log the error
+            Logger.logError(e, "Error setting background");
+        }
+    }
+
+    /**
+     * Reuse of bitmaps in tiled backgrounds is a known cause of problems:
+     * <a href="http://stackoverflow.com/questions/4077487/background-image-not-repeating-in-android-layout">...</a>
+     * So we avoid reusing them.
+     * <p>
+     * This seems to have become further messed up in 4.1 so now, we just created them manually. No references,
+     * but the old cleanup method (see below for cleanupTiledBackground()) no longer works. Since it effectively
+     * un-cached the background, we just create it here.
+     * <p>
+     * The main problem with this approach is that the style is defined in code rather than XML.
+     *
+     * @param bright Flag indicating if background should be 'bright'
+     * @return Background Drawable
+     */
+    public static Drawable makeTiledBackground(boolean bright) {
+        // Storage for the layers
+        Drawable[] drawables = new Drawable[2];
+        // Get the BG image, put in tiled drawable
+        Bitmap b = BitmapFactory.decodeResource(BookCatalogueApp.getRes(), R.drawable.books_bg);
+        BitmapDrawable bmD = new BitmapDrawable(BookCatalogueApp.getRes(), b);
+        bmD.setTileModeXY(TileMode.REPEAT, TileMode.REPEAT);
+        // Add to layers
+        drawables[0] = bmD;
+
+        // Set up the gradient colours based on 'bright' setting
+        int[] colours = new int[3];
+        if (bright) {
+            colours[0] = Color.argb(224, 0, 0, 0);
+            colours[1] = Color.argb(208, 0, 0, 0);
+            colours[2] = Color.argb(48, 0, 0, 0);
+        } else {
+            colours[0] = Color.argb(255, 0, 0, 0);
+            colours[1] = Color.argb(208, 0, 0, 0);
+            colours[2] = Color.argb(160, 0, 0, 0);
+        }
+
+        // Create a gradient and add to layers
+        GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colours);
+        drawables[1] = gd;
+
+        // Make the layers and we are done.
+        LayerDrawable ll = new LayerDrawable(drawables);
+        ll.setDither(true);
+
+        return ll;
+    }
+
     /**
      * Utility routine to delete all cached covers of a specified book
      */
@@ -1564,7 +1666,7 @@ public class Utils {
      * @param originalFile File representing original image file
      * @param destView     View to populate
      * @param cacheId      ID of the image in the cache
-     * @return                Bitmap (if cached) or NULL (if not cached)
+     * @return Bitmap (if cached) or NULL (if not cached)
      */
     public Bitmap fetchCachedImageIntoImageView(final File originalFile, final ImageView destView, final String cacheId) {
         Bitmap bm = null;                    // resultant Bitmap (which we will return)
@@ -1623,7 +1725,7 @@ public class Utils {
      * @param hash            ID of book to retrieve.
      * @param checkCache      Indicates if cache should be checked for this cover
      * @param allowBackground Indicates if request can be put in background task.
-     * @return                Bitmap (if cached) or NULL (if done in background)
+     * @return Bitmap (if cached) or NULL (if done in background)
      */
     public final Bitmap fetchBookCoverIntoImageView(final ImageView destView, int maxWidth, int maxHeight, final boolean exact, final String hash, final boolean checkCache, final boolean allowBackground) {
 
@@ -1720,6 +1822,7 @@ public class Utils {
         T get(String source);
     }
 
+
     public interface ItemWithIdFixup {
         long fixupId(CatalogueDBAdapter db);
 
@@ -1752,7 +1855,7 @@ public class Utils {
          * This is used to build text lists separated by 'delimiter'.
          *
          * @param sa String array to convert
-         * @return        Converted string
+         * @return Converted string
          */
         public String encodeList(ArrayList<T> sa, char delimiter) {
             Iterator<T> si = sa.iterator();
@@ -1851,14 +1954,6 @@ public class Utils {
         public boolean isClosed() {
             return mIsClosed;
         }
-    }
-
-    public static int backgroundFlash(Context context) {
-        // Make line flash when clicked.
-        TypedValue outValue = new TypedValue();
-        context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
-        return outValue.resourceId;
-
     }
 
 

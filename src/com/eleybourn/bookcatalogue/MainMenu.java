@@ -30,9 +30,11 @@ import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment.OnMessageDialog
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
 import com.eleybourn.bookcatalogue.utils.AlertDialogUtils.AlertDialogItem;
 import com.eleybourn.bookcatalogue.utils.HintManager;
+import com.eleybourn.bookcatalogue.utils.Utils;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Implement the 'Main Menu' for BookCatalogue. This is one of two possible start screens.
@@ -86,6 +88,7 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
         if (savedInstanceState == null) {
             HintManager.displayHint(this, R.string.hint_startup_screen, R.string.hint_startup_screen_heading, null);
         }
+
     }
 
     /**

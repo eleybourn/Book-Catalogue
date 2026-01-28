@@ -35,6 +35,11 @@ public class BookCataloguePreferences {
     public static final String PREF_ACCOUNT_EMAIL = "Account.Email";
     public static final String PREF_ACCOUNT_OPT_IN = "Account.OptIn";
     public static final String PREF_ACCOUNT_API_TOKEN = "Account.ApiToken";
+    public static final String PREF_THEME = "App.Theme";
+    public static final String PREF_THEME_DEFAULT = "App.Theme.Default";
+    public static final String PREF_THEME_LIGHT = "App.Theme.Light";
+    public static final String PREF_THEME_DARK = "App.Theme.Dark";
+    public static final String PREF_THEME_PREVIOUS = "App.Theme.Previous";
 
 	/** Get startup activity preference */
 	public boolean getStartInMyBook() {

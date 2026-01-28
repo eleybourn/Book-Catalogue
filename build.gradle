@@ -1,11 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 
-// For custom app signing config, set BookCatalogue.signing in local.properties to the
-// path f a gradle file with the Android signing config. eg.
-//
-//    BookCatalogue.signing=O\\:/Documents/BookCatalogue Dev/KeyStore/bcSigningConfig.gradle
-//
 def SigningProperty = "BookCatalogue.signing"
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -36,8 +31,6 @@ allprojects {
 dependencies {
     implementation libs.androidx.legacy.support.v4
     implementation libs.androidx.appcompat
-//    implementation "com.android.support:support-core-utils:28.0.3"
-//    implementation "com.android.support:android.support.v7.app.ActionBar:28.0.0"
     // Compile all libraries from 'libs' folder
     implementation fileTree(include: '*.jar', dir: 'libs')
     implementation libs.material
@@ -58,23 +51,14 @@ dependencies {
 
 android {
     namespace = 'com.eleybourn.bookcatalogue'
-//    signingConfigs {
-//        Default {
-//            storeFile file('O:\\\\Documents\\\\BookCatalogue Dev\\\\KeyStore\\\\bc_key_evan')
-//            storePassword 'foobar'
-//            keyAlias = 'bookcatalogue'
-//            keyPassword 'foobar'
-//        }
-//    }
-//
     buildTypes {
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //minifyEnabled true
+            //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", properties.getProperty("GOOGLE_OAUTH_CLIENT_ID", "\"\"")
-            ndk {
-                debugSymbolLevel 'SYMBOL_TABLE'
-            }
+            //ndk {
+            //    debugSymbolLevel 'SYMBOL_TABLE'
+            //}
         }
         debug {
             buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", properties.getProperty("GOOGLE_OAUTH_CLIENT_ID", "\"\"")
@@ -91,11 +75,6 @@ android {
         options.compilerArgs += ['-Xlint:deprecation']
     }
     // !!! Commented to use values from the manifest
-//    defaultConfig {
-//        minSdkVersion 7
-//        targetSdkVersion 16
-//        versionCode 169
-//    }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -118,13 +97,11 @@ android {
             // Assigns this product flavor to the "distributor" flavor dimension.
             // This property is optional if you are using only one dimension.
             dimension "distributor"
-//            applicationIdSuffix ".demo"
             versionNameSuffix "-distplay"
             buildConfigField 'boolean', 'IS_DONATE_ALLOWED', 'false'
         }
         distOther {
             dimension "distributor"
-//            applicationIdSuffix ".full"
             versionNameSuffix "-distoth"
             buildConfigField 'boolean', 'IS_DONATE_ALLOWED', 'false'
         }

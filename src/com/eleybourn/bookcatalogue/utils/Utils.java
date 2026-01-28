@@ -1595,11 +1595,7 @@ public class Utils {
 
             root.setBackgroundDrawable(d);
             root.invalidate();
-        } catch (Exception e) {
-            // Usually the errors result from memory problems; do a gc just in case.
-            System.gc();
-            // This is a purely cosmetic function; just log the error
-            Logger.logError(e, "Error setting background");
+        } catch (Exception ignored) {
         }
     }
 

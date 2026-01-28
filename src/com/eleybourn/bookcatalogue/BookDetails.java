@@ -316,6 +316,7 @@ public class BookDetails extends BookAbstract {
         BookData book = mEditManager.getBookData();
         if (book.getRowId() != 0) {
             book.reload();
+            onLoadBookDetails(book);
         }
         super.onResume();
     }

@@ -25,3 +25,4 @@
 # OSx specific
 
 *.DS_Store
+/distPlay

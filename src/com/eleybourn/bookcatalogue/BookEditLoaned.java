@@ -1,7 +1,7 @@
 /*
  * @copyright 2010 Evan Leybourn
  * @license GNU General Public License
- * 
+ *
  * This file is part of Book Catalogue.
  *
  * Book Catalogue is free software: you can redistribute it and/or modify
@@ -19,8 +19,6 @@
  */
 
 package com.eleybourn.bookcatalogue;
-
-import java.util.ArrayList;
 
 import android.database.Cursor;
 import android.net.Uri;
@@ -40,10 +38,12 @@ import androidx.core.widget.NestedScrollView;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
+import java.util.ArrayList;
+
 /**
  * This class is called by the BookEdit activity and displays the Loaned Tab
  * Users can select a book and, from this activity, select a friend to "loan" the book to.
- * This will then be saved in the database for reference. 
+ * This will then be saved in the database for reference.
  */
 public class BookEditLoaned extends BookEditFragmentAbstract {
 
@@ -56,12 +56,12 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
                 }
             });
 
-	/**
-	 * Return a list of friends from your contact list. 
-	 * This is for the autoComplete textView
-	 *  
-	 * @return an ArrayList of names
-	 */
+    /**
+     * Return a list of friends from your contact list.
+     * This is for the autoComplete textView
+     *
+     * @return an ArrayList of names
+     */
     protected ArrayList<String> getFriends() {
         ArrayList<String> friend_list = new ArrayList<>();
         Uri baseUri = null;
@@ -100,58 +100,60 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
         return friend_list;
     }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.book_edit_loan_base, container, false);
-	}
-	
-	/**
-	 * Called when the activity is first created. This function will check whether a book has been loaned
-	 * and display the appropriate page as required. 
-	 * 
-	 * @param savedInstanceState The saved bundle (from pausing). Can be null.
-	 */
-	@Override
+    }
+
+    /**
+     * Called when the activity is first created. This function will check whether a book has been loaned
+     * and display the appropriate page as required.
+     *
+     * @param savedInstanceState The saved bundle (from pausing). Can be null.
+     */
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-		Tracker.enterOnCreate(this);
-		try {
+        Tracker.enterOnCreate(this);
+        try {
             super.onViewCreated(view, savedInstanceState);
-			String user = mDbHelper.fetchLoanByBook(mEditManager.getBookData().getRowId());
-			if (user == null) {
-				loanTo();
-			} else {
-				loaned(user);
-			}
-		} finally {
-			Tracker.exitOnCreate(this);			
-		}
-	}
-	
-	@Override
-	public void onSaveInstanceState(@NonNull Bundle outState) {
-		super.onSaveInstanceState(outState);
-	}
+            String user = mDbHelper.fetchLoanByBook(mEditManager.getBookData().getRowId());
+            if (user == null) {
+                loanTo();
+            } else {
+                loaned(user);
+            }
+        } finally {
+            Tracker.exitOnCreate(this);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
 
-	/**
-	 * Display the loan to page. It is slightly different to the existing loan page
-	 */
-	private void loanTo() {
+    /**
+     * Display the loan to page. It is slightly different to the existing loan page
+     */
+    private void loanTo() {
         assert getView() != null;
         NestedScrollView sv = getView().findViewById(R.id.scrollView);
-		sv.removeAllViews();
-		LayoutInflater inf = requireActivity().getLayoutInflater();
-		inf.inflate(R.layout.book_edit_loan, sv);
+        sv.removeAllViews();
+        LayoutInflater inf = requireActivity().getLayoutInflater();
+        inf.inflate(R.layout.book_edit_loan, sv);
 
         //askPermission(sv);
-
-		Button mConfirmButton = sv.findViewById(R.id.button_loan);
-		mConfirmButton.setOnClickListener(view -> {
-            String friend = saveLoan();
-            loaned(friend);
-        });
-	}
+        try {
+            Button mConfirmButton = sv.findViewById(R.id.button_loan);
+            mConfirmButton.setOnClickListener(view -> {
+                String friend = saveLoan();
+                loaned(friend);
+            });
+        } catch (Exception ignored) {
+        }
+    }
 
     private void askPermission(NestedScrollView sv) {
         AutoCompleteTextView mUserText = sv.findViewById(R.id.field_loan_to_who);
@@ -173,54 +175,57 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
             mRequestPermissionLauncher.launch(android.Manifest.permission.READ_CONTACTS);
         }
     }
-	
-	/**
-	 * Display the existing loan page. It is slightly different to the loan to page
-	 * 
-	 * @param user The user the book was loaned to
-	 */
-	private void loaned(String user) {
+
+    /**
+     * Display the existing loan page. It is slightly different to the loan to page
+     *
+     * @param user The user the book was loaned to
+     */
+    private void loaned(String user) {
         assert getView() != null;
         NestedScrollView sv = getView().findViewById(R.id.scrollView);
-		sv.removeAllViews();
-		LayoutInflater inf = requireActivity().getLayoutInflater();
-		inf.inflate(R.layout.book_edit_loaned, sv);
+        sv.removeAllViews();
+        LayoutInflater inf = requireActivity().getLayoutInflater();
+        inf.inflate(R.layout.book_edit_loaned, sv);
 
-		TextView mWhoText = sv.findViewById(R.id.field_loaned_to);
-		mWhoText.setText(user);
-		Button mConfirmButton = sv.findViewById(R.id.button_loan);
-		mConfirmButton.setOnClickListener(view -> {
-            removeLoan();
-            loanTo();
-        });
-	}
-	
-	/**
-	 * Save the user and book combination as a loan in the database
-	 * 
-	 * @return the user
-	 */
-	private String saveLoan() {
-        assert getView() != null;
-        AutoCompleteTextView mUserText = getView().findViewById(R.id.field_loan_to_who);
-		String friend = mUserText.getText().toString();
-		BookData values = mEditManager.getBookData();
-		values.putString(CatalogueDBAdapter.KEY_LOANED_TO, friend);
-		mDbHelper.createLoan(values, true);
-		return friend;
-	}
-	
-	/**
-	 * Delete the user and book combination as a loan from the database
-	 */
-	private void removeLoan() {
-		mDbHelper.deleteLoan(mEditManager.getBookData().getRowId(), true);
+        TextView mWhoText = sv.findViewById(R.id.field_loaned_to);
+        mWhoText.setText(user);
+        try {
+            Button mConfirmButton = sv.findViewById(R.id.button_loan);
+            mConfirmButton.setOnClickListener(view -> {
+                removeLoan();
+                loanTo();
+            });
+        } catch (Exception ignored) {
+        }
     }
 
-	@Override
-	protected void onLoadBookDetails(BookData book) {
+    /**
+     * Save the user and book combination as a loan in the database
+     *
+     * @return the user
+     */
+    private String saveLoan() {
+        assert getView() != null;
+        AutoCompleteTextView mUserText = getView().findViewById(R.id.field_loan_to_who);
+        String friend = mUserText.getText().toString();
+        BookData values = mEditManager.getBookData();
+        values.putString(CatalogueDBAdapter.KEY_LOANED_TO, friend);
+        mDbHelper.createLoan(values, true);
+        return friend;
+    }
+
+    /**
+     * Delete the user and book combination as a loan from the database
+     */
+    private void removeLoan() {
+        mDbHelper.deleteLoan(mEditManager.getBookData().getRowId(), true);
+    }
+
+    @Override
+    protected void onLoadBookDetails(BookData book) {
         mFields.setAll(book);
-	}
-	
+    }
+
 
 }

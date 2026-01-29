@@ -267,12 +267,6 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                     finish();
                 }
             }
-            // permission was granted, yay! Do the
-            // contacts-related task you need to do.
-            //} else {
-            //	// permission denied, boo! Disable the
-            //	// functionality that depends on this permission.
-            //	this.finish();
         }
     }
 

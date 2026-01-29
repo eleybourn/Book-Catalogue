@@ -21,7 +21,6 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
@@ -61,6 +60,7 @@ import com.eleybourn.bookcatalogue.utils.BookUtils;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -224,7 +224,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             @Override
             public void handleOnBackPressed() {
                 // If there are unsaved changes, ask for confirmation
-                if (isDirty()) {
+                if (isDirty() && !mIsReadOnly) {
                     StandardDialogs.showConfirmUnsavedEditsDialog(BookEdit.this, null);
                 } else {
                     // No changes, disable this callback so the default 'finish' behavior happens
@@ -320,7 +320,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             // We're done.
             setResult(Activity.RESULT_OK);
 
-            if (isDirty()) {
+            if (isDirty() && !mIsReadOnly) {
                 StandardDialogs.showConfirmUnsavedEditsDialog(BookEdit.this, null);
             } else {
                 File thumb = CatalogueDBAdapter.getTempThumbnail();
@@ -606,7 +606,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                     // We're done.
                     setResult(Activity.RESULT_OK);
 
-                    if (isDirty()) {
+                    if (isDirty() && !mIsReadOnly) {
                         StandardDialogs.showConfirmUnsavedEditsDialog(BookEdit.this, null);
                     } else {
                         File thumb = CatalogueDBAdapter.getTempThumbnail();
@@ -663,7 +663,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      * Check if edits need saving, and finish the activity if not
      */
     private void doFinish() {
-        if (isDirty()) {
+        if (isDirty() && !mIsReadOnly) {
             StandardDialogs.showConfirmUnsavedEditsDialog(this, this::finishAndSendIntent);
         } else {
             finishAndSendIntent();

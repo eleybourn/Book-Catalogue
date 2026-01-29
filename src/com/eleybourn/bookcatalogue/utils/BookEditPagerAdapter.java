@@ -53,5 +53,6 @@ public class BookEditPagerAdapter extends FragmentStateAdapter {
         if (!ANTHOLOGY_TAB) {
             return NUM_TABS - 1;
         }
-        return NUM_TABS;    }
+        return NUM_TABS;
+    }
 }

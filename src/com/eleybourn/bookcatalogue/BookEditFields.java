@@ -313,9 +313,7 @@ public class BookEditFields extends BookAbstract
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         Tracker.enterOnSaveInstanceState(this);
-
         super.onSaveInstanceState(outState);
-
         Tracker.exitOnSaveInstanceState(this);
     }
 
@@ -375,9 +373,7 @@ public class BookEditFields extends BookAbstract
     }
 
     @Override
-    public void onBookshelfCheckChanged(int dialogId,
-                                        BookshelfDialogFragment dialog, boolean checked, String shelf, String textList, String encodedList) {
-
+    public void onBookshelfCheckChanged(int dialogId, BookshelfDialogFragment dialog, boolean checked, String shelf, String textList, String encodedList) {
         Field fe = mFields.getField(R.id.field_bookshelf);
         fe.setValue(textList);
         mEditManager.getBookData().setBookshelfList(encodedList);

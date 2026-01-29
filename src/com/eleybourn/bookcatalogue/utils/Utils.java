@@ -51,7 +51,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.core.text.HtmlCompat;
-import androidx.fragment.app.Fragment;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
@@ -1570,30 +1569,15 @@ public class Utils {
         initBackground(rootView, bright);
     }
 
-    public static void initBackground(Fragment f, boolean bright) {
-        assert f.getView() != null;
-        View rootView = ((ViewGroup) f.getView().findViewById(android.R.id.content)).getChildAt(0);
-        initBackground(rootView, bright);
-    }
-
-    /**
-     * Set the passed Activity background based on user preferences
-     */
-    public static void initBackground(Activity a, int rootId, boolean bright) {
-        initBackground(a.findViewById(rootId), bright);
-    }
-
     public static void initBackground(View root, boolean bright) {
         try {
-            final int backgroundColor = BookCatalogueApp.getRes().getColor(R.color.previous_background_grey);
-
             if (root instanceof ListView) {
                 ListView lv = ((ListView) root);
                 setCacheColorHintSafely(lv, 0x00000000);
             }
             Drawable d = makeTiledBackground(bright);
 
-            root.setBackgroundDrawable(d);
+            root.setBackground(d);
             root.invalidate();
         } catch (Exception ignored) {
         }

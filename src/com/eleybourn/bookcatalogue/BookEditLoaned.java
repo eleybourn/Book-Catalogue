@@ -155,6 +155,7 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
         }
     }
 
+    @SuppressWarnings("unused") // keep this method for the time being. We might restore this functionality later.
     private void askPermission(NestedScrollView sv) {
         AutoCompleteTextView mUserText = sv.findViewById(R.id.field_loan_to_who);
         if (androidx.core.content.ContextCompat.checkSelfPermission(

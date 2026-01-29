@@ -5,6 +5,8 @@
 
     <LinearLayout
         android:id="@+id/dialog_body"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/bottom_buttons"
         style="@style/layout_main" >
 
         <EditText

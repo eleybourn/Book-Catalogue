@@ -113,11 +113,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     private static final int MENU_COLLAPSE = MenuHandler.FIRST + 3;
     private static final int MENU_EDIT_STYLE = MenuHandler.FIRST + 4;
     /**
-     * Counter for debug purposes
-     */
-    private static final Object sInstanceLock = new Object();
-    private static Integer mInstanceCount = 0;
-    /**
      * Task queue to get book lists in background
      */
     private final SimpleTaskQueue mTaskQueue = new SimpleTaskQueue("BoB-List", 1);
@@ -230,9 +225,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
      */
     public Library() {
         super();
-        synchronized (sInstanceLock) {
-            mInstanceCount--;
-        }
     }
 
     @Override
@@ -757,9 +749,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         mAdapter = null;
         mBookshelfSpinner = null;
         mBookshelfAdapter = null;
-        synchronized (sInstanceLock) {
-            mInstanceCount--;
-        }
         TrackedCursor.dumpCursors();
         Tracker.exitOnDestroy(this);
     }

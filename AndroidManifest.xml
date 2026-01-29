@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto"
-    android:versionCode="212"
-    android:versionName="7.0.2">
+    android:versionCode="213"
+    android:versionName="7.0.3">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -46,7 +46,8 @@
         <provider
             android:name=".SearchSuggestionProvider"
             android:authorities="com.eleybourn.bookcatalogue.SearchSuggestionProvider"
-            android:exported="true" />
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" />
         <provider
             android:name=".utils.GenericFileProvider"
             android:authorities="${applicationId}.fileprovider"

@@ -11,8 +11,8 @@
     <string name="alert_select_min_1_field">Zvolte alespoň jedno pole k aktualizaci</string>
     <string name="alert_unexpected_error">Došlo k neočekávané chybě, prosím zašlete nám detaily o této chybě prostřednictvím \'Nápovědy\' v hlavním menu.</string>
 
-    <string name="anthology_confirm">Prosím zkontrolujte, zda jsou tyto antologie v pořádku</string>
-    <string name="anthology_save">Uložit</string>
+    <string name="title_anthology_confirm">Prosím zkontrolujte, zda jsou tyto antologie v pořádku</string>
+    <string name="button_anthology_save">Uložit</string>
 
     <string name="app_name">Book Catalogue</string>
 
@@ -20,7 +20,7 @@
     <string name="author_is_blank">Pole pro autora je prázdné</string>
     <string name="author_required">Musí být uveden alespoň jeden autor</string>
 
-    <string name="automatic_population_failed">Automatické naplnění titulů selhalo</string>
+    <string name="alert_automatic_population_failed">Automatické naplnění titulů selhalo</string>
 
     <string name="book">Kniha</string>
     <string name="book_catalogue_startup">BookCatalogue spuštěn</string>

@@ -7,8 +7,8 @@
     <string name="alert_import_failed_is_location_correct">Błąd!: Import z karty SD nie powiódł się. Upewnij się, czy plik export.csv jest w prawidłowym miejscu.</string>
     <string name="alert_select_min_1_field">Wybierz przynajmniej jedno pole do zaktualizowania</string>
 
-    <string name="anthology_confirm">Potwierdź, czy te pozycje antologii są (zasadniczo) poprawne</string>
-    <string name="anthology_save">Zapisz</string>
+    <string name="title_anthology_confirm">Potwierdź, czy te pozycje antologii są (zasadniczo) poprawne</string>
+    <string name="button_anthology_save">Zapisz</string>
 
     <string name="app_name">Katalog książek</string>
 
@@ -16,7 +16,7 @@
     <string name="author_is_blank">Pole autor jest puste</string>
     <string name="author_required">Przynajmniej jeden autor jest wymagany</string>
 
-    <string name="automatic_population_failed">Automatyczne obsadzanie pozycji antologii nie powiodło się</string>
+    <string name="alert_automatic_population_failed">Automatyczne obsadzanie pozycji antologii nie powiodło się</string>
 
     <string name="book_not_found">Zeskanowana książka nie została odnaleziona. Spóbuj ponownie z kodem, który może znajdować się w środku okładki lub wprowadź dane ręcznie.</string>
 

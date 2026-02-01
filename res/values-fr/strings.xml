@@ -18,8 +18,8 @@
     <string name="alert_select_min_1_field">Choisissez au moins un champ à mettre à jour</string>
     <string name="alert_unexpected_error">Une erreur inattendue s\'est produite. Merci d\'envoyer les détails au support par l\'option « aide » du menu principal.</string>
 
-    <string name="anthology_confirm">Merci de confirmer que les titres de cette anthologie sont corrects.</string>
-    <string name="anthology_save">Sauvegarder</string>
+    <string name="title_anthology_confirm">Merci de confirmer que les titres de cette anthologie sont corrects.</string>
+    <string name="button_anthology_save">Sauvegarder</string>
 
     <!-- Begin: No translation required Section -->
     <string name="app_name">Book Catalogue</string>
@@ -28,7 +28,7 @@
     <string name="author_is_blank">Le champ « auteur » est vide</string>
     <string name="author_required">Au moins un auteur doit être spécifié</string>
 
-    <string name="automatic_population_failed">La recherche automatique des titres a échoué.</string>
+    <string name="alert_automatic_population_failed">La recherche automatique des titres a échoué.</string>
 
     <string name="available">Disponible</string>
 
@@ -748,7 +748,7 @@
     <string name="thing_must_not_be_blank">%1$s ne doit pas être vide</string>
 
     <string name="this_book">Ce livre</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">Cette option n\'est pas valable avant la sauvegarde du livre</string>
+    <string name="alert_this_option_is_not_available_until_the_book_is_saved">Cette option n\'est pas valable avant la sauvegarde du livre</string>
 
     <string name="thumbnails">Miniatures</string>
 

@@ -48,7 +48,7 @@ public class BookEditPagerAdapter extends FragmentStateAdapter {
             return 1;
         }
         if (BLANK_BOOK) {
-            return NUM_TABS - 3;
+            return NUM_TABS - 2;
         }
         if (!ANTHOLOGY_TAB) {
             return NUM_TABS - 1;

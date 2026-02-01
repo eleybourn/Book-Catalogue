@@ -18,8 +18,8 @@
     <string name="alert_select_min_1_field">Selecteer tenminste één veld om te updaten</string>
     <string name="alert_unexpected_error">Er is een onverwachte fout opgetreden. Zend ons aub de details via de \'Help\' optie in het hoofdmenu</string>
 
-    <string name="anthology_confirm">Bevestig dat deze bloemlezingtitels (voor het merendeel) correct zijn</string>
-    <string name="anthology_save">Opslaan</string>
+    <string name="title_anthology_confirm">Bevestig dat deze bloemlezingtitels (voor het merendeel) correct zijn</string>
+    <string name="button_anthology_save">Opslaan</string>
 
     <string name="app_name">Book Catalogue</string>
 
@@ -27,7 +27,7 @@
     <string name="author_is_blank">Auteurveld is leeg</string>
     <string name="author_required">Er moet tenminste één auteur worden vermeld</string>
 
-    <string name="automatic_population_failed">Automatisch titels invullen mislukt</string>
+    <string name="alert_automatic_population_failed">Automatisch titels invullen mislukt</string>
 
     <string name="available">Beschikbaar</string>
 
@@ -763,7 +763,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="thing_must_not_be_blank">%1$s mag niet leeg zijn</string>
 
     <string name="this_book">Dit boek</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">Deze optie is niet aanwezig voordat het boek is opgeslagen</string>
+    <string name="alert_this_option_is_not_available_until_the_book_is_saved">Deze optie is niet aanwezig voordat het boek is opgeslagen</string>
 
     <string name="thumbnails">Miniaturen</string>
 

@@ -19,8 +19,8 @@
     <string name="alert_select_min_1_field">Es muss mindestens ein Feld für die Aktualisierung ausgewählt werden</string>
     <string name="alert_unexpected_error">Ein unerwarteter Fehler ist aufgetreten. Bitte senden Sie die Details an den Support über den  Eintrag \'Hilfe\' in Hauptmenü</string>
 
-    <string name="anthology_confirm">Bitte bestätigen Sie dass diese Anthologie-Titel korrekt sind.</string>
-    <string name="anthology_save">Speichern</string>
+    <string name="title_anthology_confirm">Bitte bestätigen Sie dass diese Anthologie-Titel korrekt sind.</string>
+    <string name="button_anthology_save">Speichern</string>
 
     <string name="app_name">Book Catalogue</string>
 
@@ -28,7 +28,7 @@
     <string name="author_is_blank">Das Feld des Autors ist leer</string>
     <string name="author_required">Es muss mindestens ein Autor angegeben werden</string>
 
-    <string name="automatic_population_failed">Das automatische Ausfüllen der Anthologie-Titel ist fehlgeschlagen</string>
+    <string name="alert_automatic_population_failed">Das automatische Ausfüllen der Anthologie-Titel ist fehlgeschlagen</string>
 
     <string name="available">Verfügbar</string>
 
@@ -776,7 +776,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <string name="thing_must_not_be_blank">%1$s darf nicht leer sein</string>
 
     <string name="this_book">Dieses Buch</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">Diese Option ist erst verfügbar, wenn das Buch gespeichert wurde.</string>
+    <string name="alert_this_option_is_not_available_until_the_book_is_saved">Diese Option ist erst verfügbar, wenn das Buch gespeichert wurde.</string>
 
     <string name="thumbnails">Cover-Bilder</string>
 

@@ -55,7 +55,7 @@ public class BookUtils {
 	 */
 	public static void duplicateBook(Activity activity, Long rowId){
 		if (rowId == null || rowId == 0) {
-			Toast.makeText(activity, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+			Toast.makeText(activity, R.string.alert_this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
 		}
 		Intent i = new Intent(activity, BookEdit.class);
 		BookData thisBook = new BookData(activity.getApplicationContext(), rowId);
@@ -86,7 +86,7 @@ public class BookUtils {
 	 */
 	public static void deleteBook(Context context, final CatalogueDBAdapter dbHelper, Long rowId, final Runnable runnable){
 		if (rowId == null || rowId == 0) {
-			Toast.makeText(context, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+			Toast.makeText(context, R.string.alert_this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
 			return;
 		}
 		int res = StandardDialogs.deleteBookAlert(context, dbHelper, rowId, () -> {
@@ -108,7 +108,7 @@ public class BookUtils {
 	 */
 	public static void shareBook(Context context, final CatalogueDBAdapter dbHelper, Long rowId){
 		if (rowId == null || rowId == 0) {
-			Toast.makeText(context, R.string.this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
+			Toast.makeText(context, R.string.alert_this_option_is_not_available_until_the_book_is_saved, Toast.LENGTH_LONG).show();
 			return;
 		}
 		
@@ -140,7 +140,7 @@ public class BookUtils {
 		}
 		
 		if (!ratingString.isEmpty()){
-			ratingString = "(" + ratingString + ")";
+			ratingString = " (" + ratingString + ")";
 		}
 
 		/*
@@ -148,8 +148,7 @@ public class BookUtils {
 		 * it will not post any text unless the user types it.
 		 */
 		Intent share = new Intent(Intent.ACTION_SEND); 
-		//TODO Externalize hardcoded text below to allow translating and simple editing
-		String text = "I'm reading " + title + " by " + author + series + " " + ratingString;
+        String text = context.getString(R.string.share_im_reading, title, author, series, ratingString);
 		share.putExtra(Intent.EXTRA_TEXT, text);
 		share.putExtra(Intent.EXTRA_TITLE, title);
 		share.putExtra(Intent.EXTRA_SUBJECT, title);

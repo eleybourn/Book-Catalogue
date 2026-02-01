@@ -18,8 +18,8 @@
     <string name="alert_select_min_1_field">Seleccione al menos un campo para actualizar</string>
     <string name="alert_unexpected_error">Se ha producido un error inesperado. Por favor, envíe los detalles a soporte utilizando la opción \'Help\' del menú principal</string>
 
-    <string name="anthology_confirm">Por favor, confirme que los títulos de la antología son (en su mayoría) correctos</string>
-    <string name="anthology_save">Guardar</string>
+    <string name="title_anthology_confirm">Por favor, confirme que los títulos de la antología son (en su mayoría) correctos</string>
+    <string name="button_anthology_save">Guardar</string>
 
     <string name="app_name">Book Catalogue</string>
 
@@ -27,7 +27,7 @@
     <string name="author_is_blank">El campo Autor está en blanco</string>
     <string name="author_required">Se debe especificar al menos un autor</string>
 
-    <string name="automatic_population_failed">La actualización automática de títulos ha fallado</string>
+    <string name="alert_automatic_population_failed">La actualización automática de títulos ha fallado</string>
 
     <string name="available">Disponible</string>
 
@@ -726,7 +726,7 @@ y puede editar el libro utilizando el menú de opciones.
     <string name="thing_must_not_be_blank">%1$s no puede ser blanco</string>
 
     <string name="this_book">Este libro</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">Esta opción no está disponible mientras no se guarde el libro</string>
+    <string name="alert_this_option_is_not_available_until_the_book_is_saved">Esta opción no está disponible mientras no se guarde el libro</string>
 
     <string name="thumbnails">Miniaturas</string>
 

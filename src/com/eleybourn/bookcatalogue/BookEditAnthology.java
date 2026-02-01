@@ -174,7 +174,6 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
                 }
                 mTitleText.setText("");
                 mAuthorText.setText("");
-                //fillAnthology(currentPosition);
                 mEditManager.setDirty(true);
             } catch (AnthologyTitleExistsException e) {
                 Toast.makeText(getActivity(), R.string.the_title_already_exists, Toast.LENGTH_LONG).show();
@@ -182,11 +181,6 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
         });
 
         fillAnthology();
-    }
-
-    public void fillAnthology(int scroll_to_id) {
-        fillAnthology();
-        gotoTitle(scroll_to_id);
     }
 
     /**
@@ -207,7 +201,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
             AnthologyTitle anthology = mList.get(position);
             mTitleText.setText(anthology.getTitle());
             mAuthorText.setText(anthology.getAuthor().getDisplayName());
-            mAdd.setText(R.string.anthology_save);
+            mAdd.setText(R.string.button_anthology_save);
         });
     }
 
@@ -216,17 +210,6 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
         return getView().findViewById(R.id.list);
     }
 
-    /**
-     * Scroll to the current group
-     */
-    public void gotoTitle(int id) {
-        try {
-            ListView view = this.getListView();
-            view.setSelection(id);
-        } catch (Exception e) {
-            Logger.logError(e);
-        }
-    }
     public void searchWikipedia() {
         // Modernization: Use a standard Thread for a single-shot background task
         // This avoids the overhead and lint warnings of creating/closing an ExecutorService for one run.
@@ -253,7 +236,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
                     try {
                         parser.parse(Utils.getInputStream(url), handler);
                     } catch (RuntimeException e) {
-                        mainHandler.post(() -> Toast.makeText(getContext(), R.string.automatic_population_failed, Toast.LENGTH_LONG).show());
+                        mainHandler.post(() -> Toast.makeText(getContext(), R.string.alert_automatic_population_failed, Toast.LENGTH_LONG).show());
                         Logger.logError(e);
                         return;
                     }
@@ -286,7 +269,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
                     if (finalSuccess) {
                         showAnthologyConfirm(foundTitles);
                     } else {
-                        Toast.makeText(getContext(), R.string.automatic_population_failed, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.alert_automatic_population_failed, Toast.LENGTH_LONG).show();
                     }
                     fillAnthology();
                 });
@@ -319,7 +302,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
         builder.setMessage(anthology_title.toString());
-        builder.setTitle(R.string.anthology_confirm);
+        builder.setTitle(R.string.title_anthology_confirm);
         builder.setIcon(R.drawable.ic_menu_info);
 
         // Modernization: Use explicit positive/negative buttons instead of setButton
@@ -335,8 +318,8 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
                     anthology_title1 = anthology_title1.substring(0, pos);
                 }
                 // Trim extraneous punctuation and whitespace from the titles and authors
-                anthology_author = anthology_author.trim().replace("\n", " ").replaceAll("[\\,\\.\\'\\:\\;\\`\\~\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\=\\_\\+]*$", "").trim();
-                anthology_title1 = anthology_title1.trim().replace("\n", " ").replaceAll("[\\,\\.\\'\\:\\;\\`\\~\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\=\\_\\+]*$", "").trim();
+                anthology_author = anthology_author.trim().replace("\n", " ").replaceAll("[,.':;`~@#$%^&*()\\-=_+]*$", "").trim();
+                anthology_title1 = anthology_title1.trim().replace("\n", " ").replaceAll("[,.':;`~@#$%^&*()\\-=_+]*$", "").trim();
                 AnthologyTitle anthology = new AnthologyTitle(new Author(anthology_author), anthology_title1);
                 mList.add(anthology);
             }
@@ -421,7 +404,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
             mEditPosition = position;
             mTitleText.setText(anthology.getTitle());
             mAuthorText.setText(anthology.getAuthor().getDisplayName());
-            mAdd.setText(R.string.anthology_save);
+            mAdd.setText(R.string.button_anthology_save);
         }
 
         @Override

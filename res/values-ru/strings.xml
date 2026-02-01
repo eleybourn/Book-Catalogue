@@ -33,8 +33,8 @@
     <string name="alert_select_min_1_field">Выберите хотя бы одно поле для обновления</string>
     <string name="alert_unexpected_error">Случилась неожиданная ошибка, пожалуйста, отошлите детали в поддержку, используя меню \'Помощь\' из Главного меню</string>
 
-    <string name="anthology_confirm">Пожалуйста, подтвердите, что названия антологий (в основном) правильны</string>
-    <string name="anthology_save">Сохранить</string>
+    <string name="title_anthology_confirm">Пожалуйста, подтвердите, что названия антологий (в основном) правильны</string>
+    <string name="button_anthology_save">Сохранить</string>
 
     <string name="app_name">BookCatalogue</string>
 
@@ -42,7 +42,7 @@
     <string name="author_is_blank">Не заполнено поле Автор</string>
     <string name="author_required">Должен быть указан хотя бы один автор</string>
 
-    <string name="automatic_population_failed">Автоматическое заполнение названий не удалось</string>
+    <string name="alert_automatic_population_failed">Автоматическое заполнение названий не удалось</string>
 
     <string name="available">Доступно</string>
 
@@ -660,7 +660,7 @@
     <string name="thing_must_not_be_blank">%1$s должен быть не пустым</string>
 
     <string name="this_book">Эта книга</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">Эта опция не доступна, пока книга не будет сохранена</string>
+    <string name="alert_this_option_is_not_available_until_the_book_is_saved">Эта опция не доступна, пока книга не будет сохранена</string>
 
     <string name="thumbnails">Миниатюры</string>
 

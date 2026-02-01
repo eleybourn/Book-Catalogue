@@ -2,9 +2,11 @@
 <resources>
     <string name="_empty_"/>
 
+    <string name="alert_automatic_population_failed">Automatic Population of Titles Failed</string>
     <string name="alert_backup_failed">Backup Failed</string>
     <string name="alert_backup_success">Backup Success</string>
     <string name="alert_cancelled">Cancelled</string>
+    <string name="alert_could_not_load_backup_statistics">Could not load backup statistics.</string>
     <string name="alert_export_failed_sdcard">Export failed - could not write to the shared storage</string>
     <string name="alert_hints_have_been_reset">Hints have been reset</string>
     <string name="alert_if_the_problem_persists">If the problem persists, contact support via Help on the main menu.</string>
@@ -24,18 +26,14 @@
     <string name="alert_please_check_sd_writable">Please check that the storage is writable, and has sufficient space.</string>
     <string name="alert_problem_starting_import_arg">There was a problem starting the import: %1$s</string>
     <string name="alert_select_min_1_field">Select at least one field to update</string>
+    <string name="alert_this_option_is_not_available_until_the_book_is_saved">This option is not available until the book is saved</string>
     <string name="alert_unexpected_error">An unexpected error has occurred, please send the details to support using the \'Help\' option from the main menu</string>
-
-    <string name="anthology_confirm">Please confirm that these anthology titles are (mostly) correct</string>
-    <string name="anthology_save">Save</string>
 
     <string name="app_name">Book Catalogue</string>
 
     <string name="author_already_in_list">Author is already in the list</string>
     <string name="author_is_blank">Author field is blank</string>
     <string name="author_required">At least one author must be specified</string>
-
-    <string name="automatic_population_failed">Automatic Population of Titles Failed</string>
 
     <string name="available">Available</string>
 
@@ -56,14 +54,20 @@
     <string name="builtin">Builtin</string>
 
     <string name="button_anthology_add">Add</string>
+    <string name="button_anthology_save">Save</string>
+    <string name="button_backup_now">Backup Now</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_cleanup_files">Cleanup Files</string>
     <string name="button_confirm_add">Add Book</string>
     <string name="button_confirm_save">Save Book</string>
+    <string name="button_continue_editing">Continue Editing</string>
     <string name="button_delete">Delete</string>
     <string name="button_loan_book">Loan Book</string>
+    <string name="button_login_with_google">Login with Google</string>
+    <string name="button_logout">Logout</string>
     <string name="button_ok">OK</string>
     <string name="button_reorder">Reorder</string>
+    <string name="button_restore_now">Restore Backup</string>
     <string name="button_return_book">Return Book</string>
     <string name="button_returned">Returned</string>
     <string name="button_save">Save</string>
@@ -95,8 +99,6 @@
     <string name="contact1">eleybourn@gmail.com</string>
 
     <string name="contact2">philip.warner@rhyme.com.au</string>
-
-    <string name="button_continue_editing">Continue Editing</string>
 
     <string name="copying_files">Copying files…</string>
 
@@ -187,6 +189,7 @@
 
     <string name="fragment_a_and_b">%1$s and %2$s</string>
     <string name="fragment_and_others">et. al.</string>
+    <string name="fragment_bracketed_string">(%s)</string>
     <!-- this is used in the 'archive_complete_details' string (elsewhere in this file)
     to replace the directory name, so that now it says "in the selected directory" -->
     <string name="fragment_selected_thing">selected</string>
@@ -300,6 +303,7 @@
     <string name="label_edit">Edit</string>
     <string name="label_edit_format_name">Edit Format Name</string>
     <string name="label_email_export">Would you like to send this export as an email somewhere?</string>
+    <string name="label_enhance_search">Do you agree to allow public details from your book records (like ISBNs and Titles) to be used to improve search results for everyone.</string>
     <string name="label_enter_isbn">Enter ISBN</string>
     <string name="label_erase_cover_cache">Erase cover cache</string>
     <!-- Content description for the 'up' icon in the folder browser -->
@@ -373,9 +377,9 @@
     <string name="label_sourcecode">Source Code:</string>
     <!-- Heading in 'about' dialog -->
     <string name="label_special_thanks">Special Thanks</string>
-    <string name="label_sync_tmp">Backup and Restore</string>
     <string name="label_sync">Online Backup</string>
     <string name="label_sync_description">Never lose your book catalogue</string>
+    <string name="label_sync_tmp">Backup and Restore</string>
     <string name="label_thumbnail">Cover Thumbnail</string>
     <string name="label_title">Title</string>
     <!-- Name of the new style grouping (needs to be short). -->
@@ -430,6 +434,9 @@
     <string name="menu_share_this">Share</string>
     <string name="menu_sort_by_author_collapsed">Collapse All</string>
     <string name="menu_sort_by_author_expanded">Expand All</string>
+
+    <string name="move_down">Move Down</string>
+    <string name="move_up">Move Up</string>
 
     <!-- Short text for 'n books' -->
     <plurals name="n_books">
@@ -645,12 +652,7 @@
 				</ul></p>
 		]]></string>
     <string name="new_in_700"><![CDATA[
-			<p><b>New in 7.0.0</b>\n\n<ul><li> Completely new and modern interface based on Android material design.</li>
-			    <li> Improvements to ISBN search to replace sources (such as Amazon) that are no longer available. </li>
-			    <li> Discontinued support for Android Nougat (2016) and earlier.</li>
-			    <li> Many bug fixes.</li>
-			    <li> The next upgrade will contain enable the most requested feature - online backup and sync.</li>
-				</ul></p>
+			<p><b>New in 7.0.0</b>\n\n<ul><li> Completely new and modern interface based on Android material design.</li><li> Improvements to ISBN search to replace sources (such as Amazon) that are no longer available. </li><li> Discontinued support for Android Nougat (2016) and earlier.</li><li> Many bug fixes.</li><li> The next upgrade will contain enable the most requested feature - online backup and sync.</li></ul></p>
 		]]></string>
     <string name="new_style">New style</string>
 
@@ -733,9 +735,11 @@
     <string name="para_archive_complete_details">A %3$s file called %2$s was created in the selected directory.
         \n\nYou should manually copy it elsewhere to protect the data in case your device is damaged, lost,
         or stolen.</string>
+    <string name="para_backup_logged_in_as">You are logged in and your data is being backed up as:</string>
+    <string name="para_backup_logged_out_message">Log in with your Google account to automatically back up your book catalogue. This will keep your data safe and allow you to restore it on any device.</string>
     <string name="para_cleanup_files">Purgeable files currently use %s of storage. Log files and other data are saved at each upgrade, when you backup the database, or when the application crashes. Click the button below to purge these files from your storage. If you have been experiencing crashing or other errors, please consider using the \'Send Information\' button first.</string>
+    <string name="para_cloud_sync_coming_soon">"The ability to backup and sync your book catalogue online is coming very soon. "</string>
     <string name="para_donate">If you would like to support the development of this application, please donate using a my Amazon Wishlist or the paypal button below. Being in Australia means I cannot publish a paid version. :-) </string>
-    <string name="label_enhance_search">Do you agree to allow public details from your book records (like ISBNs and Titles) to be used to improve search results for everyone.</string>
     <string name="para_enhance_search">Would you like to help other Book Catalogue users? \n\nBy clicking \'Yes\', you agree to allow public details from your book records (like ISBNs and Titles) to be used to improve search results for everyone.\n\nPrivate notes and personal details remain secure.\n\nYou can change this at any time in the Settings.</string>
     <string name="para_help_click_here">Please click here to access the online help pages</string>
     <string name="para_immediate_global_changes">NOTE: All saved changes apply instantly and globally</string>
@@ -789,21 +793,6 @@
     <string name="preference_global_opening_book_mode">Open book in read-only mode</string>
     <string name="preference_library_state">Library state</string>
     <string name="preference_prefer_large_thumbnails">Prefer large thumbnails</string>
-    <string name="preference_theme_default">Use System Default</string>
-    <string name="preference_theme_light">Use Light Mode</string>
-    <string name="preference_theme_dark">Use Dark Mode</string>
-    <string name="preference_theme_previous">Earlier Background</string>
-    <string name="preference_theme">Change Theme</string>
-    <!-- End: Added/Updated in 5.1.1 -->
-    <!-- Begin: Added/Updated in 5.1.2 -->
-    <!-- A heading in the 'about' dialog -->
-    <!-- The following strings are not in this release, but will be in a future release -->
-    <!--  Menu Item - will be in the next release -->
-    <!-- Heading for the "new_in_xxx" message to make future updates less work for translators...I hope -->
-    <!-- The plan is to use specific feature strings so that we can also update the store listing and add/remove features easily -->
-    <!-- Part of the "new in x.x.x" message -->
-    <!-- End: Added/Updated in 5.1.2 -->
-    <!-- Begin: Added/Updated in 5.2.0 -->
     <!-- Preference name (fairly short) for preferred language -->
     <string name="preference_preferred_interface_language">Preferred Interface Language</string>
     <!-- Preference name, displayed in a preference activity -->
@@ -813,6 +802,11 @@
     <string name="preference_size_of_library_items">Size of library items</string>
     <string name="preference_start_in_my_books">Start in \'My Books\'</string>
     <string name="preference_summary_details_in_header">Summary details in header</string>
+    <string name="preference_theme">Change Theme</string>
+    <string name="preference_theme_dark">Use Dark Mode</string>
+    <string name="preference_theme_default">Use System Default</string>
+    <string name="preference_theme_light">Use Light Mode</string>
+    <string name="preference_theme_previous">Earlier Background</string>
     <string name="preference_use_external_image_cropper">Use external image cropper (experimental)</string>
 
     <string name="preferred_styles">Preferred styles</string>
@@ -844,6 +838,8 @@
     <string name="series_is_blank">Series field is blank</string>
 
     <string name="set_series">Set Series…</string>
+
+    <string name="share_im_reading">"I'm reading %1$s by %2$s%3$s%4$s</string>
 
     <string name="shelves">Shelves</string>
 
@@ -877,13 +873,15 @@
     <string name="thing_must_not_be_blank">%1$s must not be blank</string>
 
     <string name="this_book">This Book</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">This option is not available until the book is saved</string>
 
     <string name="thumbnails">Thumbnails</string>
 
     <string name="title_activity_scanner">ScannerActivity</string>
     <string name="title_add_book">Add Book</string>
     <string name="title_add_style">Add style</string>
+    <string name="title_anthology_confirm">Please confirm that these anthology titles are (mostly) correct</string>
+    <string name="title_backup_preferences"><![CDATA[Backup & Sync]]></string>
+    <string name="title_backup_preferences_tmp"><![CDATA[Backup & Restore]]></string>
     <string name="title_clone_style_colon_name">Clone style: %1$s</string>
     <string name="title_edit_bookshelf">Edit Bookshelf</string>
     <string name="title_edit_library_styles">Edit Library Styles</string>
@@ -893,6 +891,7 @@
     <string name="title_isbn_search">ISBN Search</string>
     <string name="title_library">My Library</string>
     <string name="title_library_preferences">Library Preferences</string>
+    <string name="title_local_backup">Export and Backup Locally</string>
     <string name="title_manage_bookshelves">Manage Bookshelves</string>
     <string name="title_manage_fields">Manage Field Visibility</string>
     <string name="title_other_preferences">Other Preferences</string>
@@ -943,18 +942,4 @@
     <string name="x_of_y">%1$d of %2$d</string>
 
     <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
-    <string name="title_backup_preferences"><![CDATA[Backup & Sync]]></string>
-    <string name="title_backup_preferences_tmp"><![CDATA[Backup & Restore]]></string>
-    <string name="button_login_with_google">Login with Google</string>
-    <string name="para_backup_logged_out_message">Log in with your Google account to automatically back up your book catalogue. This will keep your data safe and allow you to restore it on any device.</string>
-    <string name="para_backup_logged_in_as">You are logged in and your data is being backed up as:</string>
-    <string name="button_logout">Logout</string>
-    <string name="button_backup_now">Backup Now</string>
-    <string name="title_local_backup">Export and Backup Locally</string>
-    <string name="button_restore_now">Restore Backup</string>
-    <string name="alert_could_not_load_backup_statistics">Could not load backup statistics.</string>
-    <string name="move_down">Move Down</string>
-    <string name="move_up">Move Up</string>
-    <string name="fragment_bracketed_string">(%s)</string>
-    <string name="para_cloud_sync_coming_soon">"The ability to backup and sync your book catalogue online is coming very soon. "</string>
 </resources>

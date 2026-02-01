@@ -18,8 +18,8 @@
     <string name="alert_select_min_1_field">Select at least one field to update</string>
     <string name="alert_unexpected_error">An unexpected error has occurred, please send the details to support using the \'Help\' option from the main menu</string>
 
-    <string name="anthology_confirm">Por favor, confirme se estes títulos de antologias estão corretos (ou quase)</string>
-    <string name="anthology_save">Salvar</string>
+    <string name="title_anthology_confirm">Por favor, confirme se estes títulos de antologias estão corretos (ou quase)</string>
+    <string name="button_anthology_save">Salvar</string>
 
     <!--    <string name="app_name">Catálogo de livros</string>-->
     <string name="app_name">Catálogo de livros</string>
@@ -28,7 +28,7 @@
     <string name="author_is_blank">Author field is blank</string>
     <string name="author_required">At least one author must be specified</string>
 
-    <string name="automatic_population_failed">Falha ao preencher títulos automaticamente</string>
+    <string name="alert_automatic_population_failed">Falha ao preencher títulos automaticamente</string>
 
     <string name="available">Available</string>
 
@@ -745,7 +745,7 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="thing_must_not_be_blank">%1$s must not be blank</string>
 
     <string name="this_book">This Book</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">This option is not available until the book is saved</string>
+    <string name="alert_this_option_is_not_available_until_the_book_is_saved">This option is not available until the book is saved</string>
 
     <string name="thumbnails">Thumbnails</string>
 

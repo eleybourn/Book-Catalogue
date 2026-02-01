@@ -1326,13 +1326,12 @@ public class Utils {
         Integer mm = null;
         Integer dd = null;
         try {
-            String[] dateAndTime = dateString.split("T");
+            String[] dateAndTime = dateString.split("[T ]");
             String[] date = dateAndTime[0].split("-");
             yyyy = Integer.parseInt(date[0]);
             mm = Integer.parseInt(date[1]);
             dd = Integer.parseInt(date[2]);
-        } catch (Exception e) {
-            //do nothing
+        } catch (Exception ignored) {
         }
         dialog.setDate(yyyy, mm, dd);
     }

@@ -31,6 +31,8 @@ import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.util.Calendar;
+
 /**
  * Fragment wrapper for the PartialDatePicker dialog
  *
@@ -107,6 +109,14 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
                 mDay = savedInstanceState.getInt("day");
             mTitleId = savedInstanceState.getInt("title");
             mDialogId = savedInstanceState.getInt("dialogId");
+        }
+
+        // If no date is set, default to the current date.
+        if (mYear == null && mMonth == null && mDay == null) {
+            final Calendar c = Calendar.getInstance();
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH)+1;
+            mDay = c.get(Calendar.DAY_OF_MONTH);
         }
 
         // Create the picker

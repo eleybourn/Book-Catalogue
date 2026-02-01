@@ -18,8 +18,8 @@
     <string name="alert_select_min_1_field">Επιλέξτε τουυλάχιστον ένα πεδία για ενημέρωση</string>
     <string name="alert_unexpected_error">Ένα απροσδόκητο σφάλμα συνέβη, παρακαλούμε στείλτε τις λεπτομέρειες στην υποστήριξη με χρήση της επιλογής \'Βοήθεια\' από το κεντρικό μενού.</string>
 
-    <string name="anthology_confirm">Παρακαλούμε επιβεβαιώστε ότι αυτοί οι τίτλοι ανθολογίας είναι (κυρίως) σωστοί</string>
-    <string name="anthology_save">Αποθήκευση</string>
+    <string name="title_anthology_confirm">Παρακαλούμε επιβεβαιώστε ότι αυτοί οι τίτλοι ανθολογίας είναι (κυρίως) σωστοί</string>
+    <string name="button_anthology_save">Αποθήκευση</string>
 
     <string name="app_name">Book Catalogue</string>
 
@@ -27,7 +27,7 @@
     <string name="author_is_blank">Το πεδίο συγγραφέας είναι κενό</string>
     <string name="author_required">Τουλάχιστον ένας συγγραφέας πρέπει να έχει καθοριστεί</string>
 
-    <string name="automatic_population_failed">Η αυτόματη συμπλήρωση τίτλων απέτυχε</string>
+    <string name="alert_automatic_population_failed">Η αυτόματη συμπλήρωση τίτλων απέτυχε</string>
 
     <string name="available">Διαθέσιμο</string>
 
@@ -741,7 +741,7 @@
     <string name="thing_must_not_be_blank">%1$s δεν πρέπει να είναι κενό</string>
 
     <string name="this_book">Αυτό το βιβλίο</string>
-    <string name="this_option_is_not_available_until_the_book_is_saved">Αυτή επιλογή δεν είναι διαθέσιμη μέχρι να αποθηκευτεί το βιβλίο</string>
+    <string name="alert_this_option_is_not_available_until_the_book_is_saved">Αυτή επιλογή δεν είναι διαθέσιμη μέχρι να αποθηκευτεί το βιβλίο</string>
 
     <string name="thumbnails">Μικρογραφίες</string>
 

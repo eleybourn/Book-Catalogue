@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -513,6 +514,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             edit.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             edit.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
         }
+        // TODO: Consider moving the save and cancel buttons into the activity bar
         //MenuItem thumbCancel = menu.add(0, R.id.MENU_CANCEL, 0, R.string.button_cancel);
         //thumbCancel.setIcon(R.drawable.ic_button_cancel);
         //thumbCancel.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -686,6 +688,14 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     @Override
     public void setShowAnthology(boolean showAnthology) {
         setAnthologyVisibility(showAnthology);
+        try {
+            TextView authorHeading = findViewById(R.id.heading_author);
+            if (showAnthology) {
+                authorHeading.setText(R.string.label_author_or_editor);
+            } else {
+                authorHeading.setText(R.string.label_author);
+            }
+        } catch (Exception ignored) {}
     }
 
     @Override

@@ -942,4 +942,5 @@
     <string name="x_of_y">%1$d of %2$d</string>
 
     <string name="you_have_unsaved_changes">You have unsaved changes, if you exit now they will be lost.</string>
+    <string name="label_author_or_editor">Anthology Editor / Primary Author</string>
 </resources>

@@ -50,7 +50,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textColor">@color/theme_primary</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingBottom">@dimen/p_md</item>
         <item name="android:gravity">center</item>
@@ -61,7 +61,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginHorizontal">2dp</item>
         <item name="android:layout_marginVertical">8dp</item>
-        <item name="cardBackgroundColor">?attr/colorSurfaceContainerLow</item>
+        <item name="cardBackgroundColor">@color/theme_surfaceContainerLow</item>
         <item name="cardElevation">2dp</item>
         <item name="cardCornerRadius">16dp</item>
         <item name="contentPadding">20dp</item>
@@ -74,7 +74,7 @@
         <item name="android:backgroundTintMode">src_in</item>
         <item name="android:foregroundGravity">center</item>
         <item name="android:scaleType">centerCrop</item>
-        <item name="android:background">?attr/colorSecondaryContainer</item>
+        <item name="android:background">@color/theme_secondaryContainer</item>
         <item name="shapeAppearanceOverlay">@style/shapeAppearanceOverlay_rounded_corners</item>
     </style>
 
@@ -107,7 +107,7 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_marginHorizontal">4dp</item>
         <item name="android:gravity">center_horizontal</item>
-        <item name="cardBackgroundColor">?attr/colorSecondaryContainer</item>
+        <item name="cardBackgroundColor">@color/theme_secondaryContainer</item>
         <item name="cardElevation">2dp</item>
         <item name="cardCornerRadius">16dp</item>
         <item name="contentPadding">16dp</item>
@@ -179,17 +179,20 @@
         <item name="android:layout_marginHorizontal">@dimen/p_md</item>
     </style>
 
-    <style name="layout_button_dropdown" parent="layout_button">
-        <item name="android:layout_width">48dp</item>
-        <item name="android:layout_height">48dp</item>
+    <style name="layout_button_dropdown">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:focusable">true</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:paddingHorizontal">@dimen/p_md</item>
         <item name="android:src">@drawable/ic_button_dropdown</item>
     </style>
 
-    <style name="layout_button_image" parent="layout_button">
+    <style name="layout_button_image">
         <item name="android:layout_width">36dp</item>
         <item name="android:layout_height">36dp</item>
+        <item name="android:minHeight">48dp</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_alignParentTop">true</item>
@@ -200,9 +203,11 @@
         <item name="android:paddingHorizontal">@dimen/p_md</item>
     </style>
 
-    <style name="layout_button_grabber" parent="layout_button">
+    <style name="layout_button_grabber">
         <item name="android:layout_width">36dp</item>
         <item name="android:layout_height">36dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:focusable">true</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentTop">true</item>

@@ -40,6 +40,8 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.util.Objects;
+
 /**
  * Activity to edit a list of authors provided in an ArrayList<Author> and
  * return an updated list.
@@ -76,11 +78,17 @@ public class BookEditAuthorList extends BookEditObjectList<Author> {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AutoCompleteTextView author_text_field = findViewById(R.id.field_author);
+        try {
+            if (Objects.requireNonNull(getIntent().getStringExtra("is_anthology")).equals("1")) {
+                author_text_field.setHint(R.string.label_author_or_editor);
+            }
+        } catch (Exception ignored) {}
 
         try {
             // Setup autocomplete for author name
             ArrayAdapter<String> author_adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, mDbHelper.getAllAuthors());
-            ((AutoCompleteTextView) this.findViewById(R.id.field_author)).setAdapter(author_adapter);
+            author_text_field.setAdapter(author_adapter);
         } catch (Exception e) {
             Logger.logError(e);
         }

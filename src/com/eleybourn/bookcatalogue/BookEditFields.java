@@ -32,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -129,6 +130,7 @@ public class BookEditFields extends BookAbstract
                 i.putExtra(CatalogueDBAdapter.KEY_ROW_ID, mEditManager.getBookData().getRowId());
                 i.putExtra("label_title", CatalogueDBAdapter.KEY_TITLE);
                 i.putExtra("field_title", mFields.getField(R.id.field_title).getValue().toString());
+                i.putExtra("is_anthology", mFields.getField(R.id.field_anthology).getValue().toString());
                 mEditAuthorsLauncher.launch(i);
             });
 
@@ -331,6 +333,16 @@ public class BookEditFields extends BookAbstract
     protected void onLoadBookDetails(BookData book) {
         mFields.setAll(book);
         populateFields();
+        try {
+            // Change the field title for anthologies
+            assert getView() != null;
+            TextView authorHeading = getView().findViewById(R.id.heading_author);
+            if (mFields.getField(R.id.field_anthology).getValue().toString().equals("1")) {
+                authorHeading.setText(R.string.label_author_or_editor);
+            } else {
+                authorHeading.setText(R.string.label_author);
+            }
+        } catch (Exception ignored) {}
     }
 
     /**

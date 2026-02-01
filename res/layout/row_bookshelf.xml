@@ -13,7 +13,7 @@
         android:drawablePadding="@dimen/p_md"
         android:paddingVertical="@dimen/p_md"
         app:drawableLeftCompat="@drawable/ic_menu_bookshelves"
-        app:drawableTint="?attr/colorPrimary"
+        app:drawableTint="@color/theme_primary"
         android:text="@string/not_set" />
 
 </LinearLayout>

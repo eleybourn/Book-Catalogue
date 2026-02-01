@@ -157,7 +157,7 @@
         <item name="android:textColor">@color/theme_primary</item>
     </style>
 
-    <style name="layout_button">
+    <style name="layout_button" parent="@style/Widget.Material3.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">48dp</item>

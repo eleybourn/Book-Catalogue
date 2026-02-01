@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="locale_field_text_name" parent="@style/locale_field_text">
-        <item name="android:inputType">textCapWords</item>
+    <style name="locale_field_text" parent="@style/field_text">
+        <item name="android:inputType">textCapSentences</item>
     </style>
-    
+
+    <style name="locale_field_text_name" parent="@style/locale_field_text">
+        <item name="android:inputType">textCapSentences</item>
+    </style>
+
+    <!-- field_add_title, -->
     <style name="locale_field_text_title" parent="@style/locale_field_text">
-        <item name="android:inputType">text</item>
+        <item name="android:inputType">textCapSentences</item>
     </style>
 
     <style name="locale_field_text_language" parent="@style/locale_field_text">
-        <item name="android:inputType">textCapWords</item>
+        <item name="android:inputType">textCapSentences</item>
     </style>
 
 </resources>

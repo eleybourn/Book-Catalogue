@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:ignore="SpeakableTextPresentCheck">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/root"
@@ -20,6 +19,7 @@
         <TextView
             android:id="@+id/field_loaned_to"
             style="@style/layout_paragraph"
+            android:paddingHorizontal="@dimen/p_md"
             android:text="@string/option_nobody" />
 
         <LinearLayout

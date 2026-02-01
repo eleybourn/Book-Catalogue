@@ -107,7 +107,7 @@
 
             <AutoCompleteTextView
                 android:id="@+id/field_format"
-                style="@style/field_text"
+                style="@style/locale_field_text"
                 android:layout_below="@+id/heading_format"
                 android:layout_toStartOf="@id/format_dropdown_button"
                 android:completionThreshold="2"
@@ -250,10 +250,9 @@
 
             <AutoCompleteTextView
                 android:id="@+id/field_genre"
-                style="@style/field_text"
+                style="@style/locale_field_text"
                 android:layout_below="@+id/heading_genre"
                 android:completionThreshold="2"
-                android:inputType="textCapWords"
                 android:nextFocusDown="@+id/field_language" />
         </RelativeLayout>
 

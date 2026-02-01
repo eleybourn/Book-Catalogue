@@ -148,13 +148,13 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
             // Set the use of Caps for DE and FR
             AutoCompleteTextView mUserText = sv.findViewById(R.id.field_loan_to_who);
             mUserText.setText(R.string._empty_);
-            String languageCode = Locale.getDefault().getLanguage();
-            if ("de".equals(languageCode) || "fr".equals(languageCode)) {
+            //String languageCode = Locale.getDefault().getLanguage();
+            //if ("de".equals(languageCode) || "fr".equals(languageCode)) {
                 // Get the original input type from the view
-                int originalInputType = mUserText.getInputType();
+            //    int originalInputType = mUserText.getInputType();
                 // Add the textCapSentences flag to the original input type
-                mUserText.setInputType(originalInputType | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-            }
+            //    mUserText.setInputType(originalInputType | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            //}
 
             Button mConfirmButton = sv.findViewById(R.id.button_loan);
             mConfirmButton.setText(R.string.button_loan_book);

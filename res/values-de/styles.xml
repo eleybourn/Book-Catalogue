@@ -5,5 +5,17 @@
         <item name="android:inputType">textCapSentences</item>
     </style>
 
+    <style name="locale_field_text_name" parent="@style/locale_field_text">
+        <item name="android:inputType">textCapSentences</item>
+    </style>
+
+    <style name="locale_field_text_title" parent="@style/locale_field_text">
+        <item name="android:inputType">textCapSentences</item>
+    </style>
+
+    <style name="locale_field_text_language" parent="@style/locale_field_text">
+        <item name="android:inputType">textCapSentences</item>
+    </style>
+
 </resources>
 

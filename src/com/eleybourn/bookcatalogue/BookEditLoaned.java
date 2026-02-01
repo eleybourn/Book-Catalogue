@@ -23,6 +23,7 @@ package com.eleybourn.bookcatalogue;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * This class is called by the BookEdit activity and displays the Loaned Tab
@@ -140,13 +142,22 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
     private void loanTo() {
         assert getView() != null;
         NestedScrollView sv = getView().findViewById(R.id.scrollView);
-        sv.removeAllViews();
-        LayoutInflater inf = requireActivity().getLayoutInflater();
-        inf.inflate(R.layout.book_edit_loan, sv);
-
         //askPermission(sv);
         try {
+            sv.findViewById(R.id.layout_loan_to).setVisibility(View.VISIBLE);
+            // Set the use of Caps for DE and FR
+            AutoCompleteTextView mUserText = sv.findViewById(R.id.field_loan_to_who);
+            mUserText.setText(R.string._empty_);
+            String languageCode = Locale.getDefault().getLanguage();
+            if ("de".equals(languageCode) || "fr".equals(languageCode)) {
+                // Get the original input type from the view
+                int originalInputType = mUserText.getInputType();
+                // Add the textCapSentences flag to the original input type
+                mUserText.setInputType(originalInputType | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            }
+
             Button mConfirmButton = sv.findViewById(R.id.button_loan);
+            mConfirmButton.setText(R.string.button_loan_book);
             mConfirmButton.setOnClickListener(view -> {
                 String friend = saveLoan();
                 loaned(friend);
@@ -185,14 +196,12 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
     private void loaned(String user) {
         assert getView() != null;
         NestedScrollView sv = getView().findViewById(R.id.scrollView);
-        sv.removeAllViews();
-        LayoutInflater inf = requireActivity().getLayoutInflater();
-        inf.inflate(R.layout.book_edit_loaned, sv);
-
         TextView mWhoText = sv.findViewById(R.id.field_loaned_to);
         mWhoText.setText(user);
         try {
+            sv.findViewById(R.id.layout_loan_to).setVisibility(View.GONE);
             Button mConfirmButton = sv.findViewById(R.id.button_loan);
+            mConfirmButton.setText(R.string.button_returned);
             mConfirmButton.setOnClickListener(view -> {
                 removeLoan();
                 loanTo();
@@ -221,6 +230,11 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
      */
     private void removeLoan() {
         mDbHelper.deleteLoan(mEditManager.getBookData().getRowId(), true);
+        try {
+            assert getView() != null;
+            TextView loanedTo = getView().findViewById(R.id.field_loaned_to);
+            loanedTo.setText(R.string.option_nobody);
+        } catch (Exception ignored) {}
     }
 
     @Override

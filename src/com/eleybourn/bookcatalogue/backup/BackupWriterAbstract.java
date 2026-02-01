@@ -113,7 +113,7 @@ public abstract class BackupWriterAbstract implements BackupWriter {
      * Generate a bundle containing the INFO block, and send it to the archive
      */
     private void writeInfo(BackupWriterListener listener, int bookCount, int coverCount) throws IOException {
-        BackupInfo info = BackupInfo.createInfo(getContainer(), mDbHelper, mContext, bookCount, coverCount);
+        BackupInfo info = BackupInfo.createInfo(getContainer(), mContext, bookCount, coverCount);
         putInfo(info);
         listener.step(null, 1);
     }

@@ -923,6 +923,7 @@ public class Utils {
     }
 
     // TODO: Make sure all URL getters use this if possible.
+    @SuppressWarnings("unused")
     static public void parseUrlOutput(String path, SAXParserFactory factory, DefaultHandler handler) {
         SAXParser parser;
         URL url;

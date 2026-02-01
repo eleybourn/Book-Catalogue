@@ -25,7 +25,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 import java.util.Date;
@@ -39,31 +38,31 @@ public class BackupInfo {
     /**
      * Standard INFO item
      */
-    public static final String INFO_ARCHVERSION = "ArchVersion";
+    public static final String INFO_ARCH_VERSION = "ArchVersion";
     /**
      * Standard INFO item
      */
-    public static final String INFO_CREATEDATE = "CreateDate";
+    public static final String INFO_CREATE_DATE = "CreateDate";
     /**
      * Standard INFO item
      */
-    public static final String INFO_NUMBOOKS = "NumBooks";
+    public static final String INFO_NUM_BOOKS = "NumBooks";
     /**
      * Standard INFO item
      */
-    public static final String INFO_NUMCOVERS = "NumCovers";
+    public static final String INFO_NUM_COVERS = "NumCovers";
     /**
      * Standard INFO item
      */
-    public static final String INFO_APPPACKAGE = "AppPackage";
+    public static final String INFO_APP_PACKAGE = "AppPackage";
     /**
      * Standard INFO item
      */
-    public static final String INFO_APPVERSIONNAME = "AppVersionName";
+    public static final String INFO_APP_VERSION_NAME = "AppVersionName";
     /**
      * Standard INFO item
      */
-    public static final String INFO_APPVERSIONCODE = "AppVersionCode";
+    public static final String INFO_APP_VERSION_CODE = "AppVersionCode";
     /**
      * Standard INFO item
      */
@@ -71,27 +70,7 @@ public class BackupInfo {
     /**
      * Standard INFO item
      */
-    public static final String INFO_COMPATARCHIVER = "CompatArchiver";
-    /**
-     * Standard INFO item
-     */
-    public static final String INFO_HAS_BOOKS = "HasBooks";
-    /**
-     * Standard INFO item
-     */
-    public static final String INFO_HAS_COVERS = "HasCovers";
-    /**
-     * Standard INFO item
-     */
-    public static final String INFO_HAS_DATABASE = "HasDatabase";
-    /**
-     * Standard INFO item
-     */
-    public static final String INFO_HAS_SETTINGS = "HasSettings";
-    /**
-     * Standard INFO item
-     */
-    public static final String INFO_HAS_BOOKLIST_STYLES = "HasBooklistStyles";
+    public static final String INFO_COMPAT_ARCHIVER = "CompatArchiver";
     /**
      * Bundle retrieved from the archive for this instance
      */
@@ -106,25 +85,24 @@ public class BackupInfo {
      * Static method to create an INFO block based on the current environment.
      *
      * @param container The container being used (we want the version)
-     * @param db        Database
      * @param context   Context (for package-related info)
      * @return                a new BackupInfo object
      */
-    public static BackupInfo createInfo(BackupContainer container, CatalogueDBAdapter db, Context context, int bookCount, int coverCount) {
+    public static BackupInfo createInfo(BackupContainer container, Context context, int bookCount, int coverCount) {
         Bundle info = new Bundle();
 
-        info.putInt(INFO_ARCHVERSION, container.getVersion());
-        info.putInt(INFO_COMPATARCHIVER, 1);
-        info.putString(INFO_CREATEDATE, Utils.toSqlDateTime(new Date()));
-        info.putInt(INFO_NUMBOOKS, bookCount);
-        info.putInt(INFO_NUMCOVERS, coverCount);
+        info.putInt(INFO_ARCH_VERSION, container.getVersion());
+        info.putInt(INFO_COMPAT_ARCHIVER, 1);
+        info.putString(INFO_CREATE_DATE, Utils.toSqlDateTime(new Date()));
+        info.putInt(INFO_NUM_BOOKS, bookCount);
+        info.putInt(INFO_NUM_COVERS, coverCount);
         try {
             // Get app info
             PackageManager manager = context.getPackageManager();
             PackageInfo appInfo = manager.getPackageInfo(context.getPackageName(), 0);
-            info.putString(INFO_APPPACKAGE, appInfo.packageName);
-            info.putString(INFO_APPVERSIONNAME, appInfo.versionName);
-            info.putInt(INFO_APPVERSIONCODE, appInfo.versionCode);
+            info.putString(INFO_APP_PACKAGE, appInfo.packageName);
+            info.putString(INFO_APP_VERSION_NAME, appInfo.versionName);
+            info.putInt(INFO_APP_VERSION_CODE, appInfo.versionCode);
         } catch (Exception e1) {
             // Not much we can do inside error logger...
         }
@@ -142,113 +120,36 @@ public class BackupInfo {
     /**
      * Accessor
      */
-    public int getArchVersion() {
-        return mBundle.getInt(INFO_ARCHVERSION);
-    }
-
-    /**
-     * Accessor
-     */
-    public int getCompatArchiver() {
-        return mBundle.getInt(INFO_COMPATARCHIVER);
-    }
-
-    /**
-     * Accessor
-     */
     public Date getCreateDate() {
-        return Utils.parseDate(mBundle.getString(INFO_CREATEDATE));
-    }
-
-    /**
-     * Accessor
-     */
-    public int getNumBooks() {
-        return mBundle.getInt(INFO_NUMBOOKS);
-    }
-
-    /**
-     * Accessor
-     */
-    public String getAppPackage() {
-        return mBundle.getString(INFO_APPPACKAGE);
-    }
-
-    /**
-     * Accessor
-     */
-    public String getAppVersionName() {
-        return mBundle.getString(INFO_APPVERSIONNAME);
+        return Utils.parseDate(mBundle.getString(INFO_CREATE_DATE));
     }
 
     /**
      * Accessor
      */
     public int getAppVersionCode() {
-        return mBundle.getInt(INFO_APPVERSIONCODE);
-    }
-
-    /**
-     * Accessor
-     */
-    public int getSdk() {
-        return mBundle.getInt(INFO_APPVERSIONCODE);
-    }
-
-    /**
-     * Accessor
-     */
-    public boolean hasBooks() {
-        return mBundle.getBoolean(INFO_HAS_BOOKS);
+        return mBundle.getInt(INFO_APP_VERSION_CODE);
     }
 
     /**
      * Accessor
      */
     public boolean hasCoverCount() {
-        return mBundle.containsKey(INFO_NUMCOVERS);
-    }
-
-    /**
-     * Accessor
-     */
-    public boolean hasCovers() {
-        return mBundle.getBoolean(INFO_HAS_COVERS);
-    }
-
-    /**
-     * Accessor
-     */
-    public boolean hasDatabase() {
-        return mBundle.getBoolean(INFO_HAS_DATABASE);
-    }
-
-    /**
-     * Accessor
-     */
-    public boolean hasPreferences() {
-        return mBundle.getBoolean(INFO_HAS_SETTINGS);
-    }
-
-    /**
-     * Accessor
-     */
-    public boolean hasBooklistStyles() {
-        return mBundle.getBoolean(INFO_HAS_BOOKLIST_STYLES);
+        return mBundle.containsKey(INFO_NUM_COVERS);
     }
 
     /**
      * Accessor
      */
     public int getBookCount() {
-        return mBundle.getInt(INFO_NUMBOOKS);
+        return mBundle.getInt(INFO_NUM_BOOKS);
     }
 
     /**
      * Accessor
      */
     public int getCoverCount() {
-        return mBundle.getInt(INFO_NUMCOVERS);
+        return mBundle.getInt(INFO_NUM_COVERS);
     }
 
 }

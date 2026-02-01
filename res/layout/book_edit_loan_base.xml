@@ -6,4 +6,50 @@
     android:layout_height="match_parent"
     tools:ignore="SpeakableTextPresentCheck">
 
+    <LinearLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/layout_heading"
+            android:text="@string/label_loaned_to" />
+
+        <TextView
+            android:id="@+id/field_loaned_to"
+            style="@style/layout_paragraph"
+            android:text="@string/option_nobody" />
+
+        <LinearLayout
+            android:id="@+id/layout_loan_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                style="@style/layout_heading"
+                android:text="@string/label_loan_to" />
+
+            <AutoCompleteTextView
+                android:id="@+id/field_loan_to_who"
+                style="@style/locale_field_text_name"
+                android:completionThreshold="2"
+                android:hint="@string/option_name" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_loan"
+            style="@style/layout_button"
+            android:width="150sp"
+            android:text="@string/button_loan_book" />
+
+
+    </LinearLayout>
+
+
 </androidx.core.widget.NestedScrollView>

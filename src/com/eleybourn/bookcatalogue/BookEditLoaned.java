@@ -23,7 +23,6 @@ package com.eleybourn.bookcatalogue;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,6 @@ import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.utils.Logger;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 /**
  * This class is called by the BookEdit activity and displays the Loaned Tab
@@ -117,6 +115,10 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         Tracker.enterOnCreate(this);
+        if (savedInstanceState != null) {
+            mEditManager.setDirty(savedInstanceState.getBoolean("Dirty"));
+        }
+
         try {
             super.onViewCreated(view, savedInstanceState);
             String user = mDbHelper.fetchLoanByBook(mEditManager.getBookData().getRowId());
@@ -148,6 +150,10 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
             // Set the use of Caps for DE and FR
             AutoCompleteTextView mUserText = sv.findViewById(R.id.field_loan_to_who);
             mUserText.setText(R.string._empty_);
+            mFields.add(R.id.field_loan_to_who, CatalogueDBAdapter.KEY_LOANED_TO, null);
+            mFields.setAfterFieldChangeListener((field, newValue) -> mEditManager.setDirty(true));
+
+            // TODO: Test code for setting CapSentences - need to create the preference and extend this across all relevant fields
             //String languageCode = Locale.getDefault().getLanguage();
             //if ("de".equals(languageCode) || "fr".equals(languageCode)) {
                 // Get the original input type from the view
@@ -222,6 +228,8 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
         BookData values = mEditManager.getBookData();
         values.putString(CatalogueDBAdapter.KEY_LOANED_TO, friend);
         mDbHelper.createLoan(values, true);
+        mUserText.setText(R.string._empty_);
+        mEditManager.setDirty(false);
         return friend;
     }
 

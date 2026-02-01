@@ -45,7 +45,6 @@
                     android:layout_width="150sp"
                     android:layout_weight="1"
                     android:hint="@string/label_series_num"
-                    android:inputType="numberDecimal"
                     android:singleLine="true" />
 
                 <Button

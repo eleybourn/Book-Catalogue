@@ -27,7 +27,7 @@
         android:hint="@string/option_name" />
 
     <Button
-        android:id="@+id/button_confirm"
+        android:id="@+id/button_loan"
         style="@style/layout_button"
         android:text="@string/button_loan_book" />
 </LinearLayout>

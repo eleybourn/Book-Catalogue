@@ -397,7 +397,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <!-- Part of the progress message displayed when importing books -->
     <string name="n_created_m_updated">%1$d erzeugt, %2$d aktualisiert</string>
     <!-- Short text for 'n stars' -->
-    <plurals name="n_stars">
+    <plurals name="n_stars" tools:ignore="UnusedQuantity">
         <item quantity="zero">%1$s Sterne</item>
         <item quantity="one">%1$s Stern</item>
         <item quantity="other">%1$s Sterne</item>

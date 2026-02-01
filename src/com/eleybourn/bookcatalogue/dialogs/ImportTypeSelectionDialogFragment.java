@@ -1,6 +1,5 @@
 package com.eleybourn.bookcatalogue.dialogs;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
@@ -12,6 +11,9 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.documentfile.provider.DocumentFile;
+
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.backup.BackupInfo;
 import com.eleybourn.bookcatalogue.backup.BackupManager;
@@ -19,98 +21,85 @@ import com.eleybourn.bookcatalogue.backup.BackupReader;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
 import java.text.DateFormat;
 
-import androidx.annotation.NonNull;
-import androidx.documentfile.provider.DocumentFile;
-
 public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragment {
-	private int mDialogId;
-	private DocumentFile mDocFile;
-	private boolean mArchiveHasValidDates;
+    private int mDialogId;
+    private DocumentFile mDocFile;
+    private boolean mArchiveHasValidDates;
+    private final OnClickListener mRowClickListener = this::handleClick;
 
-	/**
-	 * Listener interface to receive notifications when dialog is closed by any means.
-	 *
-	 * @author pjw
-	 */
-	public interface OnImportTypeSelectionDialogResultListener {
-		void onImportTypeSelectionDialogResult(int dialogId, ImportTypeSelectionDialogFragment dialog, int rowId, DocumentFile file);
-	}
+    /**
+     * Constructor
+     *
+     * @param dialogId ID passed by caller. Can be 0, will be passed back in event
+     * @param file     File to import
+     * @return Created fragment
+     */
+    public static ImportTypeSelectionDialogFragment newInstance(int dialogId, DocumentFile file) {
+        ImportTypeSelectionDialogFragment frag = new ImportTypeSelectionDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("dialogId", dialogId);
+        args.putString("fileUri", file.getUri().toString());
+        frag.setArguments(args);
+        return frag;
+    }
 
-	/**
-	 * Constructor
-	 *
-	 * @param dialogId	ID passed by caller. Can be 0, will be passed back in event
-	 * @param file		File to import
-	 *
-	 * @return			Created fragment
-	 */
-	public static ImportTypeSelectionDialogFragment newInstance(int dialogId, DocumentFile file) {
-		ImportTypeSelectionDialogFragment frag = new ImportTypeSelectionDialogFragment();
-		Bundle args = new Bundle();
-		args.putInt("dialogId", dialogId);
-		args.putString("fileUri", file.getUri().toString());
-		frag.setArguments(args);
-		return frag;
-	}
+    /**
+     * Ensure activity supports event
+     */
 
-	/**
-	 * Ensure activity supports event
-	 */
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (!(context instanceof OnImportTypeSelectionDialogResultListener))
+            throw new RuntimeException("Activity " + context.getClass().getSimpleName() + " must implement OnImportTypeSelectionDialogResultListener");
+    }
 
-	@Override
-	public void onAttach(@NonNull Context context) {
-		super.onAttach(context);
-		if (! (context instanceof OnImportTypeSelectionDialogResultListener))
-			throw new RuntimeException("Activity " + context.getClass().getSimpleName() + " must implement OnImportTypeSelectionDialogResultListener");
-	}
+    /**
+     * Utility routine to set the OnClickListener for a given view item.
+     *
+     * @param root root to search
+     * @param id   Sub-View ID
+     */
+    private void setOnClickListener(View root, int id) {
+        View v = root.findViewById(id);
+        v.setOnClickListener(mRowClickListener);
+        // Get selectable item background from theme
+        TypedValue outValue = new TypedValue();
+        requireContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        v.setBackgroundResource(outValue.resourceId);
+    }
 
-	private final OnClickListener mRowClickListener = this::handleClick;
-
-	/**
-	 * Utility routine to set the OnClickListener for a given view item.
-	 *
-	 * @param root		root to search
-	 * @param id		Sub-View ID
-	 */
-	private void setOnClickListener(View root, int id) {
-		View v = root.findViewById(id);
-		v.setOnClickListener(mRowClickListener);
-		// Get selectable item background from theme
-		TypedValue outValue = new TypedValue();
-		requireContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
-		v.setBackgroundResource(outValue.resourceId);
-	}
-
-	/**
-	 * Create the underlying dialog
-	 */
+    /**
+     * Create the underlying dialog
+     */
     @NonNull
-	@Override
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-		Bundle args = requireArguments();
-    	mDialogId = args.getInt("dialogId");
-		Uri uri = Uri.parse(args.getString("fileUri"));
+        Bundle args = requireArguments();
+        mDialogId = args.getInt("dialogId");
+        Uri uri = Uri.parse(args.getString("fileUri"));
 
-		mDocFile = DocumentFile.fromSingleUri(requireContext(), uri);
-		assert(mDocFile != null);
+        mDocFile = DocumentFile.fromSingleUri(requireContext(), uri);
+        assert (mDocFile != null);
 
-		BackupInfo info = null;
+        BackupInfo info = null;
         View v = requireActivity().getLayoutInflater().inflate(R.layout.dialog_import_type_selection, null);
 
-		try {
-			BackupReader reader;
-			reader = BackupManager.readBackup(v.getContext(), mDocFile);
-			info = reader.getInfo();
-			reader.close();
-			mArchiveHasValidDates = info.getAppVersionCode() >= 152;
-		} catch (IOException e) {
-			Logger.logError(e);
-			mArchiveHasValidDates = false;
-		}
+        try {
+            BackupReader reader;
+            reader = BackupManager.readBackup(v.getContext(), mDocFile);
+            info = reader.getInfo();
+            reader.close();
+            mArchiveHasValidDates = info.getAppVersionCode() >= 152;
+        } catch (IOException e) {
+            Logger.logError(e);
+            mArchiveHasValidDates = false;
+        }
 
         TextView mainText = v.findViewById(R.id.import_books_blurb);
         Resources r = getResources();
@@ -129,7 +118,7 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
             String size = Utils.formatFileSize(mDocFile.length());
             String date = DateFormat.getDateTimeInstance().format(info.getCreateDate());
             String s_info = r.getString(R.string.para_selected_archive_info, size, date);
-            s = s_info +"\n\n" + r.getString(R.string.para_selected_archive_contains, s);
+            s = s_info + "\n\n" + r.getString(R.string.para_selected_archive_contains, s);
         } else {
             String size = Utils.formatFileSize(mDocFile.length());
             String date = DateFormat.getDateTimeInstance().format(mDocFile.lastModified());
@@ -157,18 +146,27 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
 
     private void handleClick(View v) {
         if (!mArchiveHasValidDates && v.getId() == R.id.new_and_changed_books_row) {
-    		Toast.makeText(getActivity(), R.string.alert_old_archive_blurb, Toast.LENGTH_LONG).show();
-    		return;
-    	}
+            Toast.makeText(getActivity(), R.string.alert_old_archive_blurb, Toast.LENGTH_LONG).show();
+            return;
+        }
 
-    	try {
-    		OnImportTypeSelectionDialogResultListener a = (OnImportTypeSelectionDialogResultListener)getActivity();
-    		if (a != null)
-	        	a.onImportTypeSelectionDialogResult(mDialogId, this, v.getId(), mDocFile);
-    	} catch (Exception e) {
-    		Logger.logError(e);
-    	}
-    	dismiss();
+        try {
+            OnImportTypeSelectionDialogResultListener a = (OnImportTypeSelectionDialogResultListener) getActivity();
+            if (a != null)
+                a.onImportTypeSelectionDialogResult(mDialogId, this, v.getId(), mDocFile);
+        } catch (Exception e) {
+            Logger.logError(e);
+        }
+        dismiss();
+    }
+
+    /**
+     * Listener interface to receive notifications when dialog is closed by any means.
+     *
+     * @author pjw
+     */
+    public interface OnImportTypeSelectionDialogResultListener {
+        void onImportTypeSelectionDialogResult(int dialogId, ImportTypeSelectionDialogFragment dialog, int rowId, DocumentFile file);
     }
 
 }

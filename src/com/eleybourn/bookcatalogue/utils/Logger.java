@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import android.os.Build;
 import android.util.Log;
@@ -44,7 +45,7 @@ public class Logger {
 	 * @param e The exception to log
 	 */
 	public static void logError(Exception e, String msg) {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 		Date date = new Date();
 		String now = dateFormat.format(date);
 		

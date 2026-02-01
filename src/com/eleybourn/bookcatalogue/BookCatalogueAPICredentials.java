@@ -13,7 +13,9 @@ import androidx.credentials.CredentialManager;
 import androidx.credentials.CustomCredential;
 import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialCancellationException;
 import androidx.credentials.exceptions.GetCredentialException;
+import androidx.credentials.exceptions.NoCredentialException;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
@@ -78,10 +80,26 @@ public class BookCatalogueAPICredentials {
                     public void onError(@NonNull GetCredentialException e) {
                         String errorMessage;
                         Log.e("APICredentials", "Sign-in failed", e);
-                        errorMessage = "Sign-in failed: " + e.getMessage();
-                        showToast("Sign-in failed");
+                        // Check for specific exception types to provide a better user experience
+                        if (e instanceof GetCredentialCancellationException) {
+                            // User cancelled the sign-in flow, often no message is needed
+                            errorMessage = "Sign-in cancelled by user.";
+                            // You might choose not to show a toast in this case
+                        } else if (e instanceof NoCredentialException) {
+                            // This is expected if the user has no saved credentials
+                            errorMessage = "No accounts found on this device. Please add a Google account.";
+                            showToast(errorMessage);
+                        } else {
+                            // For all other errors, show a generic failure message
+                            errorMessage = "Sign-in failed: " + e.getMessage();
+                            showToast("Sign-in failed");
+                        }
+
                         if (mListener != null) {
-                            mListener.onCredentialError(errorMessage);
+                            // Only report more critical errors, or handle cancellation silently
+                            if (!(e instanceof GetCredentialCancellationException)) {
+                                mListener.onCredentialError(errorMessage);
+                            }
                         }
                     }
                 }

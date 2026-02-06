@@ -160,8 +160,7 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 				if (oldPos < 0) {
 					// Not in MRU; just add it to the top
 					mMruListPos = (mMruListPos + 1) % MRU_LIST_SIZE;
-					mMruList[mMruListPos] = cursorId;
-				} else {
+                } else {
 					if (oldPos <= mMruListPos) {
 						// Just shuffle intervening items down
 						int n = oldPos;
@@ -184,10 +183,10 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 							mMruList[i] = mMruList[n];
 						}
 					}
-					mMruList[mMruListPos] = cursorId;					
-				}
+                }
+                mMruList[mMruListPos] = cursorId;
 
-			}
+            }
 			// Set the active cursor, and set its position correctly
 			mActiveCursor = mCursors.get(cursorId);
             assert mActiveCursor != null;

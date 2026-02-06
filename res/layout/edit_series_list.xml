@@ -44,6 +44,7 @@
                     android:importantForAutofill="no"
                     android:layout_width="150sp"
                     android:layout_weight="1"
+                    android:inputType="text"
                     android:hint="@string/label_series_num"
                     android:singleLine="true" />
 

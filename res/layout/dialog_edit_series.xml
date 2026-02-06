@@ -32,6 +32,7 @@
                 android:layout_weight="1"
                 android:hint="@string/label_series_num"
                 android:importantForAutofill="no"
+                android:inputType="text"
                 android:singleLine="true" />
         </LinearLayout>
 

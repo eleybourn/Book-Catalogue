@@ -369,7 +369,7 @@ public class CropCropImage extends CropMonitoredActivity {
 
         mImageView.setImageBitmapResetBase(mBitmap, true);
 
-        CropUtil.startBackgroundJob(this, null, "Please wait\u2026",
+        CropUtil.startBackgroundJob(this, null, "Please wait…",
                 () -> {
                     final CountDownLatch latch = new CountDownLatch(1);
                     final Bitmap b = (mImage != null) ? mImage

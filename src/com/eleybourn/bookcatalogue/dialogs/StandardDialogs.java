@@ -234,6 +234,7 @@ public class StandardDialogs {
 
     // Define the listener as a static inner class
     private static class StaticApiListener implements BookCatalogueAPI.ApiListener {
+        @SuppressWarnings("FieldCanBeLocal")
         private final WeakReference<Context> contextReference;
 
         StaticApiListener(Context context) {

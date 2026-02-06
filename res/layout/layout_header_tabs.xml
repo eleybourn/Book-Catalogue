@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.tabs.TabLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tab_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,4 +11,5 @@
     app:tabIndicatorColor="@color/theme_onPrimary"
     app:tabMode="fixed"
     app:tabSelectedTextColor="@color/theme_onPrimary"
-    app:tabTextColor="@color/theme_surfaceDim" />
+    app:tabTextColor="@color/theme_surfaceDim"
+    tools:ignore="Overdraw" />

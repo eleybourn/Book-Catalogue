@@ -67,7 +67,7 @@ public class AdminLibraryPreferences extends PreferencesBase {
             mLibraryStateListItems,
             PREF_LIBRARY_STATE,
 			PropertyGroup.GRP_GENERAL, 
-			R.string.preference_library_state, null, PREF_LIBRARY_STATE, LIBRARY_ALWAYS_EXPANDED);
+			R.string.preference_library_state, null, PREF_LIBRARY_STATE, LIBRARY_STATE_PRESERVED);
 	static {
 		mLibraryStateListItems.add(null, R.string.option_use_default_setting);
 		mLibraryStateListItems.add(LIBRARY_ALWAYS_EXPANDED, R.string.option_always_start_library_expanded);

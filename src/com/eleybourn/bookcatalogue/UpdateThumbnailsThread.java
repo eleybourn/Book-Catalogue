@@ -111,6 +111,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
         newData.putSerializable(key, origList);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void onRun() throws InterruptedException {
         int counter = 0;
@@ -199,8 +200,8 @@ public class UpdateThumbnailsThread extends ManagedTask {
                 if (tmpThumbWanted) {
                     // delete any temporary thumbnails //
                     try {
-                        File delthumb = CatalogueDBAdapter.getTempThumbnail();
-                        delthumb.delete();
+                        File delete_thumb = CatalogueDBAdapter.getTempThumbnail();
+                        delete_thumb.delete();
                     } catch (Exception e) {
                         // do nothing - this is the expected behaviour
                     }
@@ -295,6 +296,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
      * @param newData         Data gathered from internet
      * @param origData        Original data
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void processSearchResults(long bookId, String bookUuid, FieldUsages requestedFields, Bundle newData, Bundle origData) {
         // First, filter the data to remove keys we don't care about
         ArrayList<String> toRemove = new ArrayList<>();

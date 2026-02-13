@@ -348,12 +348,12 @@ public class BcService {
      */
     public static class SeriesInfo {
         String name;
-        int numberInSeries;
+        String numberInSeries;
         int positionInList;
 
         SeriesInfo(JSONObject json) throws JSONException {
             name = json.getString(SERIES_NAME);
-            numberInSeries = json.getInt(SERIES_NUM);
+            numberInSeries = json.getString(SERIES_NUM);
             positionInList = json.getInt(SERIES_POSITION);
         }
 

@@ -144,16 +144,9 @@ public class CropCropImage extends CropMonitoredActivity {
 
             Rect imageRect = new Rect(0, 0, width, height);
 
-            int cropWidth;
-            int cropHeight;
-            if (mCropWholeImage) {
-                cropWidth = width;
-                cropHeight = height;
-            } else {
-                // make the default size about 4/5 of the width or height
-                cropWidth = Math.min(width, height);// XXXX * 4 / 5;
-                cropHeight = cropWidth;
-            }
+            // Make the default size about 10% smaller than the image
+            int cropWidth = width - (width / 10) * 2;
+            int cropHeight = height - (height / 10) * 2;
 
             // Even though we may be set to 'crop-whole-image', we need to obey
             // aspect ratio if set.

@@ -732,7 +732,7 @@
     <string name="option_zxing_scanner">Zxing Scanner</string>
 
     <!-- Hint displayed when aCatalogue Backup is done -->
-    <string name="para_archive_complete_details">A %3$s file called %2$s was created in the %1s directory.
+    <string name="para_archive_complete_details">A %3$s file called %2$s was created in the %1$s directory.
         \n\nYou should manually copy it elsewhere to protect the data in case your device is damaged, lost,
         or stolen.</string>
     <string name="para_backup_logged_in_as">You are logged in and your data is being backed up as:</string>

@@ -761,7 +761,7 @@ public class Fields extends ArrayList<Fields.Field> {
                 // The following code is to help diagnose these cases, not avoid them.
                 //
                 // NOTE: 	This does NOT entirely fix the problem, it gathers debug info. but
-                //			we have implemented one work-around
+                //		we have implemented one work-around
                 //
                 // Work-around #1:
                 //
@@ -839,6 +839,9 @@ public class Fields extends ArrayList<Fields.Field> {
 
         public void set(Field field, String s) {
             CheckBox v = (CheckBox) field.getView();
+            if (v == null) {
+                return;
+            }
             if (s != null) {
                 try {
                     s = field.format(s);
@@ -1383,4 +1386,3 @@ public class Fields extends ArrayList<Fields.Field> {
 
     }
 }
-

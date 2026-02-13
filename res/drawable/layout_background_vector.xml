@@ -9,14 +9,14 @@
 
     <!-- Shelf bar -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="M0,260 H1024 V275 H0 Z" />
 
     <!-- LEFT BOOK GROUP -->
 
     <!-- Left book 1 -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="M40,85
                           a8,8 0 0 1 8,-8
                           H102
@@ -26,7 +26,7 @@
 
     <!-- Left book 2 (taller) -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="M120,55
                         a8,8 0 0 1 8,-8
                         H182
@@ -36,7 +36,7 @@
 
     <!-- Left book 3 (tallest) -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="M200,35
         a8,8 0 0 1 8,-8
         H245
@@ -46,7 +46,7 @@
 
     <!-- Center-left book 4 -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="M265,95
         a8,8 0 0 1 8,-8
         H342
@@ -59,7 +59,7 @@
 
     <!-- Right book 1 -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="M774,95
         a8,8 0 0 1 8,-8
         H836
@@ -69,7 +69,7 @@
 
     <!-- Right book 2 -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="M856,75
         a8,8 0 0 1 8,-8
           H900
@@ -79,7 +79,7 @@
 
     <!-- Right book 3 -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="M920,55
         a8,8 0 0 1 8,-8
         H950
@@ -89,7 +89,7 @@
 
     <!-- Right book 4 -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="M970,90
         a8,8 0 0 1 8,-8
         H1024
@@ -102,7 +102,7 @@
 
     <!-- Bottom horizontal book -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="M390,210
         a8,8 0 0 1 8,-8
         H650
@@ -112,7 +112,7 @@
 
     <!-- Top horizontal book -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="M420,170
         a8,8 0 0 1 8,-8
         H640
@@ -123,7 +123,7 @@
 
     <!-- LEANING BOOK (center-right) -->
     <path
-        android:fillColor="@color/theme_secondaryContainer"
+        android:fillColor="?attr/colorSecondaryContainer"
         android:pathData="
             M775,65
             Q775,60 740,63

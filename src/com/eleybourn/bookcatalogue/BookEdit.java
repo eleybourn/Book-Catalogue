@@ -37,7 +37,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -508,28 +507,29 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         mMenuHandler = new MenuHandler(this);
         mMenuHandler.init(menu);
 
+        int colorOnPrimary = Utils.getThemeColor(this, com.google.android.material.R.attr.colorOnPrimary);
         if (mIsReadOnly) {
             MenuItem edit = menu.add(0, R.id.MENU_EDIT_BOOK, 0, R.string.menu_edit_book)
                     .setIcon(R.drawable.ic_menu_edit);
             edit.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            edit.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
+            edit.setIconTintList(ColorStateList.valueOf(colorOnPrimary));
         }
         // TODO: Consider moving the save and cancel buttons into the activity bar
         //MenuItem thumbCancel = menu.add(0, R.id.MENU_CANCEL, 0, R.string.button_cancel);
         //thumbCancel.setIcon(R.drawable.ic_button_cancel);
         //thumbCancel.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        //thumbCancel.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
+        //thumbCancel.setIconTintList(ColorStateList.valueOf(colorOnPrimary));
         //MenuItem thumbSave = menu.add(0, R.id.MENU_SAVE, 0, R.string.button_confirm_add);
         //thumbSave.setIcon(R.drawable.ic_menu_checkmark_unchecked);
         //thumbSave.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        //thumbSave.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
+        //thumbSave.setIconTintList(ColorStateList.valueOf(colorOnPrimary));
 
         if (mRowId != 0) {
             boolean thumbVisible = BookCatalogueApp.getAppPreferences().getBoolean(AdminFieldVisibility.prefix + "thumbnail", true);
             if (thumbVisible) {
                 MenuItem thumbOptions = menu.add(0, R.id.MENU_THUMBNAIL_OPTIONS, 0, R.string.cover_options_cc_ellipsis);
                 thumbOptions.setIcon(R.drawable.ic_menu_camera);
-                thumbOptions.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.theme_onPrimary)));
+                thumbOptions.setIconTintList(ColorStateList.valueOf(colorOnPrimary));
             }
 
             MenuItem delete = menu.add(0, R.id.MENU_DELETE_BOOK, 0, R.string.menu_delete_book);
@@ -783,10 +783,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                                 updateOrCreate();
                                 nextStep.success();
                             })
-                            .setNegativeButton(R.string.button_cancel, (dialog2, which) -> {
-                                dialog2.dismiss();
-                                nextStep.failure();
-                            })
+                            .setNegativeButton(R.string.button_cancel, (dialog2, which) -> dialog2.dismiss())
                             .create().show();
                     return;
                 }
@@ -1035,8 +1032,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
     public interface PostSaveAction {
         void success();
-
-        void failure();
     }
 
     // Define the listener as a static inner class
@@ -1087,10 +1082,6 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
             setResult(Activity.RESULT_OK, i);
             finish();
-        }
-
-        public void failure() {
-            // Do nothing
         }
     }
 

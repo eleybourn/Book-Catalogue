@@ -246,6 +246,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
         }
         checkPermissions();
         if (Objects.equals(BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_THEME, BookCataloguePreferences.PREF_THEME_DEFAULT), BookCataloguePreferences.PREF_THEME_PREVIOUS)) {
+            setTheme(R.style.DarkerTheme);
             Utils.initBackground(this, false);
             try {
                 findViewById(R.id.bg_bookshelf).setVisibility(View.GONE);

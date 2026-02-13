@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
@@ -38,7 +39,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 
@@ -693,7 +693,8 @@ public class Fields extends ArrayList<Fields.Field> {
                 if (mFormatHtml && s != null) {
                     v.setText(HtmlCompat.fromHtml(field.format(s), HtmlCompat.FROM_HTML_MODE_LEGACY));
                     v.setFocusable(false);
-                    v.setTextColor(ContextCompat.getColor(v.getContext(), R.color.theme_onSurface));
+                    int colorOnPrimary = Utils.getThemeColor(v.getContext(), com.google.android.material.R.attr.colorOnSurface);
+                    v.setTextColor(ColorStateList.valueOf(colorOnPrimary));
                 } else {
                     v.setText(field.format(s));
                 }

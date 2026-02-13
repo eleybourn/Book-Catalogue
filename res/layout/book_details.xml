@@ -132,7 +132,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:adjustViewBounds="true"
-                    android:background="@color/theme_surfaceContainer"
+                    android:background="?attr/colorSurfaceContainer"
                     android:contentDescription="@string/label_thumbnail"
                     android:padding="@dimen/p_md"
                     android:scaleType="centerInside"

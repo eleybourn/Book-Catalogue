@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/theme_surface"
+        android:background="?attr/colorSurface"
         android:orientation="vertical"
         android:padding="@dimen/p_lg" >
 
@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/theme_primary"
+            android:textColor="?attr/colorPrimary"
             android:textStyle="bold"
             android:paddingBottom="@dimen/p_md"
             android:textIsSelectable="true" />

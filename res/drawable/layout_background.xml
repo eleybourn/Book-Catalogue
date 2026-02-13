@@ -5,8 +5,8 @@
             <!-- vertical gradient -->
             <gradient
                 android:angle="90"
-                android:endColor="@color/theme_secondaryContainer"
-                android:startColor="@color/theme_surface"
+                android:endColor="?attr/colorSecondaryContainer"
+                android:startColor="?attr/colorSurface"
                 android:type="linear" />
 
         </shape>

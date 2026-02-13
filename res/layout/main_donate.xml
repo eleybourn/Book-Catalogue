@@ -30,7 +30,7 @@
             android:paddingBottom="20dp"
             android:text="@string/label_amazon_wishlist"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/theme_primary" />
+            android:textColor="?attr/colorPrimary" />
 
         <TextView
             android:layout_width="match_parent"
@@ -48,7 +48,7 @@
             android:paddingBottom="20dp"
             android:text="@string/label_paypal_donation"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/theme_primary" />
+            android:textColor="?attr/colorPrimary" />
 
         <ImageView
             android:id="@+id/donateUrlImage"

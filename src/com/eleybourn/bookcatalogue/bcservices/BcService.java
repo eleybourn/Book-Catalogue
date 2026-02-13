@@ -42,6 +42,7 @@ public class BcService {
     private static final String FULL_NAME = "full_name";
     private static final String FAMILY_NAME = "family_name";
     private static final String GIVEN_NAMES = "given_names";
+    @SuppressWarnings("unused")
     private static final String AUTHOR_POSITION = "author_position";
     private static final String PUBLISHER = "publisher";
     private static final String COVER_URL = "default_thumbnail";

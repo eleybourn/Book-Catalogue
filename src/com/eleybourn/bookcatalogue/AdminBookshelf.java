@@ -34,6 +34,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.data.Bookshelf;
 import com.eleybourn.bookcatalogue.data.BookshelfAdapter;
 import com.eleybourn.bookcatalogue.data.BookshelfViewModel;
@@ -42,7 +43,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 /*
  * A book catalogue application that integrates with Google Books.
  */
-public class AdminBookshelf extends AppCompatActivity {
+public class AdminBookshelf extends BookCatalogueActivity {
     private static final int INSERT_ID = Menu.FIRST;
     private static final int DELETE_ID = Menu.FIRST + 1;
 
@@ -53,6 +54,11 @@ public class AdminBookshelf extends AppCompatActivity {
     // Define Result Launchers
     private ActivityResultLauncher<Intent> editBookshelfLauncher;
     private ActivityResultLauncher<Intent> createBookshelfLauncher;
+
+    @Override
+    protected RequiredPermission[] getRequiredPermissions() {
+        return new RequiredPermission[0];
+    }
 
     /** Called when the activity is first created. */
     @Override

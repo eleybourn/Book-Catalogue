@@ -153,8 +153,8 @@
                 android:text="@string/title_local_backup"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
-                android:textColor="@color/theme_onPrimary"
-                android:background="@color/theme_primary" />
+                android:textColor="?attr/colorOnPrimary"
+                android:background="?attr/colorPrimary" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -170,8 +170,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginHorizontal="@dimen/p_md"
-                    android:textColor="@color/theme_onSecondary"
-                    android:backgroundTint="@color/theme_secondary"
+                    android:textColor="?attr/colorOnSecondary"
+                    android:backgroundTint="?attr/colorSecondary"
                     android:text="@string/label_export_to_csv"
                     app:icon="@drawable/ic_menu_spreadsheet" />
                 <com.google.android.material.button.MaterialButton
@@ -181,8 +181,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginHorizontal="@dimen/p_md"
-                    android:textColor="@color/theme_onSecondary"
-                    android:backgroundTint="@color/theme_secondary"
+                    android:textColor="?attr/colorOnSecondary"
+                    android:backgroundTint="?attr/colorSecondary"
                     android:text="@string/label_import_from_csv"
                     app:icon="@drawable/ic_menu_spreadsheet" />
 
@@ -202,8 +202,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginHorizontal="@dimen/p_md"
-                    android:textColor="@color/theme_onSecondary"
-                    android:backgroundTint="@color/theme_secondary"
+                    android:textColor="?attr/colorOnSecondary"
+                    android:backgroundTint="?attr/colorSecondary"
                     android:text="@string/label_backup_to_archive"
                     app:icon="@drawable/ic_menu_save" />
                 <com.google.android.material.button.MaterialButton
@@ -213,8 +213,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginHorizontal="@dimen/p_md"
-                    android:textColor="@color/theme_onSecondary"
-                    android:backgroundTint="@color/theme_secondary"
+                    android:textColor="?attr/colorOnSecondary"
+                    android:backgroundTint="?attr/colorSecondary"
                     android:text="@string/label_import_from_archive"
                     app:icon="@drawable/ic_menu_save" />
 

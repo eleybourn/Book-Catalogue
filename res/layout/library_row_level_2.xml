@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@color/theme_primary"
+    android:background="?attr/colorPrimary"
     android:paddingHorizontal="@dimen/p_md"
     tools:ignore="Overdraw">
 
@@ -16,7 +16,7 @@
         android:layout_gravity="center"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_separator"
-        app:tint="@color/theme_onPrimary" />
+        app:tint="?attr/colorOnPrimary" />
 
     <TextView
         android:id="@+id/field_name"
@@ -27,7 +27,7 @@
         android:paddingHorizontal="2dp"
         android:text="@string/not_set"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/theme_onPrimary"
+        android:textColor="?attr/colorOnPrimary"
         android:textStyle="bold" />
 
     <ImageView
@@ -36,5 +36,5 @@
         android:layout_gravity="center"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_separator"
-        app:tint="@color/theme_onPrimary" />
+        app:tint="?attr/colorOnPrimary" />
 </LinearLayout>

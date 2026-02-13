@@ -28,8 +28,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 
-import androidx.core.content.ContextCompat;
-
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -72,7 +70,8 @@ public class MenuHandler {
     public void addCreateBookItems(Menu menu) {
         SubMenu addMenu = menu.addSubMenu(0, MENU_ADD_BOOK, mSort++, BookCatalogueApp.getRes().getString(R.string.title_add_book) + "...");
         addMenu.setIcon(R.drawable.ic_menu_new);
-        addMenu.getItem().setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.theme_onPrimary)));
+        int colorOnPrimary = Utils.getThemeColor(mContext, com.google.android.material.R.attr.colorOnPrimary);
+        addMenu.getItem().setIconTintList(ColorStateList.valueOf(colorOnPrimary));
         addMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         {
             if (Utils.USE_BARCODE) {
@@ -102,7 +101,8 @@ public class MenuHandler {
     public MenuItem addItem(Menu menu, int id, int stringId, int icon) {
         MenuItem item = menu.add(0, id, mSort++, stringId);
         item.setIcon(icon);
-        item.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.theme_onPrimary)));
+        int colorOnPrimary = Utils.getThemeColor(mContext, com.google.android.material.R.attr.colorOnPrimary);
+        item.setIconTintList(ColorStateList.valueOf(colorOnPrimary));
         return item;
     }
 
@@ -147,7 +147,8 @@ public class MenuHandler {
     public MenuItem addSearchItem(Menu menu) {
         MenuItem search = menu.add(0, MENU_ITEM_SEARCH, mSort++, R.string.menu_search);
         search.setIcon(R.drawable.ic_menu_search);
-        search.setIconTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.theme_onPrimary)));
+        int colorOnPrimary = Utils.getThemeColor(mContext, com.google.android.material.R.attr.colorOnPrimary);
+        search.setIconTintList(ColorStateList.valueOf(colorOnPrimary));
         return search;
     }
 

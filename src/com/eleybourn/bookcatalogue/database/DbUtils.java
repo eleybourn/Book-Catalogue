@@ -816,13 +816,15 @@ public class DbUtils {
          * Check if the table exists within the passed DB
          */
         public boolean exists(SynchronizedDb db) {
-            SynchronizedStatement stmt = db.compileStatement(mExistsSql);
+            SynchronizedStatement stmt = null;
             try {
+                stmt = db.compileStatement(mExistsSql);
                 stmt.bindString(1, getName());
                 stmt.bindString(2, getName());
                 return (stmt.simpleQueryForLong() > 0);
             } finally {
-                stmt.close();
+                if (stmt != null)
+                    stmt.close();
             }
         }
 

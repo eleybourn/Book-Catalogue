@@ -3045,7 +3045,7 @@ public class CatalogueDBAdapter {
                 args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
             // ALWAYS set the INSTANCE_UPDATE_DATE; this is used for backups
             //args.put(DOM_INSTANCE_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
-            success = mDb.update(DB_TB_BOOKS, args, KEY_ROW_ID + "=" + rowId, null) > 0;
+            mDb.update(DB_TB_BOOKS, args, KEY_ROW_ID + "=" + rowId, null);
 
             String bookshelf = values.getBookshelfList();
             if (bookshelf != null && !bookshelf.trim().isEmpty()) {
@@ -3451,7 +3451,7 @@ public class CatalogueDBAdapter {
     public void deleteAnthologyTitles(long bookRowId, boolean dirtyBookIfNecessary) {
         boolean success;
         // Delete the anthology entries for the book
-        success = mDb.delete(DB_TB_ANTHOLOGY, KEY_BOOK + "=" + bookRowId, null) > 0;
+        mDb.delete(DB_TB_ANTHOLOGY, KEY_BOOK + "=" + bookRowId, null);
         // Mark book dirty
         if (dirtyBookIfNecessary)
             setBookDirty(bookRowId);
@@ -3499,13 +3499,10 @@ public class CatalogueDBAdapter {
                     + " Not In (SELECT DISTINCT " + KEY_ROW_ID + " FROM " + DB_TB_BOOKS + ") ");
         }
 
-        boolean success;
         try {
             mPurgeBookAuthorsStmt.execute();
-            success = true;
         } catch (Exception e) {
             Logger.logError(e, "Failed to purge Book Authors");
-            success = false;
         }
 
         if (mPurgeAuthorsStmt == null) {
@@ -3518,7 +3515,6 @@ public class CatalogueDBAdapter {
             mPurgeAuthorsStmt.execute();
         } catch (Exception e) {
             Logger.logError(e, "Failed to purge Authors");
-            success = false;
         }
 
     }
@@ -3579,10 +3575,9 @@ public class CatalogueDBAdapter {
         // Delete DB_TB_BOOK_SERIES for this series
         boolean success1 = mDb.delete(DB_TB_BOOK_SERIES, KEY_SERIES_ID + " = " + series.id, null) > 0;
 
-        boolean success2 = false;
         if (success1)
             // Cleanup all series
-            success2 = purgeSeries();
+            purgeSeries();
 
     }
 
@@ -3600,7 +3595,7 @@ public class CatalogueDBAdapter {
             Logger.logError(e, "Failed to get book UUID");
         }
 
-        success = mDb.delete(DB_TB_BOOKS, KEY_ROW_ID + "=" + rowId, null) > 0;
+        mDb.delete(DB_TB_BOOKS, KEY_ROW_ID + "=" + rowId, null);
         purgeAuthors();
 
         try {
@@ -3628,22 +3623,6 @@ public class CatalogueDBAdapter {
     }
 
     /**
-     * Delete the bookshelf with the given rowId
-     *
-     * @param bookshelfId id of bookshelf to delete
-     * @return true if deleted, false otherwise
-     */
-    public boolean deleteBookshelf(long bookshelfId) {
-
-        setBooksDirtyByBookshelf(bookshelfId);
-
-        boolean deleteSuccess;
-        deleteSuccess = mDb.delete(DB_TB_BOOK_BOOKSHELF_WEAK, KEY_BOOKSHELF + "=" + bookshelfId, null) > 0;
-        deleteSuccess = mDb.delete(DB_TB_BOOKSHELF, KEY_ROW_ID + "=" + bookshelfId, null) > 0;
-        return deleteSuccess;
-    }
-
-    /**
      * Delete the loan with the given rowId
      *
      * @param bookId id of book whose loan is to be deleted
@@ -3652,7 +3631,7 @@ public class CatalogueDBAdapter {
         boolean success;
         if (dirtyBookIfNecessary)
             setBookDirty(bookId);
-        success = mDb.delete(DB_TB_LOAN, KEY_BOOK + "=" + bookId, null) > 0;
+        mDb.delete(DB_TB_LOAN, KEY_BOOK + "=" + bookId, null);
         //Special cleanup step - Delete all loans without books
         this.deleteLoanInvalids();
     }
@@ -3661,8 +3640,7 @@ public class CatalogueDBAdapter {
      * Delete all loan without a book or loanee
      */
     public void deleteLoanInvalids() {
-        boolean success;
-        success = mDb.delete(DB_TB_LOAN, "(" + KEY_BOOK + "='' OR " + KEY_BOOK + "=null OR " + KEY_LOANED_TO + "='' OR " + KEY_LOANED_TO + "=null) ", null) > 0;
+        mDb.delete(DB_TB_LOAN, "(" + KEY_BOOK + "='' OR " + KEY_BOOK + "=null OR " + KEY_LOANED_TO + "='' OR " + KEY_LOANED_TO + "=null) ", null);
     }
 
     /**

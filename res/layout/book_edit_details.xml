@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@color/theme_surfaceContainer"
+            android:background="?attr/colorSurfaceContainer"
             android:contentDescription="@string/label_thumbnail"
             android:gravity="center"
             android:padding="@dimen/p_md" />

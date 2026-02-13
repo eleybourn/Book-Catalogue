@@ -26,6 +26,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -50,6 +51,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.AttrRes;
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
@@ -1558,7 +1562,15 @@ public class Utils {
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
         return outValue.resourceId;
+    }
 
+    @ColorInt
+    public static int getThemeColor(@NonNull Context context, @AttrRes int attribute) {
+        TypedValue typedValue = new TypedValue();
+        TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { attribute });
+        int color = a.getColor(0, 0);
+        a.recycle();
+        return color;
     }
 
     /**

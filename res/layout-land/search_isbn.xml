@@ -112,7 +112,7 @@
                 android:src="@android:drawable/ic_input_delete"
                 android:scaleType="fitCenter"
                 android:padding="@dimen/p_md"
-                app:tint="@color/theme_primary" />
+                app:tint="?attr/colorPrimary" />
         </LinearLayout>
 
         <RelativeLayout

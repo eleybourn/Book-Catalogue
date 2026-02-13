@@ -27,7 +27,7 @@
 
         <RatingBar
             android:id="@+id/field_rating"
-            android:progressTint="@color/theme_primary"
+            android:progressTint="?attr/colorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

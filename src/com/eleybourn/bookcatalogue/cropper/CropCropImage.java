@@ -40,6 +40,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
 import com.eleybourn.bookcatalogue.BuildConfig;
@@ -80,7 +81,6 @@ public class CropCropImage extends CropMonitoredActivity {
     private boolean mScale;
     private boolean mScaleUp = true;
     // Flag indicating if default crop rect is whole image
-    private boolean mCropWholeImage = false;
     private CropImageView mImageView;
     private ContentResolver mContentResolver;
     private Bitmap mBitmap;
@@ -90,7 +90,7 @@ public class CropCropImage extends CropMonitoredActivity {
         Matrix mImageMatrix;
         int mNumFaces;
 
-        // For each face, we create a HightlightView for it.
+        // For each face, we create a HighlightView for it.
         private void handleFace(FaceDetector.Face f) {
             PointF midPoint = new PointF();
 
@@ -135,7 +135,7 @@ public class CropCropImage extends CropMonitoredActivity {
             mImageView.add(hv);
         }
 
-        // Create a default HightlightView if we found no face in the picture.
+        // Create a default HighlightView if we found no face in the picture.
         private void makeDefault() {
             CropHighlightView hv = new CropHighlightView(mImageView);
 
@@ -145,6 +145,14 @@ public class CropCropImage extends CropMonitoredActivity {
             Rect imageRect = new Rect(0, 0, width, height);
 
             // Make the default size about 10% smaller than the image
+            RectF cropRect = getRectF(width, height);
+            hv.setup(mImageMatrix, imageRect, cropRect, mCircleCrop,
+                    mAspectX != 0 && mAspectY != 0);
+            mImageView.add(hv);
+        }
+
+        @NonNull
+        private RectF getRectF(int width, int height) {
             int cropWidth = width - (width / 10) * 2;
             int cropHeight = height - (height / 10) * 2;
 
@@ -161,10 +169,7 @@ public class CropCropImage extends CropMonitoredActivity {
             int x = (width - cropWidth) / 2;
             int y = (height - cropHeight) / 2;
 
-            RectF cropRect = new RectF(x, y, x + cropWidth, y + cropHeight);
-            hv.setup(mImageMatrix, imageRect, cropRect, mCircleCrop,
-                    mAspectX != 0 && mAspectY != 0);
-            mImageView.add(hv);
+            return new RectF(x, y, x + cropWidth, y + cropHeight);
         }
 
         // Scale the image down for faster face detection.
@@ -179,9 +184,8 @@ public class CropCropImage extends CropMonitoredActivity {
             }
             Matrix matrix = new Matrix();
             matrix.setScale(mScale, mScale);
-            Bitmap faceBitmap = Bitmap.createBitmap(mBitmap, 0, 0,
+            return Bitmap.createBitmap(mBitmap, 0, 0,
                     mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
-            return faceBitmap;
         }
 
         public void run() {
@@ -189,12 +193,6 @@ public class CropCropImage extends CropMonitoredActivity {
             Bitmap faceBitmap = prepareBitmap();
 
             mScale = 1.0F / mScale;
-            boolean mDoFaceDetection = false;
-            if (faceBitmap != null && mDoFaceDetection) {
-                FaceDetector detector = new FaceDetector(faceBitmap.getWidth(),
-                        faceBitmap.getHeight(), mFaces.length);
-                mNumFaces = detector.findFaces(faceBitmap, mFaces);
-            }
 
             if (faceBitmap != null && faceBitmap != mBitmap) {
                 faceBitmap.recycle();
@@ -316,7 +314,6 @@ public class CropCropImage extends CropMonitoredActivity {
             mOutputY = extras.getInt("outputY");
             mScale = extras.getBoolean("scale", true);
             mScaleUp = extras.getBoolean("scaleUpIfNeeded", true);
-            mCropWholeImage = extras.getBoolean("whole-image", false);
         }
 
         if (mBitmap == null) {
@@ -370,8 +367,8 @@ public class CropCropImage extends CropMonitoredActivity {
                                     1024 * 1024) : mBitmap;
                     mHandler.post(() -> {
                         if (b != mBitmap && b != null) {
-// Do not recycle until mBitmap has been set
-// to the new bitmap!
+                            // Do not recycle until mBitmap has been set
+                            // to the new bitmap!
                             Bitmap toRecycle = mBitmap;
                             mBitmap = b;
                             mImageView.setImageBitmapResetBase(mBitmap,

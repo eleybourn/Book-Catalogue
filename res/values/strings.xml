@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="_empty_"/>
 
     <string name="alert_automatic_population_failed">Automatic Population of Titles Failed</string>
@@ -109,12 +109,12 @@
     <string name="cover_options_cc_ellipsis">Cover Options…</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
-    <string name="covers_progress">%1$d covers processed (%2$d missing)</string>
+    <string name="covers_progress" tools:ignore="PluralsCandidate">%1$d covers processed (%2$d missing)</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$d covers processed (%2$d missing, %3$d skipped)</string>
+    <string name="covers_progress_increment" tools:ignore="PluralsCandidate">%1$d covers processed (%2$d missing, %3$d skipped)</string>
 
     <string name="crash_dialog_ok_toast">Thank you!</string>
     <string name="crash_dialog_text">It looks like BookCatalogue has crashed. If possible describe anything you think may be relevant below and press "OK" to send us an email about the crash. You will see the email before it is sent.</string>
@@ -451,7 +451,7 @@
         <item quantity="other">%1$s covers</item>
     </plurals>
     <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$d created, %2$d updated</string>
+    <string name="n_created_m_updated" tools:ignore="PluralsCandidate">%1$d created, %2$d updated</string>
     <!-- Short text for 'n stars' -->
     <plurals name="n_stars">
         <item quantity="zero">%1$s stars</item>
@@ -669,11 +669,11 @@
 
     <string name="old_file_import_cancelled">Import of old files cancelled.</string>
     <string name="old_file_import_complete">Import of old files complete.</string>
-    <string name="old_file_import_stats">%1$d of %2$d files were processed. %3$s\n\nThe old files have been left in place and can be moved
+    <string name="old_file_import_stats" tools:ignore="PluralsCandidate">%1$d of %2$d files were processed. %3$s\n\nThe old files have been left in place and can be moved
         or deleted once you have verified that the app is running correctly.
     </string>
-    <string name="old_file_import_status_duplicates">%1$d were not copied because they were duplicates</string>
-    <string name="old_file_import_status_not_book">%1$d were not copied because they were cover image files
+    <string name="old_file_import_status_duplicates" tools:ignore="PluralsCandidate">%1$d were not copied because they were duplicates</string>
+    <string name="old_file_import_status_not_book" tools:ignore="PluralsCandidate">%1$d were not copied because they were cover image files
         for non-existent books</string>
     <string name="old_file_import_status_of_those">Of those files, %s.</string>
 

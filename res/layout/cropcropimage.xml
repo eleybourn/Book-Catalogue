@@ -20,6 +20,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         android:orientation="horizontal" >
 
         <view
@@ -40,7 +41,8 @@
             android:orientation="horizontal"
             android:paddingStart="@dimen/p_md"
             android:paddingEnd="@dimen/p_md"
-            android:paddingTop="20dip" >
+            android:paddingTop="20dip"
+            android:paddingBottom="20dip" >
 
             <Button
                 android:id="@+id/discard"

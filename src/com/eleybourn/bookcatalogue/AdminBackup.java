@@ -54,16 +54,20 @@ import java.util.ArrayList;
  */
 public class AdminBackup extends ActivityWithTasks implements CredentialListener,
         OnImportTypeSelectionDialogResultListener,
-        OnExportTypeSelectionDialogResultListener {
+        OnExportTypeSelectionDialogResultListener,
+        BillingManager.BillingListener {
     private BookCatalogueAPICredentials mApiCredentials;
     private ProgressBar mSyncProgressBar;
     private TextView mBackupStatsField;
     private Button mBackupNowButton;
     private Button mRestoreNowButton;
     private TextView mLastBackupDateField;
+    private TextView mSubscriptionStatus;
+    private Button mSubscribeManageButton;
     private ApiListener mApiListener;
     private ActivityResultLauncher<String[]> mCsvImportPickerLauncher;
     private ActivityResultLauncher<String> mCsvExportPickerLauncher;
+    private BillingManager mBillingManager;
 
     @Override
     protected RequiredPermission[] getRequiredPermissions() {
@@ -81,6 +85,10 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         setSupportActionBar(topAppBar);
         topAppBar.setTitle(R.string.title_backup_preferences_tmp);
         topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
+        mBillingManager = new BillingManager(this);
+        mBillingManager.setListener(this);
+        mBillingManager.startConnection();
 
         registerBackupExportPickerLauncher(ID.DIALOG_OPEN_IMPORT_TYPE);
         registerBackupImportPickerLauncher();
@@ -150,14 +158,11 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         TextView emailView = findViewById(R.id.field_user_email);
         CheckBox optInView = findViewById(R.id.field_opt_in);
         if (email.isEmpty()) {
-            // TODO: Enable the visibility of the login screen
-            //findViewById(R.id.logged_out_view).setVisibility(View.VISIBLE);
-            findViewById(R.id.logged_out_view).setVisibility(View.GONE);
+            findViewById(R.id.logged_out_view).setVisibility(View.VISIBLE);
             findViewById(R.id.logged_in_view).setVisibility(View.GONE);
         } else {
             findViewById(R.id.logged_out_view).setVisibility(View.GONE);
-            //findViewById(R.id.logged_in_view).setVisibility(View.VISIBLE);
-            findViewById(R.id.logged_in_view).setVisibility(View.GONE);
+            findViewById(R.id.logged_in_view).setVisibility(View.VISIBLE);
             emailView.setText(email);
             optInView.setChecked(optIn);
             TextView token = findViewById(R.id.field_api_token);
@@ -173,7 +178,13 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         /* Login */
         mApiCredentials = new BookCatalogueAPICredentials(this);
         Button login = findViewById(R.id.log_in_button);
-        login.setOnClickListener(v -> mApiCredentials.getCredentials(this));
+        login.setOnClickListener(v -> {
+            if (!mPrefs.isSubscribed()) {
+                showSubscriptionRequiredDialog();
+            } else {
+                mApiCredentials.getCredentials(this);
+            }
+        });
         /* Logout */
         Button logout = findViewById(R.id.log_out_button);
         logout.setOnClickListener(v -> logout());
@@ -187,6 +198,10 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         /* Restore Now */
         mRestoreNowButton = findViewById(R.id.restore_now); // Use the member variable
         mRestoreNowButton.setOnClickListener(v -> restore());
+
+        mSubscriptionStatus = findViewById(R.id.subscription_status);
+        mSubscribeManageButton = findViewById(R.id.button_subscribe_manage);
+        updateSubscriptionUi();
     }
 
     @Override
@@ -195,6 +210,12 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         // When the activity becomes active, set it as the current listener.
         // Any running background task will now send updates to this activity.
         BookCatalogueAPI.setActiveListener(mApiListener);
+
+        if (mBillingManager != null) {
+            mBillingManager.queryPurchases();
+        }
+        updateSubscriptionUi();
+
         // Disable buttons if a backup or restore is currently in progress
         if (BookCatalogueAPI.isBackupRunning || BookCatalogueAPI.isRestoreRunning) {
             mBackupNowButton.setEnabled(false);
@@ -213,6 +234,14 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         // to prevent updates from being sent to it while it's paused.
         // The WeakReference inside StaticApiListener will prevent crashes, but this is cleaner.
         BookCatalogueAPI.setActiveListener(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mBillingManager != null) {
+            mBillingManager.endConnection();
+        }
     }
 
     /**
@@ -269,6 +298,10 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     }
 
     public void backup() {
+        if (!new BookCataloguePreferences().isSubscribed()) {
+            showSubscriptionRequiredDialog();
+            return;
+        }
         // Create a new API task to get the count. This will automatically run in the background.
         mBackupNowButton.setEnabled(false);
         mRestoreNowButton.setEnabled(false);
@@ -277,11 +310,47 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     }
 
     public void restore() {
+        if (!new BookCataloguePreferences().isSubscribed()) {
+            showSubscriptionRequiredDialog();
+            return;
+        }
         mBackupNowButton.setEnabled(false);
         mRestoreNowButton.setEnabled(false);
         BookCatalogueAPI.isRestoreRunning = true;
         // Create a new API task to get the count. This will automatically run in the background.
         new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_RESTORE_ALL, mApiListener);
+    }
+
+    private void showSubscriptionRequiredDialog() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.subscription_required_title)
+                .setMessage(R.string.subscription_required_message)
+                .setPositiveButton(R.string.button_subscribe, (dialog, which) -> {
+                    mBillingManager.launchPurchaseFlow();
+                })
+                .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void updateSubscriptionUi() {
+        if (mSubscriptionStatus == null || mSubscribeManageButton == null) return;
+
+        BookCataloguePreferences prefs = new BookCataloguePreferences();
+        if (prefs.isSubscribed()) {
+            mSubscriptionStatus.setText(R.string.label_subscription_active);
+            mSubscriptionStatus.setTextColor(getResources().getColor(R.color.theme_primary, getTheme()));
+            mSubscribeManageButton.setText(R.string.label_manage_subscription);
+            mSubscribeManageButton.setOnClickListener(v -> {
+                String url = "https://play.google.com/store/account/subscriptions";
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            });
+        } else {
+            mSubscriptionStatus.setText(R.string.label_subscription_inactive);
+            mSubscriptionStatus.setTextColor(getResources().getColor(R.color.theme_error, getTheme()));
+            mSubscribeManageButton.setText(R.string.button_subscribe);
+            mSubscribeManageButton.setOnClickListener(v -> mBillingManager.launchPurchaseFlow());
+        }
     }
 
     private void reload() {
@@ -298,6 +367,11 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     @Override
     public void onCredentialError(String errorMessage) {
         runOnUiThread(() -> Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show());
+    }
+
+    @Override
+    public void onSubscriptionStatusChanged(boolean isSubscribed) {
+        updateSubscriptionUi();
     }
 
     /**
@@ -454,7 +528,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                         .setPositiveButton(
                                 getResources().getString(R.string.button_ok),
                                 (dialog, which) -> {
-                                    // setup the mail message
+                                    // set up the mail message
                                     final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                                     emailIntent.setType("plain/text");
                                     String subject = "[" + getString(R.string.app_name) + "] " + getString(R.string.label_export_to_csv);

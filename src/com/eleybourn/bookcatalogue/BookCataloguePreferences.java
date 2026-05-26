@@ -35,6 +35,7 @@ public class BookCataloguePreferences {
     public static final String PREF_ACCOUNT_EMAIL = "Account.Email";
     public static final String PREF_ACCOUNT_OPT_IN = "Account.OptIn";
     public static final String PREF_ACCOUNT_API_TOKEN = "Account.ApiToken";
+    public static final String PREF_IS_SUBSCRIBED = "App.IsSubscribed";
     public static final String PREF_THEME = "App.Theme";
     public static final String PREF_THEME_DEFAULT = "App.Theme.Default";
     public static final String PREF_THEME_LIGHT = "App.Theme.Light";
@@ -146,5 +147,13 @@ public class BookCataloguePreferences {
     /** Set API Token */
     public void setAccountApiToken(String token) {
         setString(PREF_ACCOUNT_API_TOKEN, token);
+    }
+
+    public boolean isSubscribed() {
+        return getBoolean(PREF_IS_SUBSCRIBED, false);
+    }
+
+    public void setSubscribed(boolean value) {
+        setBoolean(PREF_IS_SUBSCRIBED, value);
     }
 }

@@ -14,12 +14,56 @@
         style="@style/layout_main"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            style="@style/layout_paragraph"
+        <!-- Subscription Section -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/subscription_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/para_cloud_sync_coming_soon" />
+            android:layout_marginBottom="@dimen/p_lg"
+            app:cardCornerRadius="@dimen/p_md"
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutline">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/p_md">
+
+                <TextView
+                    android:id="@+id/subscription_title"
+                    style="@style/TextAppearance.Material3.TitleMedium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_premium_subscription"
+                    android:textColor="?attr/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/subscription_status"
+                    style="@style/TextAppearance.Material3.BodyMedium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/p_md"
+                    tools:text="@string/label_subscription_active" />
+
+                <TextView
+                    android:id="@+id/subscription_description"
+                    style="@style/TextAppearance.Material3.BodySmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/p_md"
+                    android:text="@string/para_subscription_benefits" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_subscribe_manage"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="@dimen/p_md"
+                    android:text="@string/button_subscribe" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Logged-out View -->
         <!-- This group is shown when the user is not logged in. -->
@@ -28,9 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:orientation="vertical">
 
             <TextView
                 style="@style/layout_paragraph"
@@ -56,9 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/logged_in_status"

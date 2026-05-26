@@ -31,6 +31,14 @@
 
     <string name="app_name">Book Catalogue</string>
 
+    <string name="subscription_required_message">The online backup and restore features require a premium subscription. This allows us to maintain the cloud servers and keep your data safe and accessible across all your devices.</string>
+    <string name="subscription_required_title">Subscription Required</string>
+    <string name="label_premium_subscription">Premium Subscription</string>
+    <string name="label_subscription_active">Subscription Active</string>
+    <string name="label_subscription_inactive">Subscription Inactive</string>
+    <string name="label_manage_subscription">Manage Subscription</string>
+    <string name="para_subscription_benefits">Support the development of BookCatalogue and subscribe to unlock online backup and restore features. Your catalogue will be securely stored in the cloud and available across your devices. Local backup and restore (below) will always be available without subscription. </string>
+
     <string name="author_already_in_list">Author is already in the list</string>
     <string name="author_is_blank">Author field is blank</string>
     <string name="author_required">At least one author must be specified</string>
@@ -72,6 +80,7 @@
     <string name="button_returned">Returned</string>
     <string name="button_save">Save</string>
     <string name="button_send_info">Send Information</string>
+    <string name="button_subscribe">Subscribe</string>
     <string name="button_update">Update</string>
 
     <string name="bytes">%.0f bytes</string>

@@ -47,6 +47,7 @@ dependencies {
     implementation libs.acra.mail
     implementation libs.acra.toast
     implementation libs.acra.dialog
+    implementation libs.billing
 }
 
 android {

@@ -116,7 +116,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
     public void onRun() throws InterruptedException {
         int counter = 0;
 
-        // ENHANCE: Allow caller to pass cursor (again) so that specific books can be updated (eg. just one book)
+        // ENHANCE: Allow caller to pass cursor (again) so that specific books can be updated (e.g. just one book)
         Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROW_ID, "", "", "", "", "", "");
         mManager.setMax(this, books.getCount());
         try {

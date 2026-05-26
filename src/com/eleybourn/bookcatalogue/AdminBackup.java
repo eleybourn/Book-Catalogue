@@ -197,9 +197,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         /* OptIn */
         optInView.setOnClickListener(v -> optIn(optInView.isChecked()));
         /* Online Sync */
-        onlineSyncView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mPrefs.setOnlineSyncEnabled(isChecked);
-        });
+        onlineSyncView.setOnCheckedChangeListener((buttonView, isChecked) -> mPrefs.setOnlineSyncEnabled(isChecked));
         /* Backup Now */
         mBackupNowButton = findViewById(R.id.backup_now); // Use the member variable
         mBackupNowButton.setOnClickListener(v -> backup());
@@ -337,9 +335,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.subscription_required_title)
                 .setMessage(R.string.subscription_required_message)
-                .setPositiveButton(R.string.button_subscribe, (dialog, which) -> {
-                    mBillingManager.launchPurchaseFlow();
-                })
+                .setPositiveButton(R.string.button_subscribe, (dialog, which) -> mBillingManager.launchPurchaseFlow())
                 .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
                 .show();
     }
@@ -511,9 +507,13 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                     new BookCatalogueAPI(activity.getApplicationContext(), BookCatalogueAPI.REQUEST_INFO_COUNT, this);
                     new BookCatalogueAPI(activity.getApplicationContext(), BookCatalogueAPI.REQUEST_INFO_LAST, this);
                     BookCatalogueAPI.isBackupRunning = false;
+                    if (activity.mBackupNowButton != null) activity.mBackupNowButton.setEnabled(true);
+                    if (activity.mRestoreNowButton != null) activity.mRestoreNowButton.setEnabled(true);
                     break;
                 case BookCatalogueAPI.REQUEST_RESTORE_ALL:
                     BookCatalogueAPI.isRestoreRunning = false;
+                    if (activity.mBackupNowButton != null) activity.mBackupNowButton.setEnabled(true);
+                    if (activity.mRestoreNowButton != null) activity.mRestoreNowButton.setEnabled(true);
                     break;
                 case BookCatalogueAPI.REQUEST_LOGIN:
                     activity.reload();

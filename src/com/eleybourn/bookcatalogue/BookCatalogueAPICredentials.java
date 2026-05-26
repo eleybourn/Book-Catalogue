@@ -146,7 +146,7 @@ public class BookCatalogueAPICredentials {
     }
 
     /**
-     * Shows a dialog asking the user to opt-in to sharing data.
+     * Shows a dialog asking the user to opt in to sharing data.
      */
     private void showOptInDialog(final String email) {
         new MaterialAlertDialogBuilder(mContext)

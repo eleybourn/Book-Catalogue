@@ -600,7 +600,7 @@ public class LibraryBuilder {
                         summary.addDomain(DOM_SERIES_POSITION, TBL_BOOK_SERIES.dot(DOM_SERIES_POSITION), SummaryBuilder.FLAG_NONE);
                         // We want a counter of how many books use the series as a primary series, so we can skip some series
                         summary.addDomain(DOM_PRIMARY_SERIES_COUNT, "case when Coalesce(" + TBL_BOOK_SERIES.dot(DOM_SERIES_POSITION) + ",1) == 1 then 1 else 0 end", SummaryBuilder.FLAG_NONE);
-                        // This group can be given a name of the form 's/<n>' where <n> is the series id, eg. 's/18'.
+                        // This group can be given a name of the form 's/<n>' where <n> is the series id, e.g. 's/18'.
                         g.setKeyComponents("s", DOM_SERIES_ID);
                         break;
 
@@ -618,7 +618,7 @@ public class LibraryBuilder {
                         // We also want the ID
                         summary.addDomain(DOM_AUTHOR_ID, TBL_BOOK_AUTHOR.dot(DOM_AUTHOR_ID), SummaryBuilder.FLAG_GROUPED);
 
-                        // This group can be given a name of the form 'a/<n>' where <n> is the author id, eg. 's/18'.
+                        // This group can be given a name of the form 'a/<n>' where <n> is the author id, e.g. 's/18'.
                         g.setKeyComponents("a", DOM_AUTHOR_ID);
 
                         break;
@@ -802,14 +802,14 @@ public class LibraryBuilder {
 
                 }
                 // Copy the current groups to this level item; this effectively accumulates 'group by' domains
-                // down each level so that the top has fewest groups and the bottom level has groups for all levels.
+                // down each level so that the top has the fewest groups and the bottom level has groups for all levels.
                 g.groupDomains = summary.cloneGroups();
             }
 
             // Want the UUID for the book so we can get thumbs
             summary.addDomain(DOM_BOOK_UUID, TBL_BOOKS.dot(DOM_BOOK_UUID), SummaryBuilder.FLAG_NONE);
 
-            // If we have a book ID to mark, then add the MARK field, and setup the expression.
+            // If we have a book ID to mark, then add the MARK field, and set up the expression.
             if (markId != 0) {
                 summary.addDomain(DOM_MARK, TBL_BOOKS.dot(DOM_ID) + " = " + markId, SummaryBuilder.FLAG_NONE);
             }
@@ -825,7 +825,7 @@ public class LibraryBuilder {
             }
             summary.addDomain(DOM_LEVEL, null, SummaryBuilder.FLAG_SORTED);
 
-            // Ensure any caller-specified extras (eg. title) are added at the end.
+            // Ensure any caller-specified extras (e.g. title) are added at the end.
             for (Entry<String, ExtraDomainDetails> d : mExtraDomains.entrySet()) {
                 ExtraDomainDetails info = d.getValue();
                 int flags;
@@ -870,7 +870,7 @@ public class LibraryBuilder {
             }
 
             // Now join with author; we must specify a parent in the join, because the last table
-            // joined was one of BOOKS or LOAN and we don't know which. So we explicitly use books.
+            // joined was one of BOOKS or LOAN, but we don't know which. So we explicitly use books.
             join.join(TBL_BOOKS, TBL_BOOK_AUTHOR);
             // If there is no author group, or the user only wants primary author, get primary only
             if (authorGroup == null || !authorGroup.getAllAuthors()) {
@@ -963,7 +963,7 @@ public class LibraryBuilder {
                 sqlCmp.where = "";
             }
 
-            // Check if the collation we use is case sensitive; bug introduced in ICS was to make UNICODE not CI.
+            // Check if the collation we use is case-sensitive; bug introduced in ICS was to make UNICODE not CI.
             // Due to bugs in other language sorting, we are now forced to use a different collation  anyway, but
             // we still check if it is CI.
             boolean collationIsCs = BookCatalogueApp.isCollationCaseSensitive(mDb.getUnderlyingDatabase());
@@ -1122,7 +1122,7 @@ public class LibraryBuilder {
      * Build a collection of triggers on the list table designed to fill in the summary/header records
      * as the data records are added in sorted order.
      * <p>
-     * This approach is allows DESCENDING sort orders but is slightly slower than the old-style
+     * This approach allows DESCENDING sort orders but is slightly slower than the old-style
      * manually generated lists.
      */
     private String makeSingleTrigger(SummaryBuilder summary) {
@@ -1565,7 +1565,7 @@ public class LibraryBuilder {
         // Count the number of *visible* rows *before* the specified one.
         mGetPositionStmt.bindLong(1, rowId);
         int newPos = (int) mGetPositionStmt.simpleQueryForLong();
-        // If specified row is visible, the the position is the count, otherwise, count -1 (ie. the
+        // If specified row is visible, the position is the count, otherwise, count -1 (i.e. the
         // previous visible row).
         if (isVis == 1)
             return newPos;
@@ -1894,7 +1894,7 @@ public class LibraryBuilder {
         /**
          * Return a clone of the CURRENT groups. Since LibraryGroup objects are processed in order, this
          * allows us to get the GROUP-BY fields applicable to the currently processed group, including all
-         * outer groups. Hence why it is cloned -- subsequent domains will modify this collection.
+         * outer groups. Hence, why it is cloned -- subsequent domains will modify this collection.
          */
         @SuppressWarnings("unchecked")
         public ArrayList<DomainDefinition> cloneGroups() {
@@ -1944,7 +1944,7 @@ public class LibraryBuilder {
                 keyExpression.append("/'||Coalesce(").append(mExpressionMap.get(d)).append(",'')");
             }
 
-            // Setup the SQL phrases.
+            // Set up the SQL phrases.
             cmp.rootKeyExpression = keyExpression.toString();
             cmp.destinationColumns = columns + ",\n	" + DOM_ROOT_KEY;
             cmp.insert = "Insert into " + mListTable + " (\n	" + cmp.destinationColumns + ")";

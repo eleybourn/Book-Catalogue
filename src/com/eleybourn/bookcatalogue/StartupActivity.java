@@ -50,7 +50,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 import java.lang.ref.WeakReference;
 
 /**
- * Single Activity to be the 'Main' activity for the app. I does app-startup stuff which is initially
+ * Single Activity to be the 'Main' activity for the app. It does app-startup stuff which is initially
  * to start the 'real' main activity.
  * <p>
  * Note that calling the desired main activity first resulted in MainMenu's 'singleInstance' property
@@ -79,7 +79,7 @@ public class StartupActivity
     private static final String PREF_START_COUNT = "Startup.StartCount";
 
     /**
-     * Number of app startups between offers to backup
+     * Number of app startups between offers to back up
      */
     private static final int BACKUP_PROMPT_WAIT = 5;
 
@@ -186,7 +186,7 @@ public class StartupActivity
 
             SimpleTaskQueue q = getQueue();
 
-            // Get last version installed (may be zero for none).
+            // Get last version installed (maybe zero for none).
             final int lastVersion = UpgradeMessageManager.getLastUpgradeVersion();
 
             // Determine if the last install was an upgrade or new version
@@ -237,7 +237,7 @@ public class StartupActivity
         // If we are in the UI thread, update the progress.
         if (Thread.currentThread().equals(mUiThread)) {
             // There is a small chance that this message could be set to display *after* the activity is finished,
-            // so we check and we also trap, log and ignore errors.
+            // so we check. We also trap, log and ignore errors.
             // See http://code.google.com/p/android/issues/detail?id=3953
             if (!isFinishing()) {
                 try {
@@ -314,7 +314,7 @@ public class StartupActivity
         Intent i = new Intent(this, Library.class);
         if (mWasReallyStartup)
             i.putExtra("startup", true);
-        // XXX: This is nasty, now we use fragments, StartupActivity should be a FragmenActivity and load the right fragment
+        // XXX: This is nasty, now we use fragments, StartupActivity should be a FragmentActivity and load the right fragment
         // then we could do away with the whole isRoot/willBeRoot thing
         i.putExtra("willBeTaskRoot", isTaskRoot());
         startActivity(i);

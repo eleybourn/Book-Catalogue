@@ -259,7 +259,15 @@ public class BookCatalogueAPI implements SimpleTask {
     public void runBackupBook() {
         CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
         try (Cursor bookCursor = db.fetchBookById(mBookId)) {
-            runBackup(bookCursor, db);
+            // Optimization for single book: Fetch server state for this book specifically
+            JSONObject serverBook = getBook(false);
+            HashMap<Long, JSONObject> serverMap = null;
+            if (serverBook != null && serverBook.has("bcid")) {
+                serverMap = new HashMap<>();
+                serverMap.put(serverBook.optLong("bcid"), serverBook);
+            }
+            runBackup(bookCursor, db, serverMap);
+            notifyComplete("Backup completed successfully.");
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -270,7 +278,17 @@ public class BookCatalogueAPI implements SimpleTask {
     public void runFullBackup() {
         CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
         try (Cursor bookCursor = db.fetchAllBooks()) {
-            runBackup(bookCursor, db);
+            // Optimization: Fetch the list of already backed up books to compare
+            JSONArray backedUpBooksJson = getAllBooks(false);
+            HashMap<Long, JSONObject> serverMap = new HashMap<>();
+            if (backedUpBooksJson != null) {
+                for (int i = 0; i < backedUpBooksJson.length(); i++) {
+                    JSONObject b = backedUpBooksJson.optJSONObject(i);
+                    if (b != null) serverMap.put(b.optLong("bcid", -1), b);
+                }
+            }
+            runBackup(bookCursor, db, serverMap);
+            notifyComplete("Backup completed successfully.");
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -278,7 +296,7 @@ public class BookCatalogueAPI implements SimpleTask {
         }
     }
 
-    private void runBackup(Cursor bookCursor, CatalogueDBAdapter db) {
+    private void runBackup(Cursor bookCursor, CatalogueDBAdapter db, HashMap<Long, JSONObject> serverMap) {
         if (bookCursor != null && bookCursor.moveToFirst()) {
             int total = bookCursor.getCount();
             int count = 0;
@@ -300,8 +318,19 @@ public class BookCatalogueAPI implements SimpleTask {
                     ArrayList<Series> series = db.getBookSeriesList(bookId);
                     ArrayList<AnthologyTitle> anthology = db.getBookAnthologyTitleList(bookId);
 
-                    // Upload
-                    backupBook(bookId, bookCursor, authors, bookshelves, series, anthology, thumbFile);
+                    // Check if we need to back up this book
+                    boolean needsBackup = true;
+                    if (serverMap != null && serverMap.containsKey((long) bookId)) {
+                        JSONObject serverBook = serverMap.get((long) bookId);
+                        if (serverBook != null && !isBookDifferent(bookCursor, authors, bookshelves, series, anthology, thumbFile, serverBook)) {
+                            needsBackup = false;
+                        }
+                    }
+
+                    if (needsBackup) {
+                        // Upload
+                        backupBook(bookId, bookCursor, authors, bookshelves, series, anthology, thumbFile);
+                    }
                 } catch (Exception e) {
                     // Log the specific error for this book, but continue the loop
                     System.err.println("Error syncing book index " + count + ": " + e.getMessage());
@@ -312,6 +341,60 @@ public class BookCatalogueAPI implements SimpleTask {
 
             } while (bookCursor.moveToNext());
         }
+    }
+
+    /**
+     * Compare a local book record with a server record to determine if an update is needed.
+     */
+    private boolean isBookDifferent(Cursor local, ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves, ArrayList<Series> series, ArrayList<AnthologyTitle> anthology, File thumbFile, JSONObject server) {
+        try {
+            // Check basic fields
+            if (!getString(local, CatalogueDBAdapter.KEY_TITLE).equals(getStringOrEmpty(server, "title"))) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_ISBN).equals(getStringOrEmpty(server, "isbn"))) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_PUBLISHER).equals(getStringOrEmpty(server, "publisher"))) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_DATE_PUBLISHED).equals(getStringOrEmpty(server, "date_published"))) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_RATING).equals(getStringOrEmpty(server, "rating"))) return true;
+            if (getInt(local, CatalogueDBAdapter.KEY_READ) != server.optInt("read", 0)) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_PAGES).equals(getStringOrEmpty(server, "pages"))) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_NOTES).equals(getStringOrEmpty(server, "notes"))) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_LIST_PRICE).equals(getStringOrEmpty(server, "list_price"))) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_LOCATION).equals(getStringOrEmpty(server, "location"))) return true;
+            if (!getDate(local, CatalogueDBAdapter.KEY_READ_START).equals(getStringOrEmpty(server, "read_start"))) return true;
+            if (!getDate(local, CatalogueDBAdapter.KEY_READ_END).equals(getStringOrEmpty(server, "read_end"))) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_FORMAT).equals(getStringOrEmpty(server, "format"))) return true;
+            if ((getInt(local, CatalogueDBAdapter.KEY_SIGNED) > 0 ? 1 : 0) != server.optInt("signed", 0)) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_LOANED_TO).equals(getStringOrEmpty(server, "loaned_to"))) return true;
+            if ((getInt(local, CatalogueDBAdapter.KEY_ANTHOLOGY_MASK) > 0 ? 1 : 0) != server.optInt("anthology", 0)) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_DESCRIPTION).equals(getStringOrEmpty(server, "description"))) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_GENRE).equals(getStringOrEmpty(server, "genre"))) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_LANGUAGE).equals(getStringOrEmpty(server, "language"))) return true;
+            if (!getDate(local, CatalogueDBAdapter.KEY_DATE_ADDED).equals(getStringOrEmpty(server, "date_added"))) return true;
+            if (!getDate(local, CatalogueDBAdapter.KEY_LAST_UPDATE_DATE).equals(getStringOrEmpty(server, "last_update_date"))) return true;
+            if (!getString(local, CatalogueDBAdapter.KEY_BOOK_UUID).equals(getStringOrEmpty(server, "book_uuid"))) return true;
+
+            // Check relations - simple counts and string checks for speed
+            JSONArray sAuthors = server.optJSONArray("authors");
+            if ((authors == null ? 0 : authors.size()) != (sAuthors == null ? 0 : sAuthors.length())) return true;
+            
+            JSONArray sBookshelves = server.optJSONArray("bookshelves");
+            if ((bookshelves == null ? 0 : bookshelves.size()) != (sBookshelves == null ? 0 : sBookshelves.length())) return true;
+            
+            JSONArray sSeries = server.optJSONArray("series");
+            if ((series == null ? 0 : series.size()) != (sSeries == null ? 0 : sSeries.length())) return true;
+
+            // Check Anthology Titles
+            JSONArray sAnthology = server.optJSONArray("anthology_titles");
+            if ((anthology == null ? 0 : anthology.size()) != (sAnthology == null ? 0 : sAnthology.length())) return true;
+
+            // Check Thumbnail MD5
+            String localMd5 = (thumbFile != null && thumbFile.exists()) ? Utils.calculateMD5(thumbFile) : "";
+            String serverMd5 = getStringOrEmpty(server, "thumbnail_md5");
+            if (!localMd5.equals(serverMd5)) return true;
+
+        } catch (Exception e) {
+            return true; // If anything fails, assume different to be safe
+        }
+        return false;
     }
 
     private void notifyProgress(int current, int total, String message) {
@@ -758,7 +841,7 @@ public class BookCatalogueAPI implements SimpleTask {
                     if (permanentFile.exists() && remoteMd5 != null) {
                         String localMd5 = Utils.calculateMD5(permanentFile);
                         if (remoteMd5.equalsIgnoreCase(localMd5)) {
-                            // Already have it and it matches, skip download
+                            // Already have it and it matches? Then, skip download
                             // Notify progress for thumbnail download as well
                             notifyProgress(i + 1, thumbnailTasks.size(), "thumbnails restored");
                             continue;
@@ -776,7 +859,7 @@ public class BookCatalogueAPI implements SimpleTask {
                             parent.mkdirs();
                         }
 
-                        // Move the file to its permanent location. Try rename first, then copy if necessary.
+                        // Move the file to its permanent location. Try to rename first, then copy if necessary.
                         boolean moved = downloadedFile.renameTo(permanentFile);
                         if (!moved) {
                             try {
@@ -788,12 +871,6 @@ public class BookCatalogueAPI implements SimpleTask {
                                 Log.e("BookCatalogueAPI", "Failed to copy thumbnail for UUID/ID " + (uuid != null ? uuid : bcid), e);
                             }
                         }
-
-                        //if (moved) {
-                            //Log.d("BookCatalogueAPI", "Restored thumbnail for UUID/ID " + (uuid != null ? uuid : bcid));
-                        //} else {
-                            //Log.e("BookCatalogueAPI", "Failed to move restored thumbnail for UUID/ID " + (uuid != null ? uuid : bcid));
-                        //}
                     }
                 } catch (Exception e) {
                     Log.e("BookCatalogueAPI", "Failed to download or save thumbnail", e);

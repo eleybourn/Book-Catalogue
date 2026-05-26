@@ -60,12 +60,12 @@ import java.util.Locale;
  * each view represents should be handled via this class (and its related classes) where
  * possible.
  * <p>
- * Features is provides are:
+ * Features it provides are:
  * <ul>
  * <li> handling of visibility via preferences
  * <li> handling of 'group' visibility via the 'group' property of a field.
- * <li> understanding of kinds of views (setting a checkbox value to 'true' will work as
- *      expected as will setting the value of a Spinner). As new view types are added, it
+ * <li> understanding of kinds of views (setting a checkbox value to 'true' or setting the value of a Spinner
+ *      will work as expected). As new view types are added, it
  *      will be necessary to add new FieldAccessor implementations.
  * <li> Custom data accessors and formatters to provide application-specific data rules.
  * <li> validation: calling validate will call user-defined or predefined validation routines and
@@ -347,7 +347,7 @@ public class Fields extends ArrayList<Fields.Field> {
     }
 
     /**
-     * Save all fields to the passed DataManager (ie. 'get' them *into* the DataManager).
+     * Save all fields to the passed DataManager (i.e. 'get' them *into* the DataManager).
      *
      * @param data Cursor to load Field objects from.
      */
@@ -492,8 +492,8 @@ public class Fields extends ArrayList<Fields.Field> {
         void set(Field field, String s);
 
         /**
-         * Get the the value from the view associated with Field and store a native version
-         * in the passed values collection.
+         * Get the value from the view associated with Field and store a native version
+         * in the values' collection.
          *
          * @param field  Field associated with the View object
          * @param values Collection to save value.
@@ -501,8 +501,8 @@ public class Fields extends ArrayList<Fields.Field> {
         void get(Field field, Bundle values);
 
         /**
-         * Get the the value from the view associated with Field and store a native version
-         * in the passed DataManager.
+         * Get the value from the view associated with Field and store a native version
+         * in the DataManager.
          *
          * @param field  Field associated with the View object
          * @param values Collection to save value.
@@ -510,7 +510,7 @@ public class Fields extends ArrayList<Fields.Field> {
         void get(Field field, DataManager values);
 
         /**
-         * Get the the value from the view associated with Field and return it as am Object.
+         * Get the value from the view associated with Field and return it as am Object.
          *
          * @param field Field associated with the View object
          * @return The most natural value to associate with the View value.
@@ -763,8 +763,6 @@ public class Fields extends ArrayList<Fields.Field> {
                 //
                 // NOTE: 	This does NOT entirely fix the problem, it gathers debug info. but
                 //		we have implemented one work-around
-                //
-                // Work-around #1:
                 //
                 // It seems that sometimes the afterTextChanged() event fires after the text field
                 // is removed from the screen. In this case, there is no need to synchronize the values

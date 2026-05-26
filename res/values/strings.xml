@@ -29,6 +29,8 @@
     <string name="alert_this_option_is_not_available_until_the_book_is_saved">This option is not available until the book is saved</string>
     <string name="alert_unexpected_error">An unexpected error has occurred, please send the details to support using the \'Help\' option from the main menu</string>
 
+    <string name="stats_backup_combined">Local Device: %1$d books (%2$d backed up)\nCloud Backup: %3$d books</string>
+
     <string name="app_name">Book Catalogue</string>
 
     <string name="subscription_required_message">The online backup and restore features require a premium subscription. This allows us to maintain the cloud servers and keep your data safe and accessible across all your devices.</string>
@@ -37,6 +39,8 @@
     <string name="label_subscription_active">Subscription Active</string>
     <string name="label_subscription_inactive">Subscription Inactive</string>
     <string name="label_manage_subscription">Manage Subscription</string>
+    <string name="label_never">Never</string>
+    <string name="label_last_backup">Last Backup: %1$s</string>
     <string name="para_subscription_benefits">Support the development of BookCatalogue and subscribe to unlock online backup and restore features. Your catalogue will be securely stored in the cloud and available across your devices. Local backup and restore (below) will always be available without subscription. </string>
 
     <string name="author_already_in_list">Author is already in the list</string>

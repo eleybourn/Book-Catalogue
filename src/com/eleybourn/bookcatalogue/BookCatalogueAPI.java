@@ -199,14 +199,20 @@ public class BookCatalogueAPI implements SimpleTask {
             values.add(mOptIn ? "1" : "0");
 
             String response = connection("/login", METHOD_POST, fields, values);
+            if (response == null) {
+                throw new Exception("Failed to connect to login endpoint");
+            }
             JSONObject json = new JSONObject(response);
             if (json.has("api_token")) {
                 mApiToken = json.getString("api_token");
                 mPrefs.setAccountApiToken(mApiToken);
                 notifyComplete("Login successful");
+            } else {
+                throw new Exception("Login response missing API token");
             }
         } catch (Exception e) {
             Log.e("BookCatalogueAPI", "Login failed", e);
+            notifyError("Login failed: " + e.getMessage());
         }
     }
 
@@ -720,6 +726,9 @@ public class BookCatalogueAPI implements SimpleTask {
                 throw new Exception("No API Token set for runInfoCount");
             }
             String response = connection("/books/count", METHOD_GET);
+            if (response == null) {
+                throw new Exception("Failed to connect to count endpoint");
+            }
             JSONObject json = new JSONObject(response);
             if (json.has("count")) {
                 // Retrieve the count from the JSON response.
@@ -740,9 +749,12 @@ public class BookCatalogueAPI implements SimpleTask {
         try {
             if (mApiToken.isEmpty()) {
                 // It might be better to try a login() call here, but for now, we'll error out.
-                throw new Exception("No API Token set for runInfoCount");
+                throw new Exception("No API Token set for runInfoLast");
             }
             String response = connection("/books/last_backup", METHOD_GET);
+            if (response == null) {
+                throw new Exception("Failed to connect to last_backup endpoint");
+            }
             JSONObject json = new JSONObject(response);
             if (json.has("last_backup")) {
                 // Retrieve the last_backup from the JSON response.

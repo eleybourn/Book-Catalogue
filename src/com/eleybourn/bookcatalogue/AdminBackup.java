@@ -288,6 +288,8 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         prefs.setAccountEmail("");
         prefs.setAccountOptIn(false);
         prefs.setAccountApiToken("");
+        BookCatalogueAPI.isBackupRunning = false;
+        BookCatalogueAPI.isRestoreRunning = false;
         reload();
     }
 
@@ -341,7 +343,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             mSubscriptionStatus.setTextColor(getResources().getColor(R.color.theme_primary, getTheme()));
             mSubscribeManageButton.setText(R.string.label_manage_subscription);
             mSubscribeManageButton.setOnClickListener(v -> {
-                String url = "https://play.google.com/store/account/subscriptions";
+                String url = "https://play.google.com/store/account/subscriptions?package=" + getPackageName() + "&sku=" + BillingManager.SUBSCRIPTION_ID;
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             });
@@ -454,12 +456,23 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             switch (request) {
                 case BookCatalogueAPI.REQUEST_INFO_COUNT: {
                     int totalLocalBooks = CatalogueDBAdapter.countBooks();
-                    String statsText = message + " of " + totalLocalBooks + " books backed up";
+                    int cloudCount = 0;
+                    try {
+                        cloudCount = Integer.parseInt(message);
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                    int backedUp = Math.min(totalLocalBooks, cloudCount);
+                    String statsText = activity.getString(R.string.stats_backup_combined, totalLocalBooks, backedUp, cloudCount);
                     activity.mBackupStatsField.setText(statsText);
                     break;
                 }
                 case BookCatalogueAPI.REQUEST_INFO_LAST: {
-                    String statsText = "Last Backup: " + message;
+                    String lastDate = message;
+                    if ("1970-01-01".equals(lastDate) || "1970-01-01 00:00:00".equals(lastDate)) {
+                        lastDate = activity.getString(R.string.label_never);
+                    }
+                    String statsText = activity.getString(R.string.label_last_backup, lastDate);
                     activity.mLastBackupDateField.setText(statsText);
                     break;
                 }
@@ -497,6 +510,8 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             }
             activity.mSyncProgressBar.setVisibility(View.GONE);
             if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL) || request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
+                BookCatalogueAPI.isBackupRunning = false;
+                BookCatalogueAPI.isRestoreRunning = false;
                 if (activity.mBackupNowButton != null) {
                     activity.mBackupNowButton.setEnabled(true);
                 }

@@ -1,6 +1,8 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.BillingClient;
@@ -46,6 +48,9 @@ public class BillingManager implements PurchasesUpdatedListener {
     }
 
     public void startConnection() {
+        if (mBillingClient.getConnectionState() == BillingClient.ConnectionState.CONNECTING) {
+            return;
+        }
         mBillingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
@@ -67,6 +72,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     public void queryPurchases() {
         if (!mBillingClient.isReady()) {
+            startConnection();
             return;
         }
         mBillingClient.queryPurchasesAsync(
@@ -77,10 +83,12 @@ public class BillingManager implements PurchasesUpdatedListener {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         boolean isSubscribed = false;
                         for (Purchase purchase : purchases) {
-                            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED && !purchase.isSuspended()) {
                                 for (String productId : purchase.getProducts()) {
                                     if (productId.equals(SUBSCRIPTION_ID)) {
                                         isSubscribed = true;
+                                        // Ensure it stays acknowledged
+                                        handlePurchase(purchase);
                                         break;
                                     }
                                 }

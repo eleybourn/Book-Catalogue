@@ -37,7 +37,6 @@ public class BookCataloguePreferences {
     public static final String PREF_ACCOUNT_API_TOKEN = "Account.ApiToken";
     public static final String PREF_IS_SUBSCRIBED = "App.IsSubscribed";
     public static final String PREF_IS_AUTO_RENEWING = "App.IsAutoRenewing";
-    public static final String PREF_SUBSCRIPTION_EXPIRY = "App.SubscriptionExpiry";
     public static final String PREF_ONLINE_SYNC_ENABLED = "App.OnlineSyncEnabled";
     public static final String PREF_THEME = "App.Theme";
     public static final String PREF_THEME_DEFAULT = "App.Theme.Default";
@@ -166,14 +165,6 @@ public class BookCataloguePreferences {
 
     public void setAutoRenewing(boolean value) {
         setBoolean(PREF_IS_AUTO_RENEWING, value);
-    }
-
-    public String getSubscriptionExpiry() {
-        return getString(PREF_SUBSCRIPTION_EXPIRY, "");
-    }
-
-    public void setSubscriptionExpiry(String value) {
-        setString(PREF_SUBSCRIPTION_EXPIRY, value);
     }
 
     public boolean isOnlineSyncEnabled() {

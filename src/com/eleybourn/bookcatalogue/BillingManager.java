@@ -51,6 +51,10 @@ public class BillingManager implements PurchasesUpdatedListener {
             public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                     queryPurchases();
+                } else {
+                    mActivity.runOnUiThread(() ->
+                            android.widget.Toast.makeText(mActivity, "Billing connection failed: " + billingResult.getDebugMessage(), android.widget.Toast.LENGTH_SHORT).show()
+                    );
                 }
             }
 
@@ -62,6 +66,9 @@ public class BillingManager implements PurchasesUpdatedListener {
     }
 
     public void queryPurchases() {
+        if (!mBillingClient.isReady()) {
+            return;
+        }
         mBillingClient.queryPurchasesAsync(
                 QueryPurchasesParams.newBuilder()
                         .setProductType(BillingClient.ProductType.SUBS)
@@ -90,6 +97,12 @@ public class BillingManager implements PurchasesUpdatedListener {
     }
 
     public void launchPurchaseFlow() {
+        if (!mBillingClient.isReady()) {
+            android.widget.Toast.makeText(mActivity, "Billing service not ready. Connecting...", android.widget.Toast.LENGTH_SHORT).show();
+            startConnection();
+            return;
+        }
+
         QueryProductDetailsParams queryProductDetailsParams =
                 QueryProductDetailsParams.newBuilder()
                         .setProductList(
@@ -103,15 +116,17 @@ public class BillingManager implements PurchasesUpdatedListener {
         mBillingClient.queryProductDetailsAsync(
                 queryProductDetailsParams,
                 (billingResult, productDetailsResult) -> {
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    int responseCode = billingResult.getResponseCode();
+                    if (responseCode == BillingClient.BillingResponseCode.OK) {
                         List<ProductDetails> productDetailsList = productDetailsResult.getProductDetailsList();
                         if (productDetailsList != null && !productDetailsList.isEmpty()) {
+                            // Product found!
                             ProductDetails productDetails = productDetailsList.get(0);
-
+                            
                             List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
                             if (offerDetails != null && !offerDetails.isEmpty()) {
                                 String offerToken = offerDetails.get(0).getOfferToken();
-
+                                
                                 List<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
                                         Collections.singletonList(
                                                 BillingFlowParams.ProductDetailsParams.newBuilder()
@@ -124,8 +139,22 @@ public class BillingManager implements PurchasesUpdatedListener {
                                         .build();
 
                                 mBillingClient.launchBillingFlow(mActivity, billingFlowParams);
+                            } else {
+                                mActivity.runOnUiThread(() ->
+                                        android.widget.Toast.makeText(mActivity, "No active offers found for subscription.", android.widget.Toast.LENGTH_SHORT).show()
+                                );
                             }
+                        } else {
+                            // If not found as SUBS
+                            mActivity.runOnUiThread(() ->
+                                    android.widget.Toast.makeText(mActivity, "Product ID '" + SUBSCRIPTION_ID + "' not found in Play Console. Check if it is Active and has an Active Base Plan.", android.widget.Toast.LENGTH_LONG).show()
+                            );
                         }
+                    } else {
+                        final String debugMessage = billingResult.getDebugMessage();
+                        mActivity.runOnUiThread(() ->
+                                android.widget.Toast.makeText(mActivity, "Error " + responseCode + ": " + debugMessage, android.widget.Toast.LENGTH_SHORT).show()
+                        );
                     }
                 }
         );

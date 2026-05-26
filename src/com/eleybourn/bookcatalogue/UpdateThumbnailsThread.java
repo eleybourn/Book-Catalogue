@@ -308,6 +308,8 @@ public class UpdateThumbnailsThread extends ManagedTask {
         }
 
         // For each field, process it according the the usage.
+        boolean recordChanged = false;
+        boolean thumbChanged = false;
         for (FieldUsage usage : requestedFields.values()) {
             if (newData.containsKey(usage.fieldName)) {
                 // Handle thumbnail specially
@@ -323,10 +325,12 @@ public class UpdateThumbnailsThread extends ManagedTask {
                     if (copyThumb) {
                         File file = CatalogueDBAdapter.fetchThumbnailByUuid(bookUuid);
                         downloadedFile.renameTo(file);
+                        thumbChanged = true;
                     } else {
                         downloadedFile.delete();
                     }
                 } else {
+                    recordChanged = true;
                     switch (usage.usage) {
                         case OVERWRITE:
                             // Nothing to do; just use new data
@@ -369,8 +373,12 @@ public class UpdateThumbnailsThread extends ManagedTask {
         }
 
         // Update
-        if (!newData.isEmpty()) {
+        if (recordChanged && !newData.isEmpty()) {
             mDbHelper.updateBook(bookId, new BookData(mContext, newData), 0);
+        }
+
+        if (recordChanged || thumbChanged) {
+            BookCatalogueAPI.syncBook(mContext, bookId);
         }
 
     }

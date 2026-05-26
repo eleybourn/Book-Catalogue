@@ -3929,15 +3929,11 @@ public class CatalogueDBAdapter {
                 }
             }
         } finally {
-            c.close();
-            if (delStmt != null)
-                delStmt.close();
-            if (moveStmt != null)
-                moveStmt.close();
-            if (checkMinStmt != null)
-                checkMinStmt.close();
-            if (replacementIdPosStmt != null)
-                replacementIdPosStmt.close();
+            if (c != null) try { c.close(); } catch (Exception ignored) {}
+            if (delStmt != null) try { delStmt.close(); } catch (Exception ignored) {}
+            if (moveStmt != null) try { moveStmt.close(); } catch (Exception ignored) {}
+            if (checkMinStmt != null) try { checkMinStmt.close(); } catch (Exception ignored) {}
+            if (replacementIdPosStmt != null) try { replacementIdPosStmt.close(); } catch (Exception ignored) {}
         }
     }
 
@@ -3990,9 +3986,8 @@ public class CatalogueDBAdapter {
                 }
             }
         } finally {
-            c.close();
-            if (moveStmt != null)
-                moveStmt.close();
+            if (c != null) try { c.close(); } catch (Exception ignored) {}
+            if (moveStmt != null) try { moveStmt.close(); } catch (Exception ignored) {}
         }
     }
 

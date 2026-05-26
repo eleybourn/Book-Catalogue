@@ -161,6 +161,11 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
                             Utils.copyFile(cropFile, coverFile);
                             // Refresh the view
                             setCoverImage();
+                            // Sync if it's an existing book
+                            long rowId = mEditManager.getBookData().getRowId();
+                            if (rowId > 0) {
+                                BookCatalogueAPI.syncBook(getActivity(), rowId);
+                            }
                             // Cleanup
                             cropFile.delete();
                         }
@@ -186,6 +191,11 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         }
         if (imageOk) {
             setCoverImage();
+            // Sync if it's an existing book
+            long rowId = mEditManager.getBookData().getRowId();
+            if (rowId > 0) {
+                BookCatalogueAPI.syncBook(getActivity(), rowId);
+            }
         } else {
             showCopyErrorToast();
         }
@@ -439,9 +449,15 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void deleteThumbnail() {
         try {
-            File thumbFile = getCoverFile(mEditManager.getBookData().getRowId());
+            long rowId = mEditManager.getBookData().getRowId();
+            File thumbFile = getCoverFile(rowId);
             if (thumbFile != null && thumbFile.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 thumbFile.delete();
+            }
+            // Sync if it's an existing book
+            if (rowId > 0) {
+                BookCatalogueAPI.syncBook(getActivity(), rowId);
             }
         } catch (Exception e) {
             Logger.logError(e);
@@ -563,6 +579,12 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
                 }
                 rotBm.compress(Bitmap.CompressFormat.PNG, 100, f);
                 rotBm.recycle();
+
+                // Sync if it's an existing book
+                long rowId = mEditManager.getBookData().getRowId();
+                if (rowId > 0) {
+                    BookCatalogueAPI.syncBook(getActivity(), rowId);
+                }
             } catch (java.lang.OutOfMemoryError e) {
                 System.gc();
             }

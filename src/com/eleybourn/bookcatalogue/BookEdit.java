@@ -808,11 +808,11 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                 File thumb = CatalogueDBAdapter.getTempThumbnail();
                 File real = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));
                 thumb.renameTo(real);
-                new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
+                BookCatalogueAPI.syncBook(this, mRowId);
             }
         } else {
             mDbHelper.updateBook(mRowId, mBookData, 0);
-            new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_BACKUP_BOOK, mRowId, mApiListener);
+            BookCatalogueAPI.syncBook(this, mRowId);
         }
 
         /*

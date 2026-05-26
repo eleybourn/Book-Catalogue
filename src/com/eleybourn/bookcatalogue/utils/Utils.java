@@ -44,6 +44,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -420,6 +421,7 @@ public class Utils {
      * @return Downloaded filespec
      */
     static public String saveThumbnailFromUrl(String urlText, String filenameSuffix) {
+        //Log.d("BookCatalogue", "Thumbnail " + urlText);
         HttpURLConnection conn = null;
         try {
             URL u = new URL(urlText);

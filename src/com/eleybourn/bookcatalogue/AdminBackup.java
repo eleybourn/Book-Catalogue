@@ -63,6 +63,8 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     private Button mRestoreNowButton;
     private TextView mLastBackupDateField;
     private TextView mSubscriptionStatus;
+    private TextView mSubscribeDescription;
+    private TextView mSubscribeDescription2;
     private Button mSubscribeManageButton;
     private ApiListener mApiListener;
     private ActivityResultLauncher<String[]> mCsvImportPickerLauncher;
@@ -157,6 +159,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         mLastBackupDateField = findViewById(R.id.field_last_backup_date);
         TextView emailView = findViewById(R.id.field_user_email);
         CheckBox optInView = findViewById(R.id.field_opt_in);
+        CheckBox onlineSyncView = findViewById(R.id.field_online_sync);
         if (email.isEmpty()) {
             findViewById(R.id.logged_out_view).setVisibility(View.VISIBLE);
             findViewById(R.id.logged_in_view).setVisibility(View.GONE);
@@ -165,6 +168,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             findViewById(R.id.logged_in_view).setVisibility(View.VISIBLE);
             emailView.setText(email);
             optInView.setChecked(optIn);
+            onlineSyncView.setChecked(mPrefs.isOnlineSyncEnabled());
             TextView token = findViewById(R.id.field_api_token);
             if (!apiToken.isEmpty()) {
                 token.setText(apiToken);
@@ -192,6 +196,10 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         // ... inside onCreate() ...
         /* OptIn */
         optInView.setOnClickListener(v -> optIn(optInView.isChecked()));
+        /* Online Sync */
+        onlineSyncView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mPrefs.setOnlineSyncEnabled(isChecked);
+        });
         /* Backup Now */
         mBackupNowButton = findViewById(R.id.backup_now); // Use the member variable
         mBackupNowButton.setOnClickListener(v -> backup());
@@ -201,6 +209,8 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
         mSubscriptionStatus = findViewById(R.id.subscription_status);
         mSubscribeManageButton = findViewById(R.id.button_subscribe_manage);
+        mSubscribeDescription = findViewById(R.id.subscription_description);
+        mSubscribeDescription2 = findViewById(R.id.subscription_description2);
         updateSubscriptionUi();
     }
 
@@ -339,8 +349,23 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
         BookCataloguePreferences prefs = new BookCataloguePreferences();
         if (prefs.isSubscribed()) {
-            mSubscriptionStatus.setText(R.string.label_subscription_active);
+            if (prefs.isAutoRenewing()) {
+                mSubscriptionStatus.setText(R.string.label_subscription_active);
+            } else {
+                mSubscriptionStatus.setText(R.string.label_subscription_active_no_renew);
+            }
             mSubscriptionStatus.setTextColor(getResources().getColor(R.color.theme_primary, getTheme()));
+            mSubscribeDescription.setVisibility(View.GONE);
+            mSubscribeDescription2.setVisibility(View.GONE);
+            BookCataloguePreferences mPrefs = new BookCataloguePreferences();
+            String email = mPrefs.getAccountEmail();
+            if (email.isEmpty()) {
+                findViewById(R.id.logged_out_view).setVisibility(View.VISIBLE);
+                findViewById(R.id.logged_in_view).setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.logged_out_view).setVisibility(View.GONE);
+                findViewById(R.id.logged_in_view).setVisibility(View.VISIBLE);
+            }
             mSubscribeManageButton.setText(R.string.label_manage_subscription);
             mSubscribeManageButton.setOnClickListener(v -> {
                 String url = "https://play.google.com/store/account/subscriptions?package=" + getPackageName() + "&sku=" + BillingManager.SUBSCRIPTION_ID;
@@ -350,6 +375,10 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         } else {
             mSubscriptionStatus.setText(R.string.label_subscription_inactive);
             mSubscriptionStatus.setTextColor(getResources().getColor(R.color.theme_error, getTheme()));
+            mSubscribeDescription.setVisibility(View.VISIBLE);
+            mSubscribeDescription2.setVisibility(View.VISIBLE);
+            findViewById(R.id.logged_out_view).setVisibility(View.GONE);
+            findViewById(R.id.logged_in_view).setVisibility(View.GONE);
             mSubscribeManageButton.setText(R.string.button_subscribe);
             mSubscribeManageButton.setOnClickListener(v -> mBillingManager.launchPurchaseFlow());
         }

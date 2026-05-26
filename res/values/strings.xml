@@ -37,11 +37,14 @@
     <string name="subscription_required_title">Subscription Required</string>
     <string name="label_premium_subscription">Premium Subscription</string>
     <string name="label_subscription_active">Subscription Active</string>
+    <string name="label_subscription_active_no_renew">Subscription Active (will not renew)</string>
     <string name="label_subscription_inactive">Subscription Inactive</string>
     <string name="label_manage_subscription">Manage Subscription</string>
     <string name="label_never">Never</string>
+    <string name="label_online_sync">Automatic Realtime Sync</string>
     <string name="label_last_backup">Last Backup: %1$s</string>
-    <string name="para_subscription_benefits">Support the development of BookCatalogue and subscribe to unlock online backup and restore features. Your catalogue will be securely stored in the cloud and available across your devices. Local backup and restore (below) will always be available without subscription. </string>
+    <string name="para_subscription_benefits">Support the development of BookCatalogue and subscribe to unlock online backup and restore features. Your catalogue will be securely stored in the cloud and available across your devices. </string>
+    <string name="para_subscription_benefits2">Local backup and restore (below) will always be available without subscription. </string>
 
     <string name="author_already_in_list">Author is already in the list</string>
     <string name="author_is_blank">Author field is blank</string>

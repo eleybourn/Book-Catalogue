@@ -54,6 +54,14 @@
                     android:layout_marginTop="@dimen/p_md"
                     android:text="@string/para_subscription_benefits" />
 
+                <TextView
+                    android:id="@+id/subscription_description2"
+                    style="@style/TextAppearance.Material3.BodySmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/p_md"
+                    android:text="@string/para_subscription_benefits2" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_subscribe_manage"
                     style="@style/Widget.Material3.Button.TonalButton"
@@ -147,11 +155,19 @@
                 android:text="@string/button_logout" />
 
             <CheckBox
+                android:id="@+id/field_online_sync"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/p_lg"
+                android:paddingHorizontal="@dimen/p_md"
+                android:layout_marginHorizontal="@dimen/p_xl"
+                android:text="@string/label_online_sync" />
+
+            <CheckBox
                 android:id="@+id/field_opt_in"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:paddingVertical="@dimen/p_xl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/p_lg"
                 android:paddingHorizontal="@dimen/p_md"
                 android:layout_marginHorizontal="@dimen/p_xl"
                 android:text="@string/label_enhance_search" />

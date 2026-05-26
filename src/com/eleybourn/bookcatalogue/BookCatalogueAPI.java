@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.UUID;
 
 public class BookCatalogueAPI implements SimpleTask {
@@ -59,10 +58,10 @@ public class BookCatalogueAPI implements SimpleTask {
     public static String METHOD_PUT = "PUT";
     public static volatile boolean isBackupRunning = false;
     public static volatile boolean isRestoreRunning = false;
-    private static String mEmail;
-    private static boolean mOptIn;
-    private static String mApiToken;
-    private static BookCataloguePreferences mPrefs;
+    private String mEmail;
+    private boolean mOptIn;
+    private String mApiToken;
+    private final BookCataloguePreferences mPrefs;
     // Add a static field to hold the currently active listener.
     private static ApiListener sActiveListener;
     private final Context mContext;
@@ -70,13 +69,17 @@ public class BookCatalogueAPI implements SimpleTask {
     private SimpleTaskContext mTaskContext;
     private boolean retry = true;
     private long mBookId;
+    private ApiListener mInstanceListener;
 
 
     public BookCatalogueAPI(Context context, String request, long book_id, ApiListener listener) {
         mContext = context;
         mBookId = book_id;
         this.mRequest = request;
-        sActiveListener = listener;
+        mInstanceListener = listener;
+        if (listener != null) {
+            sActiveListener = listener;
+        }
         mPrefs = new BookCataloguePreferences();
         mEmail = mPrefs.getAccountEmail();
         mOptIn = mPrefs.getAccountOptIn();
@@ -88,7 +91,10 @@ public class BookCatalogueAPI implements SimpleTask {
     public BookCatalogueAPI(Context context, String request, ApiListener listener) {
         mContext = context;
         this.mRequest = request;
-        sActiveListener = listener;
+        mInstanceListener = listener;
+        if (listener != null) {
+            sActiveListener = listener;
+        }
         mPrefs = new BookCataloguePreferences();
         mEmail = mPrefs.getAccountEmail();
         mOptIn = mPrefs.getAccountOptIn();
@@ -100,6 +106,26 @@ public class BookCatalogueAPI implements SimpleTask {
     // Add a static method to update the listener.
     public static void setActiveListener(ApiListener listener) {
         sActiveListener = listener;
+    }
+
+    /**
+     * Helper method to automatically sync a book to the cloud if the user is subscribed and sync is enabled.
+     */
+    public static void syncBook(Context context, long bookId) {
+        BookCataloguePreferences prefs = new BookCataloguePreferences();
+        if (prefs.isSubscribed() && prefs.isOnlineSyncEnabled() && !prefs.getAccountApiToken().isEmpty()) {
+            new BookCatalogueAPI(context, REQUEST_BACKUP_BOOK, bookId, null);
+        }
+    }
+
+    /**
+     * Helper method to automatically delete a book from the cloud if the user is subscribed and sync is enabled.
+     */
+    public static void syncDeleteBook(Context context, long bookId) {
+        BookCataloguePreferences prefs = new BookCataloguePreferences();
+        if (prefs.isSubscribed() && prefs.isOnlineSyncEnabled() && !prefs.getAccountApiToken().isEmpty()) {
+            new BookCatalogueAPI(context, REQUEST_DELETE_BOOK, bookId, null);
+        }
     }
 
     private static String getDate(Cursor c, String columnName) {
@@ -274,12 +300,11 @@ public class BookCatalogueAPI implements SimpleTask {
         }
     }
 
-    /**
-     * Helper to notify progress safely on UI thread
-     */
     private void notifyProgress(int current, int total, String message) {
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (sActiveListener != null) {
+            if (mInstanceListener != null) {
+                mInstanceListener.onApiProgress(mRequest, current, total, message);
+            } else if (sActiveListener != null) {
                 sActiveListener.onApiProgress(mRequest, current, total, message);
             }
         });
@@ -290,7 +315,9 @@ public class BookCatalogueAPI implements SimpleTask {
      */
     private void notifyProgress(int current, int total) {
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (sActiveListener != null) {
+            if (mInstanceListener != null) {
+                mInstanceListener.onApiProgress(mRequest, current, total);
+            } else if (sActiveListener != null) {
                 sActiveListener.onApiProgress(mRequest, current, total);
             }
         });
@@ -298,7 +325,9 @@ public class BookCatalogueAPI implements SimpleTask {
 
     private void notifyComplete(String message) {
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (sActiveListener != null) {
+            if (mInstanceListener != null) {
+                mInstanceListener.onApiComplete(mRequest, message);
+            } else if (sActiveListener != null) {
                 sActiveListener.onApiComplete(mRequest, message);
             }
         });
@@ -306,7 +335,9 @@ public class BookCatalogueAPI implements SimpleTask {
 
     private void notifyError(String error) {
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (sActiveListener != null) {
+            if (mInstanceListener != null) {
+                mInstanceListener.onApiError(mRequest, error);
+            } else if (sActiveListener != null) {
                 sActiveListener.onApiError(mRequest, error);
             }
         });
@@ -316,6 +347,7 @@ public class BookCatalogueAPI implements SimpleTask {
      * Executes the API Sync Logic in background
      */
     public void backupBook(int bookId, Cursor bookCursor, ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves, ArrayList<Series> series, ArrayList<AnthologyTitle> anthology, File thumbnailFile) throws Exception {
+        //Log.d("BookCatalogueAPI", "backupBook");
         String title;
         if (mApiToken.isEmpty()) {
             // It might be better to try a login() call here, but for now, we'll error out.
@@ -405,6 +437,11 @@ public class BookCatalogueAPI implements SimpleTask {
         values.add(getDate(bookCursor, CatalogueDBAdapter.KEY_LAST_UPDATE_DATE));
         fields.add("book_uuid");
         values.add(getString(bookCursor, CatalogueDBAdapter.KEY_BOOK_UUID));
+
+        if (thumbnailFile == null || !thumbnailFile.exists()) {
+            fields.add("delete_thumbnail");
+            values.add("1");
+        }
 
         String response = connection("/book", METHOD_POST, fields, values, thumbnailFile);
         JSONObject json = new JSONObject(response);
@@ -721,11 +758,11 @@ public class BookCatalogueAPI implements SimpleTask {
                             }
                         }
 
-                        if (moved) {
-                            Log.d("BookCatalogueAPI", "Restored thumbnail for UUID/ID " + (uuid != null ? uuid : bcid));
-                        } else {
-                            Log.e("BookCatalogueAPI", "Failed to move restored thumbnail for UUID/ID " + (uuid != null ? uuid : bcid));
-                        }
+                        //if (moved) {
+                            //Log.d("BookCatalogueAPI", "Restored thumbnail for UUID/ID " + (uuid != null ? uuid : bcid));
+                        //} else {
+                            //Log.e("BookCatalogueAPI", "Failed to move restored thumbnail for UUID/ID " + (uuid != null ? uuid : bcid));
+                        //}
                     }
                 } catch (Exception e) {
                     Log.e("BookCatalogueAPI", "Failed to download or save thumbnail", e);
@@ -843,6 +880,7 @@ public class BookCatalogueAPI implements SimpleTask {
 
                     // File Upload
                     if (thumbnailFile != null && thumbnailFile.exists()) {
+                        //Log.d("BookCatalogueAPI", "API Thumbnail Exists");
                         addFilePart(writer, os, boundary, "thumbnail", thumbnailFile);
                     }
                     writer.append("--").append(boundary).append("--").append("\r\n").flush();
@@ -881,6 +919,7 @@ public class BookCatalogueAPI implements SimpleTask {
 
     @Override
     public void run(SimpleTaskContext taskContext) throws Exception {
+        //Log.d("BookCatalogueAPI", "run");
         this.mTaskContext = taskContext;
         if (mEmail.isEmpty()) {
             return;

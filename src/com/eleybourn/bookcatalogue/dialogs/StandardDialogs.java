@@ -51,8 +51,6 @@ import java.util.ArrayList;
 
 public class StandardDialogs {
 
-    private static StaticApiListener mApiListener;
-
     /**
      * Show a dialog asking if unsaved edits should be ignored. Finish if so.
      */
@@ -99,7 +97,6 @@ public class StandardDialogs {
     }
 
     public static int deleteBookAlert(Context context, final CatalogueDBAdapter dbHelper, final long id, final Runnable onDeleted) {
-        mApiListener = new StaticApiListener(context);
         ArrayList<Author> authorList = dbHelper.getBookAuthorList(id);
 
         String title;
@@ -137,7 +134,7 @@ public class StandardDialogs {
                 .setIcon(R.drawable.ic_menu_info)
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> {
                     dbHelper.deleteBook(id);
-                    new BookCatalogueAPI(context, BookCatalogueAPI.REQUEST_DELETE_BOOK, id, mApiListener);
+                    BookCatalogueAPI.syncDeleteBook(context, id);
                     onDeleted.run();
                 })
                 .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
@@ -230,34 +227,6 @@ public class StandardDialogs {
      */
     public interface SimpleDialogOnClickListener {
         void onClick(SimpleDialogItem item);
-    }
-
-    // Define the listener as a static inner class
-    private static class StaticApiListener implements BookCatalogueAPI.ApiListener {
-        @SuppressWarnings("FieldCanBeLocal")
-        private final WeakReference<Context> contextReference;
-
-        StaticApiListener(Context context) {
-            // Use a WeakReference to avoid memory leaks
-            this.contextReference = new WeakReference<>(context);
-        }
-
-        @Override
-        public void onApiProgress(String request, int current, int total) {
-            onApiProgress(request, current, total, "");
-        }
-
-        @Override
-        public void onApiProgress(String request, int current, int total, String message) {
-        }
-
-        @Override
-        public void onApiComplete(String request, String message) {
-        }
-
-        @Override
-        public void onApiError(String request, String error) {
-        }
     }
 
     /**

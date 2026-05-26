@@ -45,10 +45,21 @@ public class SqlStatementManager {
 	
 	public SynchronizedStatement add(final SynchronizedDb db, final String name, final String sql) {
 		SynchronizedStatement stmt = db.compileStatement(sql);
-		SynchronizedStatement old = mStatements.get(name);
-		mStatements.put(name, stmt);
-		if (old != null)
-			old.close();
+		try {
+			SynchronizedStatement old = mStatements.put(name, stmt);
+			if (old != null) {
+				try {
+					old.close();
+				} catch (Exception ignored) {
+				}
+			}
+		} catch (Exception e) {
+			try {
+				stmt.close();
+			} catch (Exception ignored) {
+			}
+			throw e;
+		}
 		return stmt;
 	}
 	

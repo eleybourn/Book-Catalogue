@@ -82,11 +82,13 @@ public class BillingManager implements PurchasesUpdatedListener {
                 (billingResult, purchases) -> {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         boolean isSubscribed = false;
+                        boolean isAutoRenewing = false;
                         for (Purchase purchase : purchases) {
                             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED && !purchase.isSuspended()) {
                                 for (String productId : purchase.getProducts()) {
                                     if (productId.equals(SUBSCRIPTION_ID)) {
                                         isSubscribed = true;
+                                        isAutoRenewing = purchase.isAutoRenewing();
                                         // Ensure it stays acknowledged
                                         handlePurchase(purchase);
                                         break;
@@ -95,6 +97,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                             }
                         }
                         mPrefs.setSubscribed(isSubscribed);
+                        mPrefs.setAutoRenewing(isAutoRenewing);
                         if (mListener != null) {
                             final boolean finalIsSubscribed = isSubscribed;
                             mActivity.runOnUiThread(() -> mListener.onSubscriptionStatusChanged(finalIsSubscribed));
@@ -179,6 +182,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     private void handlePurchase(Purchase purchase) {
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+            mPrefs.setAutoRenewing(purchase.isAutoRenewing());
             if (!purchase.isAcknowledged()) {
                 AcknowledgePurchaseParams acknowledgePurchaseParams =
                         AcknowledgePurchaseParams.newBuilder()

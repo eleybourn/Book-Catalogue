@@ -36,6 +36,9 @@ public class BookCataloguePreferences {
     public static final String PREF_ACCOUNT_OPT_IN = "Account.OptIn";
     public static final String PREF_ACCOUNT_API_TOKEN = "Account.ApiToken";
     public static final String PREF_IS_SUBSCRIBED = "App.IsSubscribed";
+    public static final String PREF_IS_AUTO_RENEWING = "App.IsAutoRenewing";
+    public static final String PREF_SUBSCRIPTION_EXPIRY = "App.SubscriptionExpiry";
+    public static final String PREF_ONLINE_SYNC_ENABLED = "App.OnlineSyncEnabled";
     public static final String PREF_THEME = "App.Theme";
     public static final String PREF_THEME_DEFAULT = "App.Theme.Default";
     public static final String PREF_THEME_LIGHT = "App.Theme.Light";
@@ -155,5 +158,29 @@ public class BookCataloguePreferences {
 
     public void setSubscribed(boolean value) {
         setBoolean(PREF_IS_SUBSCRIBED, value);
+    }
+
+    public boolean isAutoRenewing() {
+        return getBoolean(PREF_IS_AUTO_RENEWING, false);
+    }
+
+    public void setAutoRenewing(boolean value) {
+        setBoolean(PREF_IS_AUTO_RENEWING, value);
+    }
+
+    public String getSubscriptionExpiry() {
+        return getString(PREF_SUBSCRIPTION_EXPIRY, "");
+    }
+
+    public void setSubscriptionExpiry(String value) {
+        setString(PREF_SUBSCRIPTION_EXPIRY, value);
+    }
+
+    public boolean isOnlineSyncEnabled() {
+        return getBoolean(PREF_ONLINE_SYNC_ENABLED, false);
+    }
+
+    public void setOnlineSyncEnabled(boolean value) {
+        setBoolean(PREF_ONLINE_SYNC_ENABLED, value);
     }
 }

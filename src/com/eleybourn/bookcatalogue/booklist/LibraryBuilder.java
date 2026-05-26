@@ -1510,9 +1510,11 @@ public class LibraryBuilder {
      */
     private int pseudoCount(String foo) {
         SynchronizedStatement fooStmt = mDb.compileStatement(foo);
-        int cnt = (int) fooStmt.simpleQueryForLong();
-        fooStmt.close();
-        return cnt;
+        try {
+            return (int) fooStmt.simpleQueryForLong();
+        } finally {
+            fooStmt.close();
+        }
     }
 
     /**

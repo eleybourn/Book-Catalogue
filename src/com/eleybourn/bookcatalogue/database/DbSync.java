@@ -636,8 +636,11 @@ public class DbSync {
          */
         private boolean mIsClosed = false;
 
+        private final String mSql;
+
         private SynchronizedStatement(final SynchronizedDb db, final String sql) {
             mSync = db.getSynchronizer();
+            mSql = sql;
             // Copy of SQL used for debugging
             mIsReadOnly = sql.trim().toLowerCase().startsWith("select");
             mStatement = db.getUnderlyingDatabase().compileStatement(sql);
@@ -740,7 +743,7 @@ public class DbSync {
 
         protected void finalize() {
             if (!mIsClosed)
-                Logger.logError(new RuntimeException("Finalizing non-closed statement")); // + mSql));
+                Logger.logError(new RuntimeException("Finalizing non-closed statement: " + mSql));
             // Try to close the underlying statement.
             try {
                 mStatement.close();

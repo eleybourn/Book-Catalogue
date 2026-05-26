@@ -823,8 +823,12 @@ public class DbUtils {
                 stmt.bindString(2, getName());
                 return (stmt.simpleQueryForLong() > 0);
             } finally {
-                if (stmt != null)
-                    stmt.close();
+                if (stmt != null) {
+                    try {
+                        stmt.close();
+                    } catch (Exception ignored) {
+                    }
+                }
             }
         }
 

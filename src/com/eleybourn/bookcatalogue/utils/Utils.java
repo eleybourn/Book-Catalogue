@@ -420,46 +420,32 @@ public class Utils {
      * @return Downloaded filespec
      */
     static public String saveThumbnailFromUrl(String urlText, String filenameSuffix) {
-        // Get the URL
-        URL u;
+        HttpURLConnection conn = null;
         try {
-            u = new URL(urlText);
-        } catch (MalformedURLException e) {
-            Logger.logError(e);
-            return "";
-        }
-        // Turn the URL into an InputStream
-        InputStream in = null;
-        try {
-            HttpGet httpRequest = new HttpGet(u.toURI());
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpResponse response = httpclient.execute(httpRequest);
+            URL u = new URL(urlText);
+            conn = (HttpURLConnection) u.openConnection();
+            conn.setConnectTimeout(15000);
+            conn.setReadTimeout(15000);
+            conn.connect();
 
-            HttpEntity entity = response.getEntity();
-            BufferedHttpEntity bufHttpEntity = new BufferedHttpEntity(entity);
-            in = bufHttpEntity.getContent();
-
-            // Get the output file
-            File file = CatalogueDBAdapter.getTempThumbnail(filenameSuffix);
-            // Save to file
-            saveInputToFile(in, file);
-            // Return new file path
-            return file.getAbsolutePath();
-
-        } catch (IOException | URISyntaxException e) {
-            Logger.logError(e);
-            return "";
-        } finally {
-            // Ensure the InputStream is always closed.
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    // Log error on close, but don't re-throw as we are cleaning up.
-                    Logger.logError(e, "Failed to close input stream in saveThumbnailFromUrl");
+            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                try (InputStream in = conn.getInputStream()) {
+                    // Get the output file
+                    File file = CatalogueDBAdapter.getTempThumbnail(filenameSuffix);
+                    // Save to file
+                    if (saveInputToFile(in, file)) {
+                        return file.getAbsolutePath();
+                    }
                 }
             }
+        } catch (IOException e) {
+            Logger.logError(e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
+        return "";
     }
 
     /**

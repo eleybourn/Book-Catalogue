@@ -218,24 +218,23 @@ public class BookCatalogueAPI implements SimpleTask {
 
     public void runBackupBook() {
         CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
-        // Query all books.
-        // Note: Using the raw cursor from the adapter provided by SimpleTaskContext
         try (Cursor bookCursor = db.fetchBookById(mBookId)) {
             runBackup(bookCursor, db);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            db.close();
         }
-
     }
 
     public void runFullBackup() {
         CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
-        // Query all books.
-        // Note: Using the raw cursor from the adapter provided by SimpleTaskContext
         try (Cursor bookCursor = db.fetchAllBooks()) {
             runBackup(bookCursor, db);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            db.close();
         }
     }
 
@@ -630,6 +629,7 @@ public class BookCatalogueAPI implements SimpleTask {
                         HashMap<String, String> task = new HashMap<>();
                         task.put("bcid", Long.toString(bcid));
                         task.put("url", backup_filename);
+                        task.put("uuid", uuid);
                         thumbnailTasks.add(task);
                     }
 
@@ -687,14 +687,45 @@ public class BookCatalogueAPI implements SimpleTask {
             for (int i = 0; i < thumbnailTasks.size(); i++) {
                 HashMap<String, String> task = thumbnailTasks.get(i);
                 try {
-                    long bcid = Long.parseLong(Objects.requireNonNull(task.get("bcid")));
                     String url = task.get("url");
+                    String uuid = task.get("uuid");
+                    String bcid = task.get("bcid");
 
                     String filename = Utils.saveThumbnailFromUrl(url, "");
                     if (!filename.isEmpty()) {
-                        BookData thumbValues = new BookData(mContext);
-                        thumbValues.putString(CatalogueDBAdapter.KEY_THUMBNAIL, filename);
-                        db.updateBook(bcid, thumbValues, CatalogueDBAdapter.BOOK_UPDATE_SKIP_PURGE_REFERENCES);
+                        File downloadedFile = new File(filename);
+                        File permanentFile;
+                        if (uuid != null && !uuid.isEmpty()) {
+                            permanentFile = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
+                        } else {
+                            permanentFile = CatalogueDBAdapter.fetchThumbnailByUuid(bcid);
+                        }
+
+                        // Ensure parent directory exists
+                        File parent = permanentFile.getParentFile();
+                        if (parent != null && !parent.exists()) {
+                            //noinspection ResultOfMethodCallIgnored
+                            parent.mkdirs();
+                        }
+
+                        // Move the file to its permanent location. Try rename first, then copy if necessary.
+                        boolean moved = downloadedFile.renameTo(permanentFile);
+                        if (!moved) {
+                            try {
+                                Utils.copyFile(downloadedFile, permanentFile);
+                                //noinspection ResultOfMethodCallIgnored
+                                downloadedFile.delete();
+                                moved = true;
+                            } catch (IOException e) {
+                                Log.e("BookCatalogueAPI", "Failed to copy thumbnail for UUID/ID " + (uuid != null ? uuid : bcid), e);
+                            }
+                        }
+
+                        if (moved) {
+                            Log.d("BookCatalogueAPI", "Restored thumbnail for UUID/ID " + (uuid != null ? uuid : bcid));
+                        } else {
+                            Log.e("BookCatalogueAPI", "Failed to move restored thumbnail for UUID/ID " + (uuid != null ? uuid : bcid));
+                        }
                     }
                 } catch (Exception e) {
                     Log.e("BookCatalogueAPI", "Failed to download or save thumbnail", e);

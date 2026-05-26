@@ -183,6 +183,13 @@ public class BillingManager implements PurchasesUpdatedListener {
     private void handlePurchase(Purchase purchase) {
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
             mPrefs.setAutoRenewing(purchase.isAutoRenewing());
+
+            // If they are becoming subscribed for the first time (or re-subscribing),
+            // enable sync by default.
+            if (!mPrefs.isSubscribed()) {
+                mPrefs.setOnlineSyncEnabled(true);
+            }
+
             if (!purchase.isAcknowledged()) {
                 AcknowledgePurchaseParams acknowledgePurchaseParams =
                         AcknowledgePurchaseParams.newBuilder()

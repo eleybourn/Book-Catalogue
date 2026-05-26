@@ -131,20 +131,34 @@ public class BookCatalogueAPI implements SimpleTask {
     private static String getDate(Cursor c, String columnName) {
         int index = c.getColumnIndex(columnName);
         if (index > -1 && !c.isNull(index)) {
-            // Get the date as a long (Unix timestamp in milliseconds)
-            long timestamp = c.getLong(index);
+            // Get the date as a string since it is stored as a formatted string in the DB
+            String dateStr = c.getString(index);
 
-            // Avoid returning a date for timestamp 0, which often means "not set"
-            if (timestamp == 0) {
+            // Avoid returning a date for empty or "0" which often means "not set"
+            if (dateStr == null || dateStr.isEmpty() || dateStr.equals("0")) {
                 return "";
             }
 
-            // Define the desired output format
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+            // If the string contains a hyphen, it's likely already a formatted date string (YYYY-MM-DD...)
+            if (dateStr.contains("-")) {
+                return dateStr;
+            }
 
-            // Create a Date object and format it
-            Date date = new Date(timestamp);
-            return sdf.format(date);
+            // Fallback for cases where it might be a millisecond timestamp stored as a string or number
+            try {
+                long timestamp = Long.parseLong(dateStr);
+                if (timestamp > 0) {
+                    // Define the desired output format
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+                    // Create a Date object and format it
+                    Date date = new Date(timestamp);
+                    return sdf.format(date);
+                }
+            } catch (NumberFormatException e) {
+                // Ignore and return the original string
+            }
+
+            return dateStr;
         }
         return "";
     }
@@ -667,6 +681,10 @@ public class BookCatalogueAPI implements SimpleTask {
                         task.put("bcid", Long.toString(bcid));
                         task.put("url", backup_filename);
                         task.put("uuid", uuid);
+                        String md5 = getStringOrEmpty(bookJson, "thumbnail_md5");
+                        if (!md5.isEmpty()) {
+                            task.put("md5", md5);
+                        }
                         thumbnailTasks.add(task);
                     }
 
@@ -727,16 +745,29 @@ public class BookCatalogueAPI implements SimpleTask {
                     String url = task.get("url");
                     String uuid = task.get("uuid");
                     String bcid = task.get("bcid");
+                    String remoteMd5 = task.get("md5");
+
+                    File permanentFile;
+                    if (uuid != null && !uuid.isEmpty()) {
+                        permanentFile = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
+                    } else {
+                        permanentFile = CatalogueDBAdapter.fetchThumbnailByUuid(bcid);
+                    }
+
+                    // Optimization: Check if the file already exists and if MD5 matches
+                    if (permanentFile.exists() && remoteMd5 != null) {
+                        String localMd5 = Utils.calculateMD5(permanentFile);
+                        if (remoteMd5.equalsIgnoreCase(localMd5)) {
+                            // Already have it and it matches, skip download
+                            // Notify progress for thumbnail download as well
+                            notifyProgress(i + 1, thumbnailTasks.size(), "thumbnails restored");
+                            continue;
+                        }
+                    }
 
                     String filename = Utils.saveThumbnailFromUrl(url, "");
                     if (!filename.isEmpty()) {
                         File downloadedFile = new File(filename);
-                        File permanentFile;
-                        if (uuid != null && !uuid.isEmpty()) {
-                            permanentFile = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
-                        } else {
-                            permanentFile = CatalogueDBAdapter.fetchThumbnailByUuid(bcid);
-                        }
 
                         // Ensure parent directory exists
                         File parent = permanentFile.getParentFile();

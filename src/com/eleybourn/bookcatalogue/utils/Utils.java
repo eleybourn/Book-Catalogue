@@ -1545,6 +1545,37 @@ public class Utils {
         }
     }
 
+    /**
+     * Calculate the MD5 hash of a file.
+     *
+     * @param file The file to hash
+     * @return The MD5 hash as a hex string, or an empty string on error.
+     */
+    public static String calculateMD5(File file) {
+        if (file == null || !file.exists()) {
+            return "";
+        }
+        try (InputStream is = new FileInputStream(file)) {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read);
+            }
+            byte[] md5sum = digest.digest();
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : md5sum) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (Exception e) {
+            Logger.logError(e);
+            return "";
+        }
+    }
+
     public static int backgroundFlash(Context context) {
         // Make line flash when clicked.
         TypedValue outValue = new TypedValue();

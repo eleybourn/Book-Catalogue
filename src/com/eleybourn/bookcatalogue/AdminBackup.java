@@ -372,6 +372,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             });
+
         } else {
             mSubscriptionStatus.setText(R.string.label_subscription_inactive);
             mSubscriptionStatus.setTextColor(getResources().getColor(R.color.theme_error, getTheme()));

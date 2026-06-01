@@ -43,7 +43,7 @@
     <string name="label_never">Never</string>
     <string name="label_online_sync">Automatically backup all changes in real-time</string>
     <string name="label_last_backup">Last Backup: %1$s</string>
-    <string name="para_subscription_benefits">Support the development of BookCatalogue and subscribe to unlock online backup and restore features. Your catalogue will be securely stored in the cloud and available across your devices. </string>
+    <string name="para_subscription_benefits">Support the development of BookCatalogue and subscribe for only %1$s a month to unlock online backup and restore features. Your catalogue will be securely stored in the cloud and available across your devices.</string>
     <string name="para_subscription_benefits2">Local backup and restore (below) will always be available without subscription. </string>
 
     <string name="author_already_in_list">Author is already in the list</string>

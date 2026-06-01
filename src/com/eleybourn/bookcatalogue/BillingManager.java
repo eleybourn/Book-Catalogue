@@ -27,6 +27,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     public interface BillingListener {
         void onSubscriptionStatusChanged(boolean isSubscribed);
+        void onPriceReceived(String price);
     }
 
     private final BillingClient mBillingClient;
@@ -56,6 +57,7 @@ public class BillingManager implements PurchasesUpdatedListener {
             public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                     queryPurchases();
+                    queryProductDetails();
                 } else {
                     mActivity.runOnUiThread(() ->
                             android.widget.Toast.makeText(mActivity, "Billing connection failed: " + billingResult.getDebugMessage(), android.widget.Toast.LENGTH_SHORT).show()
@@ -101,6 +103,42 @@ public class BillingManager implements PurchasesUpdatedListener {
                         if (mListener != null) {
                             final boolean finalIsSubscribed = isSubscribed;
                             mActivity.runOnUiThread(() -> mListener.onSubscriptionStatusChanged(finalIsSubscribed));
+                        }
+                    }
+                }
+        );
+    }
+
+    public void queryProductDetails() {
+        if (!mBillingClient.isReady()) {
+            return;
+        }
+
+        QueryProductDetailsParams queryProductDetailsParams =
+                QueryProductDetailsParams.newBuilder()
+                        .setProductList(
+                                Collections.singletonList(
+                                        QueryProductDetailsParams.Product.newBuilder()
+                                                .setProductId(SUBSCRIPTION_ID)
+                                                .setProductType(BillingClient.ProductType.SUBS)
+                                                .build()))
+                        .build();
+
+        mBillingClient.queryProductDetailsAsync(
+                queryProductDetailsParams,
+                (billingResult, productDetailsResult) -> {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        List<ProductDetails> productDetailsList = productDetailsResult.getProductDetailsList();
+                        if (productDetailsList != null && !productDetailsList.isEmpty()) {
+                            ProductDetails productDetails = productDetailsList.get(0);
+                            List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
+                            if (offerDetails != null && !offerDetails.isEmpty()) {
+                                // Just get the first pricing phase of the first offer
+                                String price = offerDetails.get(0).getPricingPhases().getPricingPhaseList().get(0).getFormattedPrice();
+                                if (mListener != null) {
+                                    mActivity.runOnUiThread(() -> mListener.onPriceReceived(price));
+                                }
+                            }
                         }
                     }
                 }

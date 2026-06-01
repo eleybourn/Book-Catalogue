@@ -246,6 +246,13 @@ public class BookCatalogueAPI implements SimpleTask {
             if (json.has("api_token")) {
                 mApiToken = json.getString("api_token");
                 mPrefs.setAccountApiToken(mApiToken);
+                if (json.has("subscription_expiry")) {
+                    mPrefs.setSubscriptionExpiry(json.getString("subscription_expiry"));
+                }
+                // If they are logging in and are subscribed, enable sync by default.
+                if (mPrefs.isSubscribed()) {
+                    mPrefs.setOnlineSyncEnabled(true);
+                }
                 notifyComplete("Login successful");
             } else {
                 throw new Exception("Login response missing API token");
@@ -909,6 +916,9 @@ public class BookCatalogueAPI implements SimpleTask {
             if (json.has("count")) {
                 // Retrieve the count from the JSON response.
                 String bookCount = json.getString("count");
+                if (json.has("subscription_expiry")) {
+                    mPrefs.setSubscriptionExpiry(json.getString("subscription_expiry"));
+                }
                 notifyComplete(bookCount);
             } else {
                 // Handle cases where the JSON is null or doesn't have the "count" key

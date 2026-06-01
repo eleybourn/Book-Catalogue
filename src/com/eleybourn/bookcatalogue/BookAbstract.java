@@ -615,14 +615,14 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         final View root = getView();
 
         /* Title has some post-processing on the text, to move leading 'A', 'The' etc to the end.
-         * While we could do it in a formatter, it it not really a display-oriented function and
+         * While we could do it in a formatter, it is not really a display-oriented function and
          * is handled in preprocessing in the database layer since it also needs to be applied
          * to imported record etc. */
         mFields.add(R.id.field_title, CatalogueDBAdapter.KEY_TITLE, null);
 
         /* Anthology needs special handling, and we use a formatter to do this. If the original
          * value was 0 or 1, then setting/clearing it here should just set the new value to 0 or 1.
-         * However...if if the original value was 2, then we want setting/clearing to alternate
+         * However...if the original value was 2, then we want setting/clearing to alternate
          * between 2 and 0, not 1 and 0.
          * So, despite if being a checkbox, we use an integerValidator and use a special formatter.
          * We also store it in the tag field so that it is automatically serialized with the
@@ -722,7 +722,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     protected void populateBookDetailsFields(BookData book) {
         //Set anthology field
         int anthologyNo = book.getInt(BookData.KEY_ANTHOLOGY);
-        mFields.getField(R.id.field_anthology).setValue(Integer.toString(anthologyNo)); // Set checked if anthNo != 0
+        mFields.getField(R.id.field_anthology).setValue(Integer.toString(anthologyNo)); // Set checked if anthologyNo != 0
     }
 
     /**
@@ -736,7 +736,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     }
 
     /**
-     * Shows zoomed thumbnail in dialog. Closed by click on image area.
+     * Shows zoomed thumbnail in dialogue. Closed by click on image area.
      *
      * @param rowId database row id for getting correct file
      */

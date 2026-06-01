@@ -138,7 +138,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
                 mOrigData.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, mDbHelper.getBookAuthorList(mCurrId));
                 mOrigData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mCurrId));
 
-                // Grab the searchable fields. Ideally we will have an ISBN but we may not.
+                // Grab the searchable fields. Ideally we will have an ISBN, but we may not.
                 String isbn = mOrigData.getString(CatalogueDBAdapter.KEY_ISBN);
                 // Make sure ISBN is not NULL (legacy data, and possibly set to null when adding new book)
                 if (isbn == null)
@@ -169,7 +169,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
                                             mCurrFieldUsages.put(usage);
                                         break;
                                     case CatalogueDBAdapter.KEY_AUTHOR_ARRAY:
-                                        // We should never have a book with no authors, but lets be paranoid
+                                        // We should never have a book with no authors, but let's be paranoid
                                         if (mOrigData.containsKey(usage.fieldName)) {
                                             ArrayList<Author> origAuthors = Utils.getAuthorsFromBundle(mOrigData);
                                             if (origAuthors == null || origAuthors.isEmpty())
@@ -227,7 +227,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
                     mSearchManager.search(author, title, isbn, tmpThumbWanted, SearchManager.SEARCH_ALL);
                     // Wait for the search to complete; when the search has completed it uses class-level state
                     // data when processing the results. It will signal this lock when it no longer needs any class
-                    // level state data (eg. mOrigData).
+                    // level state data (e.g. mOrigData).
                     mSearchLock.lock();
                     try {
                         mSearchDone.await();
@@ -307,7 +307,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
             newData.remove(key);
         }
 
-        // For each field, process it according the the usage.
+        // For each field, process it according to the usage.
         boolean recordChanged = false;
         boolean thumbChanged = false;
         for (FieldUsage usage : requestedFields.values()) {
@@ -398,7 +398,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
     }
 
     /**
-     * Cleanup any DB connection etc after main task has run.
+     * Clean-up any DB connection etc after main task has run.
      */
     private void cleanup() {
         if (mDbHelper != null) {

@@ -402,6 +402,13 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         updateSubscriptionUi();
     }
 
+    @Override
+    public void onPriceReceived(String price) {
+        if (mSubscribeDescription != null) {
+            mSubscribeDescription.setText(getString(R.string.para_subscription_benefits, price));
+        }
+    }
+
     /**
      * Pass on the event to the relevant handler.
      *

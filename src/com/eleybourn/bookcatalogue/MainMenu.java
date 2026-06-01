@@ -38,7 +38,7 @@ import java.util.ArrayList;
  * Implement the 'Main Menu' for BookCatalogue. This is one of two possible start screens.
  * <p>
  * - 'My Books' -> preferred bookshelf view
- * - 'Add Book' -> Add Method Dialog
+ * - 'Add Book' -> Add Method Dialogue
  * - 'Loan/Return/Edit Book'
  * - 'Search'
  * - 'Admin & Preferences'

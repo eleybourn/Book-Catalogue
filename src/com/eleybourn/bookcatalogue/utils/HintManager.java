@@ -69,6 +69,7 @@ public class HintManager {
 		.add("hint_view_only_help", R.string.hint_view_only_help)
 		.add("hint_tempus_locum", R.string.hint_tempus_locum)
 		.add("hint_book_list", R.string.hint_library)
+		.add("ONLINE_BACKUP_INVITE", R.string.hint_online_backup_invite)
 		;
 
     /** Reset all hints to that they will be displayed again */

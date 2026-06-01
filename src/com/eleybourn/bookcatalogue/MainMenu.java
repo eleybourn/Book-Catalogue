@@ -85,6 +85,9 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
 
         if (savedInstanceState == null) {
             HintManager.displayHint(this, R.string.hint_startup_screen, R.string.hint_startup_screen_heading, null);
+            if (!new BookCataloguePreferences().isSubscribed()) {
+                HintManager.displayHint(this, R.string.hint_online_backup_invite, R.string.hint_online_backup_invite_title, null);
+            }
         }
 
     }

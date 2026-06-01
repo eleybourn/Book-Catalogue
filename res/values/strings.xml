@@ -19,7 +19,7 @@
         \n\nGoogle has required that this and all future versions of Book Catalogue must store their files in more standard directories.
         \n\nThey also no longer allow us to access the old directories.
         \n\nWe have detected an upgrade from an old version of the app and need to be granted access to it in order to move the files.
-        \n\nClick \'%1$s\' to continue and then grant access in the following dialog.
+        \n\nClick \'%1$s\' to continue and then grant access in the following dialogue.
         If you select \'%2$s\' then you can always restart this process via \'%3$s\'-&gt;\'%4$s\'.
     </string>
     <!-- Displayed when any write operation to the sd card fails -->
@@ -43,7 +43,9 @@
     <string name="label_never">Never</string>
     <string name="label_online_sync">Automatically backup all changes in real-time</string>
     <string name="label_last_backup">Last Backup: %1$s</string>
-    <string name="para_subscription_benefits">Support the development of BookCatalogue and subscribe for only %1$s a month to unlock online backup and restore features. Your catalogue will be securely stored in the cloud and available across your devices.</string>
+    <string name="hint_online_backup_invite_title">Online Backup &amp; Sync</string>
+    <string name="hint_online_backup_invite">We\'ve added a new Online Backup &amp; Sync service! You can now keep your collection safe in the cloud and synced across your devices. Tap \'Backup and Restore\' to get started.\n\nPlease consider subscribing to this premium service to support the ongoing development of Book Catalogue.</string>
+    <string name="para_subscription_benefits">Support the development of BookCatalogue and subscribe for only %1$s a month to unlock online backup features. Your catalogue will be securely stored in the cloud and available across your devices.</string>
     <string name="para_subscription_benefits2">Local backup and restore (below) will always be available without subscription. </string>
 
     <string name="author_already_in_list">Author is already in the list</string>
@@ -62,7 +64,7 @@
     <string name="book_details_readonly_by">by</string>
     <string name="book_details_readonly_loaned_to">On Loan to %1$s</string>
     <string name="book_details_readonly_pages">%1$s pages</string>
-    <string name="book_not_found">The scanned book was not found. You can sometimes find the correct barcode on the inside front cover. Otherwise please enter the details manually.</string>
+    <string name="book_not_found">The scanned book was not found. You can sometimes find the correct barcode on the inside front cover. Otherwise, please enter the details manually.</string>
 
     <string name="brackets">(%1$s)</string>
 
@@ -133,7 +135,7 @@
     <string name="covers_progress_increment" tools:ignore="PluralsCandidate">%1$d covers processed (%2$d missing, %3$d skipped)</string>
 
     <string name="crash_dialog_ok_toast">Thank you!</string>
-    <string name="crash_dialog_text">It looks like BookCatalogue has crashed. If possible describe anything you think may be relevant below and press "OK" to send us an email about the crash. You will see the email before it is sent.</string>
+    <string name="crash_dialog_text">It looks like BookCatalogue has crashed. If possible describe anything you think may be relevant below and press "OK" to email us about the crash. You will see the email before it is sent.</string>
     <string name="crash_dialog_title">BookCatalogue Crash</string>
     <string name="crash_toast_text">BookCatalogue has crashed unexpectedly. Please help us to make the application better by reporting this crash.</string>
 
@@ -217,7 +219,7 @@
     <string name="hint_authors_book_may_appear_more_than_once">If shown for every author, a single book may appear more than once in a list. In such a case deleting one of those books will delete all instances from the list.</string>
     <string name="hint_autorotate_camera_images">If you find yourself always rotating camera images in the same direction, try changing the application settings to specify a rotation to apply automatically.</string>
     <string name="hint_background_task_events">From here you can see the events associated with a background task. 
-    								Clicking on a event will allow you to perform a variety of actions appropriate for that event.</string>
+    								Clicking on an event will allow you to perform a variety of actions appropriate for that event.</string>
     <string name="hint_background_tasks">From here you can see the currently running tasks as well as previous tasks that have completed with errors or other notable events. 
     								Clicking on a task will allow you to see the events associated with that task as well as delete the task (and related events).</string>
     <!-- Hint text displayed when user enters the library -->
@@ -238,7 +240,7 @@
     										\n\nYou can change the name, edit the groupings to change the hierarchy, and adjust a variety of
     										other settings to build a style that you find useful.
     										\n\nIt is also possible to use \'Book Filters\' to modify the selection of books that will be displayed in
-    										the list. eg. to only retrieve books you have not read yet.</string>
+    										the list. e.g. to only retrieve books you have not read yet.</string>
     <string name="hint_library_styles_editor">You can use this screen to customize the list of styles that will be displayed in your default styles menu.
     										\n\nA green tick indicates the style will be shown in the list, and a red cross indicates it will not be shown.
     										Clicking on a green tick will turn it into a cross, and vice-versa.
@@ -249,13 +251,13 @@
     <!-- End: Added/Updated in 6.0.0 -->
     <!-- Begin: Added/Updated in 6.0.7 -->
     <string name="hint_series_book_may_appear_more_than_once">If shown in every series, a single book may appear more than once in a list. In such a case deleting one of those books will delete all instances from the list.</string>
-    <string name="hint_startup_screen">This is the standard BookCatalogue startup screen. If you prefer, you can startup directly in \'My Books\'; the preferred startup screen can be changed in Settings.</string>
+    <string name="hint_startup_screen">This is the standard BookCatalogue startup screen. If you prefer, you can start up directly in \'My Books\'; the preferred startup screen can be changed in Settings.</string>
     <string name="hint_startup_screen_heading">Thank You For Installing BookCatalogue.</string>
     <!-- End: Added/Updated in 5.2.0 -->
     <!-- Begin: Added/Updated in 5.2.1 -->
     <string name="hint_tempus_locum"><![CDATA[
 	    		<p><b>The lead developer of Book Catalogue has developed a new app!</b></p><p>Keep track of locations, images, recordings and notes; and if you are into
-				science, then manage samples and labels.</p><p>Please check it out in the Play Store:</p><p><a href="market://details?id=info.philipwarner.fieldassistant">Tempus Locum</a></p><p>or you can see the web site here:</p><p><a href="http://www.tempuslocum.com/">http://www.tempuslocum.com/</a></p>
+				science, then manage samples and labels.</p><p>Please check it out in the Play Store:</p><p><a href="market://details?id=info.philipwarner.fieldassistant">Tempus Locum</a></p><p>or you can see the website here:</p><p><a href="http://www.tempuslocum.com/">http://www.tempuslocum.com/</a></p>
 			]]></string>
     <!-- Hint text displayed when user enters the library -->
     <string name="hint_view_only_book_details">When you click on an item in this list, you can now choose to go to non-editable book details view. 
@@ -600,7 +602,7 @@
 				* Other minor bug fixes
 			</p>
 		]]></string>
-    <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
+    <!-- Used for concatenating two strings, e.g. "3 books, 2 covers" (probably only important on RTL languages)-->
     <!-- Short progress message -->
     <string name="new_in_510"><![CDATA[
 			<p><b>New in 5.1.0</b>\n\n
@@ -660,7 +662,7 @@
 			<p><b>New in 6.0.0</b>\n\n<ul><li> Builtin scanner! We now use native machine Android library to read barcodes. Old scanners
 			      are still available in case there are issues, but will be removed in a future release.
 			    <li> Complete reorganization of files. Google does not like us writing files to the location we were
-			      using. Covers now go in private app folders and we use the \'standard\' interface for
+			      using. Covers now go in private app folders, and we use the \'standard\' interface for
 			      importing or exporting to backups and CSV files.
 				<li> goodreads support is no more. They disabled their API a while ago and it has not come back.
 				<li> LibraryThing support is no more. They disabled their API a while ago and it has not come back.
@@ -722,7 +724,7 @@
     <string name="option_normal">Normal</string>
     <!-- Preference VALUE, displayed in a preference activity -->
     <string name="option_pic2shop_scanner">Pic2Shop Scanner</string>
-    <!-- Preference value for a specific language. First arg is name in it's own language, second arg is name in current locale -->
+    <!-- Preference value for a specific language. First arg is name in its own language, second arg is name in current locale -->
     <string name="option_preferred_language_x">%1$s (%2$s)</string>
     <string name="option_remember_library_state">Preserve library state</string>
     <string name="option_resize_each_time">Resize each time they are needed (uses less storage, scrolling will be slower)</string>
@@ -753,9 +755,9 @@
         or stolen.</string>
     <string name="para_backup_logged_in_as">You are logged in and your data is being backed up as:</string>
     <string name="para_backup_logged_out_message">Log in with your Google account to automatically back up your book catalogue. This will keep your data safe and allow you to restore it on any device.</string>
-    <string name="para_cleanup_files">Purgeable files currently use %s of storage. Log files and other data are saved at each upgrade, when you backup the database, or when the application crashes. Click the button below to purge these files from your storage. If you have been experiencing crashing or other errors, please consider using the \'Send Information\' button first.</string>
-    <string name="para_cloud_sync_coming_soon">"The ability to backup and sync your book catalogue online is coming very soon. "</string>
-    <string name="para_donate">If you would like to support the development of this application, please donate using a my Amazon Wishlist or the paypal button below. Being in Australia means I cannot publish a paid version. :-) </string>
+    <string name="para_cleanup_files">Purgeable files currently use %s of storage. Log files and other data are saved at each upgrade, when you back up the database, or when the application crashes. Click the button below to purge these files from your storage. If you have been experiencing crashing or other errors, please consider using the \'Send Information\' button first.</string>
+    <string name="para_cloud_sync_coming_soon">"The ability to back up and sync your book catalogue online is coming very soon. "</string>
+    <string name="para_donate">If you would like to support the development of this application, please donate using my Amazon Wishlist or the PayPal button below. Being in Australia means I cannot publish a paid version. :-) </string>
     <string name="para_enhance_search">Would you like to help other Book Catalogue users? \n\nBy clicking \'Yes\', you agree to allow public details from your book records (like ISBNs and Titles) to be used to improve search results for everyone.\n\nPrivate notes and personal details remain secure.\n\nYou can change this at any time in the Settings.</string>
     <string name="para_help_click_here">Please click here to access the online help pages</string>
     <string name="para_immediate_global_changes">NOTE: All saved changes apply instantly and globally</string>
@@ -779,7 +781,7 @@
     <string name="perm_intro">In order to continue, Book Catalogue needs access to the following privileges:\n\n</string>
     <!-- Explanatory text -->
     <string name="perm_network_state">This is required to check if network is available when internet access is
-                                required (eg. when a search is requested).</string>
+                                required (e.g. when a search is requested).</string>
     <!-- Explanatory text -->
     <string name="perm_read_ext">This is required to import images captured by the camera,
                                 to restore backups and exports, to read cover thumbnails

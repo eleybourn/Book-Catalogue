@@ -1,7 +1,6 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import com.android.billingclient.api.AcknowledgePurchaseParams;
@@ -129,7 +128,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                 (billingResult, productDetailsResult) -> {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         List<ProductDetails> productDetailsList = productDetailsResult.getProductDetailsList();
-                        if (productDetailsList != null && !productDetailsList.isEmpty()) {
+                        if (!productDetailsList.isEmpty()) {
                             ProductDetails productDetails = productDetailsList.get(0);
                             List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
                             if (offerDetails != null && !offerDetails.isEmpty()) {
@@ -168,7 +167,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                     int responseCode = billingResult.getResponseCode();
                     if (responseCode == BillingClient.BillingResponseCode.OK) {
                         List<ProductDetails> productDetailsList = productDetailsResult.getProductDetailsList();
-                        if (productDetailsList != null && !productDetailsList.isEmpty()) {
+                        if (!productDetailsList.isEmpty()) {
                             // Product found!
                             ProductDetails productDetails = productDetailsList.get(0);
                             

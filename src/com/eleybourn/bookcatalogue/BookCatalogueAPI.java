@@ -181,11 +181,11 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     private static void addFormField(PrintWriter writer, String boundary, String name, String value) {
-        if (value == null) value = ""; // Ensure we don't send nulls
+        String finalValue = (value == null) ? "" : value;
         writer.append("--").append(boundary).append("\r\n");
         writer.append("Content-Disposition: form-data; name=\"").append(name).append("\"\r\n");
         writer.append("Content-Type: text/plain; charset=UTF-8\r\n\r\n");
-        writer.append(value).append("\r\n").flush();
+        writer.append(finalValue).append("\r\n").flush();
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -200,9 +200,9 @@ public class BookCatalogueAPI implements SimpleTask {
 
         try (FileInputStream inputStream = new FileInputStream(uploadFile)) {
             byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                os.write(buffer, 0, bytesRead);
+            int read;
+            while ((read = inputStream.read(buffer)) != -1) {
+                os.write(buffer, 0, read);
             }
             os.flush();
         }
@@ -266,16 +266,19 @@ public class BookCatalogueAPI implements SimpleTask {
 
     public void runBackupBook() {
         CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
-        try (Cursor bookCursor = db.fetchBookById(mBookId)) {
-            // Optimization for single book: Fetch server state for this book specifically
-            JSONObject serverBook = getBook(false);
-            HashMap<Long, JSONObject> serverMap = null;
-            if (serverBook != null && serverBook.has("bcid")) {
-                serverMap = new HashMap<>();
-                serverMap.put(serverBook.optLong("bcid"), serverBook);
+        try {
+            db.open();
+            try (Cursor bookCursor = db.fetchBookById(mBookId)) {
+                // Optimization for single book: Fetch server state for this book specifically
+                JSONObject serverBook = getBook(false);
+                HashMap<Long, JSONObject> serverMap = null;
+                if (serverBook != null && serverBook.has("bcid")) {
+                    serverMap = new HashMap<>();
+                    serverMap.put(serverBook.optLong("bcid"), serverBook);
+                }
+                runBackup(bookCursor, db, serverMap);
+                notifyComplete("Backup completed successfully.");
             }
-            runBackup(bookCursor, db, serverMap);
-            notifyComplete("Backup completed successfully.");
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -285,15 +288,41 @@ public class BookCatalogueAPI implements SimpleTask {
 
     public void runFullBackup() {
         CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
-        try (Cursor bookCursor = db.fetchAllBooks()) {
-            // 1. Clear the online backup first for a clean sync
-            notifyProgress(0, 1, "Clearing online backup...");
-            connection("/books", METHOD_DEL);
+        try {
+            db.open();
+            // 1. Fetch current cloud state to identify orphaned records
+            notifyProgress(0, 1, "Reviewing online backup...");
+            JSONArray serverBooks = getAllBooks(false);
+            HashMap<Long, JSONObject> serverMap = new HashMap<>();
 
-            // 2. Perform the backup
-            // We pass null for serverMap to force a full backup of all books
-            runBackup(bookCursor, db, null);
-            notifyComplete("Backup completed successfully.");
+            if (serverBooks != null) {
+                int serverTotal = serverBooks.length();
+                for (int i = 0; i < serverTotal; i++) {
+                    // Check if queue is killing us
+                    if (mTaskContext.isTerminating()) break;
+
+                    JSONObject serverBook = serverBooks.optJSONObject(i);
+                    if (serverBook != null) {
+                        long bcid = serverBook.optLong("bcid", -1);
+                        if (bcid != -1) {
+                            if (!db.checkBookExists(bcid)) {
+                                // Book exists in cloud but not locally, delete it
+                                notifyProgress(i + 1, serverTotal, "Removing orphaned records...");
+                                connection("/book/" + bcid, METHOD_DEL);
+                            } else {
+                                // Keep track of it for the next phase (delta backup)
+                                serverMap.put(bcid, serverBook);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 2. Perform the backup of local books (only those that are different)
+            try (Cursor bookCursor = db.fetchAllBooks()) {
+                runBackup(bookCursor, db, serverMap);
+                notifyComplete("Backup completed successfully.");
+            }
         } catch (Exception e) {
             Log.e("BookCatalogueAPI", "Full backup failed", e);
             notifyError("Backup failed: " + e.getMessage());

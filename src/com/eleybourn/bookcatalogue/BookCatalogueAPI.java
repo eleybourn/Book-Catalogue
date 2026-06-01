@@ -48,6 +48,7 @@ public class BookCatalogueAPI implements SimpleTask {
     public static final String REQUEST_BACKUP_BOOK = "backup_book";
     public static final String REQUEST_RESTORE_ALL = "restore";
     public static final String REQUEST_DELETE_BOOK = "delete_book";
+    public static final String REQUEST_DELETE_ALL = "delete_all";
     public static final String METHOD_POST = "POST";
     public static final String METHOD_GET = "GET";
     public static final String METHOD_DEL = "DELETE";
@@ -285,19 +286,17 @@ public class BookCatalogueAPI implements SimpleTask {
     public void runFullBackup() {
         CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
         try (Cursor bookCursor = db.fetchAllBooks()) {
-            // Optimization: Fetch the list of already backed up books to compare
-            JSONArray backedUpBooksJson = getAllBooks(false);
-            HashMap<Long, JSONObject> serverMap = new HashMap<>();
-            if (backedUpBooksJson != null) {
-                for (int i = 0; i < backedUpBooksJson.length(); i++) {
-                    JSONObject b = backedUpBooksJson.optJSONObject(i);
-                    if (b != null) serverMap.put(b.optLong("bcid", -1), b);
-                }
-            }
-            runBackup(bookCursor, db, serverMap);
+            // 1. Clear the online backup first for a clean sync
+            notifyProgress(0, 1, "Clearing online backup...");
+            connection("/books", METHOD_DEL);
+
+            // 2. Perform the backup
+            // We pass null for serverMap to force a full backup of all books
+            runBackup(bookCursor, db, null);
             notifyComplete("Backup completed successfully.");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Log.e("BookCatalogueAPI", "Full backup failed", e);
+            notifyError("Backup failed: " + e.getMessage());
         } finally {
             db.close();
         }
@@ -581,6 +580,28 @@ public class BookCatalogueAPI implements SimpleTask {
             } else {
                 // Handle cases where the JSON is null or doesn't have the "count" key
                 throw new Exception("Invalid response from /book/<id> endpoint. JSON: " + book);
+            }
+        } catch (Exception e) {
+            Log.e("BookCatalogueAPI", "API failed", e);
+            final String errorMessage = e.getMessage();
+            notifyError(errorMessage);
+        }
+    }
+
+    public void runDeleteAll() {
+        try {
+            if (mApiToken.isEmpty()) {
+                throw new Exception("No API Token set for runDeleteAll");
+            }
+            String response = connection("/books", METHOD_DEL);
+            if (response == null) {
+                throw new Exception("Failed to connect to delete_all endpoint");
+            }
+            JSONObject json = new JSONObject(response);
+            if (json.has("status") && json.getString("status").equals("ok")) {
+                notifyComplete("Online backup cleared");
+            } else {
+                throw new Exception("Invalid response from delete_all endpoint.");
             }
         } catch (Exception e) {
             Log.e("BookCatalogueAPI", "API failed", e);
@@ -1077,6 +1098,11 @@ public class BookCatalogueAPI implements SimpleTask {
 
         if (mRequest.equals(REQUEST_DELETE_BOOK)) {
             runDeleteBook();
+        }
+
+        if (mRequest.equals(REQUEST_DELETE_ALL)) {
+            notifyProgress(0, 1, "Clearing online backup...");
+            runDeleteAll();
         }
 
     }

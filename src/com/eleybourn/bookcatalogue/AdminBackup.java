@@ -312,11 +312,18 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             showSubscriptionRequiredDialog();
             return;
         }
-        // Create a new API task to get the count. This will automatically run in the background.
-        mBackupNowButton.setEnabled(false);
-        mRestoreNowButton.setEnabled(false);
-        BookCatalogueAPI.isBackupRunning = true;
-        new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_BACKUP_ALL, mApiListener);
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.title_confirm_clean_backup)
+                .setMessage(R.string.alert_confirm_clean_backup)
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> {
+                    mBackupNowButton.setEnabled(false);
+                    mRestoreNowButton.setEnabled(false);
+                    BookCatalogueAPI.isBackupRunning = true;
+                    new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_BACKUP_ALL, mApiListener);
+                })
+                .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     public void restore() {
@@ -456,6 +463,13 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 activity.mSyncProgressBar.setVisibility(View.VISIBLE);
             }
 
+            if (request.equals(BookCatalogueAPI.REQUEST_DELETE_ALL)) {
+                activity.mBackupStatsField.setText(message);
+                activity.mSyncProgressBar.setMax(total);
+                activity.mSyncProgressBar.setProgress(current);
+                activity.mSyncProgressBar.setVisibility(View.VISIBLE);
+            }
+
             if (request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
                 String statsText;
                 if (message.isEmpty()) {
@@ -517,10 +531,14 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                     if (activity.mBackupNowButton != null) activity.mBackupNowButton.setEnabled(true);
                     if (activity.mRestoreNowButton != null) activity.mRestoreNowButton.setEnabled(true);
                     break;
+                case BookCatalogueAPI.REQUEST_DELETE_BOOK:
                 case BookCatalogueAPI.REQUEST_RESTORE_ALL:
                     BookCatalogueAPI.isRestoreRunning = false;
                     if (activity.mBackupNowButton != null) activity.mBackupNowButton.setEnabled(true);
                     if (activity.mRestoreNowButton != null) activity.mRestoreNowButton.setEnabled(true);
+                    break;
+                case BookCatalogueAPI.REQUEST_DELETE_ALL:
+                    // Online backup cleared (manual request)
                     break;
                 case BookCatalogueAPI.REQUEST_LOGIN:
                     activity.reload();
@@ -546,7 +564,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 Toast.makeText(activity, "Error: " + error, Toast.LENGTH_LONG).show();
             }
             activity.mSyncProgressBar.setVisibility(View.GONE);
-            if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL) || request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
+            if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL) || request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL) || request.equals(BookCatalogueAPI.REQUEST_DELETE_ALL)) {
                 BookCatalogueAPI.isBackupRunning = false;
                 BookCatalogueAPI.isRestoreRunning = false;
                 if (activity.mBackupNowButton != null) {

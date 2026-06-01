@@ -35,6 +35,8 @@
 
     <string name="subscription_required_message">The online backup and restore features require a premium subscription. This allows us to maintain the cloud servers and keep your data safe and accessible across all your devices.</string>
     <string name="subscription_required_title">Subscription Required</string>
+    <string name="alert_confirm_clean_backup">This will completely refresh your online backup. All existing cloud records will be removed and replaced with your current local collection. This ensures a clean backup without orphaned records from previous deletions.\n\nContinue?</string>
+    <string name="title_confirm_clean_backup">Confirm Full Backup</string>
     <string name="label_premium_subscription">Premium Subscription</string>
     <string name="label_subscription_active">Online Backup Active</string>
     <string name="label_subscription_active_no_renew">Online Backup Active (will not renew)</string>

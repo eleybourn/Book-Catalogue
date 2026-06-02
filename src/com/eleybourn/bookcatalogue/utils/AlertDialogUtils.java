@@ -20,9 +20,17 @@
 package com.eleybourn.bookcatalogue.utils;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.TextViewCompat;
 
+import com.eleybourn.bookcatalogue.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
@@ -44,9 +52,35 @@ public class AlertDialogUtils {
             final AlertDialogItem[] itemArray = new AlertDialogItem[items.size()];
             items.toArray(itemArray);
 
+            ArrayAdapter<AlertDialogItem> adapter = new ArrayAdapter<>(context, R.layout.string_list_item, R.id.field_name, items) {
+                @NonNull
+                @Override
+                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    TextView text = view.findViewById(R.id.field_name);
+                    AlertDialogItem item = getItem(position);
+                    if (item != null) {
+                        text.setText(item.name);
+                        if (item.iconRes != 0) {
+                            text.setCompoundDrawablesWithIntrinsicBounds(item.iconRes, 0, 0, 0);
+                            int colorOnSurface = Utils.getThemeColor(context, com.google.android.material.R.attr.colorOnSurface);
+                            TextViewCompat.setCompoundDrawableTintList(text, ColorStateList.valueOf(colorOnSurface));
+                        } else {
+                            text.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        }
+                    }
+                    // Hide the radio button and divider if they're there
+                    View selector = view.findViewById(R.id.selector);
+                    if (selector != null) selector.setVisibility(View.GONE);
+                    View divider = view.findViewById(R.id.divider);
+                    if (divider != null) divider.setVisibility(View.GONE);
+                    return view;
+                }
+            };
+
             new MaterialAlertDialogBuilder(context)
                     .setTitle(title)
-                    .setItems(itemArray, (dialog, item) -> itemArray[item].handler.run())
+                    .setAdapter(adapter, (dialog, which) -> items.get(which).handler.run())
                     .create().show();
         }
     }
@@ -61,9 +95,15 @@ public class AlertDialogUtils {
     public static class AlertDialogItem implements CharSequence {
         public final String name;
         public final Runnable handler;
+        public final int iconRes;
 
         public AlertDialogItem(String name, Runnable handler) {
+            this(name, 0, handler);
+        }
+
+        public AlertDialogItem(String name, int iconRes, Runnable handler) {
             this.name = name;
+            this.iconRes = iconRes;
             this.handler = handler;
         }
 

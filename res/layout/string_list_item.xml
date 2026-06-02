@@ -34,6 +34,7 @@
  -->
 
     <View
+        android:id="@+id/divider"
         style="@style/layout_divider"
         android:layout_alignParentBottom="true" />
 

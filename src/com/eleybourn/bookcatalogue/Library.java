@@ -141,7 +141,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
      */
     private android.widget.ProgressBar mProgressBar;
     /**
-     * A book ID used for keeping/updating current list position, eg. when a book is edited.
+     * A book ID used for keeping/updating current list position, e.g. when a book is edited.
      */
     private long mMarkBookId = 0;
     /**
@@ -213,7 +213,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
      */
     private int mUniqueBooks = 0;
     /**
-     * Setup the bookshelf spinner. This function will also call fillData when
+     * Set up the bookshelf spinner. This function will also call fillData when
      * complete having loaded the appropriate bookshelf.
      */
     private Spinner mBookshelfSpinner;
@@ -754,7 +754,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     }
 
     private void initBookshelfSpinner() {
-        // Setup the Bookshelf Spinner
+        // Set up the Bookshelf Spinner
         mBookshelfSpinner = findViewById(R.id.field_library_bookshelf);
         mBookshelfAdapter = new ArrayAdapter<>(this, R.layout.library_spinner);
         mBookshelfAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -818,7 +818,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     }
 
     /**
-     * Run each time the menu button is pressed. This will setup the options menu
+     * Run each time the menu button is pressed. This will set up the options menu
      */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -962,7 +962,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
     }
 
     /**
-     * Setup the sort options. This function will also call fillData when
+     * Set up the sort options. This function will also call fillData when
      * complete having loaded the appropriate view.
      */
     private void doSortMenu(final boolean showAll) {
@@ -1138,7 +1138,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                 // Now we have expanded groups as needed, get the list cursor
                 mTempList = b.getList();
 
-                // Clear it so it wont be reused.
+                // Clear it so it won't be reused.
                 mMarkBookId = 0;
 
                 // get a count() from the cursor in background task because the setAdapter() call

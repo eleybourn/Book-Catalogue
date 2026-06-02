@@ -338,6 +338,15 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         new BookCatalogueAPI(this, BookCatalogueAPI.REQUEST_RESTORE_ALL, mApiListener);
     }
 
+    private void showRestorePrompt(int count) {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.title_restore_found_backup)
+                .setMessage(getString(R.string.alert_restore_found_backup, count))
+                .setPositiveButton(R.string.button_restore_now, (dialog, which) -> restore())
+                .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
     private void showSubscriptionRequiredDialog() {
         new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.subscription_required_title)
@@ -512,6 +521,11 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                     int backedUp = Math.min(totalLocalBooks, cloudCount);
                     String statsText = activity.getString(R.string.stats_backup_combined, totalLocalBooks, backedUp, cloudCount);
                     activity.mBackupStatsField.setText(statsText);
+
+                    // Prompt to restore if local is empty and cloud is not
+                    if (totalLocalBooks == 0 && cloudCount > 0) {
+                        activity.showRestorePrompt(cloudCount);
+                    }
                     break;
                 }
                 case BookCatalogueAPI.REQUEST_INFO_LAST: {

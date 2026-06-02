@@ -37,6 +37,8 @@
     <string name="subscription_required_title">Subscription Required</string>
     <string name="alert_confirm_clean_backup">This will completely refresh your online backup by removing cloud records that no longer exist on your device and updating all changes. This ensures a clean backup without orphaned records.\n\nContinue?</string>
     <string name="title_confirm_clean_backup">Confirm Full Backup</string>
+    <string name="alert_restore_found_backup">We found an existing cloud backup with %1$d books, but your local library is empty. Would you like to restore your books now? \n\nImportant: Turning on sync without restoring may correct the online backup.</string>
+    <string name="title_restore_found_backup">Restore Backup?</string>
     <string name="label_premium_subscription">Premium Subscription</string>
     <string name="label_subscription_active">Online Backup Active</string>
     <string name="label_subscription_active_no_renew">Online Backup Active (will not renew)</string>

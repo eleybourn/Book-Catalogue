@@ -837,56 +837,58 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                 }
                 // Get a DB connection and find the book.
                 CatalogueDBAdapter dba = new CatalogueDBAdapter(mContext);
-                //dba.open();
-                try (BooksCursor c = dba.fetchBookById(mBookId)) {
-                    // If we have a book, use it. Otherwise we are done.
-                    if (c.moveToFirst()) {
+                try {
+                    try (BooksCursor c = dba.fetchBookById(mBookId)) {
+                        // If we have a book, use it. Otherwise we are done.
+                        if (c.moveToFirst()) {
 
-                        if ((mFlags & LibraryStyle.EXTRAS_AUTHOR) != 0) {
-                            if (mAuthorCol < 0)
-                                mAuthorCol = c.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
+                            if ((mFlags & LibraryStyle.EXTRAS_AUTHOR) != 0) {
+                                if (mAuthorCol < 0)
+                                    mAuthorCol = c.getColumnIndex(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
 
-                            mAuthor = c.getString(mAuthorCol);
-                        }
-
-                        if ((mFlags & LibraryStyle.EXTRAS_LOCATION) != 0) {
-                            if (mLocationCol < 0)
-                                mLocationCol = c.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION);
-                            if (mLocationRes == null)
-                                mLocationRes = BookCatalogueApp.getRes().getString(R.string.label_location);
-
-                            mLocation = mLocationRes + ": " + c.getString(mLocationCol);
-                        }
-
-                        if ((mFlags & LibraryStyle.EXTRAS_PUBLISHER) != 0) {
-                            if (mPublisherCol < 0)
-                                mPublisherCol = c.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER);
-                            if (mPublisherRes == null)
-                                mPublisherRes = BookCatalogueApp.getRes().getString(R.string.label_publisher);
-
-                            mPublisher = mPublisherRes + ": " + c.getString(mPublisherCol);
-                        }
-
-                        if ((mFlags & LibraryStyle.EXTRAS_BOOKSHELVES) != 0) {
-                            // Now build a list of all bookshelves the book is on.
-                            StringBuilder shelves = new StringBuilder();
-                            try (Cursor sc = dba.getAllBookBookshelvesCursor(mBookId)) {
-                                if (sc.moveToFirst()) {
-                                    do {
-                                        if (shelves.length() > 0)
-                                            shelves.append(", ");
-                                        shelves.append(sc.getString(0));
-                                    } while (sc.moveToNext());
-                                }
+                                mAuthor = c.getString(mAuthorCol);
                             }
-                            mShelves = BookCatalogueApp.getRes().getString(R.string.shelves) + ": " + shelves;
+
+                            if ((mFlags & LibraryStyle.EXTRAS_LOCATION) != 0) {
+                                if (mLocationCol < 0)
+                                    mLocationCol = c.getColumnIndex(CatalogueDBAdapter.KEY_LOCATION);
+                                if (mLocationRes == null)
+                                    mLocationRes = BookCatalogueApp.getRes().getString(R.string.label_location);
+
+                                mLocation = mLocationRes + ": " + c.getString(mLocationCol);
+                            }
+
+                            if ((mFlags & LibraryStyle.EXTRAS_PUBLISHER) != 0) {
+                                if (mPublisherCol < 0)
+                                    mPublisherCol = c.getColumnIndex(CatalogueDBAdapter.KEY_PUBLISHER);
+                                if (mPublisherRes == null)
+                                    mPublisherRes = BookCatalogueApp.getRes().getString(R.string.label_publisher);
+
+                                mPublisher = mPublisherRes + ": " + c.getString(mPublisherCol);
+                            }
+
+                            if ((mFlags & LibraryStyle.EXTRAS_BOOKSHELVES) != 0) {
+                                // Now build a list of all bookshelves the book is on.
+                                StringBuilder shelves = new StringBuilder();
+                                try (Cursor sc = dba.getAllBookBookshelvesCursor(mBookId)) {
+                                    if (sc.moveToFirst()) {
+                                        do {
+                                            if (shelves.length() > 0)
+                                                shelves.append(", ");
+                                            shelves.append(sc.getString(0));
+                                        } while (sc.moveToNext());
+                                    }
+                                }
+                                mShelves = BookCatalogueApp.getRes().getString(R.string.shelves) + ": " + shelves;
+                            }
+                        } else {
+                            // No data, no need for UI thread call.
+                            mWantFinished = false;
                         }
-                    } else {
-                        // No data, no need for UI thread call.
-                        mWantFinished = false;
                     }
+                } finally {
+                    dba.close();
                 }
-                //dba.close();
             } finally {
                 taskContext.setRequiresFinish(mWantFinished);
             }

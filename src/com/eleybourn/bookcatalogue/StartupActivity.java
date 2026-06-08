@@ -459,11 +459,15 @@ public class StartupActivity
         public void run(SimpleTaskContext taskContext) {
             // Get a DB to make sure the FTS rebuild flag is set appropriately
             CatalogueDBAdapter db = new CatalogueDBAdapter(getActiveActivity());
-            BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
-            if (prefs.getBoolean(PREF_FTS_REBUILD_REQUIRED, false)) {
-                updateProgress(getString(R.string.rebuilding_search_index));
-                db.rebuildFts();
-                prefs.setBoolean(PREF_FTS_REBUILD_REQUIRED, false);
+            try {
+                BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+                if (prefs.getBoolean(PREF_FTS_REBUILD_REQUIRED, false)) {
+                    updateProgress(getString(R.string.rebuilding_search_index));
+                    db.rebuildFts();
+                    prefs.setBoolean(PREF_FTS_REBUILD_REQUIRED, false);
+                }
+            } finally {
+                db.close();
             }
         }
 
@@ -478,21 +482,25 @@ public class StartupActivity
         @Override
         public void run(SimpleTaskContext taskContext) {
             CatalogueDBAdapter db = new CatalogueDBAdapter(getApplicationContext());
-            db.open();
-            BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
+            try {
+                db.open();
+                BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 
-            updateProgress(getString(R.string.optimizing_databases));
-            // Analyze DB
-            db.analyzeDb();
-            if (AdminLibraryPreferences.isThumbnailCacheEnabled()) {
-                // Analyze the covers DB
-                Utils utils = taskContext.getUtils();
-                utils.analyzeCovers();
-            }
+                updateProgress(getString(R.string.optimizing_databases));
+                // Analyze DB
+                db.analyzeDb();
+                if (AdminLibraryPreferences.isThumbnailCacheEnabled()) {
+                    // Analyze the covers DB
+                    Utils utils = taskContext.getUtils();
+                    utils.analyzeCovers();
+                }
 
-            if (prefs.getBoolean(PREF_AUTHOR_SERIES_FIXUP_REQUIRED, false)) {
-                db.fixupAuthorsAndSeries();
-                prefs.setBoolean(PREF_AUTHOR_SERIES_FIXUP_REQUIRED, false);
+                if (prefs.getBoolean(PREF_AUTHOR_SERIES_FIXUP_REQUIRED, false)) {
+                    db.fixupAuthorsAndSeries();
+                    prefs.setBoolean(PREF_AUTHOR_SERIES_FIXUP_REQUIRED, false);
+                }
+            } finally {
+                db.close();
             }
         }
 

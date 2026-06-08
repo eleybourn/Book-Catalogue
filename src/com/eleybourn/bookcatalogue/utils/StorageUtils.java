@@ -356,51 +356,55 @@ public class StorageUtils {
         File toDir;
         String copyingMsg = BookCatalogueApp.getRes().getString(R.string.copying_files);
         CatalogueDBAdapter db = new CatalogueDBAdapter(fragment.getContext());
-        db.open();
-        for (DocumentFile file : files) {
-            if (fragment.isCancelled()) {
-                break;
-            }
-            result.processed++;
-            fragment.onProgress(copyingMsg, result.processed);
+        try {
+            db.open();
+            for (DocumentFile file : files) {
+                if (fragment.isCancelled()) {
+                    break;
+                }
+                result.processed++;
+                fragment.onProgress(copyingMsg, result.processed);
 
-            String name = Objects.requireNonNull(file.getName()).toLowerCase();
-            boolean image_not_in_db = false; // Only set to true for image files.
-            if (name.startsWith("tmp")) {
-                toDir = cacheDir;
-            } else if (name.endsWith(".png") || name.endsWith(".jpg")) {
-                toDir = coverDir;
-                // Check if related file exists in database.
-                String uuid = name.substring(0, name.length() - 4);
-                long book = db.getBookIdFromUuid(uuid);
-                if (book == 0) {
-                    image_not_in_db = true;
-                }
-            } else if (name.endsWith(".bcbk") || name.endsWith(".csv") || name.endsWith(".db")) {
-                toDir = backupDir;
-            } else {
-                toDir = sharedDir;
-            }
-            if (!image_not_in_db) {
-                File dst = new File(toDir, file.getName());
-                try {
-                    if (!dst.exists()) {
-                        InputStream in = resolver.openInputStream(file.getUri());
-                        if (in != null) {
-                            Utils.saveInputToFile(in, dst);
-                            in.close();
-                            // TODO: Decide if this is a good idea! --
-                            // file.delete();
-                        }
-                    } else {
-                        result.duplicates++;
+                String name = Objects.requireNonNull(file.getName()).toLowerCase();
+                boolean image_not_in_db = false; // Only set to true for image files.
+                if (name.startsWith("tmp")) {
+                    toDir = cacheDir;
+                } else if (name.endsWith(".png") || name.endsWith(".jpg")) {
+                    toDir = coverDir;
+                    // Check if related file exists in database.
+                    String uuid = name.substring(0, name.length() - 4);
+                    long book = db.getBookIdFromUuid(uuid);
+                    if (book == 0) {
+                        image_not_in_db = true;
                     }
-                } catch (Exception e) {
-                    Logger.logError(e, "Failed to copy old file");
+                } else if (name.endsWith(".bcbk") || name.endsWith(".csv") || name.endsWith(".db")) {
+                    toDir = backupDir;
+                } else {
+                    toDir = sharedDir;
                 }
-            } else {
-                result.not_in_db++;
+                if (!image_not_in_db) {
+                    File dst = new File(toDir, file.getName());
+                    try {
+                        if (!dst.exists()) {
+                            InputStream in = resolver.openInputStream(file.getUri());
+                            if (in != null) {
+                                Utils.saveInputToFile(in, dst);
+                                in.close();
+                                // TODO: Decide if this is a good idea! --
+                                // file.delete();
+                            }
+                        } else {
+                            result.duplicates++;
+                        }
+                    } catch (Exception e) {
+                        Logger.logError(e, "Failed to copy old file");
+                    }
+                } else {
+                    result.not_in_db++;
+                }
             }
+        } finally {
+            db.close();
         }
         return result;
     }

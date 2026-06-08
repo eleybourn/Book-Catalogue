@@ -600,8 +600,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         if (rowId != 0) {
             try {
                 String hash = mDbHelper.getBookUuid(rowId);
-                Utils u = new Utils();
-                u.deleteCachedBookCovers(hash);
+                mDbHelper.getUtils().deleteCachedBookCovers(hash);
             } catch (Exception e) {
                 Logger.logError(e, "Error cleaning up cached cover images");
             }

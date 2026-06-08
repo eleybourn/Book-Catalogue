@@ -306,8 +306,20 @@ public class CoversDbHelper {
 
 	public void close() {
 		mStatements.close();
+		mDeleteBookCoversStmt = null;
+		mExistsStmt = null;
+		mEraseCoverCacheStmt = null;
 		synchronized(mInstanceCount) {
 			mInstanceCount--;
+		}
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			close();
+		} finally {
+			super.finalize();
 		}
 	}
 	

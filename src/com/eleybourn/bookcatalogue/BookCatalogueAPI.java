@@ -479,7 +479,6 @@ public class BookCatalogueAPI implements SimpleTask {
      * Executes the API Sync Logic in background
      */
     public void backupBook(int bookId, Cursor bookCursor, ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves, ArrayList<Series> series, ArrayList<AnthologyTitle> anthology, File thumbnailFile) throws Exception {
-        //Log.d("BookCatalogueAPI", "backupBook");
         String title;
         if (mApiToken.isEmpty()) {
             // It might be better to try a login() call here, but for now, we'll error out.
@@ -1020,74 +1019,85 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public String connection(String urlEndPoint, String method, ArrayList<String> fields, ArrayList<String> values, File thumbnailFile) {
-        //Log.d("BookCatalogueAPI", "API " + urlEndPoint);
-        HttpURLConnection conn = null;
-        try {
-            String boundary = UUID.randomUUID().toString();
-            String urlString = BASE_URL + urlEndPoint;
+        int deadlockRetries = 3;
+        while (true) {
+            HttpURLConnection conn = null;
+            try {
+                String boundary = UUID.randomUUID().toString();
+                String urlString = BASE_URL + urlEndPoint;
 
-            conn = (HttpURLConnection) new URL(urlString).openConnection();
-            conn.setRequestMethod(method);
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setReadTimeout(15000); // 15 seconds
-            conn.setConnectTimeout(15000); // 15 seconds
-            if (mApiToken != null && !mApiToken.isEmpty()) {
-                conn.setRequestProperty("Authorization", "Bearer " + mApiToken);
-            }
-
-            if (method.equals("POST")) {
-                conn.setDoOutput(true); // Allow sending a body for POST
-                conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-                try (OutputStream os = conn.getOutputStream(); PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8), true)) {
-
-                    if (fields != null && values != null) {
-                        for (int i = 0; i < fields.size(); i++) {
-                            addFormField(writer, boundary, fields.get(i), values.get(i));
-                        }
-                    }
-
-                    // File Upload
-                    if (thumbnailFile != null && thumbnailFile.exists()) {
-                        //Log.d("BookCatalogueAPI", "API Thumbnail Exists");
-                        addFilePart(writer, os, boundary, "thumbnail", thumbnailFile);
-                    }
-                    writer.append("--").append(boundary).append("--").append("\r\n").flush();
+                conn = (HttpURLConnection) new URL(urlString).openConnection();
+                conn.setRequestMethod(method);
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setReadTimeout(15000); // 15 seconds
+                conn.setConnectTimeout(15000); // 15 seconds
+                if (mApiToken != null && !mApiToken.isEmpty()) {
+                    conn.setRequestProperty("Authorization", "Bearer " + mApiToken);
                 }
-            } else {
-                // For GET requests, we don't send a body.
-                conn.setDoOutput(false);
-            }
 
-            int responseCode = conn.getResponseCode();
-            String response;
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                response = readStream(conn.getInputStream());
-                if (response.isEmpty()) return null; // Handle empty success response
-                return response;
-            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && retry) {
-                login();
-                retry = false;
-                return connection(urlEndPoint, method, fields, values, thumbnailFile);
-            } else {
-                // If it's an error, read the error stream.
-                response = readStream(conn.getErrorStream());
-                Log.e("BookCatalogueAPI", "Error Response: " + response);
-                // Propagate the error so the calling method knows it failed.
-                throw new Exception("Server returned error code " + responseCode + ": " + response);
-            }
-        } catch (Exception e) {
-            Log.e("BookCatalogueAPI", "Connection Error", e);
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
+                if (method.equals("POST")) {
+                    conn.setDoOutput(true); // Allow sending a body for POST
+                    conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+                    try (OutputStream os = conn.getOutputStream(); PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8), true)) {
+
+                        if (fields != null && values != null) {
+                            for (int i = 0; i < fields.size(); i++) {
+                                addFormField(writer, boundary, fields.get(i), values.get(i));
+                            }
+                        }
+
+                        // File Upload
+                        if (thumbnailFile != null && thumbnailFile.exists()) {
+                            addFilePart(writer, os, boundary, "thumbnail", thumbnailFile);
+                        }
+                        writer.append("--").append(boundary).append("--").append("\r\n").flush();
+                    }
+                } else {
+                    // For GET requests, we don't send a body.
+                    conn.setDoOutput(false);
+                }
+
+                int responseCode = conn.getResponseCode();
+                String response;
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    response = readStream(conn.getInputStream());
+                    if (response.isEmpty()) return null; // Handle empty success response
+                    return response;
+                } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && retry) {
+                    login();
+                    retry = false;
+                    continue; // Retry after login
+                } else {
+                    // If it's an error, read the error stream.
+                    response = readStream(conn.getErrorStream());
+                    Log.e("BookCatalogueAPI", "Error Response: " + response);
+
+                    // Check for deadlock and retry
+                    if (responseCode == 500 && response.contains("Deadlock found") && deadlockRetries > 0) {
+                        deadlockRetries--;
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException ignored) {
+                        }
+                        continue;
+                    }
+
+                    // Propagate the error so the calling method knows it failed.
+                    throw new Exception("Server returned error code " + responseCode + ": " + response);
+                }
+            } catch (Exception e) {
+                Log.e("BookCatalogueAPI", "Connection Error", e);
+                return null;
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
+                }
             }
         }
-        return null;
     }
 
     @Override
     public void run(SimpleTaskContext taskContext) throws Exception {
-        //Log.d("BookCatalogueAPI", "run");
         this.mTaskContext = taskContext;
         if (mEmail.isEmpty()) {
             return;

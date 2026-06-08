@@ -63,6 +63,7 @@ import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.provider.BaseColumns;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -772,7 +773,7 @@ public class CatalogueDBAdapter {
      * @return The scaled bitmap for the file, or null if no file or bad file.
      */
     public static Bitmap fetchThumbnailIntoImageView(String uuid, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
-        // Get the file, if it exists. Otherwise set 'help' icon and exit.
+        // Get the file, if it exists. Otherwise, set 'help' icon and exit.
         Bitmap image = null;
         try {
             File file = fetchThumbnailByUuid(uuid);
@@ -946,7 +947,16 @@ public class CatalogueDBAdapter {
             mDb.execSQL("PRAGMA recursive_triggers = ON");
         }
         //mDb.execSQL("PRAGMA temp_store = FILE");
+        if (mStatements != null) {
+            try {
+                mStatements.close();
+            } catch (Exception e) {
+                Logger.logError(e);
+            }
+        }
         mStatements = new SqlStatementManager(mDb);
+        clearCachedStatements();
+        mCloseWasCalled = false;
 
         return this;
     }
@@ -975,6 +985,7 @@ public class CatalogueDBAdapter {
             } catch (Exception e) {
                 Logger.logError(e);
             }
+            clearCachedStatements();
             //try { mDbHelper.close(); } catch (Exception e) { Logger.logError(e); }
             try {
                 if (mUtils != null) mUtils.close();
@@ -988,6 +999,52 @@ public class CatalogueDBAdapter {
                     removeInstance(this);
                 }
             }
+        }
+    }
+
+    /**
+     * Clear all cached statements
+     */
+    private void clearCachedStatements() {
+        mCheckBookExistsStmt = null;
+        mGetBookIdFromUuidStmt = null;
+        mGetIdFromIsbn1Stmt = null;
+        mGetIdFromIsbn2Stmt = null;
+        mGetBookshelfNameStmt = null;
+        mFetchBookshelfIdByNameStmt = null;
+        mGetAnthologyTitleIdStmt = null;
+        mDeleteBookshelfBooksStmt = null;
+        mInsertBookshelfBooksStmt = null;
+        mGetSeriesIdStmt = null;
+        mGetAuthorIdStmt = null;
+        mDeleteBookAuthorsStmt = null;
+        mAddBookAuthorsStmt = null;
+        mDeleteBookSeriesStmt = null;
+        mAddBookSeriesStmt = null;
+        mPurgeBookAuthorsStmt = null;
+        mPurgeAuthorsStmt = null;
+        mPurgeBookSeriesStmt = null;
+        mPurgeSeriesStmt = null;
+        mGetAuthorBookCountQuery = null;
+        mGetAuthorAnthologyCountQuery = null;
+        mGetSeriesBookCountQuery = null;
+        mGetBookUuidQuery = null;
+        mGetBookUpdateDateQuery = null;
+        mGetBookTitleQuery = null;
+        mInsertBooklistStyleStmt = null;
+        mUpdateBooklistStyleStmt = null;
+        mDeleteBooklistStyleStmt = null;
+        mInsertFtsStmt = null;
+        mUpdateFtsStmt = null;
+        mDeleteFtsStmt = null;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            close();
+        } finally {
+            super.finalize();
         }
     }
 
@@ -4020,11 +4077,11 @@ public class CatalogueDBAdapter {
         // Be cautious; other threads may call this and set parameters.
         synchronized (mGetBookUuidQuery) {
             mGetBookUuidQuery.bindLong(1, id);
-            //try {
-            return mGetBookUuidQuery.simpleQueryForString();
-            //} catch (SQLiteDoneException e) {
-            //	return null;
-            //}
+            try {
+                return mGetBookUuidQuery.simpleQueryForString();
+            } catch (SQLiteDoneException e) {
+                return null;
+            }
         }
     }
 
@@ -4039,11 +4096,11 @@ public class CatalogueDBAdapter {
         // Be cautious; other threads may call this and set parameters.
         synchronized (mGetBookUpdateDateQuery) {
             mGetBookUpdateDateQuery.bindLong(1, bookId);
-            //try {
-            return mGetBookUpdateDateQuery.simpleQueryForString();
-            //} catch (SQLiteDoneException e) {
-            //	return null;
-            //}
+            try {
+                return mGetBookUpdateDateQuery.simpleQueryForString();
+            } catch (SQLiteDoneException e) {
+                return null;
+            }
         }
     }
 
@@ -4058,7 +4115,11 @@ public class CatalogueDBAdapter {
         // Be cautious; other threads may call this and set parameters.
         synchronized (mGetBookTitleQuery) {
             mGetBookTitleQuery.bindLong(1, id);
-            return mGetBookTitleQuery.simpleQueryForString();
+            try {
+                return mGetBookTitleQuery.simpleQueryForString();
+            } catch (SQLiteDoneException e) {
+                return null;
+            }
         }
 
     }

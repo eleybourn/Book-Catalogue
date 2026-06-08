@@ -299,7 +299,9 @@ public class DataManager {
      * For API after 11, store the correct type
      */
     private void putAll_Api11(Cursor cursor) {
-        cursor.moveToFirst();
+        if (!cursor.moveToFirst()) {
+            return;
+        }
 
         for (int i = 0; i < cursor.getColumnCount(); i++) {
             final String name = cursor.getColumnName(i);

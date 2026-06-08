@@ -3,9 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-<!-- 	android:minHeight="?android:attr/listPreferredItemHeight"
- -->
-
     <RadioButton
         android:id="@+id/selector"
         android:layout_width="wrap_content"
@@ -29,9 +26,6 @@
         android:text=""
         android:drawablePadding="10dip"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-<!--         android:textAppearance="?android:attr/textAppearanceLarge"
- -->
 
     <View
         android:id="@+id/divider"

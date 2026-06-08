@@ -206,6 +206,18 @@ public class BookEditAuthorList extends BookEditObjectList<Author> {
                 })
                 .setNegativeButton(allBooks, (dialog, which) -> {
                     mDbHelper.globalReplaceAuthor(oldAuthor, newAuthor);
+
+                    // Sync all books with this author
+                    try (BooksCursor cursor = mDbHelper.fetchAllBooksByAuthor((int) newAuthor.id, "", "", false)) {
+                        if (cursor != null) {
+                            while (cursor.moveToNext()) {
+                                BookCatalogueAPI.syncBook(BookEditAuthorList.this, cursor.getId());
+                            }
+                        }
+                    } catch (Exception e) {
+                        Logger.logError(e, "Failed to sync books after global author replace");
+                    }
+
                     oldAuthor.copyFrom(newAuthor);
                     Utils.pruneList(mDbHelper, mList);
                     mAdapter.notifyDataSetChanged();

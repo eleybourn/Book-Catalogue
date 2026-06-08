@@ -1707,6 +1707,7 @@ public class LibraryBuilder {
                 Logger.logError(e);
             }
         }
+        clearCachedStatements();
         if (mNavTable != null) {
             try {
                 mNavTable.close();
@@ -1739,6 +1740,22 @@ public class LibraryBuilder {
 
     protected void finalize() {
         cleanup();
+    }
+
+    private void clearCachedStatements() {
+        mBaseBuildStmt = null;
+        mLevelBuildStmt = null;
+        mDeleteListNodeSettingsStmt = null;
+        mSaveListNodeSettingsStmt = null;
+        mDeleteListNodeSettingStmt = null;
+        mSaveListNodeSettingStmt = null;
+        mGetPositionCheckVisibleStmt = null;
+        mGetPositionStmt = null;
+        mGetNodeRootStmt = null;
+        mGetNodeLevelStmt = null;
+        mGetNextAtSameLevelStmt = null;
+        mShowStmt = null;
+        mExpandStmt = null;
     }
 
     /**

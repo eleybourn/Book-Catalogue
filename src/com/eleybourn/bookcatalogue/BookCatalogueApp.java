@@ -245,9 +245,30 @@ public class BookCatalogueApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        externalCacheDir = getExternalCacheDir();
-        externalFilesDir = getExternalFilesDir(null);
+
+        // Initialise some internal directories
         filesDir = getFilesDir();
+
+        // Try to get external directories, but fall back to internal if it fails (e.g. on some
+        // devices/OS versions where external storage is not ready or has issues).
+        try {
+            externalCacheDir = getExternalCacheDir();
+        } catch (Exception e) {
+            externalCacheDir = null;
+        }
+        if (externalCacheDir == null || externalCacheDir.getPath().startsWith("/dev/null")) {
+            externalCacheDir = getCacheDir();
+        }
+
+        try {
+            externalFilesDir = getExternalFilesDir(null);
+        } catch (Exception e) {
+            externalFilesDir = null;
+        }
+        if (externalFilesDir == null || externalFilesDir.getPath().startsWith("/dev/null")) {
+            externalFilesDir = filesDir;
+        }
+
         mPrefs = getSharedPreferences("bookCatalogue", BookCatalogueApp.MODE_PRIVATE);
         applyLocaleSettings();
         applyTheme();

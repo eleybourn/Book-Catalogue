@@ -413,7 +413,6 @@ public class Utils {
      * @return Downloaded filespec
      */
     static public String saveThumbnailFromUrl(String urlText, String filenameSuffix) {
-        //Log.d("BookCatalogue", "Thumbnail " + urlText);
         HttpURLConnection conn = null;
         try {
             URL u = new URL(urlText);

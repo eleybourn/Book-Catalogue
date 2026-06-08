@@ -208,7 +208,7 @@ public class CoversDbHelper {
 	/**
 	 * Get the named 'file'
 	 * 
-	 * @return	byet[] of image data
+	 * @return	byte[] of image data
 	 */
 	public boolean isEntryValid(String filename, Date lastModified) {
 		SynchronizedDb db = this.getDb();
@@ -295,7 +295,7 @@ public class CoversDbHelper {
     }
 	
 	/**
-	 * Analyze the database
+	 * Analyse the database
 	 */
 	public void analyze() {
 		SynchronizedDb db = this.getDb();

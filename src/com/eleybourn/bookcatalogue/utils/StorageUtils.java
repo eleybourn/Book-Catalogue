@@ -173,7 +173,7 @@ public class StorageUtils {
         if (dbFile != null) {
             dbFile.deleteOnExit();
         }
-        // setup the mail message
+        // set up the mail message
         final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
         emailIntent.setType("plain/text");
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
@@ -279,7 +279,7 @@ public class StorageUtils {
     }
 
     /**
-     * Cleanup any purgeable files.
+     * Clean-up any purgeable files.
      */
     public static void cleanupFiles() {
         if (StorageUtils.isSharedWritable()) {

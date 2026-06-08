@@ -63,7 +63,6 @@ import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -164,10 +163,10 @@ public class CatalogueDBAdapter {
     public static final String KEY_AUTHOR_FORMATTED = "author_formatted";
     public static final String KEY_AUTHOR_FORMATTED_GIVEN_FIRST = "author_formatted_given_first";
     public static final String KEY_SERIES_FORMATTED = "series_formatted";
-    // We tried 'Collate UNICODE' but it seemed to be case sensitive. We ended
+    // We tried 'Collate UNICODE' but it seemed to be case-sensitive. We ended
     // up with 'Ursula Le Guin' and 'Ursula le Guin'.
     //
-    //	We now use Collate LOCALE and check to see if it is case sensitive. We *hope* in the
+    //	We now use Collate LOCALE and check to see if it is case-sensitive. We *hope* in the
     // future Android will add LOCALE_CI (or equivalent).
     public static final String COLLATION = " Collate LOCALIZED "; // NOTE: Important to have start/end spaces!
     /* private database variables as static reference */
@@ -208,7 +207,7 @@ public class CatalogueDBAdapter {
      * Static Factory object to create the custom cursor
      */
     public static final CursorFactory mTrackedCursorFactory = (db, masterQuery, editTable, query) -> new TrackedCursor(db, masterQuery, editTable, query, mSynchronizer);
-    /* Database creation sql statement */
+    /* Database creation SQL statement */
     private static final String DATABASE_CREATE_AUTHORS =
             "create table " + DB_TB_AUTHORS +
                     " (_id integer primary key autoincrement, " +
@@ -628,7 +627,7 @@ public class CatalogueDBAdapter {
      * method will copy ALL columns from the source to the destination; if columns do not exist in the
      * destination, an error will occur. Columns in the destination that are not in the source will be
      * defaulted or set to NULL if no default is defined.
-     * ENHANCE: allow an exclusion list to be added as a parameter so the some 'from' columns can be ignored.
+     * ENHANCE: allow an exclusion list to be added as a parameter so the same 'from' columns can be ignored.
      */
     private static void copyTableSafely(SynchronizedDb sdb, String from, String to, String... toRemove) {
         // Get the source info
@@ -930,12 +929,12 @@ public class CatalogueDBAdapter {
     }
 
     /**
-     * Open the books database. If it cannot be opened, try to create a new
+     * Open the "books" database. If it cannot be opened, try to create a new
      * instance of the database. If it cannot be created, throw an exception to
      * signal the failure
      *
      * @return this (self reference, allowing this to be chained in an initialisation call)
-     * @throws SQLException if the database could be neither opened or created
+     * @throws SQLException if the database could be neither opened nor created
      */
     public CatalogueDBAdapter open() throws SQLException {
         if (mDb == null) {
@@ -2387,7 +2386,7 @@ public class CatalogueDBAdapter {
      * @param book        id of book
      * @param author      name of author
      * @param title       title of anthology title
-     * @param returnDupId If title already exists then if true, will return existing ID, if false, will thrown an error
+     * @param returnDupId If title already exists then if true, will return existing ID, if false, will throw an error
      */
     public void createAnthologyTitle(long book, String author, String title, boolean returnDupId, boolean dirtyBookIfNecessary) {
         if (!title.isEmpty()) {
@@ -2404,7 +2403,7 @@ public class CatalogueDBAdapter {
      * @param book        id of book
      * @param authorId    id of author
      * @param title       title of anthology title
-     * @param returnDupId If title already exists then if true, will return existing ID, if false, will thrown an error
+     * @param returnDupId If title already exists then if true, will return existing ID, if false, will throw an error
      * @return ID of anthology title record
      */
     public long createAnthologyTitle(long book, long authorId, String title, boolean returnDupId, boolean dirtyBookIfNecessary) {
@@ -3097,7 +3096,7 @@ public class CatalogueDBAdapter {
             if (args.containsKey(DOM_BOOK_UUID.name))
                 args.remove(DOM_BOOK_UUID.name);
 
-            // We may be just updating series, or author lists but we still update the last_update_date.
+            // We may be just updating series, or author lists, but we still update the last_update_date.
             if ((flags & BOOK_UPDATE_USE_UPDATE_DATE_IF_PRESENT) == 0 || !args.containsKey(DOM_LAST_UPDATE_DATE.name))
                 args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
             // ALWAYS set the INSTANCE_UPDATE_DATE; this is used for backups
@@ -3185,7 +3184,7 @@ public class CatalogueDBAdapter {
 
             // Get the authors and turn into a list of names
             Iterator<Author> i = authors.iterator();
-            // The list MAY contain duplicates (eg. from Internet lookups of multiple
+            // The list MAY contain duplicates (e.g. from Internet lookups of multiple
             // sources), so we track them in a hash table
             Hashtable<String, Boolean> idHash = new Hashtable<>();
             int pos = 0;
@@ -3235,7 +3234,7 @@ public class CatalogueDBAdapter {
             mDeleteBookSeriesStmt.execute();
 
             //
-            // Setup the book in the ADD statement. This was once good enough, but
+            // Set up the book in the ADD statement. This was once good enough, but
             // Android 4 (at least) causes the bindings to clean when executed. So
             // now we do it each time in loop.
             // mAddBookSeriesStmt.bindLong(1, bookId);
@@ -3247,7 +3246,7 @@ public class CatalogueDBAdapter {
 
             // Get the authors and turn into a list of names
             Iterator<Series> i = series.iterator();
-            // The list MAY contain duplicates (eg. from Internet lookups of multiple
+            // The list MAY contain duplicates (e.g. from Internet lookups of multiple
             // sources), so we track them in a hash table
             Hashtable<String, Boolean> idHash = new Hashtable<>();
             int pos = 0;

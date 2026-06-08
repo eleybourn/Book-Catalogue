@@ -422,7 +422,7 @@ public class DataManager {
      *
      */
     public void remove(String key) {
-        Datum datum = mData.remove(key);
+        mData.remove(key);
         mBundle.remove(key);
     }
 

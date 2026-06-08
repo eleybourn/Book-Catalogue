@@ -104,7 +104,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 public class Utils {
     public static final boolean USE_BARCODE = true;
-    // Used for formatting dates for sql; everything is assumed to be UTC, or converted to UTC since
+    // Used for formatting dates for SQL; everything is assumed to be UTC, or converted to UTC since
     // UTC is the default SQLite TZ.
     static final TimeZone tzUtc = TimeZone.getTimeZone("UTC");
     static final DateFormat mDateDisplaySdf = DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
@@ -183,7 +183,7 @@ public class Utils {
     private CoversDbHelper mCoversDb = null;
 
     /**
-     * Add a format to the parser list; if nedEnglish is set, also add the localized english version
+     * Add a format to the parser list; if nedEnglish is set, also add the localized English version
      */
     private static void addParseDateFormat(boolean needEnglish, String format) {
         mParseDateFormats.add(new SimpleDateFormat(format, Locale.ROOT));
@@ -798,8 +798,8 @@ public class Utils {
 
     /**
      * Passed a list of Objects, remove duplicates based on the toString result.
-     * ENHANCE Add author_aliases table to allow further pruning (eg. Joe Haldeman == Joe W Haldeman).
-     * ENHANCE Add series_aliases table to allow further pruning (eg. 'Amber Series' <==> 'Amber').
+     * ENHANCE Add author_aliases table to allow further pruning (e.g. Joe Haldeman == Joe W Haldeman).
+     * ENHANCE Add series_aliases table to allow further pruning (e.g. 'Amber Series' <==> 'Amber').
      *
      * @param db   Database connection to lookup IDs
      * @param list List to clean up
@@ -838,12 +838,12 @@ public class Utils {
 
     /**
      * Remove series from the list where the names are the same, but one entry has a null or empty position.
-     * eg. the following list should be processed as indicated:
-     * fred(5)
-     * fred <-- delete
-     * bill <-- delete
-     * bill <-- delete
-     * bill(1)
+     * e.g. the following list should be processed as indicated:
+     * Fred(5)
+     * Fred <-- delete
+     * Bill <-- delete
+     * Bill <-- delete
+     * Bill(1)
      */
     public static boolean pruneSeriesList(ArrayList<Series> list) {
         ArrayList<Series> toDelete = new ArrayList<>();
@@ -888,7 +888,7 @@ public class Utils {
     }
 
     /**
-     * Convert a array of objects to a string.
+     * Convert an array of objects to a string.
      *
      * @param a Array
      * @return Resulting string
@@ -915,7 +915,7 @@ public class Utils {
             url = new URL(path);
             parser = factory.newSAXParser();
             parser.parse(Utils.getInputStream(url), handler);
-            // Dont bother catching general exceptions, they will be caught by the caller.
+            // Don't bother catching general exceptions, they will be caught by the caller.
         } catch (ParserConfigurationException | java.io.IOException e) {
             String s = "unknown";
             try {
@@ -934,14 +934,14 @@ public class Utils {
     }
 
     /**
-     * Shrinks the image in the passed file to the specified dimensions, and places the image
-     * in the passed view. The bitmap is returned.
+     * Shrinks the image in the referenced file to the specified dimensions, and places the image
+     * in the referenced view. The bitmap is returned.
      */
     public static Bitmap fetchFileIntoImageView(File file, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
 
         Bitmap bm;                    // resultant Bitmap (which we will return)
 
-        // Get the file, if it exists. Otherwise set 'help' icon and exit.
+        // Get the file, if it exists. Otherwise, set 'help' icon and exit.
         if (!file.exists()) {
             if (destView != null)
                 destView.setImageResource(R.drawable.ic_menu_help);
@@ -955,10 +955,10 @@ public class Utils {
 
     /**
      * Construct the cache ID for a given thumbnail spec.
-     * NOTE: Any changes to the resulting name MUST be reflect in CoversDbHelper.eraseCachedBookCover()
+     * NOTE: Any changes to the resulting name MUST be reflected in CoversDbHelper.eraseCachedBookCover()
      */
     public static String getCoverCacheId(final String hash, final int maxWidth, final int maxHeight) {
-        // NOTE: Any changes to the resulting name MUST be reflect in CoversDbHelper.eraseCachedBookCover()
+        // NOTE: Any changes to the resulting name MUST be reflected in CoversDbHelper.eraseCachedBookCover()
         return hash + ".thumb." + maxWidth + "x" + maxHeight + ".jpg";
     }
 
@@ -1074,7 +1074,7 @@ public class Utils {
     }
 
     /**
-     * Format a number of bytes in a human readable form
+     * Format a number of bytes in a human-readable form
      */
     public static String formatFileSize(float space) {
         String sizeFmt;
@@ -1299,7 +1299,7 @@ public class Utils {
     /**
      * Set the relevant fields in a BigDateDialog
      *
-     * @param dialog  Dialog to set
+     * @param dialog  Dialogue to set
      * @param current Current value (may be null)
      */
     public static void prepareDateDialogFragment(PartialDatePickerFragment dialog, Object current) {
@@ -1611,7 +1611,7 @@ public class Utils {
      * So we avoid reusing them.
      * <p>
      * This seems to have become further messed up in 4.1 so now, we just created them manually. No references,
-     * but the old cleanup method (see below for cleanupTiledBackground()) no longer works. Since it effectively
+     * but the old clean-up method (see below for cleanupTiledBackground()) no longer works. Since it effectively
      * un-cached the background, we just create it here.
      * <p>
      * The main problem with this approach is that the style is defined in code rather than XML.
@@ -1737,7 +1737,7 @@ public class Utils {
         Bitmap bm = null;
         boolean cacheWasChecked = false;
 
-        // If we want to check the cache, AND we dont have cache building happening, then check it.
+        // If we want to check the cache, AND we don't have cache building happening, then check it.
         if (checkCache && !GetThumbnailTask.hasActiveTasks() && !ThumbnailCacheWriterTask.hasActiveTasks()) {
             final String cacheId = getCoverCacheId(hash, maxWidth, maxHeight);
             bm = fetchCachedImageIntoImageView(coverFile, destView, cacheId);
@@ -1747,7 +1747,7 @@ public class Utils {
         if (bm != null)
             return bm;
 
-        // Check the file exists. Otherwise set 'help' icon and exit.
+        // Check the file exists. Otherwise, set 'help' icon and exit.
         //if (!coverFile.exists()) {
         //	if (destView != null)
         //		destView.setImageResource(R.drawable.ic_menu_help);
@@ -1785,7 +1785,7 @@ public class Utils {
     }
 
     /**
-     * Cleanup DB connection, if present
+     * Clean-up DB connection, if present
      */
     public void close() {
         if (mCoversDb != null)
@@ -1793,7 +1793,7 @@ public class Utils {
     }
 
     /**
-     * Analyze the covers db
+     * Analyse the covers db
      */
     public void analyzeCovers() {
         CoversDbHelper db = getCoversDb();

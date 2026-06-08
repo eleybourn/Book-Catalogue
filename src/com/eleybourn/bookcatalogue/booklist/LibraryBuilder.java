@@ -1697,7 +1697,7 @@ public class LibraryBuilder {
     }
 
     /**
-     * General cleanup routine called by both 'close()' and 'finalize()'
+     * General clean-up routine called by both 'close()' and 'finalize()'
      */
     private void cleanup() {
         if (mStatements.size() != 0) {

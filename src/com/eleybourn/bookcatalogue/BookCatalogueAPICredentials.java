@@ -119,7 +119,6 @@ public class BookCatalogueAPICredentials {
      * Handles a successful sign-in response, extracts the ID token, and passes it to the listener.
      */
     private String handleSignInSuccess(GetCredentialResponse result) {
-        String email = "";
         Credential credential = result.getCredential();
 
         if (credential instanceof CustomCredential) {
@@ -127,8 +126,7 @@ public class BookCatalogueAPICredentials {
             try {
                 // The CustomCredential's 'data' Bundle contains the Google ID token.
                 GoogleIdTokenCredential googleId = GoogleIdTokenCredential.createFrom(customCredential.getData());
-                //String idToken = googleId.getIdToken();
-                email = googleId.getId(); // Or extract email if distinct from ID
+                return googleId.getEmail();
             } catch (Exception e) {
                 Log.e("APICredentials", "Failed to create GoogleIdTokenCredential from data", e);
                 if (mListener != null) {
@@ -142,7 +140,7 @@ public class BookCatalogueAPICredentials {
                 mListener.onCredentialError("Unexpected credential type: " + unexpectedType);
             }
         }
-        return email;
+        return "";
     }
 
     /**

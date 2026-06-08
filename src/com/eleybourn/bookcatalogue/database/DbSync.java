@@ -53,7 +53,7 @@ public class DbSync {
      * Each logical database should have its own 'Synchronizer' and before any read, or group or reads, a call
      * to getSharedLock() should be made. A call to getExclusiveLock() should be made before any update. Multiple
      * calls can be made as necessary so long as an unlock() is called for all get*() calls by using the
-     * SyncLock object returned from the get*() call.
+     * SyncLock object returned from getX() call.
      * These can be called in any order and locks in the current thread never block requests.
      * Deadlocks are not possible because the implementation involves a single lock object.
      * NOTE: This lock can cause writer starvation since it does not introduce pending locks.

@@ -76,7 +76,7 @@ public class BookData extends DataManager {
     /**
      * Constructor
      *
-     * @param src Bundle with book data (may be null)
+     * @param src Bundle with book data (this may be null)
      */
     public BookData(Context context, Bundle src) {
         this(context, 0L, src);
@@ -85,8 +85,8 @@ public class BookData extends DataManager {
     /**
      * Constructor
      *
-     * @param rowId ID of book (may be 0 for new)
-     * @param src   Bundle with book data (may be null)
+     * @param rowId ID of book (this may be 0 for new)
+     * @param src   Bundle with book data (this may be null)
      */
     public BookData(Context context, Long rowId, Bundle src) {
         mContext = context;
@@ -261,23 +261,6 @@ public class BookData extends DataManager {
     }
 
     /**
-     * Special Accessor. Build a formatted string for series list.
-     */
-    public String getSeriesTextShort() {
-        String newText;
-        ArrayList<Series> list = getSeriesList();
-        if (list.isEmpty()) {
-            newText = null;
-        } else {
-            newText = list.get(0).getDisplayName();
-            if (list.size() > 1) {
-                newText += " " + BookCatalogueApp.getRes().getString(R.string.fragment_and_others);
-            }
-        }
-        return newText;
-    }
-
-    /**
      * Build any special purpose validators
      */
     private void initValidators() {
@@ -286,7 +269,7 @@ public class BookData extends DataManager {
 
         /* Anthology needs special handling, and we use a formatter to do this. If the original
          * value was 0 or 1, then setting/clearing it here should just set the new value to 0 or 1.
-         * However...if if the original value was 2, then we want setting/clearing to alternate
+         * However...if the original value was 2, then we want setting/clearing to alternate
          * between 2 and 0, not 1 and 0.
          * So, despite if being a checkbox, we use an integerValidator and use a special formatter.
          * We also store it in the tag field so that it is automatically serialized with the
@@ -448,14 +431,6 @@ public class BookData extends DataManager {
             db.refreshSeries(s);
         }
         setSeriesList(list);
-    }
-
-
-    /**
-     * Cleanup thumbnails from underlying data
-     */
-    public void cleanupThumbnails() {
-        Utils.cleanupThumbnails(mBundle);
     }
 
     /**

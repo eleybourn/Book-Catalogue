@@ -3374,7 +3374,7 @@ public class CatalogueDBAdapter {
     }
 
     /**
-     * Add or update the passed author, depending whether a.id == 0.
+     * Add or update the passed author, depending on whether a.id == 0.
      */
     private void addOrUpdateAuthor(Author a) {
         if (a.id != 0) {

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -48,11 +47,21 @@ public class BookCatalogueAPICredentials {
     public void getCredentials(CredentialListener listener) {
         this.mListener = listener;
 
+        // Ensure we are using an Activity context as required by CredentialManager for UI
+        if (!(mContext instanceof android.app.Activity)) {
+            String error = "Login failed: Activity context required.";
+            Log.e("APICredentials", error);
+            if (mListener != null) mListener.onCredentialError(error);
+            return;
+        }
+
+        String clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID;
+
         // Build the Google ID Option
         GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
-                .setServerClientId(BuildConfig.GOOGLE_OAUTH_CLIENT_ID)
-                .setAutoSelectEnabled(true)
+                .setServerClientId(clientId)
+                .setAutoSelectEnabled(false) // Force picker to avoid issues on some devices (like Samsung)
                 .build();
 
         GetCredentialRequest request = new GetCredentialRequest.Builder()
@@ -70,7 +79,6 @@ public class BookCatalogueAPICredentials {
                     public void onResult(GetCredentialResponse result) {
                         String email = handleSignInSuccess(result);
                         if (email != null && !email.isEmpty()) {
-                            showToast("Signed in as " + email);
                             // Post UI work to the main thread
                             mMainThreadHandler.post(() -> showOptInDialog(email));
                         }
@@ -79,42 +87,25 @@ public class BookCatalogueAPICredentials {
                     @Override
                     public void onError(@NonNull GetCredentialException e) {
                         String errorMessage;
-                        Log.e("APICredentials", "Sign-in failed", e);
-                        // Check for specific exception types to provide a better user experience
+                        Log.e("APICredentials", "Sign-in failed: " + e.getClass().getSimpleName() + " - " + e.getMessage(), e);
+                        
                         if (e instanceof GetCredentialCancellationException) {
-                            // User cancelled the sign-in flow, often no message is needed
-                            errorMessage = "Sign-in cancelled by user.";
-                            // You might choose not to show a toast in this case
+                            errorMessage = "Sign-in cancelled.";
                         } else if (e instanceof NoCredentialException) {
-                            // This is expected if the user has no saved credentials
-                            errorMessage = "No accounts found on this device. Please add a Google account.";
-                            showToast(errorMessage);
+                            // Common on Samsung if Google is not the default Autofill service.
+                            errorMessage = "No Google accounts found. If you are signed in, please check that 'Google' is your default autofill service in Android Settings.";
                         } else {
-                            // For all other errors, show a generic failure message
                             errorMessage = "Sign-in failed: " + e.getMessage();
-                            showToast("Sign-in failed");
                         }
 
                         if (mListener != null) {
-                            // Only report more critical errors, or handle cancellation silently
-                            if (!(e instanceof GetCredentialCancellationException)) {
-                                mListener.onCredentialError(errorMessage);
-                            }
+                            final String finalMessage = errorMessage;
+                            mMainThreadHandler.post(() -> mListener.onCredentialError(finalMessage));
                         }
                     }
                 }
         );
     }
-
-    /**
-     * Safely shows a Toast on the UI thread.
-     * @param message The text to display.
-     */
-    @SuppressWarnings("SameParameterValue")
-    private void showToast(final String message) {
-        mMainThreadHandler.post(() -> Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show());
-    }
-
     /**
      * Handles a successful sign-in response, extracts the ID token, and passes it to the listener.
      */

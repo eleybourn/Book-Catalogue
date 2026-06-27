@@ -215,7 +215,7 @@ public class StartupActivity
     }
 
     /**
-     * Update the progress dialog, if it has not been dismissed.
+     * Update the progress dialogue, if it has not been dismissed.
      *
      * @param stringId Message to display
      */
@@ -224,7 +224,7 @@ public class StartupActivity
     }
 
     /**
-     * Update the progress dialog, if it has not been dismissed.
+     * Update the progress dialogue, if it has not been dismissed.
      *
      * @param message Message to display
      */

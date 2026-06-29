@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto"
-    android:versionCode="222"
-    android:versionName="7.0.6">
+    android:versionCode="223"
+    android:versionName="7.0.7">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -78,7 +78,7 @@
             android:theme="@style/AppInvisible"
             android:windowSoftInputMode="adjustResize">
             <!--
-            This used to have noHistory BUT the new backup method has to start a full activity (the google chooser)
+            This used to have noHistory BUT the new backup method has to start a full activity (the Google chooser)
             which means than the startup activity is deleted. So now we have a real activity with history. This is also
             needed so that the activity life-cycle can be monitored (to handle file picker results).
             -->

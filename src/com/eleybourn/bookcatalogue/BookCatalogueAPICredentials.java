@@ -18,6 +18,12 @@ import androidx.credentials.exceptions.NoCredentialException;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -74,7 +80,7 @@ public class BookCatalogueAPICredentials {
                 request,
                 null, // CancellationSignal
                 mExecutor,
-                new androidx.credentials.CredentialManagerCallback<>() {
+                new androidx.credentials.CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
                     @Override
                     public void onResult(GetCredentialResponse result) {
                         String email = handleSignInSuccess(result);
@@ -86,14 +92,17 @@ public class BookCatalogueAPICredentials {
 
                     @Override
                     public void onError(@NonNull GetCredentialException e) {
-                        String errorMessage;
                         Log.e("APICredentials", "Sign-in failed: " + e.getClass().getSimpleName() + " - " + e.getMessage(), e);
                         
+                        if (e instanceof NoCredentialException) {
+                            // Fallback for Samsung/specialized devices where Credential Manager is blocked by Autofill settings
+                            tryLegacySignIn();
+                            return;
+                        }
+
+                        String errorMessage;
                         if (e instanceof GetCredentialCancellationException) {
                             errorMessage = "Sign-in cancelled.";
-                        } else if (e instanceof NoCredentialException) {
-                            // Common on Samsung if Google is not the default Autofill service.
-                            errorMessage = "No Google accounts found. If you are signed in, please check that 'Google' is your default autofill service in Android Settings.";
                         } else {
                             errorMessage = "Sign-in failed: " + e.getMessage();
                         }
@@ -105,6 +114,34 @@ public class BookCatalogueAPICredentials {
                     }
                 }
         );
+    }
+
+    /**
+     * Legacy Google Sign-In as a fallback for devices where Credential Manager fails.
+     */
+    private void tryLegacySignIn() {
+        if (!(mContext instanceof android.app.Activity)) return;
+        android.app.Activity activity = (android.app.Activity) mContext;
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        // Silent sign-in approach which works if they are already signed into the phone.
+        GoogleSignIn.getClient(activity, gso).silentSignIn().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                GoogleSignInAccount account = task.getResult();
+                if (account != null && account.getEmail() != null) {
+                    final String email = account.getEmail();
+                    mMainThreadHandler.post(() -> showOptInDialog(email));
+                }
+            } else {
+                // If silent fails, we have to show the error.
+                if (mListener != null) {
+                    mMainThreadHandler.post(() -> mListener.onCredentialError("No Google accounts found. Please check your device account settings."));
+                }
+            }
+        });
     }
     /**
      * Handles a successful sign-in response, extracts the ID token, and passes it to the listener.

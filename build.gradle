@@ -41,6 +41,7 @@ dependencies {
     implementation libs.androidx.credentials
     implementation libs.androidx.credentials.play.services.auth
     implementation libs.googleid
+    implementation libs.play.services.auth
     annotationProcessor libs.androidx.room.compiler
     //ACRA Core for crash alerts
     implementation libs.acra.core

@@ -1,10 +1,12 @@
 package com.eleybourn.bookcatalogue;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.credentials.Credential;
@@ -20,7 +22,10 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,10 +44,15 @@ public class BookCatalogueAPICredentials {
     private final Executor mExecutor = Executors.newSingleThreadExecutor();
     private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
     private CredentialListener mListener;
+    private ActivityResultLauncher<Intent> mLegacySignInLauncher;
 
     public BookCatalogueAPICredentials(Context context) {
         this.mContext = context;
         this.mCredentialManager = CredentialManager.create(context);
+    }
+
+    public void setLegacySignInLauncher(ActivityResultLauncher<Intent> launcher) {
+        this.mLegacySignInLauncher = launcher;
     }
 
     /**
@@ -53,11 +63,22 @@ public class BookCatalogueAPICredentials {
     public void getCredentials(CredentialListener listener) {
         this.mListener = listener;
 
-        // Ensure we are using an Activity context as required by CredentialManager for UI
+        // Ensure we are using an Activity context as required by SDKs for UI
         if (!(mContext instanceof android.app.Activity)) {
-            String error = "Login failed: Activity context required.";
-            Log.e("APICredentials", error);
-            if (mListener != null) mListener.onCredentialError(error);
+            if (mListener != null) mListener.onCredentialError("Login failed: Activity context required.");
+            return;
+        }
+        android.app.Activity activity = (android.app.Activity) mContext;
+
+        // Check Play Services
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(mContext);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(activity, resultCode, 9000).show();
+            } else {
+                if (mListener != null) mListener.onCredentialError("Google Play Services are not available on this device.");
+            }
             return;
         }
 
@@ -93,24 +114,18 @@ public class BookCatalogueAPICredentials {
                     @Override
                     public void onError(@NonNull GetCredentialException e) {
                         Log.e("APICredentials", "Sign-in failed: " + e.getClass().getSimpleName() + " - " + e.getMessage(), e);
-                        
-                        if (e instanceof NoCredentialException) {
-                            // Fallback for Samsung/specialized devices where Credential Manager is blocked by Autofill settings
-                            tryLegacySignIn();
+
+                        // If it's a cancellation, we just stop.
+                        if (e instanceof GetCredentialCancellationException) {
+                            if (mListener != null) {
+                                mMainThreadHandler.post(() -> mListener.onCredentialError("Sign-in cancelled."));
+                            }
                             return;
                         }
 
-                        String errorMessage;
-                        if (e instanceof GetCredentialCancellationException) {
-                            errorMessage = "Sign-in cancelled.";
-                        } else {
-                            errorMessage = "Sign-in failed: " + e.getMessage();
-                        }
-
-                        if (mListener != null) {
-                            final String finalMessage = errorMessage;
-                            mMainThreadHandler.post(() -> mListener.onCredentialError(finalMessage));
-                        }
+                        // For ANY other error (including NoCredentialException), try the legacy fallback.
+                        // This is much safer as it bypasses the system's Autofill-based credential selection.
+                        tryLegacySignIn();
                     }
                 }
         );
@@ -125,23 +140,65 @@ public class BookCatalogueAPICredentials {
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestIdToken(BuildConfig.GOOGLE_OAUTH_CLIENT_ID)
                 .build();
 
-        // Silent sign-in approach which works if they are already signed into the phone.
-        GoogleSignIn.getClient(activity, gso).silentSignIn().addOnCompleteListener(task -> {
+        GoogleSignInClient client = GoogleSignIn.getClient(activity, gso);
+
+        // Try silent first to avoid jarring UI if possible
+        client.silentSignIn().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 GoogleSignInAccount account = task.getResult();
                 if (account != null && account.getEmail() != null) {
                     final String email = account.getEmail();
                     mMainThreadHandler.post(() -> showOptInDialog(email));
-                }
-            } else {
-                // If silent fails, we have to show the error.
-                if (mListener != null) {
-                    mMainThreadHandler.post(() -> mListener.onCredentialError("No Google accounts found. Please check your device account settings."));
+                    return;
                 }
             }
+
+            // If silent fails, force the interactive account picker
+            if (mLegacySignInLauncher != null) {
+                mLegacySignInLauncher.launch(client.getSignInIntent());
+            } else if (mListener != null) {
+                mMainThreadHandler.post(() -> mListener.onCredentialError("Unable to find a Google account (Code L1). Please ensure you are signed into Google on this device."));
+            }
         });
+    }
+
+    /**
+     * Handles the result from the legacy sign-in activity.
+     */
+    public void handleLegacySignInResult(Intent data) {
+        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        try {
+            GoogleSignInAccount account = task.getResult(ApiException.class);
+            if (account != null && account.getEmail() != null) {
+                final String email = account.getEmail();
+                mMainThreadHandler.post(() -> showOptInDialog(email));
+            }
+        } catch (ApiException e) {
+            int statusCode = e.getStatusCode();
+            Log.e("APICredentials", "Legacy sign-in failed: Status Code " + statusCode, e);
+            String message;
+            switch (statusCode) {
+                case 10: // DEVELOPER_ERROR
+                    message = "Sign-in configuration error (Code 10). Please ensure your device's date/time is correct and you have a valid internet connection.";
+                    break;
+                case 7: // NETWORK_ERROR
+                    message = "Network error. Please check your internet connection.";
+                    break;
+                case 12500: // SIGN_IN_FAILED
+                    message = "Google Sign-In failed (Code 12500). Please ensure your Google Play Services are enabled and updated.";
+                    break;
+                default:
+                    message = "Sign-in failed (Error " + statusCode + "). Please check your Google account settings.";
+                    break;
+            }
+            if (mListener != null) {
+                final String finalMessage = message;
+                mMainThreadHandler.post(() -> mListener.onCredentialError(finalMessage));
+            }
+        }
     }
     /**
      * Handles a successful sign-in response, extracts the ID token, and passes it to the listener.

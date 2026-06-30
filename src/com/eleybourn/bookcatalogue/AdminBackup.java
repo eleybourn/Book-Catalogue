@@ -20,6 +20,7 @@
 
 package com.eleybourn.bookcatalogue;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -69,6 +70,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     private ApiListener mApiListener;
     private ActivityResultLauncher<String[]> mCsvImportPickerLauncher;
     private ActivityResultLauncher<String> mCsvExportPickerLauncher;
+    private ActivityResultLauncher<Intent> mLegacySignInLauncher;
     private BillingManager mBillingManager;
 
     @Override
@@ -179,8 +181,19 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             }
         }
 
-        /* Login */
         mApiCredentials = new BookCatalogueAPICredentials(this);
+        mLegacySignInLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        mApiCredentials.handleLegacySignInResult(result.getData());
+                    } else {
+                        Toast.makeText(this, "Sign-in cancelled.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+        mApiCredentials.setLegacySignInLauncher(mLegacySignInLauncher);
+
         Button login = findViewById(R.id.log_in_button);
         login.setOnClickListener(v -> {
             if (!mPrefs.isSubscribed()) {

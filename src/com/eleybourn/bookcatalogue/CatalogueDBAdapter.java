@@ -2804,7 +2804,17 @@ public class CatalogueDBAdapter {
      *
      * @return The list
      */
-    protected ArrayList<String> getFormats() {
+    public ArrayList<String> getFormats() {
+        return getFormats(true);
+    }
+
+    /**
+     * Returns a unique list of all formats in the database.
+     *
+     * @param includeDefaults if true, uses the pre-defined formats if none or only one in DB.
+     * @return The list
+     */
+    public ArrayList<String> getFormats(boolean includeDefaults) {
         // Hash to *try* to avoid duplicates
         HashSet<String> foundSoFar = new HashSet<>();
         ArrayList<String> list = new ArrayList<>();
@@ -2822,12 +2832,31 @@ public class CatalogueDBAdapter {
                     }
             }
         }
-        if (list.isEmpty() || list.size() == 1) {
+        if (includeDefaults && (list.isEmpty() || list.size() == 1)) {
             list.add(BookCatalogueApp.getRes().getString(R.string.option_format1));
             list.add(BookCatalogueApp.getRes().getString(R.string.option_format2));
             list.add(BookCatalogueApp.getRes().getString(R.string.option_format3));
             list.add(BookCatalogueApp.getRes().getString(R.string.option_format4));
             list.add(BookCatalogueApp.getRes().getString(R.string.option_format5));
+        }
+        return list;
+    }
+
+    /**
+     * Returns a unique list of all formats in the database with the number of books for each.
+     */
+    public ArrayList<com.eleybourn.bookcatalogue.data.FormatCount> getFormatsWithCount() {
+        ArrayList<com.eleybourn.bookcatalogue.data.FormatCount> list = new ArrayList<>();
+        String sql = "Select " + KEY_FORMAT + ", count(*) from " + DB_TB_BOOKS +
+                " Group by " + KEY_FORMAT +
+                " Order by lower(" + KEY_FORMAT + ") " + COLLATION;
+        try (Cursor c = mDb.rawQuery(sql)) {
+            while (c.moveToNext()) {
+                String name = c.getString(0);
+                if (name != null && !name.isEmpty()) {
+                    list.add(new com.eleybourn.bookcatalogue.data.FormatCount(name, c.getInt(1)));
+                }
+            }
         }
         return list;
     }

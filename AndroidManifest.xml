@@ -160,6 +160,10 @@
             android:label="@string/title_manage_fields"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".AdminFormats"
+            android:label="@string/title_manage_formats"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".AdminOtherPreferences"
             android:windowSoftInputMode="adjustResize" />
         <activity

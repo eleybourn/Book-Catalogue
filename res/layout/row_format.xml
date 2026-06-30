@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="10dp" >
+
+    <TextView
+        android:id="@+id/row_format"
+        style="@style/layout_menu_list"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:drawablePadding="@dimen/p_md"
+        android:paddingVertical="@dimen/p_md"
+        app:drawableLeftCompat="@drawable/ic_menu_fields"
+        app:drawableTint="?attr/colorPrimary"
+        android:text="@string/not_set" />
+
+    <TextView
+        android:id="@+id/row_format_count"
+        style="@style/book_text_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/p_md"
+        android:paddingVertical="@dimen/p_md"
+        android:paddingHorizontal="@dimen/p_md"
+        android:text="0" />
+
+    <TextView
+        style="@style/book_text_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/p_md"
+        android:paddingVertical="@dimen/p_md"
+        android:text="@string/label_books" />
+
+</LinearLayout>

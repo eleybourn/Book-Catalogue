@@ -30,6 +30,15 @@
                 android:drawablePadding="@dimen/p_lg"
                 android:text="@string/title_manage_bookshelves" />
 
+            <!-- FORMATS -->
+
+            <TextView
+                android:id="@+id/formatsLabel"
+                style="@style/layout_menu_list"
+                app:drawableLeftCompat="@drawable/ic_menu_fields"
+                android:drawablePadding="@dimen/p_lg"
+                android:text="@string/title_manage_formats" />
+
             <!-- FIELDS -->
 
             <TextView

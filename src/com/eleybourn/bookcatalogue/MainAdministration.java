@@ -76,13 +76,18 @@ public class MainAdministration extends ActivityWithTasks
      * 2. The button to export the database
      * 3. The button to import the exported file into the database
      * 4. The application version and link details
-     * 5. The link to paypal for donation
+     * 5. The link to PayPal for donation
      */
     public void setupAdmin() {
         /* Bookshelf Link */
         View bookshelf = findViewById(R.id.bookshelfLabel);
         bookshelf.setBackgroundResource(Utils.backgroundFlash(this));
         bookshelf.setOnClickListener(v -> manageBookshelves());
+
+        /* Formats Link */
+        View formats = findViewById(R.id.formatsLabel);
+        formats.setBackgroundResource(Utils.backgroundFlash(this));
+        formats.setOnClickListener(v -> manageFormats());
 
         /* Manage Fields Link */
         View fields = findViewById(R.id.fieldsLabel);
@@ -181,6 +186,14 @@ public class MainAdministration extends ActivityWithTasks
      */
     private void manageBookshelves() {
         Intent i = new Intent(this, AdminBookshelf.class);
+        startActivity(i);
+    }
+
+    /**
+     * Load the Manage Formats Activity
+     */
+    private void manageFormats() {
+        Intent i = new Intent(this, AdminFormats.class);
         startActivity(i);
     }
 

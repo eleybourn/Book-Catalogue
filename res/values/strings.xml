@@ -181,6 +181,7 @@
     <!-- Description of the 'import new & changed' option -->
     <string name="description_new_and_changed_books_blurb">Only import books that are new, or which have been updated more recently in the archive. This is useful when synchronizing two devices.</string>
     <string name="description_no_bookshelves">You have not created any bookshelves yet. Please add some using the add icon at the top of this screen.</string>
+    <string name="description_no_formats">No formats found in the database.</string>
     <string name="description_overwrite_thumbnail">This will update the selected fields as shown, but Thumbnails can optionally be downloaded for ALL books.\n\nDo you want to overwrite all existing thumbnails? Warning, this may take a long time. </string>
     <!-- Brief description -->
     <string name="description_preferences_blurb">Preferences and user-defined list styles</string>
@@ -304,6 +305,7 @@
     <string name="label_backup_to_archive">Backup to Archive</string>
     <!-- Introduction for 'advanced export' option -->
     <!-- Text for button -->
+    <string name="label_books">books</string>
     <string name="label_book_details">Book details</string>
     <string name="label_bookshelf">Bookshelf</string>
     <string name="label_bookshelves">Bookshelves</string>
@@ -447,6 +449,8 @@
     <!-- Menu items -->
     <string name="menu_mark_as_read">Mark as read</string>
     <string name="menu_mark_as_unread">Mark as unread</string>
+    <string name="menu_merge_formats">Merge Formats</string>
+    <string name="confirm_merge_formats">This will merge all selected formats into \'%s\'. Are you sure?</string>
     <string name="menu_replace_thumb">Replace Thumbnail…</string>
     <string name="menu_rotate_thumb">Rotate Thumbnail…</string>
     <string name="menu_rotate_thumb_180">Rotate 180 deg</string>
@@ -834,6 +838,7 @@
     <string name="preferred_styles">Preferred styles</string>
 
     <string name="really_delete_book">This will completely delete the book entitled \'%1$s\' by %2$s. Are you sure you wish to proceed?</string>
+    <string name="really_delete_format">Really delete format \'%s\'?\n\nThe books themselves will not be deleted; their format field will be cleared.</string>
     <string name="really_delete_series">Really delete series \'%s\'?\n\nThe books themselves will not be deleted.\n\nConsider editing the series and changing the series name to that of another series to preserve this data</string>
 
     <string name="rebuilding_search_index">Rebuilding Search Index…</string>
@@ -916,6 +921,7 @@
     <string name="title_local_backup">Export and Backup Locally</string>
     <string name="title_manage_bookshelves">Manage Bookshelves</string>
     <string name="title_manage_fields">Manage Field Visibility</string>
+    <string name="title_manage_formats">Manage Formats</string>
     <string name="title_other_preferences">Other Preferences</string>
     <string name="title_required">A non-blank title must be specified</string>
     <string name="title_select_fields_to_update">Select Fields to Update</string>

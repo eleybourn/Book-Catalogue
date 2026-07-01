@@ -62,7 +62,6 @@ public class BookISBNSearch extends ActivityWithTasks {
      *  Mode this activity is in; MANUAL = data entry, SCAN = data from scanner.
      *  For SCAN, it loops repeatedly starting the scanner.
      */
-    private static final int MODE_MANUAL = 1;
     private static final int MODE_SCAN = 2;
     // Object managing current search.
     long mSearchManagerId = 0;
@@ -77,6 +76,7 @@ public class BookISBNSearch extends ActivityWithTasks {
     private String mAuthor;
     private String mTitle;
     private String mIsbn;
+    private String mBy;
     private int mMode;
     // Flag to indicate the Activity should not 'finish()' because
     // an alert is being displayed. The Alter will call finish().
@@ -99,7 +99,13 @@ public class BookISBNSearch extends ActivityWithTasks {
 
                         // Created a book; save the intent and restart scanner if necessary.
                         if (mMode == MODE_SCAN) {
-                            startScannerActivity();
+                            try {
+                                startScannerActivity();
+                            } catch (Exception e) {
+                                Logger.logError(e);
+                                getAlertDialog();
+                                mDisplayingAlert = true;
+                            }
                         } else {
                             // If the 'Back' button is pressed on a normal activity,
                             // set the default result to cancelled by setting it here.
@@ -129,8 +135,14 @@ public class BookISBNSearch extends ActivityWithTasks {
         try {
             super.onCreate(savedInstanceState);
 
-            if (savedInstanceState != null)
+            if (savedInstanceState != null) {
                 mSearchManagerId = savedInstanceState.getLong("SearchManagerId");
+                mScannerStarted = savedInstanceState.getBoolean("mScannerStarted", false);
+                if (savedInstanceState.containsKey(BY))
+                    mBy = savedInstanceState.getString(BY);
+                if (savedInstanceState.containsKey("isbn"))
+                    mIsbn = savedInstanceState.getString("isbn");
+            }
 
             //do we have a network connection?
             boolean network_available = Utils.isNetworkAvailable(this);
@@ -143,16 +155,6 @@ public class BookISBNSearch extends ActivityWithTasks {
             Bundle extras = getIntent().getExtras();
             mDbHelper = new CatalogueDBAdapter(this);
             mDbHelper.open();
-
-            assert extras != null;
-            mIsbn = extras.getString("isbn");
-            String by = extras.getString(BY);
-
-            if (savedInstanceState != null) {
-                if (savedInstanceState.containsKey("mScannerStarted")) {
-                    mScannerStarted = savedInstanceState.getBoolean("mScannerStarted");
-                }
-            }
 
             // BUG NOTE 1:
             //
@@ -169,23 +171,25 @@ public class BookISBNSearch extends ActivityWithTasks {
             //
             // So...we save the extras in savedInstanceState, and look for it when missing
             //
-            if (mIsbn == null && (by == null || by.isEmpty())) {
+            if (extras != null) {
+                mIsbn = extras.getString("isbn");
+                mBy = extras.getString(BY);
+            }
+
+            if (mIsbn == null && (mBy == null || mBy.isEmpty())) {
                 Logger.logError(new RuntimeException("Empty args for BookISBNSearch"));
                 if (savedInstanceState != null) {
                     if (mIsbn == null && savedInstanceState.containsKey("isbn"))
                         mIsbn = savedInstanceState.getString("isbn");
                     if (savedInstanceState.containsKey(BY))
-                        by = savedInstanceState.getString(BY);
+                        mBy = savedInstanceState.getString(BY);
                 }
                 // If they are still null, we can't proceed.
-                if (mIsbn == null && (by == null || by.isEmpty())) {
+                if (mIsbn == null && (mBy == null || mBy.isEmpty())) {
                     finish();
                     return;
                 }
             }
-
-            // Default to MANUAL
-            mMode = MODE_MANUAL;
 
             Button mConfirmButton;
             if (mIsbn != null) {
@@ -194,7 +198,7 @@ public class BookISBNSearch extends ActivityWithTasks {
                 mIsbnText = findViewById(R.id.field_isbn);
                 mIsbnText.setText(mIsbn);
                 go(mIsbn, "", "");
-            } else if (by.equals("isbn")) {
+            } else if ("isbn".equals(mBy)) {
                 setContentView(R.layout.search_isbn);
                 mIsbnText = findViewById(R.id.field_isbn);
                 mConfirmButton = findViewById(R.id.label_search);
@@ -260,7 +264,7 @@ public class BookISBNSearch extends ActivityWithTasks {
                     String mIsbn = mIsbnText.getText().toString();
                     go(mIsbn, "", "");
                 });
-            } else if (by.equals("name")) {
+            } else if ("name".equals(mBy)) {
                 setContentView(R.layout.search_name);
                 this.setTitle(R.string.label_search_by);
 
@@ -270,35 +274,35 @@ public class BookISBNSearch extends ActivityWithTasks {
                 mConfirmButton = findViewById(R.id.label_search);
 
                 mConfirmButton.setOnClickListener(view -> {
-                    String mAuthor = mAuthorText.getText().toString();
-                    String mTitle = mTitleText.getText().toString();
+                    String authorText = mAuthorText.getText().toString();
+                    String titleText = mTitleText.getText().toString();
 
                     ArrayAdapter<String> adapter = mAuthorAdapter;
-                    if (adapter.getPosition(mAuthor) < 0) {
+                    if (adapter.getPosition(authorText) < 0) {
                         // Based on code from filipeximenes we also need to update the adapter here in
                         // case no author or book is added, but we still want to see 'recent' entries.
-                        if (!mAuthor.trim().isEmpty()) {
-                            boolean found = false;
+                        if (!authorText.trim().isEmpty()) {
+                            boolean alreadyPresent = false;
                             for (String s : mAuthorNames) {
-                                if (s.equalsIgnoreCase(mAuthor)) {
-                                    found = true;
+                                if (s.equalsIgnoreCase(authorText)) {
+                                    alreadyPresent = true;
                                     break;
                                 }
                             }
 
-                            if (!found) {
+                            if (!alreadyPresent) {
                                 // Keep a list of names as typed to use when we recreate list
-                                mAuthorNames.add(mAuthor);
+                                mAuthorNames.add(authorText);
                                 // Add to adapter, in case search produces no results
-                                adapter.add(mAuthor);
+                                adapter.add(authorText);
                             }
                         }
                     }
 
-                    go("", mAuthor, mTitle);
+                    go("", authorText, titleText);
 
                 });
-            } else if (by.equals("scan")) {
+            } else if ("scan".equals(mBy)) {
                 // Use the scanner to get ISBNs
                 mMode = MODE_SCAN;
                 setContentView(R.layout.search_isbn);
@@ -565,8 +569,13 @@ public class BookISBNSearch extends ActivityWithTasks {
             try {
                 if (resultCode == RESULT_OK) {
                     // Scanner returned an ISBN...process it.
+                    if (mScanner == null) {
+                        mScanner = ScannerManager.getScanner(this);
+                    }
                     String contents = mScanner.getBarcode(intent);
-                    mIsbnText.setText(contents);
+                    if (mIsbnText != null) {
+                        mIsbnText.setText(contents);
+                    }
                     go(contents, "", "");
                 } else {
                     // Scanner Cancelled/failed. Exit if no dialog present.

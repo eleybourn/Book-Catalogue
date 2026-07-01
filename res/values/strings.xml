@@ -833,6 +833,9 @@
     <string name="preference_theme_default">Use System Default</string>
     <string name="preference_theme_light">Use Light Mode</string>
     <string name="preference_theme_previous">Original Theme &amp; Background</string>
+    <string name="preference_screen_orientation">Screen Orientation</string>
+    <string name="option_orientation_portrait">Always Portrait</string>
+    <string name="option_orientation_landscape">Always Landscape</string>
     <string name="preference_use_external_image_cropper">Use external image cropper (experimental)</string>
 
     <string name="preferred_styles">Preferred styles</string>

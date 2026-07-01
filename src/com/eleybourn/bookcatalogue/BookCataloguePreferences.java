@@ -45,6 +45,11 @@ public class BookCataloguePreferences {
     public static final String PREF_THEME_DARK = "App.Theme.Dark";
     public static final String PREF_THEME_PREVIOUS = "App.Theme.Previous";
 
+    public static final String PREF_SCREEN_ORIENTATION = "App.ScreenOrientation";
+    public static final String PREF_SCREEN_ORIENTATION_DEFAULT = "default";
+    public static final String PREF_SCREEN_ORIENTATION_PORTRAIT = "portrait";
+    public static final String PREF_SCREEN_ORIENTATION_LANDSCAPE = "landscape";
+
 	/** Get startup activity preference */
 	public boolean getStartInMyBook() {
 		return getBoolean(PREF_START_IN_MY_BOOKS,false);
@@ -182,5 +187,13 @@ public class BookCataloguePreferences {
 
     public void setOnlineSyncEnabled(boolean value) {
         setBoolean(PREF_ONLINE_SYNC_ENABLED, value);
+    }
+
+    public String getScreenOrientation() {
+        return getString(PREF_SCREEN_ORIENTATION, PREF_SCREEN_ORIENTATION_DEFAULT);
+    }
+
+    public void setScreenOrientation(String orientation) {
+        setString(PREF_SCREEN_ORIENTATION, orientation);
     }
 }

@@ -81,6 +81,9 @@ public abstract class BookEditFragmentAbstract extends Fragment implements DataE
         // Defer until view is loaded
         view.post(() -> {
             // Load the data and preserve the isDirty() setting
+            if (getView() == null || !isAdded()) {
+                return;
+            }
             mFields.setAfterFieldChangeListener(null);
             final boolean wasDirty = mEditManager.isDirty();
             BookData book = mEditManager.getBookData();

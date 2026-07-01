@@ -688,16 +688,16 @@ public class Fields extends ArrayList<Fields.Field> {
                 String msg = getString(field);
                 Tracker.handleEvent(this, msg, Tracker.States.Running);
                 // This should NEVER happen, but it does. So we need more info about why & when.
-                throw new RuntimeException("Unable to get associated View object");
+                Logger.logError(new RuntimeException("Unable to get associated View object"));
+                return;
+            }
+            if (mFormatHtml && s != null) {
+                v.setText(HtmlCompat.fromHtml(field.format(s), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                v.setFocusable(false);
+                int colorOnPrimary = Utils.getThemeColor(v.getContext(), com.google.android.material.R.attr.colorOnSurface);
+                v.setTextColor(ColorStateList.valueOf(colorOnPrimary));
             } else {
-                if (mFormatHtml && s != null) {
-                    v.setText(HtmlCompat.fromHtml(field.format(s), HtmlCompat.FROM_HTML_MODE_LEGACY));
-                    v.setFocusable(false);
-                    int colorOnPrimary = Utils.getThemeColor(v.getContext(), com.google.android.material.R.attr.colorOnSurface);
-                    v.setTextColor(ColorStateList.valueOf(colorOnPrimary));
-                } else {
-                    v.setText(field.format(s));
-                }
+                v.setText(field.format(s));
             }
         }
 
@@ -792,7 +792,11 @@ public class Fields extends ArrayList<Fields.Field> {
 
         public void get(Field field, Bundle values) {
             TextView v = (TextView) field.getView();
-            values.putString(field.column, field.extract(v.getText().toString()));
+            if (v == null) {
+                return;
+            }
+            CharSequence text = v.getText();
+            values.putString(field.column, field.extract(text == null ? "" : text.toString()));
         }
 
         @Override
@@ -800,19 +804,22 @@ public class Fields extends ArrayList<Fields.Field> {
             try {
                 TextView v = (TextView) field.getView();
                 if (v == null) {
-                    throw new RuntimeException("No view for field " + field.column);
+                    return;
                 }
-                if (v.getText() == null) {
-                    throw new RuntimeException("Text is NULL for field " + field.column);
-                }
-                values.putString(field.column, field.extract(v.getText().toString()));
+                CharSequence text = v.getText();
+                values.putString(field.column, field.extract(text == null ? "" : text.toString()));
             } catch (Exception e) {
-                throw new RuntimeException("Unable to save data", e);
+                Logger.logError(e, "Unable to save data for " + field.column);
             }
         }
 
         public Object get(Field field) {
-            return field.extract(((TextView) field.getView()).getText().toString());
+            TextView v = (TextView) field.getView();
+            if (v == null) {
+                return "";
+            }
+            CharSequence text = v.getText();
+            return field.extract(text == null ? "" : text.toString());
         }
     }
 
@@ -855,6 +862,9 @@ public class Fields extends ArrayList<Fields.Field> {
 
         public void get(Field field, Bundle values) {
             CheckBox v = (CheckBox) field.getView();
+            if (v == null) {
+                return;
+            }
             if (field.formatter != null)
                 values.putString(field.column, field.extract(v.isChecked() ? "1" : "0"));
             else
@@ -864,6 +874,9 @@ public class Fields extends ArrayList<Fields.Field> {
         @Override
         public void get(Field field, DataManager values) {
             CheckBox v = (CheckBox) field.getView();
+            if (v == null) {
+                return;
+            }
             if (field.formatter != null)
                 values.putString(field.column, field.extract(v.isChecked() ? "1" : "0"));
             else
@@ -871,10 +884,14 @@ public class Fields extends ArrayList<Fields.Field> {
         }
 
         public Object get(Field field) {
+            CheckBox v = (CheckBox) field.getView();
+            if (v == null) {
+                return field.formatter != null ? "" : 0;
+            }
             if (field.formatter != null)
-                return field.formatter.extract(field, (((CheckBox) field.getView()).isChecked() ? "1" : "0"));
+                return field.formatter.extract(field, (v.isChecked() ? "1" : "0"));
             else
-                return ((CheckBox) field.getView()).isChecked() ? 1 : 0;
+                return v.isChecked() ? 1 : 0;
         }
     }
 
@@ -905,6 +922,9 @@ public class Fields extends ArrayList<Fields.Field> {
 
         public void set(Field field, String s) {
             RatingBar v = (RatingBar) field.getView();
+            if (v == null) {
+                return;
+            }
             float f = 0.0f;
             try {
                 s = field.format(s);
@@ -916,6 +936,9 @@ public class Fields extends ArrayList<Fields.Field> {
 
         public void get(Field field, Bundle values) {
             RatingBar v = (RatingBar) field.getView();
+            if (v == null) {
+                return;
+            }
             if (field.formatter != null)
                 values.putString(field.column, field.extract("" + v.getRating()));
             else
@@ -924,6 +947,9 @@ public class Fields extends ArrayList<Fields.Field> {
 
         public void get(Field field, DataManager values) {
             RatingBar v = (RatingBar) field.getView();
+            if (v == null) {
+                return;
+            }
             if (field.formatter != null)
                 values.putString(field.column, field.extract("" + v.getRating()));
             else
@@ -932,6 +958,9 @@ public class Fields extends ArrayList<Fields.Field> {
 
         public Object get(Field field) {
             RatingBar v = (RatingBar) field.getView();
+            if (v == null) {
+                return 0.0f;
+            }
             return v.getRating();
         }
     }

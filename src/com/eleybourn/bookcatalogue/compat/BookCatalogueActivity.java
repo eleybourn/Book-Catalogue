@@ -1,6 +1,7 @@
 package com.eleybourn.bookcatalogue.compat;
 
 import android.Manifest.permission;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -45,7 +46,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * Class introduced to reduce the future pain when we remove sherlock (once we no longer
+ * Class introduced to reduce the future pain when we remove Sherlock (once we no longer
  * support Android 2.x), and potentially to make it easier to support two versions.
  * <p>
  * This activity inherits from SherlockFragmentActivity which is just a subclass of
@@ -90,6 +91,10 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
      * Last locale used so; cached so we can check if it has genuinely changed
      */
     private Locale mLastLocale = BookCatalogueApp.getPreferredLocale();
+    /**
+     * Last orientation used; cached so we can check if it has genuinely changed
+     */
+    private String mLastOrientation = null;
     // --------------------------
     // OLD FILES STUFF
     //
@@ -222,6 +227,12 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
 
     protected abstract RequiredPermission[] getRequiredPermissions();
 
+    private final android.content.SharedPreferences.OnSharedPreferenceChangeListener mOrientationPrefsListener = (sharedPreferences, key) -> {
+        if (BookCataloguePreferences.PREF_SCREEN_ORIENTATION.equals(key)) {
+            applyOrientation();
+        }
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         // If we are NOT the startup activity AND we need to move old files, then register launcher.
@@ -230,6 +241,9 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
         }
 
         super.onCreate(savedInstanceState);
+
+        applyOrientation();
+        BookCatalogueApp.mPrefs.registerOnSharedPreferenceChangeListener(mOrientationPrefsListener);
 
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
@@ -252,6 +266,12 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                 findViewById(R.id.bg_bookshelf).setVisibility(View.GONE);
             } catch (Exception ignored) {}
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        BookCatalogueApp.mPrefs.unregisterOnSharedPreferenceChangeListener(mOrientationPrefsListener);
+        super.onDestroy();
     }
 
     private void checkPermissions() {
@@ -287,6 +307,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         reloadIfLocaleChanged();
+        reloadIfOrientationChanged();
         if (Objects.equals(BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_THEME, BookCataloguePreferences.PREF_THEME_DEFAULT), BookCataloguePreferences.PREF_THEME_PREVIOUS)) {
             Utils.initBackground(this, false);
             try {
@@ -308,6 +329,39 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
             Intent intent = getIntent();
             finish();
             startActivity(intent);
+        }
+    }
+
+    /**
+     * Reload this activity if orientation preference has changed.
+     */
+    public void reloadIfOrientationChanged() {
+        String curr = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_SCREEN_ORIENTATION, BookCataloguePreferences.PREF_SCREEN_ORIENTATION_DEFAULT);
+        if (mLastOrientation != null && !mLastOrientation.equals(curr)) {
+            mLastOrientation = curr;
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        } else {
+            mLastOrientation = curr;
+        }
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private void applyOrientation() {
+        String orientation = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_SCREEN_ORIENTATION, BookCataloguePreferences.PREF_SCREEN_ORIENTATION_DEFAULT);
+        mLastOrientation = orientation;
+        switch (orientation) {
+            case BookCataloguePreferences.PREF_SCREEN_ORIENTATION_PORTRAIT:
+                setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                break;
+            case BookCataloguePreferences.PREF_SCREEN_ORIENTATION_LANDSCAPE:
+                setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                break;
+            case BookCataloguePreferences.PREF_SCREEN_ORIENTATION_DEFAULT:
+            default:
+                setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                break;
         }
     }
 

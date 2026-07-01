@@ -36,7 +36,7 @@ import com.eleybourn.bookcatalogue.utils.SoundManager;
 import java.util.Locale;
 
 /**
- * Activity to display the 'Other Preferences' dialog and maintain the preferences.
+ * Activity to display the 'Other Preferences' dialogue and maintain the preferences.
  * 
  * @author Philip Warner
  */
@@ -59,6 +59,12 @@ public class AdminOtherPreferences extends PreferencesBase {
             .add(BookCataloguePreferences.PREF_THEME_LIGHT, R.string.preference_theme_light)
 			.add(BookCataloguePreferences.PREF_THEME_DARK, R.string.preference_theme_dark)
             .add(BookCataloguePreferences.PREF_THEME_PREVIOUS, R.string.preference_theme_previous);
+
+	/** Screen orientation property values */
+	private static final ItemEntries<String> mOrientationListItems = new ItemEntries<String>()
+            .add(BookCataloguePreferences.PREF_SCREEN_ORIENTATION_DEFAULT, R.string.preference_theme_default)
+            .add(BookCataloguePreferences.PREF_SCREEN_ORIENTATION_PORTRAIT, R.string.option_orientation_portrait)
+			.add(BookCataloguePreferences.PREF_SCREEN_ORIENTATION_LANDSCAPE, R.string.option_orientation_landscape);
 
 	/** Preferred Scanner property values */
 	private static final ItemEntries<Integer> mScannerListItems = new ItemEntries<Integer>()
@@ -89,6 +95,13 @@ public class AdminOtherPreferences extends PreferencesBase {
             .setPreferenceKey(BookCataloguePreferences.PREF_THEME)
             .setGlobal(true)
             .setWeight(10)
+            .setGroup(PropertyGroup.GRP_USER_INTERFACE))
+
+        .add(new StringListProperty(mOrientationListItems, BookCataloguePreferences.PREF_SCREEN_ORIENTATION, PropertyGroup.GRP_USER_INTERFACE, R.string.preference_screen_orientation)
+            .setDefaultValue(BookCataloguePreferences.PREF_SCREEN_ORIENTATION_DEFAULT)
+            .setPreferenceKey(BookCataloguePreferences.PREF_SCREEN_ORIENTATION)
+            .setGlobal(true)
+            .setWeight(15)
             .setGroup(PropertyGroup.GRP_USER_INTERFACE))
 	
 		/*

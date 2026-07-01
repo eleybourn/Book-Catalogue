@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eleybourn.bookcatalogue.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FormatAdapter extends RecyclerView.Adapter<FormatAdapter.FormatViewHolder> {
     private final List<FormatCount> mFormats = new ArrayList<>();
@@ -32,9 +34,36 @@ public class FormatAdapter extends RecyclerView.Adapter<FormatAdapter.FormatView
     }
 
     public void setFormats(List<FormatCount> formats) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return mFormats.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return formats.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                // Assuming format name is the unique identifier
+                return Objects.equals(mFormats.get(oldItemPosition).format, 
+                                     formats.get(newItemPosition).format);
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                FormatCount oldItem = mFormats.get(oldItemPosition);
+                FormatCount newItem = formats.get(newItemPosition);
+                return oldItem.count == newItem.count && 
+                       Objects.equals(oldItem.format, newItem.format);
+            }
+        });
+
         mFormats.clear();
         mFormats.addAll(formats);
-        notifyDataSetChanged();
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @NonNull
@@ -67,13 +96,12 @@ public class FormatAdapter extends RecyclerView.Adapter<FormatAdapter.FormatView
 
         public void bind(FormatCount formatCount, OnItemClickListener listener, OnItemLongClickListener longListener) {
             textView.setText(formatCount.format);
-            countView.setText(String.valueOf(formatCount.count));
+            String countText = itemView.getResources().getQuantityString(R.plurals.n_books, formatCount.count, formatCount.count);
+            countView.setText(countText);
 
             itemView.setOnClickListener(v -> listener.onItemClick(formatCount.format));
 
-            itemView.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
-                longListener.onItemLongClick(formatCount.format, v, menu);
-            });
+            itemView.setOnCreateContextMenuListener((menu, v, menuInfo) -> longListener.onItemLongClick(formatCount.format, v, menu));
         }
     }
 }

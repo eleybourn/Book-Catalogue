@@ -181,7 +181,7 @@
     <!-- Description of the 'import new & changed' option -->
     <string name="description_new_and_changed_books_blurb">Only import books that are new, or which have been updated more recently in the archive. This is useful when synchronizing two devices.</string>
     <string name="description_no_bookshelves">You have not created any bookshelves yet. Please add some using the add icon at the top of this screen.</string>
-    <string name="description_no_formats">No formats found in the database.</string>
+    <string name="description_no_formats">No custom formats found in the database.</string>
     <string name="description_overwrite_thumbnail">This will update the selected fields as shown, but Thumbnails can optionally be downloaded for ALL books.\n\nDo you want to overwrite all existing thumbnails? Warning, this may take a long time. </string>
     <!-- Brief description -->
     <string name="description_preferences_blurb">Preferences and user-defined list styles</string>

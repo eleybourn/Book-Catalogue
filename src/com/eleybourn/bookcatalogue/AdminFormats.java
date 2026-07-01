@@ -72,8 +72,12 @@ public class AdminFormats extends BookCatalogueActivity {
         mAdapter.setFormats(formats);
 
         View emptyView = findViewById(R.id.empty);
+        View recyclerView = findViewById(R.id.list);
         if (emptyView != null) {
             emptyView.setVisibility(formats.isEmpty() ? View.VISIBLE : View.GONE);
+        }
+        if (recyclerView != null) {
+            recyclerView.setVisibility(formats.isEmpty() ? View.GONE : View.VISIBLE);
         }
     }
 

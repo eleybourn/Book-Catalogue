@@ -409,12 +409,9 @@ public class CatalogueDBAdapter {
             "CREATE INDEX IF NOT EXISTS authors_family_name ON " + DB_TB_AUTHORS + " (" + KEY_FAMILY_NAME + ");",
             "CREATE INDEX IF NOT EXISTS authors_family_name_ci ON " + DB_TB_AUTHORS + " (" + KEY_FAMILY_NAME + " " + COLLATION + ");",
             "CREATE INDEX IF NOT EXISTS bookshelf_bookshelf ON " + DB_TB_BOOKSHELF + " (" + KEY_BOOKSHELF + ");",
-            /* "CREATE INDEX IF NOT EXISTS books_author ON "+DB_TB_BOOKS+" ("+KEY_AUTHOR+");",*/
-            /*"CREATE INDEX IF NOT EXISTS books_author_ci ON "+DB_TB_BOOKS+" ("+KEY_AUTHOR+" " + COLLATION + ");",*/
             "CREATE INDEX IF NOT EXISTS books_title ON " + DB_TB_BOOKS + " (" + KEY_TITLE + ");",
             "CREATE INDEX IF NOT EXISTS books_title_ci ON " + DB_TB_BOOKS + " (" + KEY_TITLE + " " + COLLATION + ");",
             "CREATE INDEX IF NOT EXISTS books_isbn ON " + DB_TB_BOOKS + " (" + KEY_ISBN + ");",
-            /* "CREATE INDEX IF NOT EXISTS books_series ON "+DB_TB_BOOKS+" ("+KEY_SERIES+");",*/
             "CREATE INDEX IF NOT EXISTS books_publisher ON " + DB_TB_BOOKS + " (" + KEY_PUBLISHER + ");",
             "CREATE UNIQUE INDEX IF NOT EXISTS books_uuid ON " + DB_TB_BOOKS + " (" + DOM_BOOK_UUID + ");",
             "CREATE INDEX IF NOT EXISTS books_gr_book ON " + DB_TB_BOOKS + " (" + DOM_GOODREADS_BOOK_ID.name + ");",
@@ -933,7 +930,7 @@ public class CatalogueDBAdapter {
      * instance of the database. If it cannot be created, throw an exception to
      * signal the failure
      *
-     * @return this (self reference, allowing this to be chained in an initialisation call)
+     * @return this (self reference, allowing this to be chained in an initialization call)
      * @throws SQLException if the database could be neither opened nor created
      */
     public CatalogueDBAdapter open() throws SQLException {
@@ -2503,7 +2500,6 @@ public class CatalogueDBAdapter {
      * @param flags  See BOOK_UPDATE_* flag definitions
      * @return rowId or -1 if failed
      */
-    //public long createBook(long id, String author, String title, String isbn, String publisher, String date_published, float rating, String bookshelf, Boolean read, String series, int pages, String series_num, String notes, String list_price, int anthology, String location, String read_start, String read_end, String format, boolean signed, String description, String genre) {
     public long createBook(long id, BookData values, int flags) {
 
         try {
@@ -3506,7 +3502,7 @@ public class CatalogueDBAdapter {
     }
 
     /**
-     * Add or update the passed series, depending whether s.id == 0.
+     * Add or update the passed series, depending on whether s.id == 0.
      *
      * @param s The series in question
      */
@@ -3551,7 +3547,7 @@ public class CatalogueDBAdapter {
      * @return true if deleted, false otherwise
      */
     public boolean deleteAnthologyTitle(long anthologyRowId, boolean dirtyBookIfNecessary) {
-        // Find the soon to be deleted title position#
+        // Find the soon-to-be deleted title position#
         Cursor anthology = fetchAnthologyTitleById(anthologyRowId);
         anthology.moveToFirst();
         int position = anthology.getInt(anthology.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_POSITION));
@@ -3729,9 +3725,9 @@ public class CatalogueDBAdapter {
     }
 
     /**
-     * Static method to get a BooksCursor Cursor. The passed sql should at least return
+     * Static method to get a BooksCursor Cursor. The passed SQL should at least return
      * some of the fields from the books table! If a method call is made to retrieve
-     * a column that does not exists, an exception will be thrown.
+     * a column that does not exist, an exception will be thrown.
      *
      * @return A new BooksCursor
      */
@@ -3740,7 +3736,7 @@ public class CatalogueDBAdapter {
     }
 
     /**
-     * Query to get a all bookshelves for a book.
+     * Query to get all bookshelves for a book.
      */
     public Cursor getAllBookBookshelvesCursor(long book) {
         String sql = "Select s." + KEY_BOOKSHELF + " from " + DB_TB_BOOKSHELF + " s"
@@ -4023,7 +4019,7 @@ public class CatalogueDBAdapter {
     }
 
     /**
-     * Data cleanup routine called on upgrade to v4.0.3 to cleanup data integrity issues cased
+     * Data clean-up routine called on upgrade to v4.0.3 to clean up data integrity issues cased
      * by earlier merge code that could have left the first author or series for a book having
      * a position number > 1.
      */
@@ -4040,7 +4036,7 @@ public class CatalogueDBAdapter {
     }
 
     /**
-     * Data cleaning routine for upgrade to version 4.0.3 to cleanup any books that have no primary author/series.
+     * Data cleaning routine for upgrade to version 4.0.3 to clean up any books that have no primary author/series.
      */
     private void fixupPositionedBookItems(String tableName, String objectIdField, String positionField) {
         String sql = "select b." + KEY_ROW_ID + " as " + KEY_ROW_ID + ", min(o." + positionField + ") as pos" +
@@ -4846,7 +4842,7 @@ public class CatalogueDBAdapter {
                 message += "* The book thumbnail now appears in the list view\n\n";
                 message += "* Emailing the developer now works from the admin page\n\n";
                 message += "* The Change Bookshelf option is now more obvious (Thanks Mike)\n\n";
-                message += "* The exports have been renamed to csv, use the correct published date and are now unicode safe (Thanks Mike)\n\n";
+                message += "* The exports have been renamed to csv, use the correct published date and are now Unicode safe (Thanks Mike)\n\n";
             }
             if (curVersion == 28) {
                 curVersion++;
@@ -5214,7 +5210,7 @@ public class CatalogueDBAdapter {
                         message += "See the web site (from the Admin menu) for more details\n\n";
 
                         db.execSQL(DATABASE_CREATE_SERIES);
-                        // We need to create a series table with series that are unique wrt case and unicode. The old
+                        // We need to create a series table with series that are unique wrt case and Unicode. The old
                         // system allowed for series with slightly different case. So we capture these by using
                         // max() to pick and arbitrary matching name to use as our canonical version.
                         db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
@@ -5282,7 +5278,7 @@ public class CatalogueDBAdapter {
                 if (go2) {
                     try {
                         db.execSQL(DATABASE_CREATE_SERIES);
-                        // We need to create a series table with series that are unique wrt case and unicode. The old
+                        // We need to create a series table with series that are unique wrt case and Unicode. The old
                         // system allowed for series with slightly different case. So we capture these by using
                         // max() to pick and arbitrary matching name to use as our canonical version.
                         db.execSQL("INSERT INTO " + DB_TB_SERIES + " (" + KEY_SERIES_NAME + ") "
@@ -5528,7 +5524,7 @@ public class CatalogueDBAdapter {
                 // A bit of presumption here...
                 message += "New in v4.0 - Updates courtesy of (mainly) Philip Warner (a.k.a Grunthos) -- blame him, politely, if it toasts your data\n\n";
                 message += "* New look, new startup page\n\n";
-                message += "* Synchronization with goodreads (www.goodreads.com)\n\n";
+                message += "* Synchronization with GoodReads (www.goodreads.com)\n\n";
                 message += "* New styles for book lists (including 'Compact' and 'Unread')\n\n";
                 message += "* User-defined styles for book lists\n\n";
                 message += "* More efficient memory usage\n\n";
@@ -5573,7 +5569,7 @@ public class CatalogueDBAdapter {
                 message += "New in v4.0.4\n\n";
                 message += "* Search now searches series and anthology data\n\n";
                 message += "* Allows non-numeric data entry in series position\n\n";
-                message += "* Better sorting of leading numerics in series position\n\n";
+                message += "* Better sorting of leading Numerics in series position\n\n";
                 message += "* Several bug fixes\n\n";
             }
 
@@ -5619,9 +5615,7 @@ public class CatalogueDBAdapter {
                 recreateAndReloadTable(sdb, DB_TB_BOOKS, DATABASE_CREATE_BOOKS);
             }
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
             // NOTE: As of 4.2, DO NOT USE OnUpgrade TO DISPLAY UPGRADE MESSAGES. See header for details.
-            // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             // Rebuild all indices

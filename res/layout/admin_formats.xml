@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/layout_body">
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/layout_body"
+    tools:ignore="VisualLintSystemUi">
     <!-- Root -->
 
     <include layout="@layout/layout_header" />
@@ -11,6 +13,7 @@
     <LinearLayout
         android:id="@+id/root"
         style="@style/layout_main"
+        android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -18,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
+            android:fitsSystemWindows="true"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <TextView

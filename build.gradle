@@ -1,5 +1,7 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.secrets.gradle.plugin)
+}
 
 def SigningProperty = "BookCatalogue.signing"
 Properties properties = new Properties()
@@ -10,23 +12,7 @@ if (BcSigning != null && (new File(BcSigning)).exists()) {
     apply from: BcSigning
 }
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath libs.gradle
-        classpath libs.secrets.gradle.plugin
-    }
-}
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
 
 dependencies {
     implementation libs.androidx.legacy.support.v4
@@ -66,9 +52,9 @@ android {
             buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", properties.getProperty("GOOGLE_OAUTH_CLIENT_ID", "\"\"")
         }
     }
-    compileSdkVersion 36
+    compileSdk = 36
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += ['META-INF/NOTICE.txt', 'META-INF/LICENSE.txt']
         }
@@ -83,15 +69,14 @@ android {
             java.srcDirs = ['src']
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
     }
     defaultConfig {
         applicationId "com.eleybourn.bookcatalogue"
-        minSdkVersion 27
-        targetSdkVersion 36
+        minSdk = 27
+        targetSdk = 36
     }
 
     flavorDimensions "distributor"
@@ -117,7 +102,6 @@ android {
         disable 'MissingTranslation'
     }
     buildFeatures {
-        renderScript = true
         aidl = true
         viewBinding = false
         buildConfig = true

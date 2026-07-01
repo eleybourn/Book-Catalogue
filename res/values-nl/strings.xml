@@ -111,7 +111,7 @@
     <string name="day">Dag</string>
 
     <string name="debug_body">Beschrijf in het kort de problemen die u heeft ondervonden.</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Verzamelde foutopsporingsgegevens</string>
 
     <string name="delete_1st_bs">De eerste boekenplank kan niet verwijderd worden</string>

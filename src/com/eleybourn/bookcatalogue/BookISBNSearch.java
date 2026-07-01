@@ -304,7 +304,7 @@ public class BookISBNSearch extends ActivityWithTasks {
                 setContentView(R.layout.search_isbn);
                 mIsbnText = findViewById(R.id.field_isbn);
 
-                // Use the preferred barcode scanner to search for a isbn
+                // Use the preferred barcode scanner to search for an isbn
                 //Prompt users to install the application if they do not have it installed.
                 try {
                     // Start the scanner IF this is a real 'first time' call.

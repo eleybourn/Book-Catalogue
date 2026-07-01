@@ -148,7 +148,7 @@
     <string name="day">Day</string>
 
     <string name="debug_body">Please take the time to briefly describe the problem you are experiencing.</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Gathered debugging information</string>
 
     <string name="delete_1st_bs">Cannot Delete the 1st Bookshelf</string>

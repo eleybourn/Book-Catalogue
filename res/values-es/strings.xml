@@ -111,7 +111,7 @@
     <string name="day">Día</string>
 
     <string name="debug_body">Por favor, explique brevemente el problema experimentado.</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Recopilando información sobre fallos</string>
 
     <string name="delete_1st_bs">La biblioteca predefinida no se puede eliminar</string>

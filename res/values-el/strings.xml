@@ -111,7 +111,7 @@
     <string name="day">Ημέρα</string>
 
     <string name="debug_body">Παρακαλούμε περιγράψτε συνοπτικά το πρόβλημα που αντιμετωπίζετε.</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Συλλέχθησαν πληροφορίες debugging</string>
 
     <string name="delete_1st_bs">Δεν μπορεί να διαγραφεί το 1ο ράφι.</string>

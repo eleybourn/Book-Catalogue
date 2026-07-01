@@ -120,7 +120,7 @@
     <string name="day">День</string>
 
     <string name="debug_body">Пожалуйста, кратко опишите обнаруженную ошибку.</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Собрана отладочная информация</string>
 
     <string name="delete_1st_bs">Невозможно удалить единственную книжную полку</string>

@@ -78,7 +78,7 @@
     <string name="customize_ellipsis">Přizpůsobit…</string>
 
     <string name="debug_body">Věnujte prosím čas přesnému popisu problému, se kterým máte zkušenost.</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Shromáždit informace o debugování</string>
 
     <string name="delete_1st_bs">Nelze smazat defaultní knihovnu.</string>

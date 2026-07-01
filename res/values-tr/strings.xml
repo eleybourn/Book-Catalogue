@@ -136,7 +136,7 @@
     <string name="day">Gün</string>
 
     <string name="debug_body">Lütfen yaşamakta olduğunuz sorunu kısaca anlatınız.</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Hata ayıklama bilgisi alındı</string>
 
     <string name="delete_1st_bs">Birinci kitaplık silinemiyor</string>

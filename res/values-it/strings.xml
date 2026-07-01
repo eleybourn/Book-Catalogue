@@ -136,7 +136,7 @@
     <string name="day">Giorno</string>
 
     <string name="debug_body">Prenditi qualche secondo per descrivere brevemente il problema riscontrato.</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Informazioni di debug raccolte</string>
 
     <string name="delete_1st_bs">Impossibile cancellare la prima libreria</string>

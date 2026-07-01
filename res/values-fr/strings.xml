@@ -111,7 +111,7 @@
     <string name="day">Jour</string>
 
     <string name="debug_body">Merci de prendre le temps de décrire brièvement le problème que vous rencontrez.</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Collecte des informations de débogage en cours</string>
 
     <string name="delete_1st_bs">Impossible de supprimer la première bibliothèque</string>

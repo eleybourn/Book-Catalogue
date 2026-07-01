@@ -108,7 +108,7 @@
     <string name="day">Tag</string>
 
     <string name="debug_body">Bitte nehmen Sie sich Zeit, das aufgetretene Problem zu beschreiben.</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Gesammelte Debug-Informationen</string>
 
     <string name="delete_1st_bs">Das erste Bücherregal kann nicht gelöscht werden</string>

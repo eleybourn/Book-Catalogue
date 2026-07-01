@@ -58,7 +58,7 @@
     <string name="cover_detail">Szczegóły okładki</string>
 
     <string name="debug_body">Poświęć chwilę na krótki opis problemu, z którym się zetknąłeś.</string>
-    <string name="debug_email">eleybourn@gmail.com;grunthos@rhyme.com.au</string>
+    <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Zbieranie informacji o problemach technicznych</string>
 
     <string name="delete_1st_bs">Nie można usunąć pierwszej półki</string>

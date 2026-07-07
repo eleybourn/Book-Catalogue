@@ -208,6 +208,10 @@ public class Fields extends ArrayList<Fields.Field> {
         return mContext;
     }
 
+    public boolean isContextInvalid() {
+        return !mContext.isContextValid();
+    }
+
     /**
      * Accessor for related Preferences
      *
@@ -449,6 +453,8 @@ public class Fields extends ArrayList<Fields.Field> {
         Object dbgGetOwnerContext();
 
         View findViewById(int id);
+
+        boolean isContextValid();
     }
 
     /**
@@ -606,6 +612,12 @@ public class Fields extends ArrayList<Fields.Field> {
             return v.findViewById(id);
         }
 
+        @Override
+        public boolean isContextValid() {
+            Fragment f = mFragment.get();
+            return f != null && f.isAdded() && !f.isRemoving() && f.getView() != null;
+        }
+
     }
 
     /**
@@ -684,6 +696,10 @@ public class Fields extends ArrayList<Fields.Field> {
             // Allow for the (apparent) possibility that the view may have been removed due to a tab change or similar.
             // See Issue 505.
             if (v == null) {
+                Fields fs = field.getFields();
+                if (fs == null || fs.isContextInvalid()) {
+                    return;
+                }
                 // Log the error. Not much more we can do.
                 String msg = getString(field);
                 Tracker.handleEvent(this, msg, Tracker.States.Running);
@@ -757,18 +773,16 @@ public class Fields extends ArrayList<Fields.Field> {
                 TextView v = (TextView) field.getView();
                 //
                 // Every field MUST have an associated View object, but sometimes it is not found.
-                // When not found, the app crashes.
-                //
-                // The following code is to help diagnose these cases, not avoid them.
-                //
-                // NOTE: 	This does NOT entirely fix the problem, it gathers debug info. but
-                //		we have implemented one work-around
                 //
                 // It seems that sometimes the afterTextChanged() event fires after the text field
                 // is removed from the screen. In this case, there is no need to synchronize the values
                 // since the view is gone.
                 //
                 if (v == null) {
+                    Fields fs = field.getFields();
+                    if (fs == null || fs.isContextInvalid()) {
+                        return;
+                    }
                     String msg = getString(field);
                     Tracker.handleEvent(this, msg, Tracker.States.Running);
                     Logger.logError(new RuntimeException("Unable to get associated View object"));

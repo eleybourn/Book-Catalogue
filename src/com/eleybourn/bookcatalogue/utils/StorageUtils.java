@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 import androidx.documentfile.provider.DocumentFile;
@@ -121,7 +120,8 @@ public class StorageUtils {
         try {
             final String fileName = EXPORT_FILE_BASE_NAME + suffix;
             java.io.InputStream dbOrig = new java.io.FileInputStream(db.getPath());
-            File dir = getBCBackups();
+            // Use cache for temporary backups to avoid permission issues on newer Android versions
+            File dir = suffix.contains("-tmp") ? getBCCache() : getBCBackups();
             // Path to the external backup
             String fullFilename = dir.getPath() + "/" + fileName;
             //check if it exists
@@ -237,45 +237,54 @@ public class StorageUtils {
         message.append("Details:\n\n").append(context.getString(R.string.debug_body).toUpperCase()).append("\n\n");
 
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message.toString());
-        //has to be an ArrayList
-        ArrayList<Uri> uris = new ArrayList<>();
-        //convert from paths to Android friendly Parcelable Uri's
-        ArrayList<File> files = new ArrayList<>();
 
         // Find all files of interest to send
-        for (File dir : new File[]{getBCShared(), getBCBackups()}) {
-            try {
-                for (String name : Objects.requireNonNull(dir.list())) {
-                    boolean send = false;
-                    for (String prefix : mDebugFilePrefixes)
-                        if (name.startsWith(prefix)) {
-                            send = true;
-                            break;
-                        }
-                    if (send)
-                        files.add(new File(dir, name));
-                }
+        ArrayList<File> files = new ArrayList<>();
+        // If we have the dbFile, add it first.
+        if (dbFile != null && dbFile.exists() && dbFile.length() > 0) {
+            files.add(dbFile);
+        }
 
-                // Build the attachment list
-                for (File fileIn : files) {
-                    if (fileIn.exists() && fileIn.length() > 0) {
-                        //Uri u = Uri.fromFile(fileIn);
-                        Uri u = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider",
-                                fileIn);
-                        uris.add(u);
+        for (File dir : new File[]{getBCShared(), getBCBackups(), getBCCache()}) {
+            try {
+                String[] list = dir.list();
+                if (list != null) {
+                    for (String name : list) {
+                        boolean send = false;
+                        for (String prefix : mDebugFilePrefixes)
+                            if (name.startsWith(prefix)) {
+                                send = true;
+                                break;
+                            }
+                        if (send) {
+                            File f = new File(dir, name);
+                            // Avoid duplicates
+                            if (f.exists() && f.length() > 0 && !files.contains(f))
+                                files.add(f);
+                        }
                     }
                 }
-
-                // We used to only send it if there are any files to send, but later versions added
-                // useful debugging info. So now we always send.
-                emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-                context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-
-            } catch (NullPointerException e) {
+            } catch (Exception e) {
                 Logger.logError(e);
-                Toast.makeText(context, R.string.alert_export_failed_sdcard, Toast.LENGTH_LONG).show();
             }
         }
+
+        // Build the attachment list
+        ArrayList<Uri> uris = new ArrayList<>();
+        for (File fileIn : files) {
+            try {
+                Uri u = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider",
+                        fileIn);
+                uris.add(u);
+            } catch (Exception e) {
+                Logger.logError(e, "Failed to get URI for file: " + fileIn.getAbsolutePath());
+            }
+        }
+
+        // We used to only send it if there are any files to send, but later versions added
+        // useful debugging info. So now we always send.
+        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
 
     /**

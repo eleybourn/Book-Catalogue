@@ -47,9 +47,12 @@
     <string name="label_never">Never</string>
     <string name="label_online_sync">Automatically backup all changes in real-time</string>
     <string name="label_last_backup">Last Backup: %1$s</string>
+    <string name="label_next_renewal">Next Renewal: %1$s</string>
+    <string name="label_expires">Expires: %1$s</string>
     <string name="hint_online_backup_invite_title">Online Backup &amp; Sync</string>
     <string name="hint_online_backup_invite">We\'ve added a new Online Backup &amp; Sync service! You can now keep your collection safe in the cloud and synced across your devices. Tap \'Backup and Restore\' to get started.\n\nPlease consider subscribing to this premium service to support the ongoing development of Book Catalogue.</string>
-    <string name="para_subscription_benefits">Support the development of BookCatalogue and subscribe for only %1$s a month to unlock online backup features. Your catalogue will be securely stored in the cloud and available across your devices.</string>
+    <string name="para_subscription_benefits">Support the development of BookCatalogue and subscribe to unlock online backup and sync features. Your catalogue will be securely stored in the cloud and available across your devices.</string>
+    <string name="para_subscription_benefits_price">Support the development of BookCatalogue and subscribe for only %1$s a month to unlock online backup and sync features. Your catalogue will be securely stored in the cloud and available across your devices.</string>
     <string name="para_subscription_benefits2">Local backup and restore (below) will always be available without subscription. </string>
 
     <string name="author_already_in_list">Author is already in the list</string>

@@ -47,6 +47,15 @@
                     tools:text="@string/label_subscription_active" />
 
                 <TextView
+                    android:id="@+id/subscription_expiry"
+                    style="@style/TextAppearance.Material3.BodySmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/p_md"
+                    android:visibility="gone"
+                    tools:text="Expires: 2026-02-15 14:30" />
+
+                <TextView
                     android:id="@+id/subscription_description"
                     style="@style/TextAppearance.Material3.BodySmall"
                     android:layout_width="match_parent"

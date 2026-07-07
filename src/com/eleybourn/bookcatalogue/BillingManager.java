@@ -33,6 +33,7 @@ public class BillingManager implements PurchasesUpdatedListener {
     private final Activity mActivity;
     private final BookCataloguePreferences mPrefs;
     private BillingListener mListener;
+    private String mLastPrice = null;
 
     public BillingManager(Activity activity) {
         mActivity = activity;
@@ -134,6 +135,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                             if (offerDetails != null && !offerDetails.isEmpty()) {
                                 // Just get the first pricing phase of the first offer
                                 String price = offerDetails.get(0).getPricingPhases().getPricingPhaseList().get(0).getFormattedPrice();
+                                mLastPrice = price;
                                 if (mListener != null) {
                                     mActivity.runOnUiThread(() -> mListener.onPriceReceived(price));
                                 }
@@ -142,6 +144,10 @@ public class BillingManager implements PurchasesUpdatedListener {
                     }
                 }
         );
+    }
+
+    public String getLastPrice() {
+        return mLastPrice;
     }
 
     public void launchPurchaseFlow() {

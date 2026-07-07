@@ -64,6 +64,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     private Button mRestoreNowButton;
     private TextView mLastBackupDateField;
     private TextView mSubscriptionStatus;
+    private TextView mSubscriptionExpiry;
     private TextView mSubscribeDescription;
     private TextView mSubscribeDescription2;
     private Button mSubscribeManageButton;
@@ -218,6 +219,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         mRestoreNowButton.setOnClickListener(v -> restore());
 
         mSubscriptionStatus = findViewById(R.id.subscription_status);
+        mSubscriptionExpiry = findViewById(R.id.subscription_expiry);
         mSubscribeManageButton = findViewById(R.id.button_subscribe_manage);
         mSubscribeDescription = findViewById(R.id.subscription_description);
         mSubscribeDescription2 = findViewById(R.id.subscription_description2);
@@ -379,6 +381,19 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 mSubscriptionStatus.setText(R.string.label_subscription_active_no_renew);
             }
             mSubscriptionStatus.setTextColor(getResources().getColor(R.color.theme_primary, getTheme()));
+            
+            String expiry = prefs.getSubscriptionExpiry();
+            if (!expiry.isEmpty()) {
+                if (prefs.isAutoRenewing()) {
+                    mSubscriptionExpiry.setText(getString(R.string.label_next_renewal, expiry));
+                } else {
+                    mSubscriptionExpiry.setText(getString(R.string.label_expires, expiry));
+                }
+                mSubscriptionExpiry.setVisibility(View.VISIBLE);
+            } else {
+                mSubscriptionExpiry.setVisibility(View.GONE);
+            }
+
             mSubscribeDescription.setVisibility(View.GONE);
             mSubscribeDescription2.setVisibility(View.GONE);
             BookCataloguePreferences mPrefs = new BookCataloguePreferences();
@@ -400,10 +415,20 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         } else {
             mSubscriptionStatus.setText(R.string.label_subscription_inactive);
             mSubscriptionStatus.setTextColor(getResources().getColor(R.color.theme_error, getTheme()));
+            mSubscriptionExpiry.setVisibility(View.GONE);
             mSubscribeDescription.setVisibility(View.VISIBLE);
             mSubscribeDescription2.setVisibility(View.VISIBLE);
             findViewById(R.id.logged_out_view).setVisibility(View.GONE);
             findViewById(R.id.logged_in_view).setVisibility(View.GONE);
+
+            // Use the generic benefits text initially (or cached priced version if available)
+            String price = mBillingManager != null ? mBillingManager.getLastPrice() : null;
+            if (price != null) {
+                mSubscribeDescription.setText(getString(R.string.para_subscription_benefits_price, price));
+            } else {
+                mSubscribeDescription.setText(R.string.para_subscription_benefits);
+            }
+
             mSubscribeManageButton.setText(R.string.button_subscribe);
             mSubscribeManageButton.setOnClickListener(v -> mBillingManager.launchPurchaseFlow());
         }
@@ -433,7 +458,10 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     @Override
     public void onPriceReceived(String price) {
         if (mSubscribeDescription != null) {
-            mSubscribeDescription.setText(getString(R.string.para_subscription_benefits, price));
+            BookCataloguePreferences prefs = new BookCataloguePreferences();
+            if (!prefs.isSubscribed()) {
+                mSubscribeDescription.setText(getString(R.string.para_subscription_benefits_price, price));
+            }
         }
     }
 

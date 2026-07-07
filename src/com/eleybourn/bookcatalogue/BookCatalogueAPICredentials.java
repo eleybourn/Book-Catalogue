@@ -8,7 +8,6 @@ import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.credentials.Credential;
 import androidx.credentials.CredentialManager;
 import androidx.credentials.CustomCredential;
@@ -16,10 +15,7 @@ import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialCancellationException;
 import androidx.credentials.exceptions.GetCredentialException;
-import androidx.credentials.exceptions.NoCredentialException;
 
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -27,8 +23,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -37,6 +35,7 @@ import java.util.concurrent.Executors;
  * Handles the Google Sign-In flow using Credential Manager to retrieve a user credential
  * for API authentication.
  */
+@SuppressWarnings("deprecation")
 public class BookCatalogueAPICredentials {
 
     private final CredentialManager mCredentialManager;
@@ -115,7 +114,7 @@ public class BookCatalogueAPICredentials {
                 request,
                 null, // CancellationSignal
                 mExecutor,
-                new androidx.credentials.CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                new androidx.credentials.CredentialManagerCallback<>() {
                     @Override
                     public void onResult(GetCredentialResponse result) {
                         String email = handleSignInSuccess(result);
@@ -154,6 +153,7 @@ public class BookCatalogueAPICredentials {
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestProfile()
                 .requestIdToken(BuildConfig.GOOGLE_OAUTH_CLIENT_ID)
                 .build();
 
@@ -174,7 +174,7 @@ public class BookCatalogueAPICredentials {
             if (mLegacySignInLauncher != null) {
                 mLegacySignInLauncher.launch(client.getSignInIntent());
             } else if (mListener != null) {
-                mMainThreadHandler.post(() -> mListener.onCredentialError("Unable to find a Google account (Code L1). Please ensure you are signed into Google on this device."));
+                mMainThreadHandler.post(() -> mListener.onCredentialError("Unable to find a Google account (Code L1). Please ensure you are signed into Google on this device and your device's date/time is set to Automatic."));
             }
         });
     }
@@ -193,6 +193,14 @@ public class BookCatalogueAPICredentials {
         } catch (ApiException e) {
             int statusCode = e.getStatusCode();
             Log.e("APICredentials", "Legacy sign-in failed: Status Code " + statusCode, e);
+
+            // SPECIAL FALLBACK: If we got a Code 10 (Developer Error), it's likely a token mismatch.
+            // Try one more time requesting ONLY the email, which is much more likely to succeed.
+            if (statusCode == 10 && mLegacySignInLauncher != null) {
+                tryIdentityOnlyLegacy();
+                return;
+            }
+
             String message;
             switch (statusCode) {
                 case 10: // DEVELOPER_ERROR
@@ -213,6 +221,21 @@ public class BookCatalogueAPICredentials {
                 mMainThreadHandler.post(() -> mListener.onCredentialError(finalMessage));
             }
         }
+    }
+
+    /**
+     * A "safe mode" legacy login that only asks for the email identity.
+     * This bypasses the strict token generation requirements that often cause Code 10.
+     */
+    private void tryIdentityOnlyLegacy() {
+        if (!(mContext instanceof android.app.Activity) || mLegacySignInLauncher == null) return;
+        android.app.Activity activity = (android.app.Activity) mContext;
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mLegacySignInLauncher.launch(GoogleSignIn.getClient(activity, gso).getSignInIntent());
     }
     /**
      * Handles a successful sign-in response, extracts the ID token, and passes it to the listener.

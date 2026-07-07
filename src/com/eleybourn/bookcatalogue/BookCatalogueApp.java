@@ -128,7 +128,7 @@ public class BookCatalogueApp extends Application {
     }
 
     /**
-     * Add a new OnLocaleChangedListener, and cleanup any dead references.
+     * Add a new OnLocaleChangedListener, and clean-up any dead references.
      */
     public static void registerOnLocaleChangedListener(OnLocaleChangedListener listener) {
         ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<>();
@@ -151,7 +151,7 @@ public class BookCatalogueApp extends Application {
     }
 
     /**
-     * Remove the passed OnLocaleChangedListener, and cleanup any dead references.
+     * Remove the passed OnLocaleChangedListener, and clean-up any dead references.
      */
     public static void unregisterOnLocaleChangedListener(OnLocaleChangedListener listener) {
         ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<>();
@@ -167,7 +167,7 @@ public class BookCatalogueApp extends Application {
     }
 
     /**
-     * Check if sqlite collation is case sensitive; cache the result.
+     * Check if sqlite collation is case-sensitive; cache the result.
      * This bug was introduced in ICS and present in 4.0-4.0.3, at least that meant that
      * UNICODE collation became CS. We now use a LOCALIZED Collation, but still check if CI.
      *
@@ -300,7 +300,7 @@ public class BookCatalogueApp extends Application {
                                 .build(),
                         // If the user agrees, this configuration will be used to send the email
                         new MailSenderConfigurationBuilder()
-                                .withMailTo("philip.warner@rhyme.com.au,eleybourn@gmail.com")
+                                .withMailTo("eleybourn@gmail.com")
                                 .withReportAsFile(true)
                                 .withSubject(this.getString(R.string.crash_dialog_title))
                                 .withBody(this.getString(R.string.crash_dialog_text))
@@ -361,7 +361,7 @@ public class BookCatalogueApp extends Application {
     }
 
     /**
-     * Send a message to all registered OnLocaleChangedListeners, and cleanup any dead references.
+     * Send a message to all registered OnLocaleChangedListeners, and clean-up any dead references.
      */
     private void notifyLocaleChanged() {
         ArrayList<WeakReference<OnLocaleChangedListener>> toRemove = new ArrayList<>();

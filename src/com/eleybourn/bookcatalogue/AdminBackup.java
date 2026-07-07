@@ -70,7 +70,6 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     private ApiListener mApiListener;
     private ActivityResultLauncher<String[]> mCsvImportPickerLauncher;
     private ActivityResultLauncher<String> mCsvExportPickerLauncher;
-    private ActivityResultLauncher<Intent> mLegacySignInLauncher;
     private BillingManager mBillingManager;
 
     @Override
@@ -182,7 +181,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         }
 
         mApiCredentials = new BookCatalogueAPICredentials(this);
-        mLegacySignInLauncher = registerForActivityResult(
+        ActivityResultLauncher<Intent> mLegacySignInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {

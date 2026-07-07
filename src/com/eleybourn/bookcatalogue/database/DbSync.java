@@ -578,7 +578,7 @@ public class DbSync {
          *
          */
         public boolean isOpen() {
-            return mDb.isOpen();
+            return mDb != null && mDb.isOpen();
         }
 
         /**
@@ -741,14 +741,19 @@ public class DbSync {
             }
         }
 
-        protected void finalize() {
-            if (!mIsClosed)
-                Logger.logError(new RuntimeException("Finalizing non-closed statement: " + mSql));
-            // Try to close the underlying statement.
+        @Override
+        protected void finalize() throws Throwable {
             try {
-                mStatement.close();
-            } catch (Exception e) {
-                // Ignore; may have been finalized
+                if (!mIsClosed)
+                    Logger.logError(new RuntimeException("Finalizing non-closed statement: " + mSql));
+                // Try to close the underlying statement.
+                try {
+                    mStatement.close();
+                } catch (Exception e) {
+                    // Ignore; may have been finalized
+                }
+            } finally {
+                super.finalize();
             }
         }
     }

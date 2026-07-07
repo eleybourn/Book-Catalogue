@@ -1738,8 +1738,13 @@ public class LibraryBuilder {
         cleanup();
     }
 
-    protected void finalize() {
-        cleanup();
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            cleanup();
+        } finally {
+            super.finalize();
+        }
     }
 
     private void clearCachedStatements() {

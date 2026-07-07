@@ -271,7 +271,9 @@ public class DbUtils {
          * Static method to drop the passed table, if it exists.
          */
         public static void drop(SynchronizedDb db, String name) {
-            db.execSQL("Drop Table If Exists " + name);
+            if (db != null && db.isOpen()) {
+                db.execSQL("Drop Table If Exists " + name);
+            }
         }
 
         /**
@@ -519,7 +521,7 @@ public class DbUtils {
          * Add an index to this table
          *
          * @param localKey Local name, unique for this table, to give this index. Alphanumeric Only.
-         * @param unique   FLag indicating index is UNIQUE
+         * @param unique   Flag indicating index is UNIQUE
          * @param domains  List of domains index
          * @return    TableDefinition (for chaining)
          */
@@ -883,7 +885,7 @@ public class DbUtils {
 
             /**
              * Get an SQL fragment that matches the PK of the parent to the FK of the child.
-             * eg. 'org.id = emp.organization_id' (but handles multi-domain keys)
+             * e.g. 'org.id = emp.organization_id' (but handles multi-domain keys)
              *
              * @return    SQL fragment
              */

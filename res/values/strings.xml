@@ -88,6 +88,8 @@
     <string name="button_delete">Delete</string>
     <string name="button_loan_book">Loan Book</string>
     <string name="button_login_with_google">Login with Google</string>
+    <string name="button_login_device">Use Device Account</string>
+    <string name="button_add_account">Add account</string>
     <string name="button_logout">Logout</string>
     <string name="button_ok">OK</string>
     <string name="button_reorder">Reorder</string>
@@ -939,6 +941,7 @@
     <string name="title_required">A non-blank title must be specified</string>
     <string name="title_select_fields_to_update">Select Fields to Update</string>
     <string name="title_settings">Settings</string>
+    <string name="title_choose_account">Choose an Account</string>
 
     <string name="unable_to_find_book">Unable to find the specified book</string>
 

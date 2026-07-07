@@ -197,14 +197,23 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         );
         mApiCredentials.setLegacySignInLauncher(mLegacySignInLauncher);
 
-        Button login = findViewById(R.id.log_in_button);
-        login.setOnClickListener(v -> {
+        Button loginDevice = findViewById(R.id.log_in_device_button);
+        loginDevice.setOnClickListener(v -> {
             if (!mPrefs.isSubscribed()) {
                 showSubscriptionRequiredDialog();
             } else {
-                mApiCredentials.getCredentials(this);
+                mApiCredentials.getDeviceAccount(this);
             }
         });
+
+        //Button login = findViewById(R.id.log_in_button);
+        //login.setOnClickListener(v -> {
+        //    if (!mPrefs.isSubscribed()) {
+        //        showSubscriptionRequiredDialog();
+        //    } else {
+        //        mApiCredentials.getCredentials(this);
+        //    }
+        //});
         /* Logout */
         Button logout = findViewById(R.id.log_out_button);
         logout.setOnClickListener(v -> logout());

@@ -1,10 +1,19 @@
 package com.eleybourn.bookcatalogue;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -28,6 +37,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -44,6 +54,7 @@ public class BookCatalogueAPICredentials {
     private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
     private CredentialListener mListener;
     private ActivityResultLauncher<Intent> mLegacySignInLauncher;
+    private boolean mIsFallbackAttempted = false;
 
     public BookCatalogueAPICredentials(Context context) {
         this.mContext = context;
@@ -61,6 +72,7 @@ public class BookCatalogueAPICredentials {
      */
     public void getCredentials(CredentialListener listener) {
         this.mListener = listener;
+        this.mIsFallbackAttempted = false;
 
         // Ensure we are using an Activity context as required by SDKs for UI
         if (!(mContext instanceof android.app.Activity)) {
@@ -88,7 +100,7 @@ public class BookCatalogueAPICredentials {
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(mContext);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(activity, resultCode, 9000).show();
+                Objects.requireNonNull(apiAvailability.getErrorDialog(activity, resultCode, 9000)).show();
             } else {
                 if (mListener != null) mListener.onCredentialError("Google Play Services are not available on this device.");
             }
@@ -96,6 +108,13 @@ public class BookCatalogueAPICredentials {
         }
 
         String clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID;
+
+        // If client ID is missing, skip to legacy flow as GetGoogleIdOption requires it
+        if (clientId == null || clientId.isEmpty()) {
+            Log.w("APICredentials", "Google Client ID is missing. Falling back to legacy sign-in.");
+            mMainThreadHandler.post(this::tryLegacySignIn);
+            return;
+        }
 
         // Build the Google ID Option
         GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
@@ -121,24 +140,24 @@ public class BookCatalogueAPICredentials {
                         if (email != null && !email.isEmpty()) {
                             // Post UI work to the main thread
                             mMainThreadHandler.post(() -> showOptInDialog(email));
+                        } else {
+                            Log.w("APICredentials", "Credential Manager returned success but no email found. Falling back to legacy.");
+                            mMainThreadHandler.post(BookCatalogueAPICredentials.this::tryLegacySignIn);
                         }
                     }
 
                     @Override
                     public void onError(@NonNull GetCredentialException e) {
-                        Log.e("APICredentials", "Sign-in failed: " + e.getClass().getSimpleName() + " - " + e.getMessage(), e);
+                        Log.e("APICredentials", "Credential Manager failed: " + e.getClass().getSimpleName() + " - " + e.getMessage());
 
                         // If it's a cancellation, we just stop.
                         if (e instanceof GetCredentialCancellationException) {
-                            if (mListener != null) {
-                                mMainThreadHandler.post(() -> mListener.onCredentialError("Sign-in cancelled."));
-                            }
+                            Log.d("APICredentials", "Credential Manager sign-in cancelled by user.");
                             return;
                         }
 
-                        // For ANY other error (including NoCredentialException), try the legacy fallback.
-                        // This is much safer as it bypasses the system's Autofill-based credential selection.
-                        tryLegacySignIn();
+                        // For ANY other error (including NoCredentialException), try the legacy fallback on the main thread.
+                        mMainThreadHandler.post(BookCatalogueAPICredentials.this::tryLegacySignIn);
                     }
                 }
         );
@@ -151,12 +170,16 @@ public class BookCatalogueAPICredentials {
         if (!(mContext instanceof android.app.Activity)) return;
         android.app.Activity activity = (android.app.Activity) mContext;
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestProfile()
-                .requestIdToken(BuildConfig.GOOGLE_OAUTH_CLIENT_ID)
-                .build();
+                .requestProfile();
 
+        String clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID;
+        if (clientId != null && !clientId.isEmpty()) {
+            builder.requestIdToken(clientId);
+        }
+
+        GoogleSignInOptions gso = builder.build();
         GoogleSignInClient client = GoogleSignIn.getClient(activity, gso);
 
         // Try silent first to avoid jarring UI if possible
@@ -172,7 +195,14 @@ public class BookCatalogueAPICredentials {
 
             // If silent fails, force the interactive account picker
             if (mLegacySignInLauncher != null) {
-                mLegacySignInLauncher.launch(client.getSignInIntent());
+                mMainThreadHandler.post(() -> {
+                    try {
+                        mLegacySignInLauncher.launch(client.getSignInIntent());
+                    } catch (Exception e) {
+                        Log.e("APICredentials", "Failed to launch legacy sign-in", e);
+                        if (mListener != null) mListener.onCredentialError("Unable to start sign-in process.");
+                    }
+                });
             } else if (mListener != null) {
                 mMainThreadHandler.post(() -> mListener.onCredentialError("Unable to find a Google account (Code L1). Please ensure you are signed into Google on this device and your device's date/time is set to Automatic."));
             }
@@ -183,6 +213,15 @@ public class BookCatalogueAPICredentials {
      * Handles the result from the legacy sign-in activity.
      */
     public void handleLegacySignInResult(Intent data) {
+        // If the result is from the AccountManager fallback, it will contain the email directly.
+        if (data != null && data.hasExtra(AccountManager.KEY_ACCOUNT_NAME)) {
+            String email = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+            if (email != null && !email.isEmpty()) {
+                mMainThreadHandler.post(() -> showOptInDialog(email));
+                return;
+            }
+        }
+
         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);
@@ -192,19 +231,22 @@ public class BookCatalogueAPICredentials {
             }
         } catch (ApiException e) {
             int statusCode = e.getStatusCode();
-            Log.e("APICredentials", "Legacy sign-in failed: Status Code " + statusCode, e);
 
             // SPECIAL FALLBACK: If we got a Code 10 (Developer Error), it's likely a token mismatch.
-            // Try one more time requesting ONLY the email, which is much more likely to succeed.
-            if (statusCode == 10 && mLegacySignInLauncher != null) {
-                tryIdentityOnlyLegacy();
+            // Try the AccountManager fallback which doesn't require Client ID registration.
+            if (statusCode == 10 && mLegacySignInLauncher != null && !mIsFallbackAttempted) {
+                Log.w("APICredentials", "Legacy sign-in failed with Code 10. Attempting AccountManager fallback.");
+                mIsFallbackAttempted = true;
+                tryAccountManagerFallback();
                 return;
             }
+
+            Log.e("APICredentials", "Legacy sign-in failed: Status Code " + statusCode, e);
 
             String message;
             switch (statusCode) {
                 case 10: // DEVELOPER_ERROR
-                    message = "Sign-in configuration error (Code 10). Please ensure your device's date/time is correct and you have a valid internet connection.";
+                    message = "Sign-in configuration error (Code 10). Please ensure your device's date/time is correct and the app is correctly registered in Google Cloud.";
                     break;
                 case 7: // NETWORK_ERROR
                     message = "Network error. Please check your internet connection.";
@@ -212,6 +254,9 @@ public class BookCatalogueAPICredentials {
                 case 12500: // SIGN_IN_FAILED
                     message = "Google Sign-In failed (Code 12500). Please ensure your Google Play Services are enabled and updated.";
                     break;
+                case 12501: // SIGN_IN_CANCELLED
+                    Log.d("APICredentials", "Legacy sign-in cancelled by user.");
+                    return;
                 default:
                     message = "Sign-in failed (Error " + statusCode + "). Please check your Google account settings.";
                     break;
@@ -224,19 +269,104 @@ public class BookCatalogueAPICredentials {
     }
 
     /**
-     * A "safe mode" legacy login that only asks for the email identity.
-     * This bypasses the strict token generation requirements that often cause Code 10.
+     * A fallback that uses the device's Account Manager to let the user pick a Google account.
+     * This bypasses all OAuth/Client ID requirements and only retrieves the email address.
      */
-    private void tryIdentityOnlyLegacy() {
+    private void tryAccountManagerFallback() {
         if (!(mContext instanceof android.app.Activity) || mLegacySignInLauncher == null) return;
-        android.app.Activity activity = (android.app.Activity) mContext;
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
+        // Create the system intent to choose an account
+        Intent intent = AccountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, false, null, null, null, null);
 
-        mLegacySignInLauncher.launch(GoogleSignIn.getClient(activity, gso).getSignInIntent());
+        mMainThreadHandler.post(() -> {
+            try {
+                mLegacySignInLauncher.launch(intent);
+            } catch (Exception e) {
+                Log.e("APICredentials", "Failed to launch AccountManager choice intent", e);
+                if (mListener != null) mListener.onCredentialError("Unable to start account selection process.");
+            }
+        });
     }
+
+    /**
+     * Fallback to using AccountManager directly to get the email of a Google account on the device.
+     */
+    public void getDeviceAccount(CredentialListener listener) {
+        this.mListener = listener;
+        this.mIsFallbackAttempted = true;
+
+        AccountManager accountManager = AccountManager.get(mContext);
+        Account[] accounts = accountManager.getAccountsByType("com.google");
+
+        if (accounts.length == 0) {
+            if (mListener != null) mListener.onCredentialError("No Google accounts found on this device.");
+        } else {
+            showAccountPickerDialog(accounts);
+        }
+    }
+
+    private void showAccountPickerDialog(final Account[] accounts) {
+        BaseAdapter adapter = new BaseAdapter() {
+            @Override
+            public int getCount() { return accounts.length + 1; } // +1 for "Add account"
+
+            @Override
+            public Object getItem(int position) {
+                if (position < accounts.length) return accounts[position];
+                return null;
+            }
+
+            @Override
+            public long getItemId(int position) { return position; }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(mContext).inflate(R.layout.row_account, parent, false);
+                }
+                TextView emailText = convertView.findViewById(R.id.row_email);
+                ImageView icon = convertView.findViewById(R.id.row_icon);
+
+                if (position < accounts.length) {
+                    emailText.setText(accounts[position].name);
+                    icon.setImageResource(R.drawable.ic_menu_author);
+                } else {
+                    emailText.setText(R.string.button_add_account);
+                    icon.setImageResource(R.drawable.ic_menu_new);
+                }
+                return convertView;
+            }
+        };
+
+        new MaterialAlertDialogBuilder(mContext)
+                .setTitle(R.string.title_choose_account)
+                .setAdapter(adapter, (dialog, which) -> {
+                    if (which < accounts.length) {
+                        showOptInDialog(accounts[which].name);
+                    } else {
+                        addNewAccount();
+                    }
+                })
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
+    }
+
+    private void addNewAccount() {
+        if (!(mContext instanceof android.app.Activity)) return;
+        AccountManager accountManager = AccountManager.get(mContext);
+        accountManager.addAccount("com.google", null, null, null, (android.app.Activity) mContext, future -> {
+            try {
+                Bundle result = future.getResult();
+                if (result.containsKey(AccountManager.KEY_ACCOUNT_NAME)) {
+                    final String email = result.getString(AccountManager.KEY_ACCOUNT_NAME);
+                    mMainThreadHandler.post(() -> showOptInDialog(email));
+                }
+            } catch (Exception e) {
+                Log.e("APICredentials", "Failed to add account", e);
+            }
+        }, mMainThreadHandler);
+    }
+
     /**
      * Handles a successful sign-in response, extracts the ID token, and passes it to the listener.
      */
@@ -274,7 +404,8 @@ public class BookCatalogueAPICredentials {
                 .setMessage(R.string.para_enhance_search)
                 .setPositiveButton("Yes, I'll help", (dialog, which) -> savePreferences(email, true))
                 .setNegativeButton("No, keep private", (dialog, which) -> savePreferences(email, false))
-                .setCancelable(false) // Force them to choose
+                .setNeutralButton(R.string.button_cancel, null)
+                .setCancelable(true)
                 .show();
     }
 

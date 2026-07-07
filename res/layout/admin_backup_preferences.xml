@@ -99,7 +99,7 @@
                 android:text="@string/para_backup_logged_out_message" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/log_in_button"
+                android:id="@+id/log_in_device_button"
                 style="@style/Widget.Material3.Button.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

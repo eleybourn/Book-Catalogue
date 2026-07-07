@@ -3,6 +3,7 @@ package com.eleybourn.bookcatalogue;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -28,7 +29,7 @@ public class AdminFormats extends BookCatalogueActivity {
 
     private CatalogueDBAdapter mDbHelper;
     private FormatAdapter mAdapter;
-    private String mSelectedFormat;
+    private FormatCount mSelectedFormat;
 
     @Override
     protected RequiredPermission[] getRequiredPermissions() {
@@ -51,12 +52,16 @@ public class AdminFormats extends BookCatalogueActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mAdapter = new FormatAdapter(
-                this::editFormat,
-                (format, view, menu) -> {
-                    mSelectedFormat = format;
-                    menu.add(0, EDIT_ID, 0, R.string.menu_edit_format);
-                    menu.add(0, MERGE_ID, 0, R.string.menu_merge_formats);
-                    menu.add(0, DELETE_ID, 0, R.string.button_delete);
+                (view, format) -> view.showContextMenu(),
+                (formatCount, view, menu) -> {
+                    mSelectedFormat = formatCount;
+                    menu.add(0, EDIT_ID, 0, R.string.menu_rename_format);
+                    MenuItem mergeItem = menu.add(0, MERGE_ID, 0, R.string.menu_select_formats_to_merge);
+                    if (mAdapter.getItemCount() <= 1) {
+                        mergeItem.setEnabled(false);
+                    }
+                    String countStr = getResources().getQuantityString(R.plurals.n_books, formatCount.count, formatCount.count);
+                    menu.add(0, DELETE_ID, 0, getString(R.string.menu_clear_format_n_books, countStr));
                 }
         );
         recyclerView.setAdapter(mAdapter);
@@ -73,11 +78,15 @@ public class AdminFormats extends BookCatalogueActivity {
 
         View emptyView = findViewById(R.id.empty);
         View recyclerView = findViewById(R.id.list);
+        View helpView = findViewById(R.id.help_text);
         if (emptyView != null) {
             emptyView.setVisibility(formats.isEmpty() ? View.VISIBLE : View.GONE);
         }
         if (recyclerView != null) {
             recyclerView.setVisibility(formats.isEmpty() ? View.GONE : View.VISIBLE);
+        }
+        if (helpView != null) {
+            helpView.setVisibility(formats.isEmpty() ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -88,7 +97,7 @@ public class AdminFormats extends BookCatalogueActivity {
         final EditText input = new EditText(this);
         input.setText(format);
         new AlertDialog.Builder(this)
-                .setTitle(R.string.label_edit_format_name)
+                .setTitle(R.string.menu_rename_format)
                 .setView(input)
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> {
                     String newFormat = input.getText().toString().trim();
@@ -105,12 +114,14 @@ public class AdminFormats extends BookCatalogueActivity {
     /**
      * Shows a confirmation dialogue to delete a format.
      */
-    private void deleteFormat(final String format) {
+    private void deleteFormat(final FormatCount formatCount) {
+        String countStr = getResources().getQuantityString(R.plurals.n_books, formatCount.count, formatCount.count);
+        String title = getString(R.string.title_clear_format_n_books, formatCount.format, countStr);
         new AlertDialog.Builder(this)
-                .setTitle(R.string.button_delete)
-                .setMessage(getString(R.string.really_delete_format, format))
+                .setTitle(title)
+                .setMessage(getString(R.string.really_delete_format, formatCount.format))
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> {
-                    mDbHelper.globalReplaceFormat(format, "");
+                    mDbHelper.globalReplaceFormat(formatCount.format, "");
                     fillData();
                 })
                 .setNegativeButton(R.string.button_cancel, null)
@@ -125,7 +136,6 @@ public class AdminFormats extends BookCatalogueActivity {
         allFormats.remove(targetFormat);
 
         if (allFormats.isEmpty()) {
-            Toast.makeText(this, R.string.alert_unexpected_error, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -134,7 +144,7 @@ public class AdminFormats extends BookCatalogueActivity {
         final ArrayList<String> selectedSources = new ArrayList<>();
 
         new AlertDialog.Builder(this)
-                .setTitle(R.string.menu_merge_formats)
+                .setTitle(getString(R.string.title_select_formats_to_merge_into, targetFormat))
                 .setMultiChoiceItems(formatArray, checkedItems, (dialog, which, isChecked) -> {
                     if (isChecked) {
                         selectedSources.add(formatArray[which]);
@@ -156,7 +166,7 @@ public class AdminFormats extends BookCatalogueActivity {
      */
     private void confirmMerge(final String targetFormat, final ArrayList<String> sources) {
         new AlertDialog.Builder(this)
-                .setTitle(R.string.menu_merge_formats)
+                .setTitle(R.string.menu_select_formats_to_merge)
                 .setMessage(getString(R.string.confirm_merge_formats, targetFormat))
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> {
                     for (String source : sources) {
@@ -175,13 +185,13 @@ public class AdminFormats extends BookCatalogueActivity {
 
         int itemId = item.getItemId();
         if (itemId == EDIT_ID) {
-            editFormat(mSelectedFormat);
+            editFormat(mSelectedFormat.format);
             return true;
         } else if (itemId == DELETE_ID) {
             deleteFormat(mSelectedFormat);
             return true;
         } else if (itemId == MERGE_ID) {
-            mergeFormats(mSelectedFormat);
+            mergeFormats(mSelectedFormat.format);
             return true;
         }
         return super.onContextItemSelected(item);

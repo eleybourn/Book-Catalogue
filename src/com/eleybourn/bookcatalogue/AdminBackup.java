@@ -188,7 +188,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         mApiCredentials.handleLegacySignInResult(result.getData());
                     } else if (result.getData() != null) {
-                        // Even if not OK, the data might contain a specific error code
+                        // Even if not OK, the data might contain a specific error code from Google
                         mApiCredentials.handleLegacySignInResult(result.getData());
                     } else {
                         Toast.makeText(this, "Sign-in cancelled.", Toast.LENGTH_SHORT).show();

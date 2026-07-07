@@ -21,11 +21,11 @@ public class FormatAdapter extends RecyclerView.Adapter<FormatAdapter.FormatView
     private final OnItemLongClickListener longListener;
 
     public interface OnItemClickListener {
-        void onItemClick(String format);
+        void onItemClick(View view, String format);
     }
 
     public interface OnItemLongClickListener {
-        void onItemLongClick(String format, View view, ContextMenu menu);
+        void onItemLongClick(FormatCount formatCount, View view, ContextMenu menu);
     }
 
     public FormatAdapter(OnItemClickListener listener, OnItemLongClickListener longListener) {
@@ -99,9 +99,9 @@ public class FormatAdapter extends RecyclerView.Adapter<FormatAdapter.FormatView
             String countText = itemView.getResources().getQuantityString(R.plurals.n_books, formatCount.count, formatCount.count);
             countView.setText(countText);
 
-            itemView.setOnClickListener(v -> listener.onItemClick(formatCount.format));
+            itemView.setOnClickListener(v -> listener.onItemClick(v, formatCount.format));
 
-            itemView.setOnCreateContextMenuListener((menu, v, menuInfo) -> longListener.onItemLongClick(formatCount.format, v, menu));
+            itemView.setOnCreateContextMenuListener((menu, v, menuInfo) -> longListener.onItemLongClick(formatCount, v, menu));
         }
     }
 }

@@ -14,7 +14,15 @@
         android:id="@+id/root"
         style="@style/layout_main"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:id="@+id/help_text"
+            style="@style/layout_paragraph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/description_manage_formats_help" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"

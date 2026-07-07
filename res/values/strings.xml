@@ -185,6 +185,7 @@
     <string name="description_new_and_changed_books_blurb">Only import books that are new, or which have been updated more recently in the archive. This is useful when synchronizing two devices.</string>
     <string name="description_no_bookshelves">You have not created any bookshelves yet. Please add some using the add icon at the top of this screen.</string>
     <string name="description_no_formats">No custom formats found in the database.</string>
+    <string name="description_manage_formats_help">From here you can manage the list of unique formats in your collection. Renaming, merging, or clearing formats will update the format field on all associated books instantly.</string>
     <string name="description_overwrite_thumbnail">This will update the selected fields as shown, but Thumbnails can optionally be downloaded for ALL books.\n\nDo you want to overwrite all existing thumbnails? Warning, this may take a long time. </string>
     <!-- Brief description -->
     <string name="description_preferences_blurb">Preferences and user-defined list styles</string>
@@ -928,6 +929,12 @@
     <string name="title_manage_bookshelves">Manage Bookshelves</string>
     <string name="title_manage_fields">Manage Field Visibility</string>
     <string name="title_manage_formats">Manage Formats</string>
+    <string name="menu_rename_format">Rename format</string>
+    <string name="menu_select_formats_to_merge">Select formats To merge</string>
+    <string name="title_select_formats_to_merge_into">Select formats to merge into %s</string>
+    <string name="menu_clear_format">Clear format</string>
+    <string name="menu_clear_format_n_books">Clear format from %s</string>
+    <string name="title_clear_format_n_books">Clear format %1$s from %2$s</string>
     <string name="title_other_preferences">Other Preferences</string>
     <string name="title_required">A non-blank title must be specified</string>
     <string name="title_select_fields_to_update">Select Fields to Update</string>

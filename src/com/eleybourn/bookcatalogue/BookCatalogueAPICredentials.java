@@ -70,6 +70,16 @@ public class BookCatalogueAPICredentials {
         }
         android.app.Activity activity = (android.app.Activity) mContext;
 
+        // Before starting any new flow, sign out of any legacy sessions to clear stale state
+        // and prevent "already logged in" conflicts on some devices.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+        GoogleSignIn.getClient(activity, gso).signOut().addOnCompleteListener(task -> {
+            // Now proceed with normal checks and flows
+            checkPlayServicesAndStart(activity);
+        });
+    }
+
+    private void checkPlayServicesAndStart(android.app.Activity activity) {
         // Check Play Services
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(mContext);

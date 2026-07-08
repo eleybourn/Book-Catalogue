@@ -62,7 +62,8 @@
                 style="@style/locale_field_text_title"
                 android:layout_below="@+id/heading_title"
                 android:importantForAutofill="no"
-                android:nextFocusDown="@+id/field_isbn" />
+                android:nextFocusDown="@+id/field_isbn"
+                android:saveEnabled="false" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -84,7 +85,8 @@
                 android:layout_alignParentStart="false"
                 android:importantForAutofill="no"
                 android:inputType="text"
-                android:nextFocusDown="@+id/field_series" />
+                android:nextFocusDown="@+id/field_series"
+                android:saveEnabled="false" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -112,6 +114,7 @@
                 android:layout_toStartOf="@id/format_dropdown_button"
                 android:completionThreshold="2"
                 android:nextFocusDown="@+id/field_genre"
+                android:saveEnabled="false"
                 android:singleLine="true" />
         </RelativeLayout>
 
@@ -151,7 +154,8 @@
                 style="@style/locale_field_text_name"
                 android:layout_below="@+id/heading_publisher"
                 android:completionThreshold="2"
-                android:nextFocusDown="@+id/button_date_published" />
+                android:nextFocusDown="@+id/button_date_published"
+                android:saveEnabled="false" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -210,7 +214,8 @@
                 android:layout_below="@+id/heading_pages"
                 android:importantForAutofill="no"
                 android:inputType="number"
-                android:nextFocusDown="@+id/field_list_price" />
+                android:nextFocusDown="@+id/field_list_price"
+                android:saveEnabled="false" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -233,7 +238,8 @@
                 android:layout_marginTop="-12dp"
                 android:importantForAutofill="no"
                 android:inputType="numberDecimal"
-                android:nextFocusDown="@+id/field_genre" />
+                android:nextFocusDown="@+id/field_genre"
+                android:saveEnabled="false" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -253,7 +259,8 @@
                 style="@style/locale_field_text"
                 android:layout_below="@+id/heading_genre"
                 android:completionThreshold="2"
-                android:nextFocusDown="@+id/field_language" />
+                android:nextFocusDown="@+id/field_language"
+                android:saveEnabled="false" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -274,6 +281,7 @@
                 android:layout_below="@+id/heading_language"
                 android:completionThreshold="2"
                 android:nextFocusDown="@+id/field_anthology"
+                android:saveEnabled="false"
                 android:singleLine="true" />
         </RelativeLayout>
 
@@ -302,7 +310,8 @@
                 style="@style/field_text"
                 android:layout_below="@+id/heading_description"
                 android:hint="@string/not_set"
-                android:paddingHorizontal="4dp" />
+                android:paddingHorizontal="4dp"
+                android:saveEnabled="false" />
         </RelativeLayout>
 
     </LinearLayout>

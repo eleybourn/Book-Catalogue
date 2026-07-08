@@ -89,6 +89,7 @@
                 android:layout_below="@+id/label_notes"
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences|textMultiLine"
+                android:saveEnabled="false"
                 android:singleLine="false" />
 
         </RelativeLayout>
@@ -110,7 +111,8 @@
                 style="@style/field_text"
                 android:layout_below="@+id/label_location"
                 android:completionThreshold="2"
-                android:inputType="textCapSentences" />
+                android:inputType="textCapSentences"
+                android:saveEnabled="false" />
         </RelativeLayout>
 
         <CheckBox

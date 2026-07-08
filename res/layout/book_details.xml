@@ -345,6 +345,7 @@
             style="@style/layout_paragraph"
             android:text="I hereby nominate Lizard the humongous football player and Sylphide the mysterious ballerina as two of my favorite characters of 2012. Rarely have such elite and outsize personalities felt so true on the page--a joy to be with, worth rooting for."
             android:textIsSelectable="true"
+            android:saveEnabled="false"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 

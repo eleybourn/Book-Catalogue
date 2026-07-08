@@ -17,6 +17,7 @@
             android:gravity="top"
             android:inputType="textMultiLine"
             android:labelFor="@string/label_description"
+            android:saveEnabled="false"
             tools:ignore="LabelFor">
             <requestFocus />
         </EditText>

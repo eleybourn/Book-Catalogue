@@ -1306,7 +1306,7 @@ public class Utils {
      * Set the relevant fields in a BigDateDialog
      *
      * @param dialog  Dialogue to set
-     * @param current Current value (may be null)
+     * @param current Current value (this may be null)
      */
     public static void prepareDateDialogFragment(PartialDatePickerFragment dialog, Object current) {
         String dateString = current == null ? "" : current.toString();

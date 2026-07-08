@@ -39,7 +39,8 @@
                 android:id="@+id/field_loan_to_who"
                 style="@style/locale_field_text_name"
                 android:completionThreshold="2"
-                android:hint="@string/option_name" />
+                android:hint="@string/option_name"
+                android:saveEnabled="false" />
         </LinearLayout>
 
         <Button

@@ -59,6 +59,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/row_add_anthology_title"
         android:layout_alignParentBottom="true"
+        android:saveEnabled="false"
         android:textSize="16sp" />
 
 </RelativeLayout>

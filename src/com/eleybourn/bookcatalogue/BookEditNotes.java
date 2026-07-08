@@ -178,7 +178,7 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
     }
 
     /**
-     * The callback received when the user "sets" the date in the dialog.
+     * The callback received when the user "sets" the date in the dialogue.
      * Build a full or partial date in SQL format
      */
     @Override
@@ -189,7 +189,7 @@ public class BookEditNotes extends BookEditFragmentAbstract implements OnPartial
     }
 
     /**
-     * The callback received when the user "cancels" the date in the dialog.
+     * The callback received when the user "cancels" the date in the dialogue.
      * Dismiss it.
      */
     @Override

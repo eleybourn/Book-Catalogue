@@ -243,7 +243,7 @@
     										\n\nYou can also edit the styles menu, and the styles themselves from here.</string>
     <string name="hint_library_style_groups">You can use this screen to modify the hierarchy of headings for a specific library style.
     										\n\nA green tick indicates the heading will be shown in the list, and a red cross indicates it will not be shown.
-    										Clicking on a green tick will turn it into a cross, and vice-versa.
+    										Clicking on a green tick will turn it into a cross, and vice versa.
     										\n\nYou can re-order the hierarchy by dragging the icon at the extreme right of each row up or down.</string>
     <string name="hint_library_style_menu">This menu allows you to select the style of the list.
     								\n\nYou can also customize this menu, as well as create your own list styles, by clicking \'Customize\' at the end of the list.</string>
@@ -254,7 +254,7 @@
     										the list. e.g. to only retrieve books you have not read yet.</string>
     <string name="hint_library_styles_editor">You can use this screen to customize the list of styles that will be displayed in your default styles menu.
     										\n\nA green tick indicates the style will be shown in the list, and a red cross indicates it will not be shown.
-    										Clicking on a green tick will turn it into a cross, and vice-versa.
+    										Clicking on a green tick will turn it into a cross, and vice versa.
     										\n\nIf no styles are ticked, then all styles will be shown.
     										\n\nIt is also possible to re-order the items by dragging the icon at the extreme right of each row.
     										\n\nClicking anywhere else in a row will allow you to edit the details of a specific style (or clone it, if 
@@ -526,7 +526,7 @@
 			* Fix tiling of background image for some Android versions\n\n
 			* Better handling of incompatible scanner apps\n\n
 			* Send more details on crash or when asking for help\n\n
-			* Cleanup of layouts (Nick Silin)\n\n
+			* Clean up of layouts (Nick Silin)\n\n
 			* Bug fixes\n\n
 			</p>
 		]]></string>
@@ -641,7 +641,7 @@
 			<p><b>New in 5.2.0</b>\n\n
 			    * User-selectable locale in Preferences\n\n
 			    * Greek translation (Dimitris Klisiaris)\n\n
-                * Locale-specific capitalization (de, fr)\n\n
+                * Locale-specific capitalization (Germany, France)\n\n
                 * Improvements to search\n\n
 				* Bug fixes\n\n
 			</p>

@@ -2501,6 +2501,10 @@ public class CatalogueDBAdapter {
      * @return rowId or -1 if failed
      */
     public long createBook(long id, BookData values, int flags) {
+        SyncLock txLock = null;
+        if (mDb.outsideTransaction()) {
+            txLock = mDb.beginTransaction(true);
+        }
 
         try {
             // Make sure we have the target table details
@@ -2534,6 +2538,11 @@ public class CatalogueDBAdapter {
 
             long rowId = mDb.insert(DB_TB_BOOKS, null, initialValues);
 
+            // If insert failed, stop here to avoid FOREIGN KEY violations when updating related tables.
+            if (rowId == -1) {
+                throw new RuntimeException("Error inserting book into database: insert returned -1");
+            }
+
             String bookshelf = values.getBookshelfList();
             if (bookshelf != null && !bookshelf.trim().isEmpty()) {
                 createBookshelfBooks(rowId, Utils.decodeList(bookshelf, BookEditFields.BOOKSHELF_SEPARATOR), false);
@@ -2553,10 +2562,18 @@ public class CatalogueDBAdapter {
                 Logger.logError(e, "Failed to update FTS");
             }
 
+            if (txLock != null) {
+                mDb.setTransactionSuccessful();
+            }
+
             return rowId;
         } catch (Exception e) {
             Logger.logError(e);
             throw new RuntimeException("Error creating book from " + values.getDataAsString() + ": " + e.getMessage(), e);
+        } finally {
+            if (txLock != null) {
+                mDb.endTransaction(txLock);
+            }
         }
     }
 
@@ -2580,6 +2597,8 @@ public class CatalogueDBAdapter {
      * @param bookshelves A separated string of bookshelf names
      */
     public void createBookshelfBooks(long bookId, ArrayList<String> bookshelves, boolean dirtyBookIfNecessary) {
+        if (bookId <= 0)
+            return;
         if (mDeleteBookshelfBooksStmt == null) {
             mDeleteBookshelfBooksStmt = mStatements.add("mDeleteBookshelfBooksStmt", "Delete from " + DB_TB_BOOK_BOOKSHELF_WEAK + " Where " + KEY_BOOK + " = ?");
         }
@@ -3107,6 +3126,12 @@ public class CatalogueDBAdapter {
     public void updateBook(long rowId, BookData values, int flags) {
         boolean success;
 
+        // Atomic update of book and its relationships
+        SyncLock txLock = null;
+        if (mDb.outsideTransaction()) {
+            txLock = mDb.beginTransaction(true);
+        }
+
         try {
             // Make sure we have the target table details
             if (mBooksInfo == null)
@@ -3126,7 +3151,13 @@ public class CatalogueDBAdapter {
                 args.put(DOM_LAST_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
             // ALWAYS set the INSTANCE_UPDATE_DATE; this is used for backups
             //args.put(DOM_INSTANCE_UPDATE_DATE.name, Utils.toSqlDateTime(Calendar.getInstance().getTime()));
-            mDb.update(DB_TB_BOOKS, args, KEY_ROW_ID + "=" + rowId, null);
+            int rowsAffected = mDb.update(DB_TB_BOOKS, args, KEY_ROW_ID + "=" + rowId, null);
+
+            // If no rows were affected, the book no longer exists (e.g., deleted by another activity/sync).
+            // We should stop here to avoid FOREIGN KEY violations when updating related tables.
+            if (rowsAffected == 0) {
+                return;
+            }
 
             String bookshelf = values.getBookshelfList();
             if (bookshelf != null && !bookshelf.trim().isEmpty()) {
@@ -3160,14 +3191,24 @@ public class CatalogueDBAdapter {
             } catch (Exception e) {
                 Logger.logError(e, "Failed to update FTS");
             }
+
+            if (txLock != null) {
+                mDb.setTransactionSuccessful();
+            }
         } catch (Exception e) {
             Logger.logError(e);
             throw new RuntimeException("Error updating book from " + values.getDataAsString() + ": " + e.getMessage(), e);
+        } finally {
+            if (txLock != null) {
+                mDb.endTransaction(txLock);
+            }
         }
     }
 
     //	private static final String NEXT_STMT_NAME = "next";
     private void createBookAnthologyTitles(long bookId, ArrayList<AnthologyTitle> list, boolean dirtyBookIfNecessary) {
+        if (bookId <= 0)
+            return;
         if (dirtyBookIfNecessary)
             setBookDirty(bookId);
 
@@ -3189,6 +3230,8 @@ public class CatalogueDBAdapter {
      * @param bookId ID of book
      */
     private void createBookAuthors(long bookId, ArrayList<Author> authors, boolean dirtyBookIfNecessary) {
+        if (bookId <= 0)
+            return;
         if (dirtyBookIfNecessary)
             setBookDirty(bookId);
 
@@ -3240,6 +3283,8 @@ public class CatalogueDBAdapter {
     }
 
     private void createBookSeries(long bookId, ArrayList<Series> series, boolean dirtyBookIfNecessary) {
+        if (bookId <= 0)
+            return;
         if (dirtyBookIfNecessary)
             setBookDirty(bookId);
         // If we have SERIES_DETAILS, same them.

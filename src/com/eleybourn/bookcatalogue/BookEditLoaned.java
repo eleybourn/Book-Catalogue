@@ -20,13 +20,10 @@
 
 package com.eleybourn.bookcatalogue;
 
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,9 +33,6 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 
 import com.eleybourn.bookcatalogue.debug.Tracker;
-import com.eleybourn.bookcatalogue.utils.Logger;
-
-import java.util.ArrayList;
 
 /**
  * This class is called by the BookEdit activity and displays the Loaned Tab
@@ -46,59 +40,6 @@ import java.util.ArrayList;
  * This will then be saved in the database for reference.
  */
 public class BookEditLoaned extends BookEditFragmentAbstract {
-
-    // Define the permission launcher
-    private final androidx.activity.result.ActivityResultLauncher<String> mRequestPermissionLauncher =
-            registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    // Permission granted, refresh the view to load contacts
-                    loanTo();
-                }
-            });
-
-    /**
-     * Return a list of friends from your contact list.
-     * This is for the autoComplete textView
-     *
-     * @return an ArrayList of names
-     */
-    protected ArrayList<String> getFriends() {
-        ArrayList<String> friend_list = new ArrayList<>();
-        Uri baseUri = null;
-        String display_name = null;
-        try {
-            Class<?> c = Class.forName("android.provider.ContactsContract$Contacts");
-            baseUri = (Uri) c.getField("CONTENT_URI").get(baseUri);
-            display_name = (String) c.getField("DISPLAY_NAME").get(display_name);
-        } catch (Exception e) {
-            try {
-                Class<?> c = Class.forName("android.provider.Contacts$People");
-                baseUri = (Uri) c.getField("CONTENT_URI").get(baseUri);
-                display_name = (String) c.getField("DISPLAY_NAME").get(display_name);
-            } catch (Exception e2) {
-                Logger.logError(e);
-            }
-        }
-        assert baseUri != null;
-
-        // Use try-with-resources to automatically close the cursor
-        try (Cursor contactsCursor = requireActivity().getContentResolver().query(baseUri, null, null, null, null)) {
-            if (contactsCursor != null) {
-                // Calculate the index once, outside the loop for performance
-                int nameColumnIndex = contactsCursor.getColumnIndex(display_name);
-
-                while (contactsCursor.moveToNext()) {
-                    // Check if the column actually exists (index >= 0) before reading
-                    if (nameColumnIndex >= 0) {
-                        String name = contactsCursor.getString(nameColumnIndex);
-                        friend_list.add(name);
-                    }
-                }
-            }
-        }
-
-        return friend_list;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -144,7 +85,6 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
     private void loanTo() {
         assert getView() != null;
         NestedScrollView sv = getView().findViewById(R.id.scrollView);
-        //askPermission(sv);
         try {
             sv.findViewById(R.id.layout_loan_to).setVisibility(View.VISIBLE);
             // Set the use of Caps for DE and FR
@@ -169,28 +109,6 @@ public class BookEditLoaned extends BookEditFragmentAbstract {
                 loaned(friend);
             });
         } catch (Exception ignored) {
-        }
-    }
-
-    @SuppressWarnings("unused") // keep this method for the time being. We might restore this functionality later.
-    private void askPermission(NestedScrollView sv) {
-        AutoCompleteTextView mUserText = sv.findViewById(R.id.field_loan_to_who);
-        if (androidx.core.content.ContextCompat.checkSelfPermission(
-                requireContext(), android.Manifest.permission.READ_CONTACTS) ==
-                android.content.pm.PackageManager.PERMISSION_GRANTED) {
-
-            // We have permission, load the contacts safely
-            try {
-                ArrayAdapter<String> series_adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_dropdown_item_1line, getFriends());
-                mUserText.setAdapter(series_adapter);
-            } catch (Exception e) {
-                Logger.logError(e);
-            }
-
-        } else {
-            // We don't have permission, request it
-            // Note: You might want to show a rationale UI first if shouldShowRequestPermissionRationale returns true
-            mRequestPermissionLauncher.launch(android.Manifest.permission.READ_CONTACTS);
         }
     }
 

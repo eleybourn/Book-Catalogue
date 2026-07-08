@@ -342,6 +342,7 @@ public class BookCatalogueAPI implements SimpleTask {
     public void runFullBackup() {
         CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
         try {
+            isBackupRunning = true;
             db.open();
             // 1. Fetch current cloud state to identify orphaned records
             notifyProgress(0, 1, "Reviewing online backup...");
@@ -380,6 +381,7 @@ public class BookCatalogueAPI implements SimpleTask {
             Log.e("BookCatalogueAPI", "Full backup failed", e);
             notifyError("Backup failed: " + e.getMessage());
         } finally {
+            isBackupRunning = false;
             db.close();
         }
     }
@@ -784,7 +786,8 @@ public class BookCatalogueAPI implements SimpleTask {
         new Handler(Looper.getMainLooper()).post(() -> {
             if (mInstanceListener != null) {
                 mInstanceListener.onApiProgress(mRequest, current, total, message);
-            } else if (sActiveListener != null) {
+            }
+            if (sActiveListener != null && sActiveListener != mInstanceListener) {
                 sActiveListener.onApiProgress(mRequest, current, total, message);
             }
         });
@@ -797,7 +800,8 @@ public class BookCatalogueAPI implements SimpleTask {
         new Handler(Looper.getMainLooper()).post(() -> {
             if (mInstanceListener != null) {
                 mInstanceListener.onApiProgress(mRequest, current, total);
-            } else if (sActiveListener != null) {
+            }
+            if (sActiveListener != null && sActiveListener != mInstanceListener) {
                 sActiveListener.onApiProgress(mRequest, current, total);
             }
         });
@@ -807,7 +811,8 @@ public class BookCatalogueAPI implements SimpleTask {
         new Handler(Looper.getMainLooper()).post(() -> {
             if (mInstanceListener != null) {
                 mInstanceListener.onApiComplete(mRequest, message);
-            } else if (sActiveListener != null) {
+            }
+            if (sActiveListener != null && sActiveListener != mInstanceListener) {
                 sActiveListener.onApiComplete(mRequest, message);
             }
         });
@@ -817,7 +822,8 @@ public class BookCatalogueAPI implements SimpleTask {
         new Handler(Looper.getMainLooper()).post(() -> {
             if (mInstanceListener != null) {
                 mInstanceListener.onApiError(mRequest, error);
-            } else if (sActiveListener != null) {
+            }
+            if (sActiveListener != null && sActiveListener != mInstanceListener) {
                 sActiveListener.onApiError(mRequest, error);
             }
         });
@@ -975,6 +981,7 @@ public class BookCatalogueAPI implements SimpleTask {
         ArrayList<HashMap<String, String>> thumbnailTasks = new ArrayList<>();
 
         try {
+            isRestoreRunning = true;
             notifyProgress(0, 1, "Getting restore information..."); // Indicate that the process has started
             JSONArray books = getAllBooks(false);
 
@@ -1226,6 +1233,7 @@ public class BookCatalogueAPI implements SimpleTask {
             Log.e("BookCatalogueAPI", "Restore failed", e);
             notifyError("Restore failed: " + e.getMessage());
         } finally {
+            isRestoreRunning = false;
             // --- ROBUST FINALLY BLOCK ---
             // This ensures the transaction is always closed, even on error.
             if (db != null && txLock != null) {

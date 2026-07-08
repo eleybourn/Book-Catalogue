@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.data.AnthologyTitle;
@@ -123,6 +124,35 @@ public class BookCatalogueAPI implements SimpleTask {
         BookCataloguePreferences prefs = new BookCataloguePreferences();
         if (prefs.isSubscribed() && prefs.isOnlineSyncEnabled() && !prefs.getAccountApiToken().isEmpty()) {
             new BookCatalogueAPI(context, REQUEST_DELETE_BOOK, bookId, null);
+        }
+    }
+
+    /**
+     * Helper method to automatically run a full backup in the background when the app starts.
+     */
+    public static void backgroundFullBackup(Context context) {
+        BookCataloguePreferences prefs = new BookCataloguePreferences();
+        if (prefs.isSubscribed() && prefs.isOnlineSyncEnabled() && !prefs.getAccountApiToken().isEmpty()) {
+            final Context appContext = context.getApplicationContext();
+            Toast.makeText(appContext, "Checking online backup status...", Toast.LENGTH_SHORT).show();
+            new BookCatalogueAPI(appContext, REQUEST_BACKUP_ALL, new ApiListener() {
+                @Override
+                public void onApiProgress(String request, int current, int total, String message) {}
+
+                @Override
+                public void onApiProgress(String request, int current, int total) {}
+
+                @Override
+                public void onApiComplete(String request, String message) {
+                    if (REQUEST_BACKUP_ALL.equals(request)) {
+                        Toast.makeText(appContext, "Backup check complete", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onApiError(String request, String error) {
+                }
+            });
         }
     }
 

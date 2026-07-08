@@ -379,6 +379,9 @@ public class StartupActivity
     private void stage4Startup() {
         BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 
+        // Run background full backup if enabled
+        BookCatalogueAPI.backgroundFullBackup(this);
+
         // Handle startup specially.
         // Check if we really want to start this activity.
         if (prefs.getStartInMyBook()) {

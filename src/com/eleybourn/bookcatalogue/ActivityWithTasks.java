@@ -38,7 +38,6 @@ import com.eleybourn.bookcatalogue.TaskManager.TaskManagerListener;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.debug.Tracker.States;
-import com.eleybourn.bookcatalogue.utils.Logger;
 
 import java.util.Objects;
 
@@ -101,8 +100,6 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
                 TaskManagerController c = TaskManager.getMessageSwitch().getController(mTaskManagerId);
                 if (c != null) {
                     mTaskManager = c.getManager();
-                } else {
-                    Logger.logError(new RuntimeException("Have ID, but can not find controller getting TaskManager"));
                 }
             }
 
@@ -156,9 +153,9 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
     }
 
     /**
-     * Utility routine to standardize checking for desired dialog type.
+     * Utility routine to standardize checking for desired dialogue type.
      *
-     * @return    true if dialog should be determinate
+     * @return    true if dialogue should be determinate
      */
     private boolean wantDeterminateProgress() {
         return (mProgressMax > 0);
@@ -205,7 +202,7 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
         }
 
         /**
-         * TaskManager is finishing...cleanup.
+         * TaskManager is finishing...clean-up.
          */
         @Override
         public void onFinished() {
@@ -216,7 +213,7 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
     };
 
     /**
-     * Setup the ProgressDialog according to our needs
+     * Set up the ProgressDialog according to our needs
      */
     private void updateProgress() {
         boolean wantDet = wantDeterminateProgress();
@@ -296,7 +293,7 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
         if (mTaskManagerId != 0)
             outState.putLong("TaskManagerId", mTaskManagerId);
     }    /**
-     * Handler for the user cancelling the progress dialog.
+     * Handler for the user cancelling the progress dialogue.
      */
     private final OnCancelListener mCancelHandler = i -> cancelAndUpdateProgress();
 

@@ -9,295 +9,306 @@
 
     <include layout="@layout/layout_background" />
 
-    <LinearLayout
-        android:id="@+id/root"
-        style="@style/layout_main"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Subscription Section -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/subscription_card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/p_lg"
-            app:cardCornerRadius="@dimen/p_md"
-            app:strokeWidth="1dp"
-            app:strokeColor="?attr/colorOutline">
+        <LinearLayout
+            android:id="@+id/root"
+            style="@style/layout_main">
 
-            <LinearLayout
+            <!-- Subscription Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/subscription_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/p_md">
+                android:layout_marginBottom="@dimen/p_lg"
+                app:cardCornerRadius="@dimen/p_md"
+                app:strokeWidth="1dp"
+                app:strokeColor="?attr/colorOutline">
 
-                <TextView
-                    android:id="@+id/subscription_title"
-                    style="@style/TextAppearance.Material3.TitleMedium"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_premium_subscription"
-                    android:textColor="?attr/colorPrimary" />
+                    android:orientation="vertical"
+                    android:padding="@dimen/p_md">
+
+                    <TextView
+                        android:id="@+id/subscription_title"
+                        style="@style/TextAppearance.Material3.TitleMedium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_premium_subscription"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/subscription_status"
+                        style="@style/TextAppearance.Material3.BodyMedium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/p_md"
+                        tools:text="@string/label_subscription_active" />
+
+                    <TextView
+                        android:id="@+id/subscription_expiry"
+                        style="@style/TextAppearance.Material3.BodySmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/p_md"
+                        android:visibility="gone"
+                        tools:text="Expires: 2026-02-15 14:30" />
+
+                    <TextView
+                        android:id="@+id/subscription_description"
+                        style="@style/TextAppearance.Material3.BodySmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/p_md"
+                        android:text="@string/para_subscription_benefits" />
+
+                    <TextView
+                        android:id="@+id/subscription_description2"
+                        style="@style/TextAppearance.Material3.BodySmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/p_md"
+                        android:text="@string/para_subscription_benefits2" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_subscribe_manage"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="@dimen/p_md"
+                        android:text="@string/button_subscribe" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Logged-out View -->
+            <!-- This group is shown when the user is not logged in. -->
+            <LinearLayout
+                android:id="@+id/logged_out_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/subscription_status"
-                    style="@style/TextAppearance.Material3.BodyMedium"
+                    style="@style/layout_paragraph"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/p_md"
-                    tools:text="@string/label_subscription_active" />
-
-                <TextView
-                    android:id="@+id/subscription_expiry"
-                    style="@style/TextAppearance.Material3.BodySmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/p_md"
-                    android:visibility="gone"
-                    tools:text="Expires: 2026-02-15 14:30" />
-
-                <TextView
-                    android:id="@+id/subscription_description"
-                    style="@style/TextAppearance.Material3.BodySmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/p_md"
-                    android:text="@string/para_subscription_benefits" />
-
-                <TextView
-                    android:id="@+id/subscription_description2"
-                    style="@style/TextAppearance.Material3.BodySmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/p_md"
-                    android:text="@string/para_subscription_benefits2" />
+                    android:gravity="center"
+                    android:text="@string/para_backup_logged_out_message" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_subscribe_manage"
-                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:id="@+id/log_in_device_button"
+                    style="@style/Widget.Material3.Button.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="@dimen/p_md"
-                    android:text="@string/button_subscribe" />
+                    android:text="@string/button_login_with_google"
+                    app:icon="@drawable/googleg_standard_color_18" />
+
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <!-- Logged-out View -->
-        <!-- This group is shown when the user is not logged in. -->
-        <LinearLayout
-            android:id="@+id/logged_out_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/layout_paragraph"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/para_backup_logged_out_message" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/log_in_device_button"
-                style="@style/Widget.Material3.Button.Icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/button_login_with_google"
-                app:icon="@drawable/googleg_standard_color_18" />
-
-        </LinearLayout>
-
-        <!-- Logged-in View -->
-        <!-- This group is shown when the user is successfully logged in. -->
-        <LinearLayout
-            android:id="@+id/logged_in_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/logged_in_status"
-                style="@style/layout_paragraph"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:text="@string/para_backup_logged_in_as" />
-
-            <TextView
-                android:id="@+id/field_user_email"
-                style="@style/layout_url"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                tools:text="user@example.com" />
-
+            <!-- Logged-in View -->
+            <!-- This group is shown when the user is successfully logged in. -->
             <LinearLayout
+                android:id="@+id/logged_in_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal"
-                >
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/backup_now"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="@dimen/p_md"
-                    android:text="@string/button_backup_now"/>
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/restore_now"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="@dimen/p_md"
-                    android:text="@string/button_restore_now"/>
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/logged_in_status"
+                    style="@style/layout_paragraph"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingBottom="0dp"
+                    android:text="@string/para_backup_logged_in_as" />
+
+                <TextView
+                    android:id="@+id/field_user_email"
+                    style="@style/layout_url"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    tools:text="user@example.com" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/backup_now"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="@dimen/p_md"
+                        android:text="@string/button_backup_now" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/restore_now"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="@dimen/p_md"
+                        android:text="@string/button_restore_now" />
+
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/log_out_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/p_md"
+                    android:text="@string/button_logout" />
+
+                <CheckBox
+                    android:id="@+id/field_online_sync"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/p_lg"
+                    android:paddingHorizontal="@dimen/p_md"
+                    android:layout_marginHorizontal="@dimen/p_xl"
+                    android:text="@string/label_online_sync" />
+
+                <CheckBox
+                    android:id="@+id/field_opt_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/p_lg"
+                    android:paddingHorizontal="@dimen/p_md"
+                    android:layout_marginHorizontal="@dimen/p_xl"
+                    android:text="@string/label_enhance_search" />
+
+                <TextView
+                    android:id="@+id/field_backup_stats"
+                    style="@style/TextAppearance.Material3.BodyMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/p_lg"
+                    tools:text="125 of 150 books backed up" />
+
+                <TextView
+                    android:id="@+id/field_last_backup_date"
+                    style="@style/TextAppearance.Material3.BodySmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/p_lg"
+                    tools:text="Last backup: 15 Jan 2026" />
             </LinearLayout>
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/log_out_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/p_md"
-                android:text="@string/button_logout" />
 
-            <CheckBox
-                android:id="@+id/field_online_sync"
+            <!-- Local View -->
+            <LinearLayout
+                android:id="@+id/local_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="@dimen/p_lg"
-                android:paddingHorizontal="@dimen/p_md"
-                android:layout_marginHorizontal="@dimen/p_xl"
-                android:text="@string/label_online_sync" />
-
-            <CheckBox
-                android:id="@+id/field_opt_in"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="@dimen/p_lg"
-                android:paddingHorizontal="@dimen/p_md"
-                android:layout_marginHorizontal="@dimen/p_xl"
-                android:text="@string/label_enhance_search" />
-
-            <TextView
-                android:id="@+id/field_backup_stats"
-                style="@style/TextAppearance.Material3.BodyMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/p_lg"
-                tools:text="125 of 150 books backed up" />
-
-            <TextView
-                android:id="@+id/field_last_backup_date"
-                style="@style/TextAppearance.Material3.BodySmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/p_lg"
-                tools:text="Last backup: 15 Jan 2026" />
-        </LinearLayout>
-
-        <!-- Local View -->
-        <LinearLayout
-            android:id="@+id/local_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/p_xl"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:paddingVertical="@dimen/p_md"
                 android:layout_marginTop="@dimen/p_xl"
-                android:layout_marginBottom="@dimen/p_md"
-                android:text="@string/title_local_backup"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold"
-                android:textColor="?attr/colorOnPrimary"
-                android:background="?attr/colorPrimary" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="@dimen/p_md"
                 android:gravity="center"
-                android:orientation="horizontal"
-                >
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/export_csv_locally"
-                    style="@style/Widget.Material3.Button.Icon"
-                    android:layout_width="0dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="@dimen/p_md"
-                    android:textColor="?attr/colorOnSecondary"
-                    android:backgroundTint="?attr/colorSecondary"
-                    android:text="@string/label_export_to_csv"
-                    app:icon="@drawable/ic_menu_spreadsheet" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/import_csv_locally"
-                    style="@style/Widget.Material3.Button.Icon"
-                    android:layout_width="0dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:paddingVertical="@dimen/p_md"
+                    android:layout_marginTop="@dimen/p_xl"
+                    android:layout_marginBottom="@dimen/p_md"
+                    android:text="@string/title_local_backup"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:background="?attr/colorPrimary" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="@dimen/p_md"
-                    android:textColor="?attr/colorOnSecondary"
-                    android:backgroundTint="?attr/colorSecondary"
-                    android:text="@string/label_import_from_csv"
-                    app:icon="@drawable/ic_menu_spreadsheet" />
+                    android:paddingVertical="@dimen/p_md"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/export_csv_locally"
+                        style="@style/Widget.Material3.Button.Icon"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="@dimen/p_md"
+                        android:textColor="?attr/colorOnSecondary"
+                        android:backgroundTint="?attr/colorSecondary"
+                        android:text="@string/label_export_to_csv"
+                        app:icon="@drawable/ic_menu_spreadsheet" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/import_csv_locally"
+                        style="@style/Widget.Material3.Button.Icon"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="@dimen/p_md"
+                        android:textColor="?attr/colorOnSecondary"
+                        android:backgroundTint="?attr/colorSecondary"
+                        android:text="@string/label_import_from_csv"
+                        app:icon="@drawable/ic_menu_spreadsheet" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/p_md"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/backup_locally"
+                        style="@style/Widget.Material3.Button.Icon"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="@dimen/p_md"
+                        android:textColor="?attr/colorOnSecondary"
+                        android:backgroundTint="?attr/colorSecondary"
+                        android:text="@string/label_backup_to_archive"
+                        app:icon="@drawable/ic_menu_save" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/import_locally"
+                        style="@style/Widget.Material3.Button.Icon"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="@dimen/p_md"
+                        android:textColor="?attr/colorOnSecondary"
+                        android:backgroundTint="?attr/colorSecondary"
+                        android:text="@string/label_import_from_archive"
+                        app:icon="@drawable/ic_menu_save" />
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/field_api_token"
+                    style="@style/TextAppearance.Material3.BodySmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/p_lg"
+                    android:visibility="gone"
+                    tools:text="TOKEN" />
 
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="@dimen/p_md"
-                android:gravity="center"
-                android:orientation="horizontal"
-                >
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/backup_locally"
-                    style="@style/Widget.Material3.Button.Icon"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="@dimen/p_md"
-                    android:textColor="?attr/colorOnSecondary"
-                    android:backgroundTint="?attr/colorSecondary"
-                    android:text="@string/label_backup_to_archive"
-                    app:icon="@drawable/ic_menu_save" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/import_locally"
-                    style="@style/Widget.Material3.Button.Icon"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="@dimen/p_md"
-                    android:textColor="?attr/colorOnSecondary"
-                    android:backgroundTint="?attr/colorSecondary"
-                    android:text="@string/label_import_from_archive"
-                    app:icon="@drawable/ic_menu_save" />
-
-            </LinearLayout>
-
-
-            <TextView
-                android:id="@+id/field_api_token"
-                style="@style/TextAppearance.Material3.BodySmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/p_lg"
-                android:visibility="gone"
-                tools:text="TOKEN" />
 
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    </LinearLayout>
     <ProgressBar
         android:id="@+id/syncProgressBar"
         style="?android:attr/progressBarStyleHorizontal"

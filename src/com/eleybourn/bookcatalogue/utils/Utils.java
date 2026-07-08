@@ -166,9 +166,15 @@ public class Utils {
         addParseDateFormat(false, "dd-MM-yyyy");
 
         // Dates of the form: 'Fri May 5 17:23:11 -0800 2012'
+        addParseDateFormat(!isEnglish, "EEE MMM dd HH:mm:ss Z yyyy");
+        addParseDateFormat(!isEnglish, "EEE MMM dd HH:mm Z yyyy");
+        addParseDateFormat(!isEnglish, "EEE MMM dd Z yyyy");
         addParseDateFormat(!isEnglish, "EEE MMM dd HH:mm:ss ZZZZ yyyy");
         addParseDateFormat(!isEnglish, "EEE MMM dd HH:mm ZZZZ yyyy");
         addParseDateFormat(!isEnglish, "EEE MMM dd ZZZZ yyyy");
+        addParseDateFormat(!isEnglish, "EEE, MMM dd, yyyy");
+        addParseDateFormat(!isEnglish, "EEE, dd MMM yyyy HH:mm:ss Z");
+        addParseDateFormat(!isEnglish, "EEE, dd MMM yyyy HH:mm:ss");
 
         mParseDateFormats.add(mDateFullHMSSqlSdf);
         mParseDateFormats.add(mDateFullHMSqlSdf);
@@ -186,7 +192,7 @@ public class Utils {
      * Add a format to the parser list; if nedEnglish is set, also add the localized English version
      */
     private static void addParseDateFormat(boolean needEnglish, String format) {
-        mParseDateFormats.add(new SimpleDateFormat(format, Locale.ROOT));
+        mParseDateFormats.add(new SimpleDateFormat(format, Locale.US));
         if (needEnglish)
             mParseDateFormats.add(new SimpleDateFormat(format, Locale.ENGLISH));
     }

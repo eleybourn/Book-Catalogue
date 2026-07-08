@@ -33,11 +33,9 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.UUID;
 
 public class BookCatalogueAPI implements SimpleTask {
@@ -56,11 +54,10 @@ public class BookCatalogueAPI implements SimpleTask {
     private static final String BASE_URL = "https://book-catalogue.com/api";
     public static String REQUEST_GET_BOOKS = "get_books";
     public static String REQUEST_GET_BOOK = "get_book";
-    public static String METHOD_PUT = "PUT";
     public static volatile boolean isBackupRunning = false;
     public static volatile boolean isRestoreRunning = false;
-    private String mEmail;
-    private boolean mOptIn;
+    private final String mEmail;
+    private final boolean mOptIn;
     private String mApiToken;
     private final BookCataloguePreferences mPrefs;
     // Add a static field to hold the currently active listener.
@@ -70,7 +67,7 @@ public class BookCatalogueAPI implements SimpleTask {
     private SimpleTaskContext mTaskContext;
     private boolean retry = true;
     private long mBookId;
-    private ApiListener mInstanceListener;
+    private final ApiListener mInstanceListener;
 
 
     public BookCatalogueAPI(Context context, String request, long book_id, ApiListener listener) {
@@ -133,30 +130,56 @@ public class BookCatalogueAPI implements SimpleTask {
         int index = c.getColumnIndex(columnName);
         if (index > -1 && !c.isNull(index)) {
             // Get the date as a string since it is stored as a formatted string in the DB
-            String dateStr = c.getString(index);
+            String dateStr = c.getString(index).trim();
 
             // Avoid returning a date for empty or "0" which often means "not set"
             if (dateStr == null || dateStr.isEmpty() || dateStr.equals("0")) {
                 return "";
             }
 
-            // If the string contains a hyphen, it's likely already a formatted date string (YYYY-MM-DD...)
-            if (dateStr.contains("-")) {
-                return dateStr;
+            // Special handling for 4-digit year only: convert to YYYY-01-01
+            if (dateStr.length() == 4) {
+                try {
+                    int year = Integer.parseInt(dateStr);
+                    if (year >= 1000 && year <= 2100) {
+                        return dateStr + "-01-01";
+                    }
+                } catch (NumberFormatException e) {
+                    // Ignore
+                }
+            }
+
+            // Special handling for 7-character year-month (YYYY-MM): convert to YYYY-MM-01
+            if (dateStr.length() == 7 && dateStr.charAt(4) == '-') {
+                try {
+                    int year = Integer.parseInt(dateStr.substring(0, 4));
+                    int month = Integer.parseInt(dateStr.substring(5, 7));
+                    if (year >= 1000 && year <= 2100 && month >= 1 && month <= 12) {
+                        return dateStr + "-01";
+                    }
+                } catch (NumberFormatException e) {
+                    // Ignore
+                }
+            }
+
+            // Try to parse using project utilities to normalize to ISO format (yyyy-MM-dd)
+            Date d = Utils.parseDate(dateStr);
+            if (d != null) {
+                if (dateStr.contains(":") || dateStr.length() > 10) {
+                    return Utils.toSqlDateTime(d);
+                } else {
+                    return Utils.toSqlDateOnly(d);
+                }
             }
 
             // Fallback for cases where it might be a millisecond timestamp stored as a string or number
             try {
                 long timestamp = Long.parseLong(dateStr);
                 if (timestamp > 0) {
-                    // Define the desired output format
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-                    // Create a Date object and format it
-                    Date date = new Date(timestamp);
-                    return sdf.format(date);
+                    return Utils.toSqlDateTime(new Date(timestamp));
                 }
             } catch (NumberFormatException e) {
-                // Ignore and return the original string
+                // Ignore
             }
 
             return dateStr;
@@ -167,7 +190,7 @@ public class BookCatalogueAPI implements SimpleTask {
     private static String getString(Cursor c, String columnName) {
         int index = c.getColumnIndex(columnName);
         if (index > -1 && !c.isNull(index)) {
-            return c.getString(index);
+            return c.getString(index).trim();
         }
         return "";
     }
@@ -320,7 +343,7 @@ public class BookCatalogueAPI implements SimpleTask {
 
             // 2. Perform the backup of local books (only those that are different)
             try (Cursor bookCursor = db.fetchAllBooks()) {
-                runBackup(bookCursor, db, serverMap);
+                runBatchBackup(bookCursor, db, serverMap);
                 notifyComplete("Backup completed successfully.");
             }
         } catch (Exception e) {
@@ -328,6 +351,115 @@ public class BookCatalogueAPI implements SimpleTask {
             notifyError("Backup failed: " + e.getMessage());
         } finally {
             db.close();
+        }
+    }
+
+    private void populateBookFields(ArrayList<String> fields, ArrayList<String> values, String prefix, String suffix,
+                                    int bookId, Cursor bookCursor, ArrayList<Author> authors,
+                                    ArrayList<Bookshelf> bookshelves, ArrayList<Series> series,
+                                    ArrayList<AnthologyTitle> anthology, String thumbnailRequest) {
+        fields.add(prefix + "bcid" + suffix);
+        values.add(String.valueOf(bookId));
+
+        if (authors != null) {
+            for (Author author : authors) {
+                fields.add(prefix + "authors" + suffix + "[]");
+                values.add(author.id + ", " + author.familyName + ", " + author.givenNames);
+            }
+        }
+
+        fields.add(prefix + "title" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_TITLE));
+
+        fields.add(prefix + "isbn" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_ISBN));
+
+        fields.add(prefix + "publisher" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_PUBLISHER));
+
+        fields.add(prefix + "date_published" + suffix);
+        values.add(getDate(bookCursor, CatalogueDBAdapter.KEY_DATE_PUBLISHED));
+
+        fields.add(prefix + "rating" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_RATING));
+
+        if (bookshelves != null) {
+            for (Bookshelf bookshelf : bookshelves) {
+                fields.add(prefix + "bookshelves" + suffix + "[]");
+                values.add(bookshelf.id + ", " + bookshelf.name);
+            }
+        }
+
+        fields.add(prefix + "read" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_READ));
+
+        if (series != null) {
+            for (Series seriesEntry : series) {
+                fields.add(prefix + "series" + suffix + "[]");
+                values.add(seriesEntry.id + ", " + seriesEntry.num + ", " + seriesEntry.name);
+            }
+        }
+
+        fields.add(prefix + "pages" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_PAGES));
+
+        fields.add(prefix + "notes" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_NOTES));
+
+        fields.add(prefix + "list_price" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_LIST_PRICE));
+
+        fields.add(prefix + "location" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_LOCATION));
+
+        fields.add(prefix + "read_start" + suffix);
+        values.add(getDate(bookCursor, CatalogueDBAdapter.KEY_READ_START));
+
+        fields.add(prefix + "read_end" + suffix);
+        values.add(getDate(bookCursor, CatalogueDBAdapter.KEY_READ_END));
+
+        fields.add(prefix + "format" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_FORMAT));
+
+        fields.add(prefix + "signed" + suffix);
+        values.add(getInt(bookCursor, CatalogueDBAdapter.KEY_SIGNED) > 0 ? "1" : "0");
+
+        fields.add(prefix + "loaned_to" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_LOANED_TO));
+
+        fields.add(prefix + "anthology" + suffix);
+        values.add(getInt(bookCursor, CatalogueDBAdapter.KEY_ANTHOLOGY_MASK) > 0 ? "1" : "0");
+
+        if (anthology != null) {
+            for (AnthologyTitle anthologyTitle : anthology) {
+                fields.add(prefix + "anthologies" + suffix + "[]");
+                values.add(anthologyTitle.getId() + ", " + anthologyTitle.getTitle());
+                fields.add(prefix + "anthology_authors" + suffix + "[]");
+                values.add(anthologyTitle.getAuthor().id + ", " + anthologyTitle.getAuthor().familyName + ", " + anthologyTitle.getAuthor().givenNames);
+            }
+        }
+
+        fields.add(prefix + "description" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_DESCRIPTION));
+
+        fields.add(prefix + "genre" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_GENRE));
+
+        fields.add(prefix + "language" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_LANGUAGE));
+
+        fields.add(prefix + "date_added" + suffix);
+        values.add(getDate(bookCursor, CatalogueDBAdapter.KEY_DATE_ADDED));
+
+        fields.add(prefix + "last_update_date" + suffix);
+        values.add(getDate(bookCursor, CatalogueDBAdapter.KEY_LAST_UPDATE_DATE));
+
+        fields.add(prefix + "book_uuid" + suffix);
+        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_BOOK_UUID));
+
+        if (thumbnailRequest != null && !thumbnailRequest.isEmpty()) {
+            fields.add(prefix + "thumbnail_request" + suffix);
+            values.add(thumbnailRequest);
         }
     }
 
@@ -344,6 +476,9 @@ public class BookCatalogueAPI implements SimpleTask {
                 // Check if queue is killing us
                 if (mTaskContext.isTerminating()) break;
 
+                count++;
+                notifyProgress(count, total);
+
                 try {
                     int bookId = bookCursor.getInt(idIndex);
                     String uuid = bookCursor.getString(uuidIndex);
@@ -357,79 +492,262 @@ public class BookCatalogueAPI implements SimpleTask {
                     boolean needsBackup = true;
                     if (serverMap != null && serverMap.containsKey((long) bookId)) {
                         JSONObject serverBook = serverMap.get((long) bookId);
-                        if (serverBook != null && !isBookDifferent(bookCursor, authors, bookshelves, series, anthology, thumbFile, serverBook)) {
+                        if (serverBook != null && !isBookDifferent(bookCursor, authors, bookshelves, series, anthology, thumbFile, serverBook, true)) {
                             needsBackup = false;
                         }
                     }
 
                     if (needsBackup) {
-                        // Upload
+                        // Upload using the single-book endpoint with thumbnail
                         backupBook(bookId, bookCursor, authors, bookshelves, series, anthology, thumbFile);
                     }
                 } catch (Exception e) {
                     // Log the specific error for this book, but continue the loop
-                    System.err.println("Error syncing book index " + count + ": " + e.getMessage());
+                    Log.e("BookCatalogueAPI", "Error syncing book at index " + (count - 1), e);
                 }
-                count++;
-
-                notifyProgress(count, total);
 
             } while (bookCursor.moveToNext());
+        }
+    }
+
+    private void runBatchBackup(Cursor bookCursor, CatalogueDBAdapter db, HashMap<Long, JSONObject> serverMap) {
+        if (bookCursor != null && bookCursor.moveToFirst()) {
+            int total = bookCursor.getCount();
+            int count = 0;
+
+            ArrayList<String> batchFields = new ArrayList<>();
+            ArrayList<String> batchValues = new ArrayList<>();
+            ArrayList<ThumbnailTask> thumbnailTasks = new ArrayList<>();
+            int batchCount = 0;
+
+            // Get column indices
+            int idIndex = bookCursor.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROW_ID);
+            int uuidIndex = bookCursor.getColumnIndexOrThrow(DatabaseDefinitions.DOM_BOOK_UUID.name);
+
+            do {
+                // Check if queue is killing us
+                if (mTaskContext.isTerminating()) break;
+
+                count++;
+                notifyProgress(count, total, "books backed up");
+
+                try {
+                    int bookId = bookCursor.getInt(idIndex);
+                    String uuid = bookCursor.getString(uuidIndex);
+                    File thumbFile = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
+                    ArrayList<Author> authors = db.getBookAuthorList(bookId);
+                    ArrayList<Bookshelf> bookshelves = db.getBookBookshelfList(bookId);
+                    ArrayList<Series> series = db.getBookSeriesList(bookId);
+                    ArrayList<AnthologyTitle> anthology = db.getBookAnthologyTitleList(bookId);
+
+                    JSONObject serverBook = (serverMap != null) ? serverMap.get((long) bookId) : null;
+
+                    // Check if we need to back up this book record (ignoring thumbnail)
+                    boolean needsBackup = true;
+                    //Log.d("BC", "Book " + bookId + " title: " + getString(bookCursor, CatalogueDBAdapter.KEY_TITLE));
+                    if (serverBook != null && !isBookDifferent(bookCursor, authors, bookshelves, series, anthology, thumbFile, serverBook, false)) {
+                        needsBackup = false;
+                    }
+
+                    if (needsBackup) {
+                        // Add to batch
+                        populateBookFields(batchFields, batchValues, "books[" + batchCount + "][", "]", bookId, bookCursor, authors, bookshelves, series, anthology, "SKIP");
+                        batchCount++;
+                    }
+
+                    // Check if thumbnail changed independently
+                    boolean thumbChanged = true;
+                    if (serverBook != null) {
+                        String localMd5 = (thumbFile != null && thumbFile.exists()) ? Utils.calculateMD5(thumbFile) : "";
+                        String serverMd5 = getStringOrEmpty(serverBook, "thumbnail_md5");
+                        if (localMd5.equals(serverMd5)) {
+                            thumbChanged = false;
+                        }
+                    }
+
+                    if (thumbChanged) {
+                        // Queue thumbnail work
+                        thumbnailTasks.add(new ThumbnailTask(bookId, (thumbFile != null && thumbFile.exists()) ? thumbFile : null));
+                    }
+
+                    if (batchCount >= 30) {
+                        try {
+                            sendBatch(batchFields, batchValues);
+                        } finally {
+                            batchFields.clear();
+                            batchValues.clear();
+                            batchCount = 0;
+                        }
+                    }
+                } catch (Exception e) {
+                    // Log the specific error for this book/batch, but continue the loop
+                    Log.e("BookCatalogueAPI", "Error syncing book batch starting near index " + (count - 1), e);
+                    // Ensure the batch is cleared so we don't keep failing on the same bad record
+                    batchFields.clear();
+                    batchValues.clear();
+                    batchCount = 0;
+                }
+
+            } while (bookCursor.moveToNext());
+
+            // Final batch
+            if (batchCount > 0) {
+                try {
+                    sendBatch(batchFields, batchValues);
+                } catch (Exception e) {
+                    Log.e("BookCatalogueAPI", "Final batch failed", e);
+                }
+            }
+
+            // Sync thumbnails
+            int skippedThumbs = total - thumbnailTasks.size();
+            if (thumbnailTasks.isEmpty()) {
+                notifyProgress(total, total, "thumbnails backed up");
+            }
+            for (int i = 0; i < thumbnailTasks.size(); i++) {
+                if (mTaskContext.isTerminating()) break;
+                ThumbnailTask task = thumbnailTasks.get(i);
+                notifyProgress(skippedThumbs + i + 1, total, "thumbnails backed up");
+                try {
+                    if (task.file != null) {
+                        backupThumbnail(task.id, task.file);
+                    } else {
+                        deleteThumbnail(task.id);
+                    }
+                } catch (Exception e) {
+                    Log.e("BookCatalogueAPI", "Thumbnail sync failed for book " + task.id, e);
+                }
+            }
         }
     }
 
     /**
      * Compare a local book record with a server record to determine if an update is needed.
      */
-    private boolean isBookDifferent(Cursor local, ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves, ArrayList<Series> series, ArrayList<AnthologyTitle> anthology, File thumbFile, JSONObject server) {
+    private boolean isBookDifferent(Cursor local, ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves, ArrayList<Series> series, ArrayList<AnthologyTitle> anthology, File thumbFile, JSONObject server, boolean checkThumbnail) {
+        long bookId = getInt(local, CatalogueDBAdapter.KEY_ROW_ID);
         try {
             // Check basic fields
-            if (!getString(local, CatalogueDBAdapter.KEY_TITLE).equals(getStringOrEmpty(server, "title"))) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_ISBN).equals(getStringOrEmpty(server, "isbn"))) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_PUBLISHER).equals(getStringOrEmpty(server, "publisher"))) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_DATE_PUBLISHED).equals(getStringOrEmpty(server, "date_published"))) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_RATING).equals(getStringOrEmpty(server, "rating"))) return true;
-            if (getInt(local, CatalogueDBAdapter.KEY_READ) != server.optInt("read", 0)) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_PAGES).equals(getStringOrEmpty(server, "pages"))) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_NOTES).equals(getStringOrEmpty(server, "notes"))) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_LIST_PRICE).equals(getStringOrEmpty(server, "list_price"))) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_LOCATION).equals(getStringOrEmpty(server, "location"))) return true;
-            if (!getDate(local, CatalogueDBAdapter.KEY_READ_START).equals(getStringOrEmpty(server, "read_start"))) return true;
-            if (!getDate(local, CatalogueDBAdapter.KEY_READ_END).equals(getStringOrEmpty(server, "read_end"))) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_FORMAT).equals(getStringOrEmpty(server, "format"))) return true;
-            if ((getInt(local, CatalogueDBAdapter.KEY_SIGNED) > 0 ? 1 : 0) != server.optInt("signed", 0)) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_LOANED_TO).equals(getStringOrEmpty(server, "loaned_to"))) return true;
-            if ((getInt(local, CatalogueDBAdapter.KEY_ANTHOLOGY_MASK) > 0 ? 1 : 0) != server.optInt("anthology", 0)) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_DESCRIPTION).equals(getStringOrEmpty(server, "description"))) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_GENRE).equals(getStringOrEmpty(server, "genre"))) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_LANGUAGE).equals(getStringOrEmpty(server, "language"))) return true;
-            if (!getDate(local, CatalogueDBAdapter.KEY_DATE_ADDED).equals(getStringOrEmpty(server, "date_added"))) return true;
-            if (!getDate(local, CatalogueDBAdapter.KEY_LAST_UPDATE_DATE).equals(getStringOrEmpty(server, "last_update_date"))) return true;
-            if (!getString(local, CatalogueDBAdapter.KEY_BOOK_UUID).equals(getStringOrEmpty(server, "book_uuid"))) return true;
+            if (checkDiff(bookId, "title", getString(local, CatalogueDBAdapter.KEY_TITLE), getStringOrEmpty(server, "title"))) return true;
+            if (checkDiff(bookId, "isbn", getString(local, CatalogueDBAdapter.KEY_ISBN), getStringOrEmpty(server, "isbn"))) return true;
+            if (checkDiff(bookId, "publisher", getString(local, CatalogueDBAdapter.KEY_PUBLISHER), getStringOrEmpty(server, "publisher"))) return true;
+            if (checkDiff(bookId, "date_published", getDate(local, CatalogueDBAdapter.KEY_DATE_PUBLISHED), normalizeServerDate(getStringOrEmpty(server, "date_published")), true)) return true;
+            if (checkDiff(bookId, "rating", getString(local, CatalogueDBAdapter.KEY_RATING), getStringOrEmpty(server, "rating"))) return true;
+            if (checkDiff(bookId, "read", String.valueOf(getInt(local, CatalogueDBAdapter.KEY_READ)), String.valueOf(server.optInt("read", 0)))) return true;
+            if (checkDiff(bookId, "pages", getString(local, CatalogueDBAdapter.KEY_PAGES), getStringOrEmpty(server, "pages"))) return true;
+            if (checkDiff(bookId, "notes", getString(local, CatalogueDBAdapter.KEY_NOTES), getStringOrEmpty(server, "notes"))) return true;
+            if (checkDiff(bookId, "list_price", getString(local, CatalogueDBAdapter.KEY_LIST_PRICE), getStringOrEmpty(server, "list_price"))) return true;
+            if (checkDiff(bookId, "location", getString(local, CatalogueDBAdapter.KEY_LOCATION), getStringOrEmpty(server, "location"))) return true;
+            if (checkDiff(bookId, "read_start", getDate(local, CatalogueDBAdapter.KEY_READ_START), normalizeServerDate(getStringOrEmpty(server, "read_start")), true)) return true;
+            if (checkDiff(bookId, "read_end", getDate(local, CatalogueDBAdapter.KEY_READ_END), normalizeServerDate(getStringOrEmpty(server, "read_end")), true)) return true;
+            if (checkDiff(bookId, "format", getString(local, CatalogueDBAdapter.KEY_FORMAT), getStringOrEmpty(server, "format"))) return true;
+            if (checkDiff(bookId, "signed", String.valueOf(getInt(local, CatalogueDBAdapter.KEY_SIGNED) > 0 ? 1 : 0), String.valueOf(server.optInt("signed", 0)))) return true;
+            if (checkDiff(bookId, "loaned_to", getString(local, CatalogueDBAdapter.KEY_LOANED_TO), getStringOrEmpty(server, "loaned_to"))) return true;
+            if (checkDiff(bookId, "anthology", String.valueOf(getInt(local, CatalogueDBAdapter.KEY_ANTHOLOGY_MASK) > 0 ? 1 : 0), String.valueOf(server.optInt("anthology", 0)))) return true;
+            if (checkDiff(bookId, "description", getString(local, CatalogueDBAdapter.KEY_DESCRIPTION), getStringOrEmpty(server, "description"))) return true;
+            if (checkDiff(bookId, "genre", getString(local, CatalogueDBAdapter.KEY_GENRE), getStringOrEmpty(server, "genre"))) return true;
+            if (checkDiff(bookId, "language", getString(local, CatalogueDBAdapter.KEY_LANGUAGE), getStringOrEmpty(server, "language"))) return true;
+            if (checkDiff(bookId, "date_added", getDate(local, CatalogueDBAdapter.KEY_DATE_ADDED), normalizeServerDate(getStringOrEmpty(server, "date_added")), true)) return true;
+            if (checkDiff(bookId, "book_uuid", getString(local, CatalogueDBAdapter.KEY_BOOK_UUID), getStringOrEmpty(server, "book_uuid"))) return true;
 
             // Check relations - simple counts and string checks for speed
             JSONArray sAuthors = server.optJSONArray("authors");
-            if ((authors == null ? 0 : authors.size()) != (sAuthors == null ? 0 : sAuthors.length())) return true;
+            if (checkDiff(bookId, "authors_count", String.valueOf(authors == null ? 0 : authors.size()), String.valueOf(sAuthors == null ? 0 : sAuthors.length()))) return true;
             
             JSONArray sBookshelves = server.optJSONArray("bookshelves");
-            if ((bookshelves == null ? 0 : bookshelves.size()) != (sBookshelves == null ? 0 : sBookshelves.length())) return true;
+            if (checkDiff(bookId, "bookshelves_count", String.valueOf(bookshelves == null ? 0 : bookshelves.size()), String.valueOf(sBookshelves == null ? 0 : sBookshelves.length()))) return true;
             
             JSONArray sSeries = server.optJSONArray("series");
-            if ((series == null ? 0 : series.size()) != (sSeries == null ? 0 : sSeries.length())) return true;
+            if (checkDiff(bookId, "series_count", String.valueOf(series == null ? 0 : series.size()), String.valueOf(sSeries == null ? 0 : sSeries.length()))) return true;
 
             // Check Anthology Titles
-            JSONArray sAnthology = server.optJSONArray("anthology_titles");
-            if ((anthology == null ? 0 : anthology.size()) != (sAnthology == null ? 0 : sAnthology.length())) return true;
+            JSONArray sAnthology = server.optJSONArray("anthologies");
+            if (checkDiff(bookId, "anthologies_count", String.valueOf(anthology == null ? 0 : anthology.size()), String.valueOf(sAnthology == null ? 0 : sAnthology.length()))) return true;
 
             // Check Thumbnail MD5
-            String localMd5 = (thumbFile != null && thumbFile.exists()) ? Utils.calculateMD5(thumbFile) : "";
-            String serverMd5 = getStringOrEmpty(server, "thumbnail_md5");
-            if (!localMd5.equals(serverMd5)) return true;
+            if (checkThumbnail) {
+                String localMd5 = (thumbFile != null && thumbFile.exists()) ? Utils.calculateMD5(thumbFile) : "";
+                String serverMd5 = getStringOrEmpty(server, "thumbnail_md5");
+                if (checkDiff(bookId, "thumbnail_md5", localMd5, serverMd5)) return true;
+            }
 
         } catch (Exception e) {
+            Log.e("BC", "Error comparing book " + bookId, e);
             return true; // If anything fails, assume different to be safe
         }
         return false;
+    }
+
+    private boolean checkDiff(long bookId, String fieldName, String localValue, String serverValue) {
+        return checkDiff(bookId, fieldName, localValue, serverValue, false);
+    }
+
+    private boolean checkDiff(long bookId, String fieldName, String localValue, String serverValue, boolean isDate) {
+        String l = localValue.replace('\u00A0', ' ').trim();
+        String s = serverValue.replace('\u00A0', ' ').trim();
+
+        // If it's a date and one side is just a date (10 chars), truncate the other side for comparison
+        if (isDate && !l.isEmpty() && !s.isEmpty()) {
+            if (l.length() > 10 && s.length() == 10) {
+                if (l.contains("-") && l.indexOf("-") == 4) {
+                    l = l.substring(0, 10);
+                }
+            } else if (s.length() > 10 && l.length() == 10) {
+                if (s.contains("-") && s.indexOf("-") == 4) {
+                    s = s.substring(0, 10);
+                }
+            }
+        }
+
+        if (!l.equals(s)) {
+            // If it's a date field and strings don't match, try a semantic date comparison
+            if (isDate && !localValue.isEmpty() && !serverValue.isEmpty()) {
+                Date dl = Utils.parseDate(localValue);
+                Date ds = Utils.parseDate(serverValue);
+                if (dl != null && ds != null) {
+                    if (Utils.toSqlDateOnly(dl).equals(Utils.toSqlDateOnly(ds))) {
+                        return false;
+                    }
+                } else {
+                    // Log why semantic check failed to help debugging
+                    if (dl == null) Log.d("BC", "Semantic check: failed to parse local date: " + localValue);
+                    if (ds == null) Log.d("BC", "Semantic check: failed to parse server date: " + serverValue);
+                }
+            }
+            Log.d("BC", "Diff found for book " + bookId + " on field '" + fieldValue(fieldName) + "'. Local: '" + localValue + "', Server: '" + serverValue + "'");
+            return true;
+        }
+        return false;
+    }
+
+    private String fieldValue(String fieldName) {
+        return fieldName;
+    }
+
+    private String normalizeServerDate(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty() || dateStr.equals("0")) {
+            return "";
+        }
+
+        // If it's the ISO format, try to parse just the date part first if it's a T format
+        String s = dateStr;
+        if (s.contains("T")) {
+            s = s.substring(0, s.indexOf("T"));
+            Date d = Utils.parseDate(s);
+            if (d != null) return Utils.toSqlDateOnly(d);
+        }
+
+        // Otherwise try normal parsing
+        Date d = Utils.parseDate(dateStr);
+        if (d != null) {
+            // Check if it's a date-time or date-only based on the original string
+            if (dateStr.contains(":") || (dateStr.length() > 10 && !dateStr.contains("T"))) {
+                return Utils.toSqlDateTime(d);
+            } else {
+                return Utils.toSqlDateOnly(d);
+            }
+        }
+        return dateStr;
     }
 
     private void notifyProgress(int current, int total, String message) {
@@ -476,110 +794,46 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     /**
-     * Executes the API Sync Logic in background
+     * Executes the API Sync Logic in background for a single book.
      */
     public void backupBook(int bookId, Cursor bookCursor, ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves, ArrayList<Series> series, ArrayList<AnthologyTitle> anthology, File thumbnailFile) throws Exception {
-        String title;
         if (mApiToken.isEmpty()) {
-            // It might be better to try a login() call here, but for now, we'll error out.
-            throw new Exception("No API Token set for runFullBackup");
+            throw new Exception("No API Token set for backupBook");
         }
         ArrayList<String> fields = new ArrayList<>();
         ArrayList<String> values = new ArrayList<>();
-        fields.add("bcid");
-        values.add(String.valueOf(bookId));
-        // authors[]:<comma separated string - ID, family, given>
-        if (authors != null) {
-            for (Author author : authors) {
-                fields.add("authors[]");
-                values.add(author.id + ", " + author.familyName + ", " + author.givenNames);
-            }
-        }
-        fields.add("title");
-        title = getString(bookCursor, CatalogueDBAdapter.KEY_TITLE);
-        values.add(title);
-        fields.add("isbn");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_ISBN));
-        fields.add("publisher");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_PUBLISHER));
-        fields.add("date_published");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_DATE_PUBLISHED));
-        fields.add("rating");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_RATING));
-        // bookshelves[]:<comma separated string - bookCatalogue bookshelf ID, bookshelf name>
-        // bookshelves[]:<repeat as many times as needed>
-        if (bookshelves != null) {
-            for (Bookshelf bookshelf : bookshelves) {
-                fields.add("bookshelves[]");
-                values.add(bookshelf.id + ", " + bookshelf.name);
-            }
-        }
-        fields.add("read");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_READ));
-        // series[]:<comma separated string - bookCatalogue series ID, series number, series title>
-        // series[]:<repeat as many times as needed>
-        if (series != null) {
-            for (Series seriesEntry : series) {
-                fields.add("series[]");
-                values.add(seriesEntry.id + ", " + seriesEntry.num + ", " + seriesEntry.name);
-            }
-        }
-        fields.add("pages");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_PAGES));
-        fields.add("notes");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_NOTES));
-        fields.add("list_price");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_LIST_PRICE));
-        fields.add("location");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_LOCATION));
-        fields.add("read_start");
-        values.add(getDate(bookCursor, CatalogueDBAdapter.KEY_READ_START));
-        fields.add("read_end");
-        values.add(getDate(bookCursor, CatalogueDBAdapter.KEY_READ_END));
-        fields.add("format");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_FORMAT));
-        fields.add("signed");
-        values.add(getInt(bookCursor, CatalogueDBAdapter.KEY_SIGNED) > 0 ? "1" : "0");
-        fields.add("loaned_to");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_LOANED_TO));
-        fields.add("anthology");
-        values.add(getInt(bookCursor, CatalogueDBAdapter.KEY_ANTHOLOGY_MASK) > 0 ? "1" : "0");
-        // anthologies[]:<comma separated string - bookCatalogue anthology ID, anthology title>
-        // anthologies[]:<repeat as many times as needed>
-        // anthology_authors[]:<comma separated string - bookCatalogue author ID, family_name, given_names>
-        // anthology_authors[]:<repeat as many times as needed - must have the same number of records as anthologies[]>
-        if (anthology != null) {
-            for (AnthologyTitle anthologyTitle : anthology) {
-                fields.add("anthologies[]");
-                values.add(anthologyTitle.getId() + ", " + anthologyTitle.getTitle());
-                fields.add("anthology_authors[]");
-                values.add(anthologyTitle.getAuthor().id + ", " + anthologyTitle.getAuthor().familyName + ", " + anthologyTitle.getAuthor().givenNames);
-            }
-        }
-        fields.add("description");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_DESCRIPTION));
-        fields.add("genre");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_GENRE));
-        fields.add("language");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_LANGUAGE));
-        fields.add("date_added");
-        values.add(getDate(bookCursor, CatalogueDBAdapter.KEY_DATE_ADDED));
-        fields.add("last_update_date");
-        values.add(getDate(bookCursor, CatalogueDBAdapter.KEY_LAST_UPDATE_DATE));
-        fields.add("book_uuid");
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_BOOK_UUID));
 
-        if (thumbnailFile == null || !thumbnailFile.exists()) {
-            fields.add("delete_thumbnail");
-            values.add("1");
-        }
+        String thumbRequest = (thumbnailFile == null || !thumbnailFile.exists()) ? "DEL" : "";
+        populateBookFields(fields, values, "", "", bookId, bookCursor, authors, bookshelves, series, anthology, thumbRequest);
 
         String response = connection("/book", METHOD_POST, fields, values, thumbnailFile);
+        if (response == null) {
+            throw new Exception("Upload failed for book ID " + bookId);
+        }
         JSONObject json = new JSONObject(response);
         if (json.has("id")) {
             return;
         }
-        throw new Exception("Upload failed for book ID " + bookId + " (" + title + "): ");
+        throw new Exception("Upload failed for book ID " + bookId);
+    }
+
+    private void sendBatch(ArrayList<String> fields, ArrayList<String> values) throws Exception {
+        String response = connection("/books", METHOD_POST, fields, values);
+        if (response == null) {
+            throw new Exception("Batch upload failed");
+        }
+    }
+
+    public void backupThumbnail(long bookId, File thumbFile) throws Exception {
+        String url = "/book/" + bookId + "/thumb";
+        String response = connection(url, METHOD_POST, null, null, thumbFile);
+        if (response == null) throw new Exception("Thumbnail upload failed");
+    }
+
+    public void deleteThumbnail(long bookId) throws Exception {
+        String url = "/book/" + bookId + "/thumb";
+        String response = connection(url, METHOD_DEL);
+        if (response == null) throw new Exception("Thumbnail delete failed");
     }
 
     /**
@@ -869,7 +1123,7 @@ public class BookCatalogueAPI implements SimpleTask {
                 }
                 // Throttle UI updates to prevent ANR
                 if ((i + 1) % NOTIFY_INTERVAL == 0 || (i + 1) == total) {
-                    notifyProgress(i + 1, total);
+                    notifyProgress(i + 1, total, "books restored");
                 }
             }
             // Commit the final batch
@@ -878,6 +1132,10 @@ public class BookCatalogueAPI implements SimpleTask {
             txLock = null; // Mark transaction as ended
 
             // --- Download Thumbnails ---
+            int skippedThumbs = total - thumbnailTasks.size();
+            if (thumbnailTasks.isEmpty()) {
+                notifyProgress(total, total, "thumbnails restored");
+            }
             for (int i = 0; i < thumbnailTasks.size(); i++) {
                 HashMap<String, String> task = thumbnailTasks.get(i);
                 try {
@@ -899,7 +1157,7 @@ public class BookCatalogueAPI implements SimpleTask {
                         if (remoteMd5.equalsIgnoreCase(localMd5)) {
                             // Already have it and it matches? Then, skip download
                             // Notify progress for thumbnail download as well
-                            notifyProgress(i + 1, thumbnailTasks.size(), "thumbnails restored");
+                            notifyProgress(skippedThumbs + i + 1, total, "thumbnails restored");
                             continue;
                         }
                     }
@@ -922,7 +1180,6 @@ public class BookCatalogueAPI implements SimpleTask {
                                 Utils.copyFile(downloadedFile, permanentFile);
                                 //noinspection ResultOfMethodCallIgnored
                                 downloadedFile.delete();
-                                moved = true;
                             } catch (IOException e) {
                                 Log.e("BookCatalogueAPI", "Failed to copy thumbnail for UUID/ID " + (uuid != null ? uuid : bcid), e);
                             }
@@ -932,7 +1189,7 @@ public class BookCatalogueAPI implements SimpleTask {
                     Log.e("BookCatalogueAPI", "Failed to download or save thumbnail", e);
                 }
                 // Notify progress for thumbnail download as well
-                notifyProgress(i + 1, thumbnailTasks.size(), "thumbnails restored");
+                notifyProgress(skippedThumbs + i + 1, total, "thumbnails restored");
             }
             notifyComplete("Restore completed successfully.");
         } catch (Exception e) {
@@ -1156,6 +1413,16 @@ public class BookCatalogueAPI implements SimpleTask {
      */
     public void onDestroy() {
         mSyncQueue.finish();
+    }
+
+    private static class ThumbnailTask {
+        long id;
+        File file;
+
+        ThumbnailTask(long id, File file) {
+            this.id = id;
+            this.file = file;
+        }
     }
 
     // Callback interface to update the UI (MainMenu)

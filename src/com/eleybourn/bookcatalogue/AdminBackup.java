@@ -517,7 +517,12 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             }
 
             if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL)) {
-                String statsText = current + " of " + total + " books backed up";
+                String statsText;
+                if (message == null || message.isEmpty()) {
+                    statsText = current + " of " + total + " books backed up";
+                } else {
+                    statsText = current + " of " + total + " " + message;
+                }
                 activity.mBackupStatsField.setText(statsText);
                 activity.mSyncProgressBar.setMax(total);
                 activity.mSyncProgressBar.setProgress(current);
@@ -533,7 +538,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
             if (request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL)) {
                 String statsText;
-                if (message.isEmpty()) {
+                if (message == null || message.isEmpty()) {
                     statsText = current + " of " + total + " books restored";
                 } else {
                     statsText = current + " of " + total + " " + message;

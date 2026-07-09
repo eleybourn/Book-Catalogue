@@ -18,6 +18,9 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <!-- <uses-permission android:name="android.permission.READ_CONTACTS" /> -->
 
     <!-- We use android:requestLegacyExternalStorage="true" for Android 10/SDK29 (so WRITE_EXTERNAL_STORAGE works) -->
@@ -63,6 +66,12 @@
         <!--<service-->
         <!--    android:name=".BcQueueManager"-->
         <!--    android:enabled="true" />-->
+
+        <service
+            android:name=".SyncService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
 
         <activity
             android:name=".BookCatalogue"

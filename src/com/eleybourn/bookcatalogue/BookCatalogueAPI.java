@@ -1,7 +1,9 @@
 package com.eleybourn.bookcatalogue;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -1398,6 +1400,11 @@ public class BookCatalogueAPI implements SimpleTask {
             return;
         }
 
+        if (mRequest.equals(REQUEST_BACKUP_ALL) || mRequest.equals(REQUEST_RESTORE_ALL) ||
+                mRequest.equals(REQUEST_BACKUP_BOOK) || mRequest.equals(REQUEST_DELETE_ALL)) {
+            startSyncService(mContext);
+        }
+
         if (mRequest.equals(REQUEST_LOGIN) || mApiToken.isEmpty()) {
             try {
                 login();
@@ -1443,7 +1450,23 @@ public class BookCatalogueAPI implements SimpleTask {
 
     @Override
     public void onFinish(Exception e) {
+        if (!mSyncQueue.hasActiveTasks()) {
+            stopSyncService(mContext);
+        }
+    }
 
+    private void startSyncService(Context context) {
+        Intent serviceIntent = new Intent(context, SyncService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(serviceIntent);
+        } else {
+            context.startService(serviceIntent);
+        }
+    }
+
+    private void stopSyncService(Context context) {
+        Intent serviceIntent = new Intent(context, SyncService.class);
+        context.stopService(serviceIntent);
     }
 
     /**

@@ -830,10 +830,10 @@ public class CatalogueDBAdapter {
      *
      * @return int The number of books
      */
-    public static int countBooks() {
+    public int countBooks() {
         int result = 0;
         String sql = "SELECT count(*) as count FROM " + DB_TB_BOOKS + " b ";
-        try (Cursor count = mDb.rawQuery(sql, new String[]{})) {
+        try (Cursor count = getDb().rawQuery(sql, new String[]{})) {
             count.moveToNext();
             result = count.getInt(0);
         } catch (IllegalStateException e) {
@@ -1130,7 +1130,7 @@ public class CatalogueDBAdapter {
                     " Join " + DB_TB_BOOKS + " b " +
                     "     On bbs." + KEY_BOOK + " = b." + KEY_ROW_ID +
                     " WHERE " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf);
-            Cursor count = mDb.rawQuery(sql, new String[]{});
+            Cursor count = getDb().rawQuery(sql, new String[]{});
             count.moveToNext();
             result = count.getInt(0);
             count.close();

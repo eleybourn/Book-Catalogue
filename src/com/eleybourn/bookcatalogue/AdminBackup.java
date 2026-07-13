@@ -610,7 +610,16 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
             switch (request) {
                 case BookCatalogueAPI.REQUEST_INFO_COUNT: {
-                    int totalLocalBooks = CatalogueDBAdapter.countBooks();
+                    int totalLocalBooks = 0;
+                    CatalogueDBAdapter db = new CatalogueDBAdapter(activity);
+                    try {
+                        db.open();
+                        totalLocalBooks = db.countBooks();
+                    } catch (Exception e) {
+                        Logger.logError(e);
+                    } finally {
+                        db.close();
+                    }
                     int cloudCount = 0;
                     try {
                         cloudCount = Integer.parseInt(message);

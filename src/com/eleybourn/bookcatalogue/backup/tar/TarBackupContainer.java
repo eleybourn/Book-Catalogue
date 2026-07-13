@@ -122,7 +122,7 @@ public class TarBackupContainer implements BackupContainer {
 		try {
 			BackupReader reader = new TarBackupReader(mContext, this);
 			reader.close();
-		} catch (IOException e) {
+		} catch (IOException | SecurityException e) {
 			Logger.logError(e);
 			return false;
 		}

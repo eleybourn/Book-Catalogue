@@ -101,10 +101,18 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 new ActivityResultContracts.OpenDocument(),
                 result -> {
                     if (result != null) {
-                        DocumentFile f = DocumentFile.fromSingleUri(this, result);
-                        if (f != null) {
-                            mBackupFile = f;
-                            importData(f);
+                        try {
+                            getContentResolver().takePersistableUriPermission(result, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        } catch (SecurityException ignored) {}
+                        try {
+                            DocumentFile f = DocumentFile.fromSingleUri(this, result);
+                            if (f != null) {
+                                mBackupFile = f;
+                                importData(f);
+                            }
+                        } catch (Exception e) {
+                            Logger.logError(e, "Error opening CSV file");
+                            Toast.makeText(this, getString(R.string.alert_problem_starting_import_arg, e.getMessage()), Toast.LENGTH_LONG).show();
                         }
                     }
                 }

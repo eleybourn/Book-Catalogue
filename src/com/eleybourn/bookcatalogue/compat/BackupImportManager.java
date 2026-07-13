@@ -1,5 +1,6 @@
 package com.eleybourn.bookcatalogue.compat;
 
+import android.content.Intent;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.ID;
@@ -11,6 +12,7 @@ import com.eleybourn.bookcatalogue.backup.tar.TarBackupContainer;
 import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.ImportTypeSelectionDialogFragment.OnImportTypeSelectionDialogResultListener;
 import com.eleybourn.bookcatalogue.dialogs.MessageDialogFragment;
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment;
 import com.eleybourn.bookcatalogue.utils.SimpleTaskQueueProgressFragment.FragmentTask;
 
@@ -39,19 +41,29 @@ public class BackupImportManager
 				new OpenDocument(),
 				result -> {
 					if (result != null) {
-						DocumentFile f = DocumentFile.fromSingleUri(activity, result);
-						if (f != null) {
-							TarBackupContainer bkp = new TarBackupContainer(activity.getApplicationContext(), f);
-							// Each format should provide a validator of some kind
-							if (!bkp.isValid()) {
-								Toast.makeText(activity,
-											   R.string.invalid_backup_file,
-											   Toast.LENGTH_LONG).show();
-								start();
-								return;
+						try {
+							activity.getContentResolver().takePersistableUriPermission(result, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+						} catch (SecurityException e) {
+							// This is often expected if the provider doesn't support persistable permissions
+						}
+						try {
+							DocumentFile f = DocumentFile.fromSingleUri(activity, result);
+							if (f != null) {
+								TarBackupContainer bkp = new TarBackupContainer(activity, f);
+								// Each format should provide a validator of some kind
+								if (!bkp.isValid()) {
+									Toast.makeText(activity,
+												   R.string.invalid_backup_file,
+												   Toast.LENGTH_LONG).show();
+									start();
+									return;
+								}
+								ImportTypeSelectionDialogFragment frag = ImportTypeSelectionDialogFragment.newInstance(ID.DIALOG_OPEN_IMPORT_TYPE, f);
+								frag.show(activity.getSupportFragmentManager(), null);
 							}
-							ImportTypeSelectionDialogFragment frag = ImportTypeSelectionDialogFragment.newInstance(ID.DIALOG_OPEN_IMPORT_TYPE, f);
-							frag.show(activity.getSupportFragmentManager(), null);
+						} catch (Exception e) {
+							Logger.logError(e, "Error opening backup file");
+							Toast.makeText(activity, activity.getString(R.string.alert_problem_starting_import_arg, e.getMessage()), Toast.LENGTH_LONG).show();
 						}
 					}
 				}

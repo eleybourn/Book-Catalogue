@@ -42,6 +42,7 @@
     <string name="label_premium_subscription">Premium Subscription</string>
     <string name="label_subscription_active">Online Backup Active</string>
     <string name="label_subscription_active_no_renew">Online Backup Active (will not renew)</string>
+    <string name="label_subscription_active_lifetime">Online Backup Active (Lifetime)</string>
     <string name="label_subscription_inactive">Online Backup Inactive</string>
     <string name="label_manage_subscription">Manage Subscription</string>
     <string name="label_never">Never</string>
@@ -53,7 +54,10 @@
     <string name="hint_online_backup_invite">We\'ve added a new Online Backup &amp; Sync service! You can now keep your collection safe in the cloud and synced across your devices. Tap \'Backup and Restore\' to get started.\n\nPlease consider subscribing to this premium service to support the ongoing development of Book Catalogue.</string>
     <string name="para_subscription_benefits">Support the development of BookCatalogue and subscribe to unlock online backup and sync features. Your catalogue will be securely stored in the cloud and available across your devices.</string>
     <string name="para_subscription_benefits_price">Support the development of BookCatalogue and subscribe for only %1$s a month to unlock online backup and sync features. Your catalogue will be securely stored in the cloud and available across your devices.</string>
+    <string name="para_subscription_benefits_both">Support the development of BookCatalogue and unlock online backup and sync features for %1$s/month or %2$s for a lifetime license. Your catalogue will be securely stored in the cloud and available across your devices.</string>
     <string name="para_subscription_benefits2">Local backup and restore (below) will always be available without subscription. </string>
+    <string name="button_subscribe_monthly">Subscribe Monthly</string>
+    <string name="button_purchase_lifetime">Purchase Lifetime</string>
 
     <string name="author_already_in_list">Author is already in the list</string>
     <string name="author_is_blank">Author field is blank</string>

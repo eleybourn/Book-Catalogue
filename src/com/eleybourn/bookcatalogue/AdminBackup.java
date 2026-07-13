@@ -68,6 +68,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     private TextView mSubscribeDescription;
     private TextView mSubscribeDescription2;
     private Button mSubscribeManageButton;
+    private Button mSubscribeLifetimeButton;
     private ApiListener mApiListener;
     private ActivityResultLauncher<String[]> mCsvImportPickerLauncher;
     private ActivityResultLauncher<String> mCsvExportPickerLauncher;
@@ -233,6 +234,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         mSubscriptionStatus = findViewById(R.id.subscription_status);
         mSubscriptionExpiry = findViewById(R.id.subscription_expiry);
         mSubscribeManageButton = findViewById(R.id.button_subscribe_manage);
+        mSubscribeLifetimeButton = findViewById(R.id.button_subscribe_lifetime);
         mSubscribeDescription = findViewById(R.id.subscription_description);
         mSubscribeDescription2 = findViewById(R.id.subscription_description2);
         updateSubscriptionUi();
@@ -374,10 +376,20 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     }
 
     private void showSubscriptionRequiredDialog() {
+        String[] options = {
+                getString(R.string.button_subscribe_monthly),
+                getString(R.string.button_purchase_lifetime)
+        };
         new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.subscription_required_title)
                 .setMessage(R.string.subscription_required_message)
-                .setPositiveButton(R.string.button_subscribe, (dialog, which) -> mBillingManager.launchPurchaseFlow())
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        mBillingManager.launchPurchaseFlow(BillingManager.SUBSCRIPTION_ID);
+                    } else {
+                        mBillingManager.launchPurchaseFlow(BillingManager.LIFETIME_ID);
+                    }
+                })
                 .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
                 .show();
     }
@@ -387,7 +399,9 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
         BookCataloguePreferences prefs = new BookCataloguePreferences();
         if (prefs.isSubscribed()) {
-            if (prefs.isAutoRenewing()) {
+            if (prefs.isLifetime()) {
+                mSubscriptionStatus.setText(R.string.label_subscription_active_lifetime);
+            } else if (prefs.isAutoRenewing()) {
                 mSubscriptionStatus.setText(R.string.label_subscription_active);
             } else {
                 mSubscriptionStatus.setText(R.string.label_subscription_active_no_renew);
@@ -395,7 +409,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             mSubscriptionStatus.setTextColor(getResources().getColor(R.color.theme_primary, getTheme()));
             
             String expiry = prefs.getSubscriptionExpiry();
-            if (!expiry.isEmpty()) {
+            if (!expiry.isEmpty() && !prefs.isLifetime()) {
                 if (prefs.isAutoRenewing()) {
                     mSubscriptionExpiry.setText(getString(R.string.label_next_renewal, expiry));
                 } else {
@@ -417,12 +431,19 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 findViewById(R.id.logged_out_view).setVisibility(View.GONE);
                 findViewById(R.id.logged_in_view).setVisibility(View.VISIBLE);
             }
-            mSubscribeManageButton.setText(R.string.label_manage_subscription);
-            mSubscribeManageButton.setOnClickListener(v -> {
-                String url = "https://play.google.com/store/account/subscriptions?package=" + getPackageName() + "&sku=" + BillingManager.SUBSCRIPTION_ID;
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
-            });
+            
+            mSubscribeLifetimeButton.setVisibility(View.GONE);
+            if (prefs.isLifetime() && !prefs.isAutoRenewing()) {
+                mSubscribeManageButton.setVisibility(View.GONE);
+            } else {
+                mSubscribeManageButton.setVisibility(View.VISIBLE);
+                mSubscribeManageButton.setText(R.string.label_manage_subscription);
+                mSubscribeManageButton.setOnClickListener(v -> {
+                    String url = "https://play.google.com/store/account/subscriptions?package=" + getPackageName() + "&sku=" + BillingManager.SUBSCRIPTION_ID;
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
+                });
+            }
 
         } else {
             mSubscriptionStatus.setText(R.string.label_subscription_inactive);
@@ -434,15 +455,24 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             findViewById(R.id.logged_in_view).setVisibility(View.GONE);
 
             // Use the generic benefits text initially (or cached priced version if available)
-            String price = mBillingManager != null ? mBillingManager.getLastPrice() : null;
-            if (price != null) {
-                mSubscribeDescription.setText(getString(R.string.para_subscription_benefits_price, price));
+            String subsPrice = mBillingManager != null ? mBillingManager.getLastSubsPrice() : null;
+            String lifetimePrice = mBillingManager != null ? mBillingManager.getLastLifetimePrice() : null;
+            
+            if (subsPrice != null && lifetimePrice != null) {
+                mSubscribeDescription.setText(getString(R.string.para_subscription_benefits_both, subsPrice, lifetimePrice));
+            } else if (subsPrice != null) {
+                mSubscribeDescription.setText(getString(R.string.para_subscription_benefits_price, subsPrice));
             } else {
                 mSubscribeDescription.setText(R.string.para_subscription_benefits);
             }
 
-            mSubscribeManageButton.setText(R.string.button_subscribe);
-            mSubscribeManageButton.setOnClickListener(v -> mBillingManager.launchPurchaseFlow());
+            mSubscribeManageButton.setVisibility(View.VISIBLE);
+            mSubscribeManageButton.setText(R.string.button_subscribe_monthly);
+            mSubscribeManageButton.setOnClickListener(v -> mBillingManager.launchPurchaseFlow(BillingManager.SUBSCRIPTION_ID));
+            
+            mSubscribeLifetimeButton.setVisibility(View.VISIBLE);
+            mSubscribeLifetimeButton.setText(R.string.button_purchase_lifetime);
+            mSubscribeLifetimeButton.setOnClickListener(v -> mBillingManager.launchPurchaseFlow(BillingManager.LIFETIME_ID));
         }
     }
 
@@ -468,11 +498,15 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     }
 
     @Override
-    public void onPriceReceived(String price) {
+    public void onPricesReceived(String subscriptionPrice, String lifetimePrice) {
         if (mSubscribeDescription != null) {
             BookCataloguePreferences prefs = new BookCataloguePreferences();
             if (!prefs.isSubscribed()) {
-                mSubscribeDescription.setText(getString(R.string.para_subscription_benefits_price, price));
+                if (subscriptionPrice != null && lifetimePrice != null) {
+                    mSubscribeDescription.setText(getString(R.string.para_subscription_benefits_both, subscriptionPrice, lifetimePrice));
+                } else if (subscriptionPrice != null) {
+                    mSubscribeDescription.setText(getString(R.string.para_subscription_benefits_price, subscriptionPrice));
+                }
             }
         }
     }

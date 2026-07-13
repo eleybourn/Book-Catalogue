@@ -36,6 +36,7 @@ public class BookCataloguePreferences {
     public static final String PREF_ACCOUNT_OPT_IN = "Account.OptIn";
     public static final String PREF_ACCOUNT_API_TOKEN = "Account.ApiToken";
     public static final String PREF_IS_SUBSCRIBED = "App.IsSubscribed";
+    public static final String PREF_IS_LIFETIME = "App.IsLifetime";
     public static final String PREF_IS_AUTO_RENEWING = "App.IsAutoRenewing";
     public static final String PREF_SUBSCRIPTION_EXPIRY = "App.SubscriptionExpiry";
     public static final String PREF_ONLINE_SYNC_ENABLED = "App.OnlineSyncEnabled";
@@ -163,6 +164,14 @@ public class BookCataloguePreferences {
 
     public void setSubscribed(boolean value) {
         setBoolean(PREF_IS_SUBSCRIBED, value);
+    }
+
+    public boolean isLifetime() {
+        return getBoolean(PREF_IS_LIFETIME, false);
+    }
+
+    public void setLifetime(boolean value) {
+        setBoolean(PREF_IS_LIFETIME, value);
     }
 
     public boolean isAutoRenewing() {

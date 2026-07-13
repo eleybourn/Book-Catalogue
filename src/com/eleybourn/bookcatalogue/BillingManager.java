@@ -14,26 +14,35 @@ import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
+
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Manages Google Play Billing for subscription services.
+ * Manages Google Play Billing for subscription services and one-time purchases.
  */
 public class BillingManager implements PurchasesUpdatedListener {
     // The SKU/Product ID for the subscription
     public static final String SUBSCRIPTION_ID = "online_backup_subscription";
+    // The SKU/Product ID for the lifetime one-time purchase
+    public static final String LIFETIME_ID = "online_backup_lifetime";
 
     public interface BillingListener {
         void onSubscriptionStatusChanged(boolean isSubscribed);
-        void onPriceReceived(String price);
+        void onPricesReceived(String subscriptionPrice, String lifetimePrice);
     }
 
     private final BillingClient mBillingClient;
     private final Activity mActivity;
     private final BookCataloguePreferences mPrefs;
     private BillingListener mListener;
-    private String mLastPrice = null;
+    private String mLastSubsPrice = null;
+    private String mLastLifetimePrice = null;
+
+    // Internal state for combined query
+    private boolean mFoundSubscribed = false;
+    private boolean mFoundLifetime = false;
+    private boolean mFoundAutoRenewing = false;
 
     public BillingManager(Activity activity) {
         mActivity = activity;
@@ -77,34 +86,60 @@ public class BillingManager implements PurchasesUpdatedListener {
             startConnection();
             return;
         }
+
+        mFoundSubscribed = false;
+        mFoundAutoRenewing = false;
+
+        // Query subscriptions first
         mBillingClient.queryPurchasesAsync(
                 QueryPurchasesParams.newBuilder()
                         .setProductType(BillingClient.ProductType.SUBS)
                         .build(),
                 (billingResult, purchases) -> {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                        boolean isSubscribed = false;
-                        boolean isAutoRenewing = false;
                         for (Purchase purchase : purchases) {
                             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED && !purchase.isSuspended()) {
                                 for (String productId : purchase.getProducts()) {
                                     if (productId.equals(SUBSCRIPTION_ID)) {
-                                        isSubscribed = true;
-                                        isAutoRenewing = purchase.isAutoRenewing();
-                                        // Ensure it stays acknowledged
+                                        mFoundSubscribed = true;
+                                        mFoundAutoRenewing = purchase.isAutoRenewing();
                                         handlePurchase(purchase);
-                                        break;
                                     }
                                 }
                             }
                         }
-                        mPrefs.setSubscribed(isSubscribed);
-                        mPrefs.setAutoRenewing(isAutoRenewing);
-                        if (mListener != null) {
-                            final boolean finalIsSubscribed = isSubscribed;
-                            mActivity.runOnUiThread(() -> mListener.onSubscriptionStatusChanged(finalIsSubscribed));
-                        }
                     }
+
+                    // Then query one-time products
+                    mBillingClient.queryPurchasesAsync(
+                            QueryPurchasesParams.newBuilder()
+                                    .setProductType(BillingClient.ProductType.INAPP)
+                                    .build(),
+                            (billingResult2, purchases2) -> {
+                                if (billingResult2.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                    for (Purchase purchase : purchases2) {
+                                        if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                                            for (String productId : purchase.getProducts()) {
+                                                if (productId.equals(LIFETIME_ID)) {
+                                                    mFoundSubscribed = true;
+                                                    mFoundLifetime = true;
+                                                    // Lifetime never auto-renews
+                                                    handlePurchase(purchase);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                mPrefs.setSubscribed(mFoundSubscribed);
+                                mPrefs.setLifetime(mFoundLifetime);
+                                mPrefs.setAutoRenewing(mFoundAutoRenewing);
+                                if (mListener != null) {
+                                    final boolean finalIsSubscribed = mFoundSubscribed;
+                                    mActivity.runOnUiThread(() -> mListener.onSubscriptionStatusChanged(finalIsSubscribed));
+                                }
+                            }
+                    );
                 }
         );
     }
@@ -113,57 +148,80 @@ public class BillingManager implements PurchasesUpdatedListener {
         if (!mBillingClient.isReady()) {
             return;
         }
+        querySubsDetails();
+    }
 
-        QueryProductDetailsParams queryProductDetailsParams =
-                QueryProductDetailsParams.newBuilder()
-                        .setProductList(
-                                Collections.singletonList(
-                                        QueryProductDetailsParams.Product.newBuilder()
-                                                .setProductId(SUBSCRIPTION_ID)
-                                                .setProductType(BillingClient.ProductType.SUBS)
-                                                .build()))
-                        .build();
+    private void querySubsDetails() {
+        QueryProductDetailsParams subsParams = QueryProductDetailsParams.newBuilder()
+                .setProductList(Collections.singletonList(
+                        QueryProductDetailsParams.Product.newBuilder()
+                                .setProductId(SUBSCRIPTION_ID)
+                                .setProductType(BillingClient.ProductType.SUBS)
+                                .build()))
+                .build();
 
-        mBillingClient.queryProductDetailsAsync(
-                queryProductDetailsParams,
-                (billingResult, productDetailsResult) -> {
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                        List<ProductDetails> productDetailsList = productDetailsResult.getProductDetailsList();
-                        if (!productDetailsList.isEmpty()) {
-                            ProductDetails productDetails = productDetailsList.get(0);
-                            List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
-                            if (offerDetails != null && !offerDetails.isEmpty()) {
-                                // Just get the first pricing phase of the first offer
-                                String price = offerDetails.get(0).getPricingPhases().getPricingPhaseList().get(0).getFormattedPrice();
-                                mLastPrice = price;
-                                if (mListener != null) {
-                                    mActivity.runOnUiThread(() -> mListener.onPriceReceived(price));
-                                }
-                            }
-                        }
-                    }
+        mBillingClient.queryProductDetailsAsync(subsParams, (billingResult, productDetailsResult) -> {
+            List<ProductDetails> productDetailsList = productDetailsResult.getProductDetailsList();
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && productDetailsList != null && !productDetailsList.isEmpty()) {
+                ProductDetails productDetails = productDetailsList.get(0);
+                List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
+                if (offerDetails != null && !offerDetails.isEmpty()) {
+                    mLastSubsPrice = offerDetails.get(0).getPricingPhases().getPricingPhaseList().get(0).getFormattedPrice();
                 }
-        );
+            }
+            queryInAppDetails();
+        });
     }
 
-    public String getLastPrice() {
-        return mLastPrice;
+    private void queryInAppDetails() {
+        QueryProductDetailsParams inappParams = QueryProductDetailsParams.newBuilder()
+                .setProductList(Collections.singletonList(
+                        QueryProductDetailsParams.Product.newBuilder()
+                                .setProductId(LIFETIME_ID)
+                                .setProductType(BillingClient.ProductType.INAPP)
+                                .build()))
+                .build();
+
+        mBillingClient.queryProductDetailsAsync(inappParams, (billingResult, productDetailsResult) -> {
+            List<ProductDetails> productDetailsList = productDetailsResult.getProductDetailsList();
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && productDetailsList != null && !productDetailsList.isEmpty()) {
+                ProductDetails productDetails = productDetailsList.get(0);
+                ProductDetails.OneTimePurchaseOfferDetails oneTimeDetails = productDetails.getOneTimePurchaseOfferDetails();
+                if (oneTimeDetails != null) {
+                    mLastLifetimePrice = oneTimeDetails.getFormattedPrice();
+                }
+            }
+
+            if (mListener != null) {
+                mActivity.runOnUiThread(() -> mListener.onPricesReceived(mLastSubsPrice, mLastLifetimePrice));
+            }
+        });
     }
 
-    public void launchPurchaseFlow() {
+    public String getLastSubsPrice() {
+        return mLastSubsPrice;
+    }
+
+    public String getLastLifetimePrice() {
+        return mLastLifetimePrice;
+    }
+
+    public void launchPurchaseFlow(String productId) {
         if (!mBillingClient.isReady()) {
             android.widget.Toast.makeText(mActivity, "Billing service not ready. Connecting...", android.widget.Toast.LENGTH_SHORT).show();
             startConnection();
             return;
         }
 
+        String productType = productId.equals(SUBSCRIPTION_ID) ? BillingClient.ProductType.SUBS : BillingClient.ProductType.INAPP;
+
         QueryProductDetailsParams queryProductDetailsParams =
                 QueryProductDetailsParams.newBuilder()
                         .setProductList(
                                 Collections.singletonList(
                                         QueryProductDetailsParams.Product.newBuilder()
-                                                .setProductId(SUBSCRIPTION_ID)
-                                                .setProductType(BillingClient.ProductType.SUBS)
+                                                .setProductId(productId)
+                                                .setProductType(productType)
                                                 .build()))
                         .build();
 
@@ -174,34 +232,32 @@ public class BillingManager implements PurchasesUpdatedListener {
                     if (responseCode == BillingClient.BillingResponseCode.OK) {
                         List<ProductDetails> productDetailsList = productDetailsResult.getProductDetailsList();
                         if (!productDetailsList.isEmpty()) {
-                            // Product found!
                             ProductDetails productDetails = productDetailsList.get(0);
-                            
-                            List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
-                            if (offerDetails != null && !offerDetails.isEmpty()) {
-                                String offerToken = offerDetails.get(0).getOfferToken();
-                                
-                                List<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
-                                        Collections.singletonList(
-                                                BillingFlowParams.ProductDetailsParams.newBuilder()
-                                                        .setProductDetails(productDetails)
-                                                        .setOfferToken(offerToken)
-                                                        .build());
 
-                                BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                                        .setProductDetailsParamsList(productDetailsParamsList)
-                                        .build();
+                            BillingFlowParams.ProductDetailsParams.Builder paramsBuilder =
+                                    BillingFlowParams.ProductDetailsParams.newBuilder()
+                                            .setProductDetails(productDetails);
 
-                                mBillingClient.launchBillingFlow(mActivity, billingFlowParams);
-                            } else {
-                                mActivity.runOnUiThread(() ->
-                                        android.widget.Toast.makeText(mActivity, "No active offers found for subscription.", android.widget.Toast.LENGTH_SHORT).show()
-                                );
+                            if (productType.equals(BillingClient.ProductType.SUBS)) {
+                                List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
+                                if (offerDetails != null && !offerDetails.isEmpty()) {
+                                    paramsBuilder.setOfferToken(offerDetails.get(0).getOfferToken());
+                                } else {
+                                    mActivity.runOnUiThread(() ->
+                                            android.widget.Toast.makeText(mActivity, "No active offers found for subscription.", android.widget.Toast.LENGTH_SHORT).show()
+                                    );
+                                    return;
+                                }
                             }
+
+                            BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                                    .setProductDetailsParamsList(Collections.singletonList(paramsBuilder.build()))
+                                    .build();
+
+                            mBillingClient.launchBillingFlow(mActivity, billingFlowParams);
                         } else {
-                            // If not found as SUBS
                             mActivity.runOnUiThread(() ->
-                                    android.widget.Toast.makeText(mActivity, "Product ID '" + SUBSCRIPTION_ID + "' not found in Play Console. Check if it is Active and has an Active Base Plan.", android.widget.Toast.LENGTH_LONG).show()
+                                    android.widget.Toast.makeText(mActivity, "Product ID '" + productId + "' not found.", android.widget.Toast.LENGTH_LONG).show()
                             );
                         }
                     } else {
@@ -220,15 +276,33 @@ public class BillingManager implements PurchasesUpdatedListener {
             for (Purchase purchase : purchases) {
                 handlePurchase(purchase);
             }
+            queryPurchases(); // Refresh state
         }
     }
 
     private void handlePurchase(Purchase purchase) {
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-            mPrefs.setAutoRenewing(purchase.isAutoRenewing());
+            // Check if it's the subscription or lifetime
+            boolean isSubs = false;
+            boolean isLifetime = false;
+            for (String pid : purchase.getProducts()) {
+                if (pid.equals(SUBSCRIPTION_ID)) {
+                    isSubs = true;
+                } else if (pid.equals(LIFETIME_ID)) {
+                    isLifetime = true;
+                }
+            }
 
-            // If they are becoming subscribed for the first time (or re-subscribing),
-            // enable sync by default.
+            if (isSubs) {
+                mPrefs.setAutoRenewing(purchase.isAutoRenewing());
+            } else {
+                mPrefs.setAutoRenewing(false);
+            }
+            
+            if (isLifetime) {
+                mPrefs.setLifetime(true);
+            }
+
             if (!mPrefs.isSubscribed()) {
                 mPrefs.setOnlineSyncEnabled(true);
             }
@@ -254,7 +328,7 @@ public class BillingManager implements PurchasesUpdatedListener {
             }
         }
     }
-    
+
     public void endConnection() {
         mBillingClient.endConnection();
     }

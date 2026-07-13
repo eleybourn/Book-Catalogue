@@ -76,14 +76,30 @@
                         android:layout_marginTop="@dimen/p_md"
                         android:text="@string/para_subscription_benefits2" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/button_subscribe_manage"
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/subscription_buttons"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
                         android:layout_marginTop="@dimen/p_md"
-                        android:text="@string/button_subscribe" />
+                        android:gravity="end"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_subscribe_lifetime"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/p_md"
+                            android:text="@string/button_purchase_lifetime"
+                            android:visibility="gone" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_subscribe_manage"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/button_subscribe" />
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

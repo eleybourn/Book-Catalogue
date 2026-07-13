@@ -50,6 +50,7 @@ public class BookCataloguePreferences {
     public static final String PREF_SCREEN_ORIENTATION_DEFAULT = "default";
     public static final String PREF_SCREEN_ORIENTATION_PORTRAIT = "portrait";
     public static final String PREF_SCREEN_ORIENTATION_LANDSCAPE = "landscape";
+    public static final String PREF_LAST_BOOKSHELVES = "App.LastBookshelves";
 
 	/** Get startup activity preference */
 	public boolean getStartInMyBook() {
@@ -198,11 +199,4 @@ public class BookCataloguePreferences {
         setBoolean(PREF_ONLINE_SYNC_ENABLED, value);
     }
 
-    public String getScreenOrientation() {
-        return getString(PREF_SCREEN_ORIENTATION, PREF_SCREEN_ORIENTATION_DEFAULT);
-    }
-
-    public void setScreenOrientation(String orientation) {
-        setString(PREF_SCREEN_ORIENTATION, orientation);
-    }
 }

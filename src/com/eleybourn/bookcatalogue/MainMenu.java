@@ -101,7 +101,6 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
 
         if (CatalogueDBAdapter.DEBUG_INSTANCES)
             CatalogueDBAdapter.dumpInstances();
-
     }
 
     private final OnClickListener mSyncHandler = v -> {

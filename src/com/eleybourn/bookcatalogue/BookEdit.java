@@ -258,7 +258,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         mDbHelper.open();
 
         // Get the book data from the bundle or the database
-        loadBookData(mRowId, savedInstanceState == null ? extras : savedInstanceState);
+        loadBookData(mRowId, savedInstanceState == null ? extras : savedInstanceState, savedInstanceState != null);
 
         int anthology_num = 0;
         if (mBookData.getRowId() > 0) {
@@ -435,13 +435,24 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      * will populate the fields from the bundle 3. It will leave the fields
      * blank for new books.
      */
-    private void loadBookData(Long rowId, Bundle bestBundle) {
+    private void loadBookData(Long rowId, Bundle bestBundle, boolean isRestoring) {
         if (bestBundle != null && bestBundle.containsKey("bookData")) {
             // If we have saved book data, use it
             mBookData = new BookData(this, rowId, bestBundle.getBundle("bookData"));
         } else {
             // Just load based on rowId
             mBookData = new BookData(this, rowId);
+        }
+
+        // If it's a new book and not restoring from a saved instance, use the last used bookshelves
+        if (rowId == 0 && !isRestoring) {
+            String currentBookshelves = mBookData.getBookshelfList();
+            if (currentBookshelves == null || currentBookshelves.isEmpty()) {
+                String lastBookshelves = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_LAST_BOOKSHELVES, "");
+                if (!lastBookshelves.isEmpty()) {
+                    mBookData.setBookshelfList(lastBookshelves);
+                }
+            }
         }
     }
 
@@ -707,7 +718,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     public void setRowId(Long id) {
         if (mRowId != id) {
             mRowId = id;
-            loadBookData(id, null);
+            loadBookData(id, null, false);
             ViewPager2 viewPager = findViewById(R.id.view_pager);
             Fragment frag = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
             if (frag instanceof DataEditor) {
@@ -813,6 +824,12 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         } else {
             mDbHelper.updateBook(mRowId, mBookData, 0);
             BookCatalogueAPI.syncBook(this, mRowId);
+        }
+
+        // Save the last used bookshelves
+        String currentBookshelves = mBookData.getBookshelfList();
+        if (currentBookshelves != null && !currentBookshelves.isEmpty()) {
+            BookCatalogueApp.getAppPreferences().setString(BookCataloguePreferences.PREF_LAST_BOOKSHELVES, currentBookshelves);
         }
 
         /*

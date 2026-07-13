@@ -61,9 +61,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteDoneException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Bitmap;
 import android.provider.BaseColumns;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
@@ -533,70 +531,65 @@ public class CatalogueDBAdapter {
             mDbHelper = new DatabaseHelper(ctx);
     }
 
-    private static String getAuthorFields(String alias, String idName) {
+    private static String getAuthorFields(String idName) {
         String sql;
         if (idName != null && !idName.isEmpty()) {
-            sql = " " + alias + "." + KEY_ROW_ID + " as " + idName + ", ";
+            sql = " a." + KEY_ROW_ID + " as " + idName + ", ";
         } else {
             sql = " ";
         }
-        sql += alias + "." + KEY_FAMILY_NAME + " as " + KEY_FAMILY_NAME
-                + ", " + alias + "." + KEY_GIVEN_NAMES + " as " + KEY_GIVEN_NAMES
-                + ",  Case When " + alias + "." + KEY_GIVEN_NAMES + " = '' Then " + KEY_FAMILY_NAME
-                + "        Else " + alias + "." + KEY_FAMILY_NAME + " || ', ' || "
-                + alias + "." + KEY_GIVEN_NAMES + " End as " + KEY_AUTHOR_FORMATTED
-                + ",  Case When " + alias + "." + KEY_GIVEN_NAMES + " = '' Then " + KEY_FAMILY_NAME
-                + "        Else " + alias + "." + KEY_GIVEN_NAMES + " || ' ' || "
-                + alias + "." + KEY_FAMILY_NAME + " End as " + KEY_AUTHOR_FORMATTED_GIVEN_FIRST + " ";
+        sql += "a." + KEY_FAMILY_NAME + " as " + KEY_FAMILY_NAME
+                + ", a." + KEY_GIVEN_NAMES + " as " + KEY_GIVEN_NAMES
+                + ",  Case When a." + KEY_GIVEN_NAMES + " = '' Then " + KEY_FAMILY_NAME
+                + "        Else a." + KEY_FAMILY_NAME + " || ', ' || "
+                + "a." + KEY_GIVEN_NAMES + " End as " + KEY_AUTHOR_FORMATTED
+                + ",  Case When a." + KEY_GIVEN_NAMES + " = '' Then " + KEY_FAMILY_NAME
+                + "        Else a." + KEY_GIVEN_NAMES + " || ' ' || "
+                + "a." + KEY_FAMILY_NAME + " End as " + KEY_AUTHOR_FORMATTED_GIVEN_FIRST + " ";
         return sql;
     }
 
-    private static String getBookFields(String alias, String idName) {
+    private static String getBookFields() {
         String sql;
-        if (idName != null && !idName.isEmpty()) {
-            sql = alias + "." + KEY_ROW_ID + " as " + idName + ", ";
-        } else {
-            sql = "";
-        }
-        return sql + alias + "." + KEY_TITLE + " as " + KEY_TITLE + ", " +
-
+        sql = "b." + KEY_ROW_ID + " as " + CatalogueDBAdapter.KEY_ROW_ID + ", ";
+        return sql + "b." + KEY_TITLE + " as " + KEY_TITLE + ", " +
                 // Find FIRST series ID.
                 "(Select " + KEY_SERIES_ID + " From " + DB_TB_BOOK_SERIES + " bs " +
-                " where bs." + KEY_BOOK + " = " + alias + "." + KEY_ROW_ID + " Order by " + KEY_SERIES_POSITION + " asc  Limit 1) as " + KEY_SERIES_ID + ", " +
+                " where bs." + KEY_BOOK + " = b." + KEY_ROW_ID + " Order by " + KEY_SERIES_POSITION + " asc  Limit 1) as " + KEY_SERIES_ID + ", " +
                 // Find FIRST series NUM.
                 "(Select " + KEY_SERIES_NUM + " From " + DB_TB_BOOK_SERIES + " bs " +
-                " where bs." + KEY_BOOK + " = " + alias + "." + KEY_ROW_ID + " Order by " + KEY_SERIES_POSITION + " asc  Limit 1) as " + KEY_SERIES_NUM + ", " +
+                " where bs." + KEY_BOOK + " = b." + KEY_ROW_ID + " Order by " + KEY_SERIES_POSITION + " asc  Limit 1) as " + KEY_SERIES_NUM + ", " +
                 // Get the total series count
-                "(Select Count(*) from " + DB_TB_BOOK_SERIES + " bs Where bs." + KEY_BOOK + " = " + alias + "." + KEY_ROW_ID + ") as _num_series," +
+                "(Select Count(*) from " + DB_TB_BOOK_SERIES + " bs Where bs." + KEY_BOOK + " = b." + KEY_ROW_ID + ") as _num_series," +
                 // Find the first AUTHOR ID
                 "(Select " + KEY_AUTHOR_ID + " From " + DB_TB_BOOK_AUTHOR + " ba " +
-                "   where ba." + KEY_BOOK + " = " + alias + "." + KEY_ROW_ID +
+                "   where ba." + KEY_BOOK + " = b." + KEY_ROW_ID +
                 "   order by " + KEY_AUTHOR_POSITION + ", ba." + KEY_AUTHOR_ID + " Limit 1) as " + KEY_AUTHOR_ID + ", " +
                 // Get the total author count
-                "(Select Count(*) from " + DB_TB_BOOK_AUTHOR + " ba Where ba." + KEY_BOOK + " = " + alias + "." + KEY_ROW_ID + ") as _num_authors," +
+                "(Select Count(*) from " + DB_TB_BOOK_AUTHOR + " ba Where ba." + KEY_BOOK + " = b." + KEY_ROW_ID + ") as _num_authors," +
 
-                alias + "." + KEY_ISBN + " as " + KEY_ISBN + ", " +
-                alias + "." + KEY_PUBLISHER + " as " + KEY_PUBLISHER + ", " +
-                alias + "." + KEY_DATE_PUBLISHED + " as " + KEY_DATE_PUBLISHED + ", " +
-                alias + "." + KEY_RATING + " as " + KEY_RATING + ", " +
-                alias + "." + KEY_READ + " as " + KEY_READ + ", " +
-                alias + "." + KEY_PAGES + " as " + KEY_PAGES + ", " +
-                alias + "." + KEY_NOTES + " as " + KEY_NOTES + ", " +
-                alias + "." + KEY_LIST_PRICE + " as " + KEY_LIST_PRICE + ", " +
-                alias + "." + KEY_ANTHOLOGY_MASK + " as " + KEY_ANTHOLOGY_MASK + ", " +
-                alias + "." + KEY_LOCATION + " as " + KEY_LOCATION + ", " +
-                alias + "." + KEY_READ_START + " as " + KEY_READ_START + ", " +
-                alias + "." + KEY_READ_END + " as " + KEY_READ_END + ", " +
-                alias + "." + KEY_FORMAT + " as " + KEY_FORMAT + ", " +
-                alias + "." + KEY_SIGNED + " as " + KEY_SIGNED + ", " +
-                alias + "." + KEY_DESCRIPTION + " as " + KEY_DESCRIPTION + ", " +
-                alias + "." + KEY_GENRE + " as " + KEY_GENRE + ", " +
-                alias + "." + DOM_LANGUAGE + " as " + DOM_LANGUAGE + ", " +
-                alias + "." + KEY_DATE_ADDED + " as " + KEY_DATE_ADDED + ", " +
-                alias + "." + DOM_GOODREADS_BOOK_ID + " as " + DOM_GOODREADS_BOOK_ID + ", " +
-                alias + "." + DOM_LAST_GOODREADS_SYNC_DATE + " as " + DOM_LAST_GOODREADS_SYNC_DATE + ", " +
-                alias + "." + DOM_LAST_UPDATE_DATE + " as " + DOM_LAST_UPDATE_DATE + ", " +
-                alias + "." + DOM_BOOK_UUID + " as " + DOM_BOOK_UUID;
+                "b." + KEY_ISBN + " as " + KEY_ISBN + ", " +
+                "b." + KEY_PUBLISHER + " as " + KEY_PUBLISHER + ", " +
+                "b." + KEY_DATE_PUBLISHED + " as " + KEY_DATE_PUBLISHED + ", " +
+                "b." + KEY_RATING + " as " + KEY_RATING + ", " +
+                "b." + KEY_READ + " as " + KEY_READ + ", " +
+                "b." + KEY_PAGES + " as " + KEY_PAGES + ", " +
+                "b." + KEY_NOTES + " as " + KEY_NOTES + ", " +
+                "b." + KEY_LIST_PRICE + " as " + KEY_LIST_PRICE + ", " +
+                "b." + KEY_ANTHOLOGY_MASK + " as " + KEY_ANTHOLOGY_MASK + ", " +
+                "b." + KEY_LOCATION + " as " + KEY_LOCATION + ", " +
+                "b." + KEY_READ_START + " as " + KEY_READ_START + ", " +
+                "b." + KEY_READ_END + " as " + KEY_READ_END + ", " +
+                "b." + KEY_FORMAT + " as " + KEY_FORMAT + ", " +
+                "b." + KEY_SIGNED + " as " + KEY_SIGNED + ", " +
+                "b." + KEY_DESCRIPTION + " as " + KEY_DESCRIPTION + ", " +
+                "b." + KEY_GENRE + " as " + KEY_GENRE + ", " +
+                "b." + DOM_LANGUAGE + " as " + DOM_LANGUAGE + ", " +
+                "b." + KEY_DATE_ADDED + " as " + KEY_DATE_ADDED + ", " +
+                "b." + DOM_GOODREADS_BOOK_ID + " as " + DOM_GOODREADS_BOOK_ID + ", " +
+                "b." + DOM_LAST_GOODREADS_SYNC_DATE + " as " + DOM_LAST_GOODREADS_SYNC_DATE + ", " +
+                "b." + DOM_LAST_UPDATE_DATE + " as " + DOM_LAST_UPDATE_DATE + ", " +
+                "b." + DOM_BOOK_UUID + " as " + DOM_BOOK_UUID;
     }
 
     /**
@@ -604,6 +597,7 @@ public class CatalogueDBAdapter {
      * the books table to avoid future collisions.
      * This routine renames all files, if they exist.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void renameIdFilesToHash(SynchronizedDb db) {
         String sql = "select " + KEY_ROW_ID + ", " + DOM_BOOK_UUID + " from " + DB_TB_BOOKS + " Order by " + KEY_ROW_ID;
         try (Cursor c = db.rawQuery(sql)) {
@@ -688,7 +682,7 @@ public class CatalogueDBAdapter {
 
     public static void dumpInstances() {
         for (InstanceRef ref : mInstances) {
-            CatalogueDBAdapter db = ref.get();
+            ref.get();
             Logger.logError(ref.getCreationException(), "<-- **** Missing ref (not closed?) ****");
         }
     }
@@ -754,30 +748,6 @@ public class CatalogueDBAdapter {
      */
     public static File fetchThumbnailByUuid(String uuid, String suffix) {
         return fetchThumbnailByName(uuid, suffix);
-    }
-
-    /**
-     * This function will load the thumbnail bitmap with a guaranteed maximum size; it
-     * prevents OutOfMemory exceptions on large files and reduces memory usage in lists.
-     * It can also scale images to the exact requested size.
-     *
-     * @param uuid      The id of the book
-     * @param destView  The ImageView to load with the bitmap or an appropriate icon
-     * @param maxWidth  Maximum desired width of the image
-     * @param maxHeight Maximum desired height of the image
-     * @param exact     if true, the image will be proportionally scaled to fit bounding box.
-     * @return The scaled bitmap for the file, or null if no file or bad file.
-     */
-    public static Bitmap fetchThumbnailIntoImageView(String uuid, ImageView destView, int maxWidth, int maxHeight, boolean exact) {
-        // Get the file, if it exists. Otherwise, set 'help' icon and exit.
-        Bitmap image = null;
-        try {
-            File file = fetchThumbnailByUuid(uuid);
-            image = Utils.fetchFileIntoImageView(file, destView, maxWidth, maxHeight, exact);
-        } catch (IllegalArgumentException e) {
-            Logger.logError(e);
-        }
-        return image;
     }
 
     /**
@@ -1079,6 +1049,7 @@ public class CatalogueDBAdapter {
      * @param results The Cursor the extract from
      * @param index   The index, or column, to extract from
      */
+    @SuppressWarnings("SameParameterValue")
     private int getIntValue(Cursor results, int index) {
         int value = 0;
         try {
@@ -1098,6 +1069,7 @@ public class CatalogueDBAdapter {
      * @param results The Cursor the extract from
      * @param index   The index, or column, to extract from
      */
+    @SuppressWarnings("SameParameterValue")
     private String getStringValue(Cursor results, int index) {
         String value = null;
         try {
@@ -1154,7 +1126,7 @@ public class CatalogueDBAdapter {
         }
 
         String sql = "SELECT DISTINCT " +
-                getBookFields("b", KEY_ROW_ID) + ", " +
+                getBookFields() + ", " +
                 "l." + KEY_LOANED_TO + " as " + KEY_LOANED_TO + " " +
                 " FROM " + DB_TB_BOOKS + " b" +
                 " LEFT OUTER JOIN " + DB_TB_LOAN + " l ON (l." + KEY_BOOK + "=b." + KEY_ROW_ID + ") " +
@@ -1185,7 +1157,7 @@ public class CatalogueDBAdapter {
             order = " ORDER BY Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION + ", Upper(" + KEY_FAMILY_NAME + ") " + COLLATION;
         }
 
-        String sql = "SELECT DISTINCT " + getAuthorFields("a", KEY_ROW_ID) +
+        String sql = "SELECT DISTINCT " + getAuthorFields(KEY_ROW_ID) +
                 " FROM " + DB_TB_AUTHORS + " a, " + DB_TB_BOOK_AUTHOR + " ab " +
                 " WHERE a." + KEY_ROW_ID + "=ab." + KEY_AUTHOR_ID + " ";
         if (firstOnly) {
@@ -1219,13 +1191,13 @@ public class CatalogueDBAdapter {
         }
     }
 
-    private String authorOnBookshelfSql(String bookshelf, String authorIdSpec, boolean first) {
+    private String authorOnBookshelfSql(String bookshelf, boolean first) {
         String sql = " Exists(Select NULL From " + DB_TB_BOOK_AUTHOR + " ba"
                 + "               JOIN " + DB_TB_BOOK_BOOKSHELF_WEAK + " bbs"
                 + "                  ON bbs." + KEY_BOOK + " = ba." + KEY_BOOK
                 + "               JOIN " + DB_TB_BOOKSHELF + " bs"
                 + "                  ON bs." + KEY_ROW_ID + " = bbs." + KEY_BOOKSHELF
-                + "               WHERE ba." + KEY_AUTHOR_ID + " = " + authorIdSpec
+                + "               WHERE ba." + KEY_AUTHOR_ID + " = a." + KEY_ROW_ID
                 + "               	AND " + makeTextTerm("bs." + KEY_BOOKSHELF, "=", bookshelf);
         if (first) {
             sql += "AND ba." + KEY_AUTHOR_POSITION + "=1";
@@ -1262,9 +1234,9 @@ public class CatalogueDBAdapter {
             order = " ORDER BY Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION + ", Upper(" + KEY_FAMILY_NAME + ") " + COLLATION;
         }
 
-        String sql = "SELECT " + getAuthorFields("a", KEY_ROW_ID)
+        String sql = "SELECT " + getAuthorFields(KEY_ROW_ID)
                 + " FROM " + DB_TB_AUTHORS + " a "
-                + " WHERE " + authorOnBookshelfSql(bookshelf, "a." + KEY_ROW_ID, firstOnly)
+                + " WHERE " + authorOnBookshelfSql(bookshelf, firstOnly)
                 + order;
 
         Cursor returnable;
@@ -1417,8 +1389,8 @@ public class CatalogueDBAdapter {
         String baseSql = this.fetchAllBooksInnerSql("", bookshelf, authorWhere, bookWhere, searchText, loaned_to, seriesName);
 
         // Get the basic query; we will use it as a sub-query
-        String sql = "SELECT DISTINCT " + getBookFields("b", KEY_ROW_ID) + baseSql;
-        String fullSql = "Select b.*, " + getAuthorFields("a", "") + ", " +
+        String sql = "SELECT DISTINCT " + getBookFields() + baseSql;
+        String fullSql = "Select b.*, " + getAuthorFields("") + ", " +
                 "a." + KEY_AUTHOR_ID + ", " +
                 "Coalesce(s." + KEY_SERIES_ID + ", 0) as " + KEY_SERIES_ID + ", " +
                 "Coalesce(s." + KEY_SERIES_NAME + ", '') as " + KEY_SERIES_NAME + ", " +
@@ -1892,7 +1864,7 @@ public class CatalogueDBAdapter {
         String where = "";
         String[] names = processAuthorName(name);
         if (!bookshelf.isEmpty()) {
-            where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROW_ID, false);
+            where += authorOnBookshelfSql(bookshelf, false);
         }
         if (!where.isEmpty())
             where = " and " + where;
@@ -1921,7 +1893,7 @@ public class CatalogueDBAdapter {
         String where = "";
         String[] names = processAuthorName(name);
         if (!bookshelf.isEmpty()) {
-            where += authorOnBookshelfSql(bookshelf, "a." + KEY_ROW_ID, false);
+            where += authorOnBookshelfSql(bookshelf, false);
         }
         if (!where.isEmpty())
             where = " and " + where;
@@ -2227,7 +2199,7 @@ public class CatalogueDBAdapter {
         String baWhere = "";
         searchText = encodeString(searchText);
         if (!bookshelf.isEmpty()) {
-            where += " AND " + this.authorOnBookshelfSql(bookshelf, "a." + KEY_ROW_ID, false);
+            where += " AND " + this.authorOnBookshelfSql(bookshelf, false);
         }
         if (firstOnly) {
             baWhere += " AND ba." + KEY_AUTHOR_POSITION + "=1 ";
@@ -2240,7 +2212,7 @@ public class CatalogueDBAdapter {
             order = " ORDER BY Upper(" + KEY_GIVEN_NAMES + ") " + COLLATION + ", Upper(" + KEY_FAMILY_NAME + ") " + COLLATION;
         }
 
-        String sql = "SELECT " + getAuthorFields("a", KEY_ROW_ID) +
+        String sql = "SELECT " + getAuthorFields(KEY_ROW_ID) +
                 " FROM " + DB_TB_AUTHORS + " a" + " " +
                 "WHERE (" + authorSearchPredicate(searchText) + " OR " +
                 "a." + KEY_ROW_ID + " IN (SELECT ba." + KEY_AUTHOR_ID +

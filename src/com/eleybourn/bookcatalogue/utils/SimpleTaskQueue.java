@@ -30,7 +30,7 @@ import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.database.CoversDbHelper;
 
 /**
- * Class to perform time consuming but light-weight tasks in a worker thread. Users of this
+ * Class to perform time-consuming but light-weight tasks in a worker thread. Users of this
  * class should implement their tasks as self-contained objects that implement SimpleTask.
  * <p>
  * The tasks run from (currently) a LIFO queue in a single thread; the run() method is called
@@ -415,7 +415,7 @@ public class SimpleTaskQueue {
 	 */
 	private void processResults() {
 		try {
-			while (true) { //!mTerminate) {
+			while (true) {
 				// Get next; if none, exit.
 				SimpleTaskWrapper req = mResultQueue.poll();
 				if (req == null)

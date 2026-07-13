@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * Class to detect if collation implementations are case sensitive.
+ * Class to detect if collation implementations are case-sensitive.
  * This was built because ICS broke the UNICODE collation (making it CS) and we needed
  * to check for collation case-sensitivity.
  * This bug was introduced in ICS and present in 4.0-4.0.3, at least.

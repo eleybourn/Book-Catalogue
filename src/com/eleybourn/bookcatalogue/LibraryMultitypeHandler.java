@@ -839,7 +839,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
                 CatalogueDBAdapter dba = new CatalogueDBAdapter(mContext);
                 try {
                     try (BooksCursor c = dba.fetchBookById(mBookId)) {
-                        // If we have a book, use it. Otherwise we are done.
+                        // If we have a book, use it. Otherwise, we are done.
                         if (c.moveToFirst()) {
 
                             if ((mFlags & LibraryStyle.EXTRAS_AUTHOR) != 0) {

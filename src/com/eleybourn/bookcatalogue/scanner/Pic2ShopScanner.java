@@ -7,7 +7,7 @@ import android.content.Intent;
 import com.eleybourn.bookcatalogue.scanner.pic2shop.Scan;
 
 /**
- * Based on the pic2shop client code at github, this object will start pic2shop and extract the data
+ * Based on the pic2shop client code at GitHub, this object will start pic2shop and extract the data
  * from the resulting intent when the activity completes.
  * It also has a static method to check if the intent is present.
  * 

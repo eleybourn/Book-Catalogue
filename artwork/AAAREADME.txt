@@ -1,7 +1,7 @@
 The artwork in this directory, and throughout this application, is all copyrighted 
 material; use without the owners permission is strictly prohibited.
 
-Most artwork is copyright Google/Android, with the exception of:
+Most artwork is copyright Google/Android, except for:
 
 - raw_add_book4.png (and related icons, including ic_menu_add_book): (c) Philip Warner 2012
 - shelves.png (and related icons, including ic_menu_shelves): (c) Philip Warner 2012

@@ -121,8 +121,8 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
 
     /**
      * Display the main manage anthology page. This has three parts.
-     * 1. Setup the "Same Author" checkbox
-     * 2. Setup the "Add Title" fields
+     * 1. Set up the "Same Author" checkbox
+     * 2. Set up the "Add Title" fields
      * 3. Populate the "Title List" - @see fillAnthology();
      */
     public void loadPage() {
@@ -189,7 +189,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
     public void fillAnthology() {
         if (mEditManager == null || mEditManager.getBookData() == null) return;
 
-        // Get all of the rows from the database and create the item list
+        // Get all the rows from the database and create the item list
         mList = mEditManager.getBookData().getAnthologyTitles();
         // Now create a simple cursor adapter and set it to display
         AnthologyTitleListAdapter books = new AnthologyTitleListAdapter(requireActivity(), R.layout.row_anthology, mList);
@@ -284,7 +284,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
         String pathAuthor = bookAuthor.replace(" ", "+");
         pathAuthor = pathAuthor.replace(",", "");
 
-        // Strip everything past the , from the title
+        // Strip everything past the "," from the title
         String pathTitle = bookTitle;
         int comma = bookTitle.indexOf(",");
         if (comma > 0) {

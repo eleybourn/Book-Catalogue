@@ -207,7 +207,7 @@
     										\n\nYou can change the name, edit the groupings to change the hierarchy, and adjust a variety of
     										other settings to build a style that you find useful.
     										\n\nIt is also possible to use \'Book Filters\' to modify the selection of books that will be displayed in
-    										the list. eg. to only retrieve books you have not read yet.
+    										the list. e.g. to only retrieve books you have not read yet.
 </string>
     <string name="hint_library_styles_editor">You can use this screen to customize the list of styles that will be displayed in your default styles menu.
     										\n\nA green tick indicates the style will be shown in the list, and a red cross indicates it will not be shown.
@@ -545,7 +545,7 @@ and you can edit the book via the options menu using the menu button or overflow
 				* Other minor bug fixes
 			</p>
 		]]></string>
-    <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
+    <!-- Used for concatenating two strings, e.g. "3 books, 2 covers" (probably only important on RTL languages)-->
     <!-- Short progress message -->
     <string name="new_in_510"><![CDATA[
 			<p><b>New in 5.1.0</b>\n\n
@@ -588,14 +588,14 @@ and you can edit the book via the options menu using the menu button or overflow
     <string name="option_always_start_library_collapsed">Always start book lists collapsed</string>
     <string name="option_always_start_library_expanded">Always start book lists expanded</string>
     <string name="option_cache_resized_thumbnails_for_later_use">Cache resized thumbnails (uses more storage, lists will scroll faster)</string>
-    <string name="option_family_name_first_eg">Family name first eg. \'Smith, Bill\'</string>
+    <string name="option_family_name_first_eg">Family name first e.g. \'Smith, Bill\'</string>
     <string name="option_format1">Livro de bolso</string>
     <string name="option_format2">Capa dura</string>
     <string name="option_format3">eBook</string>
     <string name="option_format4">Audiobook</string>
     <string name="option_format5">Guia / Bônus</string>
     <string name="option_generate_immediately">Generate immediately (lists scroll slower, images will be displayed immediately)</string>
-    <string name="option_given_name_first_eg">Given name first eg. \'Bill Smith\'</string>
+    <string name="option_given_name_first_eg">Given name first e.g. \'Bill Smith\'</string>
     <string name="option_hide_summary_details">Hide summary details</string>
     <string name="option_library_read">Read</string>
     <string name="option_library_unread">Unread</string>

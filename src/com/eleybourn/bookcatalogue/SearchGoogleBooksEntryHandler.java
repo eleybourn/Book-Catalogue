@@ -80,7 +80,7 @@ import java.util.Objects;
  * 		<gbs:viewability value='http://schemas.google.com/books/2008#view_no_pages'/>
  * 		<dc:creator>Garth Sundem</dc:creator>
  * 		<dc:date>2009-03-10</dc:date>
- * 		<dc:description>TUNE IN. TURN ON. GEEK OUT.Sorry, beautiful people. These days, from government to business to technology to Hollywood, geeks rule the world. Finally, here’s the book no self-respecting geek can live without–a guide jam-packed with 314.1516 short entries both useful and fun. Science, pop-culture trivia, paper airplanes, and pure geekish nostalgia coexist as happily in these pages as they do in their natural habitat of the geek brain.In short, dear geek, here you’ll find everything you need to achieve nirvana. And here, for you pathetic nongeeks, is the last chance to save yourselves: Love this book, live this book, and you too can join us in the experience of total world domination. • become a sudoku god• brew your own beer• build a laser beam• classify all living things• clone your pet• exorcise demons• find the world’s best corn mazes• grasp the theory of relativity• have sex on Second Life• injure a fish• join the Knights Templar• kick ass with sweet martial-arts moves• learn ludicrous emoticons• master the Ocarina of Time• pimp your cubicle• program a remote control• quote He-Man and Che Guevara• solve fiendish logic puzzles• touch Carl Sagan • unmask Linus Torvalds• visit Beaver Lick, Kentucky• win bar bets• write your name in ElvishJoin us or die, you will.Begun, the Geek Wars have</dc:description>
+ * 		<dc:description>TUNE IN. TURN ON. GEEK OUT.Sorry, beautiful people. These days, from government to business to technology to Hollywood, geeks rule the world. Finally, here’s the book no self-respecting geek can live without–a guide jam-packed with 314.1516 short entries both useful and fun. Science, pop-culture trivia, paper airplanes, and pure geekish nostalgia coexist as happily in these pages as they do in their natural habitat of the geek brain.In short, dear geek, here you’ll find everything you need to achieve nirvana. And here, for you pathetic nongeeks, is the last chance to save yourselves: Love this book, live this book, and you too can join us in the experience of total world domination. • become a Sudoku god• brew your own beer• build a laser beam• classify all living things• clone your pet• exorcise demons• find the world’s best corn mazes• grasp the theory of relativity• have sex on Second Life• injure a fish• join the Knights Templar• kick ass with sweet martial-arts moves• learn ludicrous emoticons• master the Ocarina of Time• pimp your cubicle• program a remote control• quote He-Man and Che Guevara• solve fiendish logic puzzles• touch Carl Sagan • unmask Linus Torvalds• visit Beaver Lick, Kentucky• win bar bets• write your name in ElvishJoin us or die, you will.Begun, the Geek Wars have</dc:description>
  * 		<dc:format>Dimensions 13.2x20.1x2.0 cm</dc:format>
  * 		<dc:format>288 pages</dc:format>
  * 		<dc:format>book</dc:format>
@@ -114,8 +114,6 @@ public class SearchGoogleBooksEntryHandler extends DefaultHandler {
 	private static boolean mFetchThumbnail;
 
 	public static final String ID = "id";
-	public static final String TOTALRESULTS = "totalResults";
-	public static final String ENTRY = "entry";
 	public static final String AUTHOR = "creator";
 	public static final String TITLE = "title";
 	public static final String ISBN = "identifier";

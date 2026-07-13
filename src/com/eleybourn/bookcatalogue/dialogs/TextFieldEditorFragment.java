@@ -29,7 +29,7 @@ import androidx.annotation.NonNull;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
 
 /**
- * Fragment wrapper for the PartialDatePicker dialog
+ * Fragment wrapper for the PartialDatePicker dialogue
  *
  * @author pjw
  */
@@ -88,7 +88,7 @@ public class TextFieldEditorFragment extends BookCatalogueDialogFragment {
     }
 
     /**
-     * Create the underlying dialog
+     * Create the underlying dialogue
      */
     @NonNull
     @Override
@@ -106,7 +106,7 @@ public class TextFieldEditorFragment extends BookCatalogueDialogFragment {
     }
 
     /**
-     * Listener interface to receive notifications when dialog is closed by any means.
+     * Listener interface to receive notifications when dialogue is closed by any means.
      *
      * @author pjw
      */

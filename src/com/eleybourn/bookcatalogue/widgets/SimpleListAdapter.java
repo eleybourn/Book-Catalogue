@@ -259,7 +259,7 @@ public abstract class SimpleListAdapter<T> extends ArrayAdapter<T> {
     }
 
     /**
-     * Interface to allow underlying objects to determine their vewi ID.
+     * Interface to allow underlying objects to determine their view ID.
      */
     public interface ViewProvider {
         int getViewId();

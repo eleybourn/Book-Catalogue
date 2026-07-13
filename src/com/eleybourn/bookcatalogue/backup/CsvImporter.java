@@ -97,9 +97,9 @@ public class CsvImporter {
 		}
 
 		// Make sure required fields are present.
-		// ENHANCE: Rationalize import to allow updates using 1 or 2 columns. For now we require complete data.
-		// ENHANCE: Do a search if mandatory columns missing (eg. allow 'import' of a list of ISBNs).
-		// ENHANCE: Only make some columns mandatory if the ID is not in import, or not in DB (ie. if not an update)
+		// ENHANCE: Rationalize import to allow updates using 1 or 2 columns. For now, we require complete data.
+		// ENHANCE: Do a search if mandatory columns missing (e.g. allow 'import' of a list of ISBNs).
+		// ENHANCE: Only make some columns mandatory if the ID is not in import, or not in DB (i.e. if not an update)
 		// ENHANCE: Export/Import should use GUIDs for book IDs, and put GUIDs on Image file names.
 		requireColumnOr(values, CatalogueDBAdapter.KEY_ROW_ID, DatabaseDefinitions.DOM_BOOK_UUID.name);
 		requireColumnOr(values, CatalogueDBAdapter.KEY_FAMILY_NAME,

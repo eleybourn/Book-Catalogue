@@ -44,7 +44,7 @@ Scanning for BOOKS*.csv
 -----------------------
 
 The basic rule is to scan the file until the last BOOKS*.csv is found and use the version that
-has an ArchVersion >= the current archiver version, or BOOKS.CSV if none match. eg.
+has an ArchVersion >= the current archiver version, or BOOKS.CSV if none match. e.g.
 
 Suppose the archive contains:
 

@@ -86,7 +86,7 @@ public class FlattenedBooklist {
 	}
 	
 	/**
-	 * Cleanup the underlying table
+	 * Clean-up the underlying table
 	 */
 	public void deleteData() {
 		mTable.drop(mDb);
@@ -273,7 +273,7 @@ public class FlattenedBooklist {
 	}
 
 	/**
-	 * Cleanup the statements
+	 * Clean-up the statements
 	 */
     protected void finalize() {
 		close();

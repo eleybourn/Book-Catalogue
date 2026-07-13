@@ -69,7 +69,7 @@ public class BookshelfDialogFragment extends BookCatalogueDialogFragment {
      * @param rowId       Book ID
      * @param initialText Initial display text for bookshelf list
      * @param initialList Initial encoded list of bookshelves
-     * @return                Instance of dialog fragment
+     * @return                Instance of dialogue fragment
      */
     public static BookshelfDialogFragment newInstance(int dialogId, Long rowId, String initialText, String initialList) {
         BookshelfDialogFragment frag = new BookshelfDialogFragment();
@@ -172,7 +172,7 @@ public class BookshelfDialogFragment extends BookCatalogueDialogFragment {
                     }
                     cb.setChecked(checked);
                     cb.setHint(db_bookshelf);
-                    // Setup a click listener that sends all clicks back to the calling activity and maintains the two lists
+                    // Set up a click listener that sends all clicks back to the calling activity and maintains the two lists
                     cb.setOnClickListener(v -> {
                         String hint = cb.getHint() + "";
                         String name = hint.trim();

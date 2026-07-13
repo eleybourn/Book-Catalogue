@@ -34,11 +34,11 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 	private boolean entry1 = false;
 	private boolean entry2 = false;
 	private boolean entry3 = false;
-	private boolean intoc = false;
+	private boolean in_toc = false;
 	private boolean in_parent_ul = false;
 	private boolean ready_to_close_parent_ul = false;
 	private int div = 0;
-	private int entrydiv = 0;
+	private int entry_div = 0;
 	private String this_title = "";
 	public ArrayList<String> titles = new ArrayList<>();
 	
@@ -65,7 +65,7 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 	public void endElement(String uri, String localName, String name) throws SAXException {
 		super.endElement(uri, localName, name);
 		// don't do anything if we are in the table of contents
-		if (!intoc) {
+		if (!in_toc) {
 			if (localName.equalsIgnoreCase(ENTRY)){
 				if (entry1 && entry2) {
 					String title = this_title + builder.toString();
@@ -94,7 +94,7 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 			} 
 		}
 		if (localName.equalsIgnoreCase(DIV)){
-			if (entry1 && div==entrydiv) {
+			if (entry1 && div== entry_div) {
 				entry1 = false;
 				entry2 = false;
 				entry3 = false;
@@ -102,8 +102,8 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 			div--;
 		}
 		if (localName.equalsIgnoreCase(TOC_TABLE)){
-			if (intoc) {
-				intoc = false;
+			if (in_toc) {
+				in_toc = false;
 			}
 		}
 		builder.setLength(0);
@@ -118,11 +118,11 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 		entry1 = false;
 		entry2 = false;
 		entry3 = false;
-		intoc = false;
+		in_toc = false;
 		in_parent_ul = false;
 		ready_to_close_parent_ul = false;
 		div = 0;
-		entrydiv = 0;
+		entry_div = 0;
 		this_title = "";
 	}
 	
@@ -133,17 +133,17 @@ public class SearchWikipediaEntryHandler extends DefaultHandler {
 			div++;
 			String idName = attributes.getValue("id");
 			if (idName != null && idName.equals("bodyContent")) {
-				entrydiv = div;
+				entry_div = div;
 				entry1 = true;
 			}
 		}
 		if (entry1 && localName.equalsIgnoreCase(TOC_TABLE)) {
 			String idName = attributes.getValue("id");
 			if (idName != null && idName.equals("toc")) {
-				intoc = true;
+				in_toc = true;
 			}
 		}
-		if (!intoc) {
+		if (!in_toc) {
 			// This is a parent ul. Not the list ul
 			if (entry1 && entry2 && (localName.equalsIgnoreCase(LIST1) || localName.equalsIgnoreCase(LIST2))) {
 				// inner ul (if exists)

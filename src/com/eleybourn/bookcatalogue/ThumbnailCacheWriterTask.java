@@ -31,7 +31,7 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
  * Background task to save a bitmap into the covers thumbnail database. Runs in background
  * because it involves compression and IO, and can be safely queued. Failures can be ignored
  * because it is just writing to a cache used solely for optimization.
- * This class also has its onw statis SimpleTaskQueue.
+ * This class also has its own static SimpleTaskQueue.
  * 
  * @author Philip Warner
  */
@@ -46,7 +46,7 @@ public class ThumbnailCacheWriterTask implements SimpleTask {
 	private static final SimpleTaskQueue mQueue = new SimpleTaskQueue("cachewriter", 1);
 
 	/**
-	 * Queue the passed bitmap to be compresed and written to the database, will be recycled if
+	 * Queue the passed bitmap to be compressed and written to the database, will be recycled if
 	 * flag is set.
 	 * 
 	 * @param cacheId		Cache ID to use

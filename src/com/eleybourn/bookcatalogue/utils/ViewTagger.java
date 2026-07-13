@@ -25,7 +25,7 @@ import android.view.View;
 
 /**
  * Using View.setTag(int, Object) causes a memory leak if the tag refers, by a strong reference chain,
- * to the view itself (ie. it uses the 'Holder' pattern). This bug is documented here:
+ * to the view itself (i.e. it uses the 'Holder' pattern). This bug is documented here:
  * 		<a href="http://code.google.com/p/android/issues/detail?id=18273">...</a>
  * It seems that an 'interesting' design choice was made to use the view itself as a weak key to the into
  * another collection, which then causes the views to never be GC'd.

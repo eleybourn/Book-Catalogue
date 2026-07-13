@@ -51,7 +51,7 @@ public class CropRotateBitmap {
 	}
 
 	public Matrix getRotateMatrix() {
-		// By default this is an identity matrix.
+		// By default, this is an identity matrix.
 		Matrix matrix = new Matrix();
 		if (mRotation != 0) {
 			// We want to do the rotation at origin, but since the bounding

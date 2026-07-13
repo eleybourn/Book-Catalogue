@@ -7,7 +7,7 @@ The suggested procedure for testing is as follows:
 
 2. Connect your phone to your computer as a disk drive and copy the entire 'bookCatalogue' directory from the sdcard in your phone to a very safe place. Make two copies in different locations, just to be safe. This is your backup in case of disasters and will be the only way you can revert back to the current release version (3.8.x). Future beta and release versions should upgrade from the beta without drama.
 
-3. Check that the backup you made has an 'export.csv' file with the correct date (it should match the date you ran 'export books'). If this is not true, or steps 1 & 2 were not completed successfully, DO NOT PROCEED. It is very important you backup successfully before running the beta.
+3. Check that the backup you made has an 'export.csv' file with the correct date (it should match the date you ran 'export books'). If this is not true, or steps 1 & 2 were not completed successfully, DO NOT PROCEED. It is very important you back up successfully before running the beta.
 
 4. If you have not already done so, go into your phone settings, click on 'Applications', and make sure 'Unknown Sources' is checked. This will allow applications to be installed from places other than the Android Market.
 
@@ -17,7 +17,7 @@ The suggested procedure for testing is as follows:
 
 7. Because I am paranoid, undo what you did in step 4: go into your phone settings, click on 'Applications', and make sure 'Unknown Sources' is UNCHECKED. This will PREVENT apps to be installed from places other than the Android Market. Of course, if we send you another beta, you will need to recheck it before you can install the update.
 
-That't it! We have tested the app on version 1.6 through 4.0 of Android, and there are a small number of known bugs. We have also tested it on two 'real' phones, so are reasonably confident that any problems you may encounter should be swiftly resolved.
+That's it! We have tested the app on version 1.6 through 4.0 of Android, and there are a small number of known bugs. We have also tested it on two 'real' phones, so are reasonably confident that any problems you may encounter should be swiftly resolved.
 
 Note: because this is a beta release, any work you do in the beta will be lost if you revert to an older version. However, if you do not revert, this work will be preserved when we release the new version to the market (or as a new beta), so if you plan do add a lot of books, or do a lot of editing, make sure you are happy to keep using the application first!
 
@@ -31,7 +31,7 @@ Thanks again for offering to test it!
 
 P.S. If you know other people who want to try the beta, please do not forward this to them. We would much prefer that you pass on our contact details, and ask them to contact us first. We would like to maintain some control over the size of the beta! It is also useful to have 'fresh' users to send the new version to, after we have responded to the results of the initial beta.
 
-P.P.S. If you you wish to revert back from the beta to the current version, you need to perform the following steps:
+P.P.S. If you wish to revert back from the beta to the current version, you need to perform the following steps:
 
 1. Uninstall Book Catalogue in the usual way: phone settings->'Applications'->'Manage Applications'->'Book Catalogue'->'Uninstall'
 

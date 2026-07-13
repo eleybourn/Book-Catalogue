@@ -180,7 +180,7 @@ public class FastScroller {
 
     private void resetThumbPos() {
         final int viewWidth = mList.getWidth();
-        // Bounds are always top right. Y coordinate get's translated during draw
+        // Bounds are always top right. Y coordinate gets translated during draw
         // For reference, the thumb itself is approximately 50% as wide as the underlying graphic
         // so 1/6th of the width means the thumb is approximately 1/12 the width.
         mThumbW = (int) (mLargeTextScaledSize * 2.5); // viewWidth / 6 ; //mOverlaySize *3/4 ; //64; //mCurrentThumb.getIntrinsicWidth();

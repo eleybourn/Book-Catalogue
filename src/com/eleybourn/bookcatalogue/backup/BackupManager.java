@@ -41,7 +41,7 @@ import com.eleybourn.bookcatalogue.utils.Utils;
 import androidx.documentfile.provider.DocumentFile;
 
 /**
- * Class for public static methods relating to backup/restore
+ * Class for public static methods relating to back up/restore
  * 
  * @author pjw
  */
@@ -54,13 +54,13 @@ public class BackupManager {
 	 * 
 	 * @return	a new reader
 	 * 
-	 * @throws IOException (inaccessible, invalid other other errors)
+	 * @throws IOException (inaccessible, invalid other errors)
 	 */
 	public static BackupReader readBackup(Context context, DocumentFile file) throws IOException {
 		if (!file.exists())
 			throw new java.io.FileNotFoundException("Attempt to open non-existent backup file");
 
-		// We only support one backup format; so we use that. In future we would need to
+		// We only support one backup format; so we use that. In future, we would need to
 		// explore the file to determine which format to use
 		TarBackupContainer bkp = new TarBackupContainer(context, file);
 		// Each format should provide a validator of some kind

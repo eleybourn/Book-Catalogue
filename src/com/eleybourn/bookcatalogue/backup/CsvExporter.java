@@ -173,7 +173,7 @@ public class CsvExporter implements Exporter {
                         }
                         String title = books.getString(books.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_TITLE));
                         // Sanity check: ensure title is non-blank. This has not happened yet, but we
-                        // know if does for author, so completeness suggests making sure all 'required'
+                        // know it does for author, so completeness suggests making sure all 'required'
                         // fields are non-blank.
                         if (title == null || title.trim().isEmpty())
                             title = UNKNOWN;
@@ -271,7 +271,7 @@ public class CsvExporter implements Exporter {
     }
 
     /**
-     * Double quote all "'s and remove all newlines
+     * Double quote all "'s" and remove all newlines
      *
      * @param cell The cell the format
      * @return The formatted cell

@@ -41,7 +41,7 @@ import java.util.ArrayList;
 /**
  * NOTE!!!!!
  * This code is copied from TaskQueue *solely* so that it can inherit from BookCatalogueListActivity instead
- * of Activity. If this code needs changes either update it's subclasses OR update the code in TaskQueue
+ * of Activity. If this code needs changes either update its subclasses OR update the code in TaskQueue
  * and re-copy the file.
  * NOTE!!!!!
  *

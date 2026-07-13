@@ -37,12 +37,12 @@ public interface MultitypeListHandler {
 	 * 
 	 * @author Philip Warner
 	 *
-	 * @param <T>	Row context passed to each method. Typically a RowView. Could be a cursor
+	 * @param <T>	Row context passed to each method. Typically, a RowView. Could be a cursor
 	 * 				or any other object capable of representing the data in the current row.
 	 */
 	abstract class MultitypeHolder<T> {
 		/**
-		 * Setup a new holder for row type based on the passed rowContext. This holder will be
+		 * Set up a new holder for row type based on the passed rowContext. This holder will be
 		 * associated with a reusable view that will always be used for rows of the current
 		 * kind. We avoid having to call findViewById() by doing it once at creation time.
 		 */
@@ -81,7 +81,7 @@ public interface MultitypeListHandler {
 	 * 
 	 * @param cursor		Cursor, positioned at current row
 	 * @param inflater		Inflater to use in case a new view resource must be expanded
-	 * @param convertView	Pointer to reusable bew of correct type (may be null)
+	 * @param convertView	Pointer to reusable bew of correct type (it may be null)
 	 * @param parent		Parent view group
 	 * 	
 	 * @return				Filled-in view to use.

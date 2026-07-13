@@ -36,7 +36,7 @@ import java.lang.ref.WeakReference;
 /**
  * Task to get a thumbnail from the sdcard or cover database. It will resize it as required and
  * apply the resulting Bitmap to the related view.
- * This object also has it's own statically defined SimpleTaskQueue for getting thumbnails in
+ * This object also has its own statically defined SimpleTaskQueue for getting thumbnails in
  * background.
  *
  * @author Philip Warner
@@ -103,8 +103,8 @@ public class GetThumbnailTask implements SimpleTask {
      * Create a task to convert, set and store the thumbnail for the passed book.
      * If cacheWasChecked = false, then the cache will be checked before any work is
      * done, and if found in the cache it will be used. This option is included to
-     * reduce contention between background and foreground tasks: the forground (UI)
-     * thread checks the chache only if there are no background cache-related tasks
+     * reduce contention between background and foreground tasks: the foreground (UI)
+     * thread checks the cache only if there are no background cache-related tasks
      * currently running.
      */
     public static void getThumbnail(String hash, ImageView view, int maxWidth, int maxHeight, boolean cacheWasChecked) {
@@ -181,9 +181,9 @@ public class GetThumbnailTask implements SimpleTask {
         if (!mWantFinished)
             return;
 
-        // Get the view we are targetting and make sure it is valid
+        // Get the view we are targeting and make sure it is valid
         ImageView v = mView.get();
-        // Make sure the view is still associated with this task. We dont want to overwrite the wrong image
+        // Make sure the view is still associated with this task. We don't want to overwrite the wrong image
         // in a recycled view.
         final boolean viewIsValid = (v != null && this.equals(ViewTagger.getTag(v, R.id.TAG_GET_THUMBNAIL_TASK)));
 

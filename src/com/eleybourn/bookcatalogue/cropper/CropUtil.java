@@ -46,8 +46,8 @@ public class CropUtil {
      *
      * The function returns a sample size based on the constraints. Both size
      * and minSideLength can be passed in as IImage.UNCONSTRAINED, which
-     * indicates no care of the corresponding constraint. The functions prefers
-     * returning a sample size that generates a smaller bitmap, unless
+     * indicates no care of the corresponding constraint. The functions prefer
+     * to return a sample size that generates a smaller bitmap, unless
      * minSideLength = IImage.UNCONSTRAINED.
      */
 

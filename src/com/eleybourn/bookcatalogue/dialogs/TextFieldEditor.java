@@ -30,7 +30,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.eleybourn.bookcatalogue.R;
 
 /**
- * Dialog to edit a specific text field.
+ * Dialogue to edit a specific text field.
  * The constructors and interface are now protected because this really should
  * only be called as part of the fragment version.
  * 
@@ -43,7 +43,7 @@ public class TextFieldEditor extends AlertDialog {
 	private OnEditListener mListener;
 
 	/**
-	 * Listener to receive notifications when dialog is closed by any means.
+	 * Listener to receive notifications when dialogue is closed by any means.
 	 * 
 	 * @author pjw
 	 */
@@ -68,7 +68,7 @@ public class TextFieldEditor extends AlertDialog {
 		LayoutInflater inf = this.getLayoutInflater();
 		View root = inf.inflate(R.layout.dialog_text_editor, null);
 
-		// Setup the layout
+		// Set up the layout
 		setView(root);
 
 		// get the next view

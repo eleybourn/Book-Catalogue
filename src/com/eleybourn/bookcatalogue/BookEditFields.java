@@ -180,7 +180,7 @@ public class BookEditFields extends BookAbstract
             if (savedInstanceState == null)
                 buildDescription();
 
-            // Setup the Save/Add/Anthology UI elements
+            // Set up the Save/Add/Anthology UI elements
             setupUi();
 
             try {
@@ -303,7 +303,7 @@ public class BookEditFields extends BookAbstract
     }
 
     /**
-     * Setup the 'description' header field to have a clickable link.
+     * Set up the 'description' header field to have a clickable link.
      */
     private void buildDescription() {
         assert getView() != null;
@@ -346,7 +346,7 @@ public class BookEditFields extends BookAbstract
     }
 
     /**
-     * The callback received when the user "sets" the date in the dialog.
+     * The callback received when the user "sets" the date in the dialogue.
      * Build a full or partial date in SQL format
      */
     @Override
@@ -357,7 +357,7 @@ public class BookEditFields extends BookAbstract
     }
 
     /**
-     * The callback received when the user "cancels" the date in the dialog.
+     * The callback received when the user "cancels" the date in the dialogue.
      * Dismiss it.
      */
     @Override
@@ -366,7 +366,7 @@ public class BookEditFields extends BookAbstract
     }
 
     /**
-     * The callback received when the user "sets" the text editor in the text editor dialog.
+     * The callback received when the user "sets" the text editor in the text editor dialogue.
      * Set the appropriate field
      */
     @Override
@@ -376,7 +376,7 @@ public class BookEditFields extends BookAbstract
     }
 
     /**
-     * The callback received when the user "cancels" the text editor dialog.
+     * The callback received when the user "cancels" the text editor dialogue.
      * Dismiss it.
      */
     @Override

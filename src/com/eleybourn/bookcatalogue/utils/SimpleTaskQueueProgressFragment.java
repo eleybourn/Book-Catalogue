@@ -45,7 +45,7 @@ import com.eleybourn.bookcatalogue.utils.SimpleTaskQueue.SimpleTaskContext;
 import java.util.ArrayList;
 
 /**
- * Fragment Class to wrap a trivial progress dialog around (generally) a single task.
+ * Fragment Class to wrap a trivial progress dialogue around (generally) a single task.
  *
  * @author pjw
  */
@@ -63,7 +63,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
      */
     private final ArrayList<TaskMessage> mTaskMessages = new ArrayList<>();
     /**
-     * Flag indicating dialog was cancelled
+     * Flag indicating dialogue was cancelled
      */
     private boolean mWasCancelled = false;
     /**
@@ -79,15 +79,15 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
      */
     private int mProgress = 0;
     /**
-     * Flag indicating underlying field has changed so that progress dialog will be updated
+     * Flag indicating underlying field has changed so that progress dialogue will be updated
      */
     private boolean mMessageChanged = false;
     /**
-     * Flag indicating underlying field has changed so that progress dialog will be updated
+     * Flag indicating underlying field has changed so that progress dialogue will be updated
      */
     private boolean mProgressChanged = false;
     /**
-     * Flag indicating underlying field has changed so that progress dialog will be updated
+     * Flag indicating underlying field has changed so that progress dialogue will be updated
      */
     private boolean mMaxChanged = false;
     /**
@@ -119,7 +119,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
     }
 
     /**
-     * Convenience routine to show a dialog fragment and start the task
+     * Convenience routine to show a dialogue fragment and start the task
      *
      * @param fm      FragmentManager to use
      * @param message Message to display
@@ -246,7 +246,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
     }
 
     /**
-     * Create the underlying dialog
+     * Create the underlying dialogue
      */
     @NonNull
     @Override
@@ -352,7 +352,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
     }
 
     /**
-     * Refresh the dialog, or post a refresh to the UI thread
+     * Refresh the dialogue, or post a refresh to the UI thread
      */
     private void requestUpdateProgress() {
         if (Thread.currentThread() == mHandler.getLooper().getThread()) {
@@ -407,7 +407,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
     }
 
     /**
-     * Method, run in the UI thread, that updates the various dialog fields.
+     * Method, run in the UI thread, that updates the various dialogue fields.
      */
     private void updateProgress() {
         Dialog d = getDialog();
@@ -469,7 +469,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
     public interface OnTaskFinishedListener {
         void onTaskFinished(SimpleTaskQueueProgressFragment fragment, int taskId, boolean success, boolean cancelled, FragmentTask task);
     }    /**
-     * Runnable object to refresh the dialog
+     * Runnable object to refresh the dialogue
      */
     private final Runnable mRefresher = new Runnable() {
         @Override
@@ -496,7 +496,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
      */
     public interface FragmentTask {
         /**
-         * Run the task in it's own thread
+         * Run the task in its own thread
          *
          * @throws Exception Called method can throw exceptions to terminate process. They will be passed to the onFinish()
          */
@@ -512,7 +512,7 @@ public class SimpleTaskQueueProgressFragment extends BookCatalogueDialogFragment
 
     /**
      * Trivial implementation of FragmentTask that never calls onFinish(). The setState()/getState()
-     * calls can be used to store state info by a caller, eg. if they override requiresOnFinish() etc.
+     * calls can be used to store state info by a caller, e.g. if they override requiresOnFinish() etc.
      *
      * @author pjw
      */

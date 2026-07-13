@@ -1,11 +1,11 @@
 An open source book cataloguing application (source on github). Books can be added manually, by ISBN, or barcode.
 
-Remember to backup and export your existing catalogue before you upgrade!
+Remember to back up and export your existing catalogue before you upgrade!
 
 Features include:
 * Sorting by author (last name), title, series, etc.
 * user-defined sort and list styles
-* Search Amazon, Google Books, goodreads and LibraryThing for data
+* Search Amazon, Google Books, GoodReads and LibraryThing for data
 * Searching
 * Thumbnails (download, gallery or camera)
 * Loaning books
@@ -39,7 +39,7 @@ New in 5.0.0
 
 New in 4.2.3
 
-* Improve handling of invalid ISBNs when sending to goodreads
+* Improve handling of invalid ISBNs when sending to GoodReads
 * Other minor bug fixes
 
 New in 4.2.2
@@ -47,7 +47,7 @@ New in 4.2.2
 * Fix tiling of background image for some Android versions
 * Better handling of incompatible scanner apps
 * Send more details on crash or when asking for help
-* Cleanup of layouts (Nick Silin)
+* Clean-up of layouts (Nick Silin)
 * Bug fixes
 
 New in 4.2.1
@@ -81,10 +81,10 @@ Blame Grunthos for all bugs and errors. And send us bug reports.
 New in 4.1-4.1.5
 
 * New style options: location and date read
-* Sharing can now send via any app that advertises the interface (eg. mail) (filipeximenes)
+* Sharing can now send via any app that advertises the interface (e.g. mail) (filipeximenes)
 * French translation updates (Djiko)
 * If fields have been edited, and 'back' is pressed, ask the user for confirmation (filipeximenes)
-* Assume book is read when importing from goodreads if the user has rated it
+* Assume book is read when importing from GoodReads if the user has rated it
 * Change install location to avoid problems with encrypted SD cards
 * Bug fixes in file import and data import
 * improved import robustness

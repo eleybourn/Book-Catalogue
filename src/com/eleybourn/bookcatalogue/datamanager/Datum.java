@@ -36,7 +36,7 @@ public class Datum {
 	private boolean mIsVisible;
 	/** Validator for this Datum */
 	private DataValidator mValidator;
-	/** Accessor for this Datum (eg. the datum might be a bit in a mask field, or a composite read-only value */
+	/** Accessor for this Datum (e.g. the datum might be a bit in a mask field, or a composite read-only value */
 	private DataAccessor mAccessor = null;
 	/** Key of this datum */
 	private final String mKey;

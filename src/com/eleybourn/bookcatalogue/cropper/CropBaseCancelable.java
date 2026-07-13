@@ -35,7 +35,7 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
 	 *     CANCELING -> CANCELED
 	 * </pre>
 	 * 
-	 * When the task stop, it must be end with one of the following states:
+	 * When the task stop, it must end with one of the following states:
 	 * COMPLETE, CANCELED, or ERROR;
 	 */
 	private static final int STATE_INITIAL = (1);
@@ -114,7 +114,7 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
 	}
 
 	/**
-     * Requests the task to be canceled.
+     * Requests the task to be cancelled.
      */
 
 	public synchronized void requestCancel() {
@@ -142,7 +142,7 @@ public abstract class CropBaseCancelable<T> implements CropCancelable<T> {
 	 * task can be composed of several cancelable tasks. By using this function,
 	 * it will pass <code>requestCancel</code> message to those subtasks.
 	 *
-	 * @param cancelable the sub task
+	 * @param cancelable the subtask
 	 * @return the result of the subtask
 	 */
 	protected <X> X runSubTask(CropCancelable<X> cancelable)

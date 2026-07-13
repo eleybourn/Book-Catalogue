@@ -70,7 +70,7 @@ public class XmlResponseParser extends DefaultHandler {
 	public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
 		super.startElement(uri, localName, name, attributes);
 
-		// Get the current context (ie. the enclosing tag)
+		// Get the current context (i.e. the enclosing tag)
 		ElementContext currElement = m_parents.get(m_parents.size()-1);
 		// Get the active filter for the outer context, if present
 		XmlFilter currFilter = currElement.filter;

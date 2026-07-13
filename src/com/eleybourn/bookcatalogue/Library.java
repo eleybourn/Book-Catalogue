@@ -364,7 +364,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         if (mList.getRowView().getKind() == RowKinds.ROW_KIND_BOOK) {
             BookEdit.openBook(this, mList.getRowView().getBookId(), mList.getBuilder(), position);
         } else {
-            // If it's leve1, expand/collapse. Technically, we could expand/collapse any level
+            // If it's level 1, expand/collapse. Technically, we could expand/collapse any level
             // but storing and recovering the view becomes unmanageable.
             if (mList.getRowView().getLevel() == 1) {
                 mList.getBuilder().toggleExpandNode(mList.getRowView().getAbsolutePosition());

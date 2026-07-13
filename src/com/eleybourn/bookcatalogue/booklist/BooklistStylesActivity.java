@@ -44,7 +44,7 @@ import java.util.ArrayList;
 
 /**
  * Activity to edit the list of styles and enable/disable their presence in the
- * styles menu.
+ * styles' menu.
  *
  * @author Philip Warner
  */

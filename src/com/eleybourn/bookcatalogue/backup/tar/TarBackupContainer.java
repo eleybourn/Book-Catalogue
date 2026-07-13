@@ -43,7 +43,7 @@ import androidx.documentfile.provider.DocumentFile;
  * <p>
  * So we:
  * <p>
- * - use "file names" to encode special meaning (eg. "books*.csv" is always an export file).
+ * - use "file names" to encode special meaning (e.g. "books*.csv" is always an export file).
  * - use intermediate temp files so we can out sizes
  * 
  * @author pjw

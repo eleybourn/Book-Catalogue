@@ -166,7 +166,7 @@ new in 4.1.1
 
 new in 4.1
 * new style options: location and date read
-* sharing can now send via any app that advertises the interface (eg. mail)
+* sharing can now send via any app that advertises the interface (e.g. mail)
 * if fields have been edited, and 'back' is pressed, ask the user for confirmation
 * assume book is read when importing from goodreads if the user has rated it
 * change install location to avoid problems with encrypted SD cards
@@ -311,7 +311,7 @@ New in v3.4 - Most updates courtesy of Grunthos
 * Displays a progress dialog while searching for a book on the internet.
 * Adding by Amazon's ASIN is supported on the "Add by ISBN" page
 * Duplicate books allowed, with a warning message
-* User-selectable fields when reloading data from internet (eg. just update authors).
+* User-selectable fields when reloading data from internet (e.g. just update authors).
 * Unsaved edits are retained when rotating the screen.
 * Changed the ISBN data entry screen when the device is in landscape mode.
 * Displays square brackets around the series name when displaying a list of books.

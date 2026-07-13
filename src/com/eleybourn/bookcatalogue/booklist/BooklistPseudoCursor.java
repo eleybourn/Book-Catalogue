@@ -43,8 +43,8 @@ import com.eleybourn.bookcatalogue.utils.Utils;
  *    this would lead to problems.
  * The result?
  * A pseudo cursor that is made up of multiple cursors around a given position. Originally, the plan was to
- * build the surrounding cursors in a background thread, but the build time for small cursors is remarkably
- * small (approx 10ms on a 1.5GHz dual CPU). So, this much simpler implementation was chosen.
+ * build the surrounding cursors in a background thread, but the build time for small cursors is minuscule
+ * (approx 10ms on a 1.5GHz dual CPU). So, this much simpler implementation was chosen.
  * What does it do?
  * getCount() is implemented as one would hope: a direct count of visible rows
  * onMove(...) results in a new cursor being built when the row is not available in existing cursors.
@@ -172,11 +172,11 @@ public class BooklistPseudoCursor extends AbstractCursor implements BooklistSupp
 					} else {
 						// Need to shuffle intervening items 'down' with a wrap; this code
 						// would actually work for the above case, but it's slower. Not sure
-						// it really matters.
+						// if it really matters.
 						int n = oldPos; // 'next' position
 						int i; // current position
 						// Count of rows to move
-						int c = (MRU_LIST_SIZE - (oldPos - mMruListPos)) % MRU_LIST_SIZE; // Only really need '%' for case where oldPos<=listPos.
+						int c = (MRU_LIST_SIZE - (oldPos - mMruListPos)) % MRU_LIST_SIZE;
 						while(c-- > 0) {
 							i = n;
 							n = (n + 1) % MRU_LIST_SIZE;

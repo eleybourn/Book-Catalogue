@@ -166,9 +166,9 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 	private static Pattern mSeriesIntegerPat = null;
 
 	/**
-	 * Try to cleanup a series position number by removing superfluous text.
+	 * Try to clean up a series position number by removing superfluous text.
 	 * 
-	 * @param 	position	Position name to cleanup
+	 * @param 	position	Position name to clean up
 	 */
 	public static String cleanupSeriesPosition(String position) {
 		if (position == null)

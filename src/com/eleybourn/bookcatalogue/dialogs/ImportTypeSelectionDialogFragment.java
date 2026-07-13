@@ -75,7 +75,7 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
     }
 
     /**
-     * Create the underlying dialog
+     * Create the underlying dialogue
      */
     @NonNull
     @Override
@@ -161,7 +161,7 @@ public class ImportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
     }
 
     /**
-     * Listener interface to receive notifications when dialog is closed by any means.
+     * Listener interface to receive notifications when dialogue is closed by any means.
      *
      * @author pjw
      */

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 /**
- * Based on code from pic2shop sample at github
+ * Based on code from pic2shop sample at GitHub
  */
 public final class Utils {
 

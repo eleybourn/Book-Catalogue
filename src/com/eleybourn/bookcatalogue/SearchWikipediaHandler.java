@@ -68,7 +68,7 @@ public class SearchWikipediaHandler extends DefaultHandler {
 			if (localName.equalsIgnoreCase(LINK)){
 				String href = attributes.getValue("href");
 				if (!href.contains("/wiki")) {
-					//only use /wiki/... urls
+					//only use /wiki/... URLs
 					return;
 				}
 				// we only want the first 2 links

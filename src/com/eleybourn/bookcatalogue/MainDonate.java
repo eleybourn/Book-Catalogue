@@ -77,7 +77,7 @@ public class MainDonate extends BookCatalogueActivity {
      * 2. The button to export the database
      * 3. The button to import the exported file into the database
      * 4. The application version and link details
-     * 5. The link to paypal for donation
+     * 5. The link to PayPal for donation
      */
     public void setupAdmin() {
         OnClickListener payPalClick = v -> {

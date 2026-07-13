@@ -265,7 +265,7 @@ public class LibraryGroup implements Serializable {
 	}
 
 	/**
-	 * Specialized LibraryGroup representing an Series group. Includes extra attributes based
+	 * Specialized LibraryGroup representing a Series group. Includes extra attributes based
 	 * on preferences.
 	 * 
 	 * @author Philip Warner

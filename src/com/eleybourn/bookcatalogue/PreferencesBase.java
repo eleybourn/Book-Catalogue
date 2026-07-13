@@ -38,7 +38,7 @@ public abstract class PreferencesBase extends BookCatalogueActivity {
 	/** Get the layout of the subclass */
 	public abstract int getLayout();
     public abstract int getPageTitle();
-	/** Setup the views in the layout */
+	/** Set up the views in the layout */
 	public abstract void setupViews(BookCataloguePreferences prefs, Properties globalProps);
 	
 	@Override
@@ -53,7 +53,7 @@ public abstract class PreferencesBase extends BookCatalogueActivity {
 
 			final BookCataloguePreferences prefs = BookCatalogueApp.getAppPreferences();
 
-			// Get a properties collection.
+			// Get a Properties collection.
 			Properties globalProps = new Properties();
 			setupViews(prefs, globalProps);
 

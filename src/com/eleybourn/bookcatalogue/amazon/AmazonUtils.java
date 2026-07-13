@@ -45,7 +45,7 @@ public class AmazonUtils {
 
         LinkService linkService;
 
-        // Try to setup the API calls; if not possible, just open directly and return
+        // Try to set up the API calls; if not possible, just open directly and return
         try {
             // Init Amazon API
             AssociatesAPI.initialize(new AssociatesAPI.Config(AmazonAppKey.KEY, context));

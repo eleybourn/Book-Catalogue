@@ -53,7 +53,7 @@ public class CapitalizedTextView extends androidx.appcompat.widget.AppCompatText
     }
 
     /**
-     * Override setText to capitalise the string before passing it to parent class.
+     * Override setText to capitalize the string before passing it to parent class.
      */
     @Override
     public void setText(CharSequence text, BufferType type) {

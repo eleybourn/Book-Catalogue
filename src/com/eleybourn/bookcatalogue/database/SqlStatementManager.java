@@ -26,7 +26,7 @@ import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
 
 /**
- * Utility class to manage the construction and closure of persisted SQLiteStatement obejcts.
+ * Utility class to manage the construction and closure of persisted SQLiteStatement objects.
  * 
  * @author Philip Warner
  */
@@ -77,13 +77,13 @@ public class SqlStatementManager {
 
 	public SynchronizedStatement add(String name, String sql) {
 		if (mDb == null)
-			throw new RuntimeException("Databse not set when SqlStatementManager created");
+			throw new RuntimeException("Database not set when SqlStatementManager created");
 		return add(mDb, name, sql);
 	}
 	
 	public SynchronizedStatement addOrGet(String name, String sql) {
 		if (mDb == null)
-			throw new RuntimeException("Databse not set when SqlStatementManager created");
+			throw new RuntimeException("Database not set when SqlStatementManager created");
 		return addOrGet(mDb, name, sql);
 	}
 	

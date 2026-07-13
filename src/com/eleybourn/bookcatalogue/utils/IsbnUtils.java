@@ -38,11 +38,11 @@ public class IsbnUtils {
      * See <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number">...</a>
      */
     private static int getIsbn10Check(int[] digits) {
-        int mult = 10;
+        int multiplier = 10;
         int check = 0;
         for (int i = 0; i < 10; i++) {
-            check += digits[i] * mult;
-            mult--;
+            check += digits[i] * multiplier;
+            multiplier--;
         }
         return (check % 11);
     }

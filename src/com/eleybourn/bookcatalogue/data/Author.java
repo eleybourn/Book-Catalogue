@@ -72,7 +72,7 @@ public class Author implements Serializable, Utils.ItemWithIdFixup {
 	}
 
 	/**
-	 * Return the 'human readable' version of the name (eg. 'Isaac Asimov').
+	 * Return the 'human-readable' version of the name (e.g. 'Isaac Asimov').
 	 * 
 	 * @return	formatted name
 	 */
@@ -84,7 +84,7 @@ public class Author implements Serializable, Utils.ItemWithIdFixup {
 	}
 
 	/**
-	 * Return the name in a sortable form (eg. 'Asimov, Isaac')
+	 * Return the name in a sortable form (e.g. 'Asimov, Isaac')
 	 * 
 	 * @return	formatted name
 	 */
@@ -100,7 +100,7 @@ public class Author implements Serializable, Utils.ItemWithIdFixup {
     @Override
 	public String toString() {
 		// Always use givenNames even if blanks because we need to KNOW they are blank. There
-		// is a slim chance that family name may contain spaces (eg. 'Anonymous Anarchists').
+		// is a slim chance that family name may contain spaces (e.g. 'Anonymous Anarchists').
 		return Utils.encodeListItem(familyName, ',') + ", " + Utils.encodeListItem(givenNames, ',');
 	}
 

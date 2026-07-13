@@ -74,7 +74,7 @@ public class ExportAdvancedDialogFragment extends BookCatalogueDialogFragment {
     }
 
     /**
-     * Create the underlying dialog
+     * Create the underlying dialogue
      */
     @NonNull
     @Override

@@ -1274,7 +1274,7 @@ public class Utils {
     /**
      * Passed date components build a (partial) SQL format date string.
      *
-     * @return Formatted date, eg. '2011-11-01' or '2011-11'
+     * @return Formatted date, e.g. '2011-11-01' or '2011-11'
      */
     public static String buildPartialDate(Integer year, Integer month, Integer day) {
         String value;

@@ -5244,7 +5244,7 @@ public class CatalogueDBAdapter {
                         message += "* Displays a progress dialog while searching for a book on the internet.\n\n";
                         message += "* Adding by Amazon's ASIN is supported on the 'Add by ISBN' page\n\n";
                         message += "* Duplicate books allowed, with a warning message\n\n";
-                        message += "* User-selectable fields when reloading data from internet (eg. just update authors).\n\n";
+                        message += "* User-selectable fields when reloading data from internet (e.g. just update authors).\n\n";
                         message += "* Unsaved edits are retained when rotating the screen.\n\n";
                         message += "* Changed the ISBN data entry screen when the device is in landscape mode.\n\n";
                         message += "* Displays square brackets around the series name when displaying a list of books.\n\n";

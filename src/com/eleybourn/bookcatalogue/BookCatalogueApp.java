@@ -106,7 +106,7 @@ public class BookCatalogueApp extends Application {
      * There seems to be something fishy in creating locales from full names (like en_AU),
      * so we split it and process it manually.
      *
-     * @param name Locale name (eg. 'en_AU')
+     * @param name Locale name (e.g. 'en_AU')
      * @return Locale corresponding to passed name
      */
     public static Locale localeFromName(String name) {
@@ -246,7 +246,7 @@ public class BookCatalogueApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // Initialise some internal directories
+        // Initialize some internal directories
         filesDir = getFilesDir();
 
         // Try to get external directories, but fall back to internal if it fails (e.g. on some

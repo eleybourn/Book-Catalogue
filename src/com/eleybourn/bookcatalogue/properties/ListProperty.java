@@ -190,7 +190,7 @@ public abstract class ListProperty<T> extends ValuePropertyWithGlobalDefault<T> 
 	}
 
 	/**
-	 * Set the 'value' field in the passed view to match the passed item.
+	 * Set the 'value' field in the view to match the passed item.
 	 */
 	private void setValueInView(View baseView, ItemEntry<T> item) {
 		TextView text = baseView.findViewById(R.id.value);

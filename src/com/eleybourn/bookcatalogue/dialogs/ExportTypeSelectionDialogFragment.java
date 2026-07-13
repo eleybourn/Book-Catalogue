@@ -67,7 +67,7 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
      * Utility routine to set the OnClickListener for a given view item.
      *
      * @param root Root view to search
-     * @param id   Id of view to watch
+     * @param id   ID of view to watch
      */
     private void setOnClickListener(View root, int id) {
         View v = root.findViewById(id);
@@ -76,7 +76,7 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
     }
 
     /**
-     * Create the underlying dialog
+     * Create the underlying dialogue
      */
     @NonNull
     @Override
@@ -118,7 +118,7 @@ public class ExportTypeSelectionDialogFragment extends BookCatalogueDialogFragme
     }
 
     /**
-     * Listener interface to receive notifications when dialog is closed by any means.
+     * Listener interface to receive notifications when dialogue is closed by any means.
      *
      * @author pjw
      */

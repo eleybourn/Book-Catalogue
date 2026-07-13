@@ -53,7 +53,7 @@ public class Logger {
 		PrintWriter pw = new PrintWriter(sw);
 		e.printStackTrace(pw);
 		
-		String error = "An Exception Occured @ " + now + "\n" + 
+		String error = "An Exception Occurred @ " + now + "\n" +
 			"In Phone " + Build.MODEL + " (" + Build.VERSION.SDK_INT + ") \n" + 
 			msg + "\n" +
                 sw;

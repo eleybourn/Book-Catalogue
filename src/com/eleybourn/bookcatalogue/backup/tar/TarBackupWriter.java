@@ -126,7 +126,7 @@ public class TarBackupWriter extends BackupWriterAbstract {
 
 	/**
 	 * Save the preferences.
-	 * It would be nice to support groups (ie. more than one preference name), but ... we don't need it.
+	 * It would be nice to support groups (i.e. more than one preference name), but ... we don't need it.
 	 */
 	@Override
 	public void putPreferences(SharedPreferences prefs) throws IOException {

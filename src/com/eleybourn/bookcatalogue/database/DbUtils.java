@@ -738,7 +738,7 @@ public class DbUtils {
          * Utility code to return a join and condition from this table to another using foreign keys.
          *
          * @param to Table this table will be joined with
-         * @return    SQL fragment (eg. 'join [to-name] [to-alias] On [pk/fk match]')
+         * @return    SQL fragment (e.g. 'join [to-name] [to-alias] On [pk/fk match]')
          */
         public String join(TableDefinition to) {
             return " join " + to.ref() + " On (" + fkMatch(to) + ")";
@@ -748,7 +748,7 @@ public class DbUtils {
          * Return the FK condition that applies between this table and the 'to' table
          *
          * @param to Table that is other part of FK/PK
-         * @return    SQL fragment (eg. <to-alias>.<to-pk> = <from-alias>.<from-pk>').
+         * @return    SQL fragment (e.g. <to-alias>.<to-pk> = <from-alias>.<from-pk>').
          */
         public String fkMatch(TableDefinition to) {
             FkReference fk;
@@ -795,7 +795,7 @@ public class DbUtils {
         }
 
         /**
-         * Utility routine to return an SQL fragment of the form '<table-name> <table-alias>', eg. 'employees e'.
+         * Utility routine to return an SQL fragment of the form '<table-name> <table-alias>', e.g. 'employees e'.
          *
          * @return    SQL Fragment
          */

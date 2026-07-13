@@ -46,7 +46,7 @@ import com.eleybourn.bookcatalogue.properties.PropertyGroup;
 import com.eleybourn.bookcatalogue.properties.StringProperty;
 
 /**
- * Represents a specific style of book list (eg. authors/series). Individual LibraryGroup objects
+ * Represents a specific style of book list (e.g. authors/series). Individual LibraryGroup objects
  * are added to a style in order to describe the resulting list style.
  * ENHANCE: Allow for style-based overrides of things currently stored in preferences
  * 			This should include thumbnail presence/size, book-in-each-series etc. as well as font sizes.
@@ -54,7 +54,7 @@ import com.eleybourn.bookcatalogue.properties.StringProperty;
  * - add it to RowKinds. Update ROW_KIND_MAX.
  * - add new domain to DatabaseDefinitions (if necessary)
  * - modify LibraryBuilder.build() to add the necessary grouped/sorted domains
- * - modify LibraryMultitypeHandler; if it is just a string field, then use a GenericHolder. Otherwise add a new holder.
+ * - modify LibraryMultitypeHandler; if it is just a string field, then use a GenericHolder. Otherwise, add a new holder.
  *   Need to at least modify LibraryMultitypeHandler.newHolder().
  * 
  * @author Philip Warner
@@ -257,7 +257,7 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	}
 
 	/**
-	 * Accessor. Returns a standardised form of the style name. This name is unique.
+	 * Accessor. Returns a standardized form of the style name. This name is unique.
 	 */
 	public String getCanonicalName() {
 		if (isUserDefined())
@@ -338,7 +338,7 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	}
 
 	/**
-	 * Get all of the properties of this Style and its groups.
+	 * Get all the properties of this Style and its groups.
 	 */
 	public Properties getProperties() {
 		Properties props = new Properties();
@@ -503,7 +503,7 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 		Object o = in.readObject();
 		long version = 0;
 		if (o instanceof Long) {
-			// Its the version
+			// It's the version
 			version = ((Long)o);
 			// Get the next object
 			o = in.readObject();

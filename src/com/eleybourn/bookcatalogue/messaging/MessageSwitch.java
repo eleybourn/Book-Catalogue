@@ -73,7 +73,7 @@ public class MessageSwitch<T,U> {
         boolean deliver(T listener);
 	}
 
-	/** Register a new sender and it's controller object; return the unique ID for this sender */
+	/** Register a new sender and its controller object; return the unique ID for this sender */
 	public Long createSender(U controller) {
 		MessageSenderImpl s = new MessageSenderImpl(controller);
 		mSenders.put(s.getId(), s);
@@ -224,7 +224,7 @@ public class MessageSwitch<T,U> {
 		 * Return an iterator to a *copy* of the valid underlying elements. This means that
 		 * callers can make changes to the underlying list with impunity, and more importantly
 		 * they can iterate over type T, rather than a bunch of weak references to T.
-		 * Side-effect: removes invalid listeners
+		 * Side effect: removes invalid listeners
 		 */
 		@NonNull
         @Override

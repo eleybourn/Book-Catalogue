@@ -723,14 +723,14 @@
     <string name="option_always_start_library_expanded">Always start library expanded</string>
     <string name="option_builtin_scanner">Builtin Scanner</string>
     <string name="option_cache_resized_thumbnails_for_later_use">Cache resized thumbnails (uses more storage, lists will scroll faster)</string>
-    <string name="option_family_name_first_eg">Family name first eg. \'Smith, Bill\'</string>
+    <string name="option_family_name_first_eg">Family name first e.g. \'Smith, Bill\'</string>
     <string name="option_format1">Paperback</string>
     <string name="option_format2">Hard Cover</string>
     <string name="option_format3">eBook</string>
     <string name="option_format4">Audiobook</string>
     <string name="option_format5">Guide / Companion</string>
     <string name="option_generate_immediately">Generate immediately (lists scroll slower, images will be displayed immediately)</string>
-    <string name="option_given_name_first_eg">Given name first eg. \'Bill Smith\'</string>
+    <string name="option_given_name_first_eg">Given name first e.g. \'Bill Smith\'</string>
     <string name="option_hide_summary_details">Hide summary details</string>
     <string name="option_library_read">Read</string>
     <string name="option_library_unread">Unread</string>

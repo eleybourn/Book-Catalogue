@@ -52,7 +52,7 @@ import java.util.ArrayList;
 public class StandardDialogs {
 
     /**
-     * Show a dialog asking if unsaved edits should be ignored. Finish if so.
+     * Show a dialogue asking if unsaved edits should be ignored. Finish if so.
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void showConfirmUnsavedEditsDialog(final Activity a, final Runnable r) {
@@ -214,7 +214,7 @@ public class StandardDialogs {
     }
 
     /**
-     * Interface for item that displays in a custom dialog list
+     * Interface for item that displays in a custom dialogue list
      */
     public interface SimpleDialogItem {
         View getView(LayoutInflater inflater, ViewGroup parent);
@@ -223,7 +223,7 @@ public class StandardDialogs {
     }
 
     /**
-     * Interface to listen for item selection in a custom dialog list
+     * Interface to listen for item selection in a custom dialogue list
      */
     public interface SimpleDialogOnClickListener {
         void onClick(SimpleDialogItem item);

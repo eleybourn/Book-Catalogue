@@ -41,7 +41,7 @@ import java.util.Hashtable;
 /**
  * Class to co-ordinate multiple SearchThread objects using an existing TaskManager.
  * It uses the task manager it is passed and listens to OnTaskEndedListener messages;
- * it maintain its own internal list of tasks and as tasks it knows about end, it
+ * it maintains its own internal list of tasks and as tasks it knows about end, it
  * processes the data. Once all tasks are complete, it sends a message to its
  * creator via its SearchHandler.
  * 
@@ -288,7 +288,7 @@ public class SearchManager implements TaskManagerListener {
 			return;
 
 		for (String k : bookData.keySet()) {
-			// If its not there, copy it.
+			// If it's not there, copy it.
 			String currValue = mBookData.getString(k);
 			if (currValue == null || currValue.trim().isEmpty()) {
 				Object o = bookData.get(k);
@@ -448,7 +448,7 @@ public class SearchManager implements TaskManagerListener {
 	}
 	/**
 	 * When running in single-stream mode, start the next thread that has no data.
-	 * While Google is reputedly most likely to succeed, it also produces garbage a lot. 
+	 * While Google is reputedly most likely to succeed, it also produces false positives a lot.
 	 * So we search Amazon, Google and LT last as it REQUIRES an ISBN.
 	 */
 	private boolean startNext() {

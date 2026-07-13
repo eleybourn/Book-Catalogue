@@ -43,7 +43,7 @@ abstract public class ManagedTask extends Thread {
 	private boolean mCancelFlg = false;
 
 	//
-	// Called when the task has finished, but *only* if the TaskManager has a context (ie. is
+	// Called when the task has finished, but *only* if the TaskManager has a context (i.e. is
 	// attached to an Activity). If the task manager is *not* attached to an activity, then onFinis()
 	// will be called in the reconnect() call.
 	//

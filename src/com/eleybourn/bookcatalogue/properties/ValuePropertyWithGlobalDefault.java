@@ -52,8 +52,8 @@ public abstract class ValuePropertyWithGlobalDefault<T> extends Property {
 	 * @param uniqueId			Unique property name
 	 * @param group				PropertyGroup it belongs to
 	 * @param nameResourceId	Resource ID for name string
-	 * @param value				Current value (may be null)
-	 * @param preferenceKey		Key into Preferences for default value (may be null)
+	 * @param value				Current value (it may be null)
+	 * @param preferenceKey		Key into Preferences for default value (it may be null)
 	 * @param defaultValue		Default value used in case preferences is or returns null
 	 * @param isGlobal			Make this a global property definition
 	 * 
@@ -73,8 +73,8 @@ public abstract class ValuePropertyWithGlobalDefault<T> extends Property {
 	 * @param uniqueId			Unique property name; just needs to be unique for the collection it belongs to. Simplest to use a pref name, if there is one.
 	 * @param group				PropertyGroup it belongs to
 	 * @param nameResourceId	Resource ID for name string
-	 * @param value				Current value (may be null)
-	 * @param preferenceKey		Key into Preferences for default value (may be null)
+	 * @param value				Current value (it may be null)
+	 * @param preferenceKey		Key into Preferences for default value (it may be null)
 	 * @param defaultValue		Default value used in case preferences is or returns null
 	 * 
 	 * Note: it is a good idea to provide a non-null value for defaultValue!
@@ -103,7 +103,7 @@ public abstract class ValuePropertyWithGlobalDefault<T> extends Property {
 	}
 
 	/**
-	 * Accessor for for fully resolved/defaulted value
+	 * Accessor for fully resolved/defaulted value
 	 */
 	public T getResolvedValue() {
 		if (mIsGlobal)

@@ -38,7 +38,7 @@ import com.eleybourn.bookcatalogue.BookCataloguePreferences;
 import com.eleybourn.bookcatalogue.R;
 
 /**
- * Class to manage the display of 'hints' withing the application. Each hint dialog has 
+ * Class to manage the display of 'hints' withing the application. Each hint dialogue has
  * a 'Do not show again' option, that results in an update to the preferences which 
  * are checked by this code.
  * To add a new hint, create a string resource and add it to mHints. Then, to display the
@@ -114,7 +114,7 @@ public class HintManager {
 		final CheckBox cb = dialog.findViewById(R.id.hide_hint_checkbox); // new CheckBox(context);
 		final Button ok = dialog.findViewById(R.id.button_confirm);
 
-		// Setup the views
+		// Set up the views
         String headingText;
         headingText = BookCatalogueApp.getRes().getString(Objects.requireNonNullElse(headingId, R.string.title_hint), args);
         header.setText(headingText);

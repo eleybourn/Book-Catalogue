@@ -34,7 +34,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.Calendar;
 
 /**
- * Fragment wrapper for the PartialDatePicker dialog
+ * Fragment wrapper for the PartialDatePicker dialogue
  *
  * @author pjw
  */
@@ -56,7 +56,7 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
      */
     private int mTitleId;
     /**
-     * ID passed from caller to identify this dialog
+     * ID passed from caller to identify this dialogue
      */
     private int mDialogId;
 
@@ -94,7 +94,7 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
     }
 
     /**
-     * Create the underlying dialog
+     * Create the underlying dialogue
      */
     @NonNull
     @Override
@@ -155,7 +155,7 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
     }
 
     /**
-     * Accessor. Update dialog if available.
+     * Accessor. Update dialogue if available.
      */
     public void setTitle(int title) {
         mTitleId = title;
@@ -166,7 +166,7 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
     }
 
     /**
-     * Accessor. Update dialog if available.
+     * Accessor. Update dialogue if available.
      */
     public void setDate(Integer year, Integer month, Integer day) {
         mYear = year;
@@ -209,7 +209,7 @@ public class PartialDatePickerFragment extends BookCatalogueDialogFragment {
     }
 
     /**
-     * Listener interface to receive notifications when dialog is closed by any means.
+     * Listener interface to receive notifications when dialogue is closed by any means.
      *
      * @author pjw
      */

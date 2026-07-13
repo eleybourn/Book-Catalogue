@@ -38,7 +38,7 @@ abstract class CropImageViewTouchBase extends androidx.appcompat.widget.AppCompa
     private static final String TAG = "CropImageViewTouchBase";
     // This is the base transformation which is used to show the image
     // initially. The current computation for this shows the image in
-    // it's entirety, letterboxing as needed. One could choose to
+    // its entirety, letterboxing as needed. One could choose to
     // show the image as cropped instead.
     //
     // This matrix is recomputed when we go from the thumbnail image to
@@ -54,7 +54,7 @@ abstract class CropImageViewTouchBase extends androidx.appcompat.widget.AppCompa
     final protected CropRotateBitmap mBitmapDisplayed = new CropRotateBitmap(
             null);
     protected final Handler mHandler = new Handler();
-    // This is the final matrix which is computed as the concatentation
+    // This is the final matrix which is computed as the concatenation
     // of the base matrix and the supplementary matrix.
     private final Matrix mDisplayMatrix = new Matrix();
     // Temporary buffer used for getting the values out of a matrix.
@@ -255,7 +255,7 @@ abstract class CropImageViewTouchBase extends androidx.appcompat.widget.AppCompa
         return getScale(mSuppMatrix);
     }
 
-    // Setup the base matrix so that the image is centered and scaled properly.
+    // Set up the base matrix so that the image is centered and scaled properly.
     private void getProperBaseMatrix(CropRotateBitmap bitmap, Matrix matrix) {
         float viewWidth = getWidth();
         float viewHeight = getHeight();
@@ -265,7 +265,7 @@ abstract class CropImageViewTouchBase extends androidx.appcompat.widget.AppCompa
         // int rotation = bitmap.getRotation();
         matrix.reset();
 
-        // Originallt We limited up-scaling to 2x otherwise the result may
+        // Originally We limited up-scaling to 2x otherwise the result may
         // look bad if it's a small icon.
         // However, we need to crop small thumbnails on huge phones...so
         // there is little choice. We now have no effective limit.
@@ -282,7 +282,7 @@ abstract class CropImageViewTouchBase extends androidx.appcompat.widget.AppCompa
 
     // Combine the base matrix and the supp matrix to make the final matrix.
     protected Matrix getImageViewMatrix() {
-        // The final matrix is computed as the concatentation of the base matrix
+        // The final matrix is computed as the concatenation of the base matrix
         // and the supplementary matrix.
         mDisplayMatrix.set(mBaseMatrix);
         mDisplayMatrix.postConcat(mSuppMatrix);

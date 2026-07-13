@@ -10,8 +10,8 @@ import android.util.AttributeSet;
  *     <a href="https://code.google.com/p/android/issues/detail?id=35412">...</a>
  * It should have no effect *except* for very specific books in the above-mentioned versions of Android
  * NOTE:
- * It should only be needed for TextViews that are wrapped and have MetricAffecting spans (eg. URL, bold, emphasis).
- * Currently this is limited to the book description field.
+ * It should only be needed for TextViews that are wrapped and have MetricAffecting spans (e.g. URL, bold, emphasis).
+ * Currently, this is limited to the book description field.
  *
  * @author pjw
  *

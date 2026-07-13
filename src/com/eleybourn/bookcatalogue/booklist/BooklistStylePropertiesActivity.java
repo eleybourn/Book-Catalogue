@@ -146,7 +146,7 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
     }
 
     /**
-     * Setup the style properties views based on the current style
+     * Set up the style properties views based on the current style
      */
     private void displayProperties() {
         ViewGroup vg = this.findViewById(R.id.layout_body);
@@ -188,7 +188,7 @@ public class BooklistStylePropertiesActivity extends BookCatalogueActivity {
         }
 
         /**
-         * Setup the view
+         * Set up the view
          */
         @Override
         public View getView(LayoutInflater inflater) {

@@ -70,7 +70,7 @@ public class MessageDialogFragment extends BookCatalogueDialogFragment {
     }
 
     /**
-     * Create the underlying dialog
+     * Create the underlying dialogue
      */
     @NonNull
     @Override
@@ -116,7 +116,7 @@ public class MessageDialogFragment extends BookCatalogueDialogFragment {
     }
 
     /**
-     * Listener interface to receive notifications when dialog is closed by any means.
+     * Listener interface to receive notifications when dialogue is closed by any means.
      *
      * @author pjw
      */

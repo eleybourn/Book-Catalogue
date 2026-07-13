@@ -531,7 +531,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
 				* Weitere kleinere Fehlerbehebungen
 			</p>
 		]]></string>
-    <!-- Used for concatenating two strings, eg. "3 books, 2 covers" (probably only important on RTL languages)-->
+    <!-- Used for concatenating two strings, e.g. "3 books, 2 covers" (probably only important on RTL languages)-->
     <!-- Short progress message -->
     <string name="new_in_510"><![CDATA[
 			<p><b>Neu in 5.1.0</b>\n\n

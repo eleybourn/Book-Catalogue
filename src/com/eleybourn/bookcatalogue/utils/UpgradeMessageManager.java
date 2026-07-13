@@ -130,7 +130,7 @@ public class UpgradeMessageManager {
 		// an older install.
 		long lastVersion = getLastUpgradeVersion();
 		if (lastVersion == 0) {
-			// It's either a new install, or an install using old database-based message system
+			// It's either a new install, or an old installation using old database-based message system
 
 			// Up until version 98, messages were handled via the CatalogueDBAdapter object, so create one
 			// and see if there is a message.

@@ -34,7 +34,7 @@ import com.eleybourn.bookcatalogue.database.DbSync.Synchronizer;
 /**
  * DEBUG CLASS to help com.eleybourn.bookcatalogue.debug cursor leakage.
  * Set the static variable DEBUG_TRACKED_CURSOR to 'false' to make most of the code a NOP.
- * By using TrackedCursorFactory it is possible to use this class to analyze when and
+ * By using TrackedCursorFactory it is possible to use this class to analyse when and
  * where cursors are being allocated, and whether they are being deallocated in a timely
  * fashion.
  * 

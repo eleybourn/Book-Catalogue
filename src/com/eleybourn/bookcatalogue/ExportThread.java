@@ -86,7 +86,7 @@ public class ExportThread extends ManagedTask {
     }
 
     /**
-     * Cleanup any DB connection etc after main task has run.
+     * Clean-up any DB connection etc after main task has run.
      */
     private void cleanup() {
         if (mDbHelper != null) {

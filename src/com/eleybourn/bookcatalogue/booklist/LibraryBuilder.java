@@ -845,7 +845,7 @@ public class LibraryBuilder {
             // stage some row kinds introduce more table dependencies, a flag (or object) can be set
             // when processing the level to inform the joining code (below) which tables need to be added.
             //
-            // Aside: The sql used prior to using DbUtils is included as comments below the code that replaced it.
+            // Aside: The SQL used prior to using DbUtils is included as comments below the code that replaced it.
             //
             SqlComponents sqlCmp = summary.buildSqlComponents(mStyle.getGroupAt(0).getCompoundKey());
 

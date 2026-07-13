@@ -54,7 +54,7 @@ public abstract class Property {
 	//private transient String mName = null;
 	/** Property weight (for sorting). Most will remain set at 0. */
 	private int mWeight = 0;
-	/** Hint associated with this property. Subclasses need t ouse, where appropriate */
+	/** Hint associated with this property. Subclasses need to use, where appropriate */
 	private int mHint = 0;
 
 	/**
@@ -98,7 +98,7 @@ public abstract class Property {
 
 	/**
 	 * Interface used to help setting one property based on another property value.
-	 * eg. there are multiple 'Boolean' properties, and *maybe* one day there will be
+	 * e.g. there are multiple 'Boolean' properties, and *maybe* one day there will be
 	 * a use for type conversions.
 	 * 
 	 * @author Philip Warner
@@ -108,7 +108,7 @@ public abstract class Property {
 	}
 	/**
 	 * Interface used to help setting one property based on another property value.
-	 * eg. there are multiple 'Boolean' properties, and *maybe* one day there will be
+	 * e.g. there are multiple 'Boolean' properties, and *maybe* one day there will be
 	 * a use for type conversions.
 	 * 
 	 * @author Philip Warner
@@ -118,7 +118,7 @@ public abstract class Property {
 	}
 	/**
 	 * Interface used to help setting one property based on another property value.
-	 * eg. there are multiple 'Boolean' properties, and *maybe* one day there will be
+	 * e.g. there are multiple 'Boolean' properties, and *maybe* one day there will be
 	 * a use for type conversions.
 	 * 
 	 * @author Philip Warner
@@ -204,6 +204,6 @@ public abstract class Property {
      * Children must implement set(Property)
      */
 	public abstract void set(Property p);
-	/** Children must method to return an editor for this object */
+	/** Children method must return an editor for this object */
 	public abstract View getView(LayoutInflater inflater);
 }

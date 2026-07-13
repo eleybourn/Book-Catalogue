@@ -260,7 +260,7 @@ public class CropCropImage extends CropMonitoredActivity {
             return (int) remaining;
             // }
         } catch (Exception ex) {
-            // if we can't stat the filesystem then we don't know how many
+            // if we can't STAT the filesystem then we don't know how many
             // pictures are remaining. it might be zero but just leave it
             // blank since we really don't know.
             return CANNOT_STAT_ERROR;
@@ -419,7 +419,7 @@ public class CropCropImage extends CropMonitoredActivity {
 
         if (mCircleCrop) {
             // OK, so what's all this about?
-            // Bitmaps are inherently rectangular but we want to return
+            // Bitmaps are inherently rectangular, but we want to return
             // something that's basically a circle. So we fill in the
             // area around the circle with alpha. Note the all important
             // PortDuff.Mode.CLEAR.
@@ -444,7 +444,7 @@ public class CropCropImage extends CropMonitoredActivity {
 
                 /*
                  * Don't scale the image crop it to the size requested. Create
-                 * an new image with the cropped image in the center and the
+                 * a new image with the cropped image in the center and the
                  * extra space filled.
                  */
 

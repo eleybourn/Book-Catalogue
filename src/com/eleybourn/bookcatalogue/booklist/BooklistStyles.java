@@ -65,7 +65,7 @@ public class BooklistStyles implements Iterable<LibraryStyle> {
 	}
 
 	/**
-     * Fill in the passed objects with the canonical names of the preferred styles
+     * Fill in the objects with the canonical names of the preferred styles
      * from user preferences.
      *
      * @param hash Hashtable of names
@@ -279,7 +279,7 @@ public class BooklistStyles implements Iterable<LibraryStyle> {
             }
         }
 
-		// If none found, return all. Otherwise return the ones we found.
+		// If none found, return all. Otherwise, return the ones we found.
 		if (styles.size() > 0)
 			return styles;
 		else {

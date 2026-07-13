@@ -1,7 +1,7 @@
 package com.eleybourn.bookcatalogue.scanner.pic2shop;
 
 /**
- * Based on code from pic2shop sample at github
+ * Based on code from pic2shop sample at GitHub
  */
 public final class Scan {
 

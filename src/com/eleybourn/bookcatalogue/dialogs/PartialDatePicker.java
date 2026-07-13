@@ -425,7 +425,7 @@ public class PartialDatePicker extends FrameLayout {
     private static final char DATE_FORMAT_DAY = 'd';
 
     /**
-     * Reorder the views in the dialog to suit the current locale.
+     * Reorder the views in the dialogue to suit the current locale.
      *
      * @param root Root view
      */

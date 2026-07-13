@@ -75,7 +75,7 @@ public class BooklistStyleGroupsActivity extends BookEditObjectList<GroupWrapper
 		private static final long serialVersionUID = 3108094089675884238L;
 		/** The actual group */
         final LibraryGroup group;
-		/** Whether this groups is present in the style */
+		/** Whether this groups are present in the style */
 		boolean present;
 		/** Constructor */
 		public GroupWrapper(LibraryGroup group, boolean present) {
@@ -185,7 +185,7 @@ public class BooklistStyleGroupsActivity extends BookEditObjectList<GroupWrapper
                 }
             });
 		}
-		// Setup the variant fields in the holder
+		// Set up the variant fields in the holder
 		h.wrapper = wrapper;
 		h.name.setText(wrapper.group.getName());
 

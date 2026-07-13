@@ -278,7 +278,7 @@ public class BookDetails extends BookAbstract {
     }
 
     /**
-     * Show signed status of the book. Set text 'yes' if signed. Otherwise it is 'No'.
+     * Show signed status of the book. Set text 'yes' if signed. Otherwise, it is 'No'.
      *
      * @param book Cursor containing information of the book from database
      */

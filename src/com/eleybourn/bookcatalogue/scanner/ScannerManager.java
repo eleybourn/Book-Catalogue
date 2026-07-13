@@ -16,7 +16,7 @@ public class ScannerManager {
 	/** Preference key */
 	public static final String PREF_PREFERRED_SCANNER = "ScannerManager.PreferredScanner";
 
-	/** Unique IDs to associate with each supported scanner intent; we changes them in version 200 to force builtin */
+	/** Unique IDs to associate with each supported scanner intent; we change them in version 200 to force builtin */
 	public static final int SCANNER_ZXING_COMPATIBLE = 101;
 	public static final int SCANNER_PIC2SHOP = 102;
 	public static final int SCANNER_ZXING = 103;

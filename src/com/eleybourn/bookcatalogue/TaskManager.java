@@ -306,7 +306,7 @@ public class TaskManager {
 	}
 
 	/**
-	 * If in the UI thread, update the progress dialog, otherwise resubmit to UI thread.
+	 * If in the UI thread, update the progress dialogue, otherwise resubmit to UI thread.
 	 */
 	private void updateProgressDialog() {
 		try {
@@ -413,7 +413,7 @@ public class TaskManager {
 	}
 
 	/**
-	 * Cancel all tasks and close dialogs then cleanup; if no tasks running, just close dialogs and cleanup
+	 * Cancel all tasks and close dialogues then clean-up; if no tasks running, just close dialogues and clean-up
 	 */
 	protected void close() {
 		mIsClosing = true;

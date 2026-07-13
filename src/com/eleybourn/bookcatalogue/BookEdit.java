@@ -227,7 +227,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
                 if (isDirty() && !mIsReadOnly) {
                     StandardDialogs.showConfirmUnsavedEditsDialog(BookEdit.this, null);
                 } else {
-                    // No changes, disable this callback so the default 'finish' behavior happens
+                    // No changes, disable this callback so the default 'finish' behaviour happens
                     // or call our custom finish logic
                     File thumb = CatalogueDBAdapter.getTempThumbnail();
                     thumb.delete();
@@ -500,7 +500,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     }
 
     /**
-     * Run each time the menu button is pressed. This will setup the options menu
+     * Run each time the menu button is pressed. This will set up the options menu
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -735,7 +735,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     /**
      * This will save a book into the database, by either updating or created a
      * book. Minor modifications will be made to the strings: - Titles will be
-     * rewords so 'a', 'the', 'an' will be moved to the end of the string (this
+     * reworded so 'a', 'the', 'an' will be moved to the end of the string (this
      * is only done for NEW books)
      * - Date published will be converted from a date to a string
      * <p>
@@ -941,7 +941,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     }
 
     /**
-     * Dialog handler; pass results to relevant destination
+     * Dialogue handler; pass results to relevant destination
      */
     @Override
     public void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day) {
@@ -959,7 +959,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     }
 
     /**
-     * Dialog handler; pass results to relevant destination
+     * Dialogue handler; pass results to relevant destination
      */
     @Override
     public void onPartialDatePickerCancel(int dialogId, PartialDatePickerFragment dialog) {
@@ -978,7 +978,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     }
 
     /**
-     * Dialog handler; pass results to relevant destination
+     * Dialogue handler; pass results to relevant destination
      */
     @Override
     public void onTextFieldEditorSave(int dialogId, TextFieldEditorFragment dialog, String newText) {
@@ -996,7 +996,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     }
 
     /**
-     * Dialog handler; pass results to relevant destination
+     * Dialogue handler; pass results to relevant destination
      */
     @Override
     public void onTextFieldEditorCancel(int dialogId, TextFieldEditorFragment dialog) {
@@ -1014,7 +1014,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     }
 
     /**
-     * Dialog handler; pass results to relevant destination
+     * Dialogue handler; pass results to relevant destination
      */
     @Override
     public void onBookshelfCheckChanged(int dialogId, BookshelfDialogFragment dialog, boolean checked, String shelf,

@@ -1,6 +1,5 @@
 package com.eleybourn.bookcatalogue;
 
-import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
@@ -273,7 +272,14 @@ public class BookCatalogueAPICredentials {
      * This bypasses all OAuth/Client ID requirements and only retrieves the email address.
      */
     private void tryAccountManagerFallback() {
-        if (!(mContext instanceof android.app.Activity) || mLegacySignInLauncher == null) return;
+        if (!(mContext instanceof android.app.Activity)) {
+            if (mListener != null) mListener.onCredentialError("Login failed: Activity context required.");
+            return;
+        }
+        if (mLegacySignInLauncher == null) {
+            if (mListener != null) mListener.onCredentialError("Login failed: Sign-in launcher not initialized.");
+            return;
+        }
 
         // Create the system intent to choose an account
         Intent intent = AccountManager.newChooseAccountIntent(null, null, new String[]{"com.google"}, false, null, null, null, null);
@@ -295,76 +301,10 @@ public class BookCatalogueAPICredentials {
         this.mListener = listener;
         this.mIsFallbackAttempted = true;
 
-        AccountManager accountManager = AccountManager.get(mContext);
-        Account[] accounts = accountManager.getAccountsByType("com.google");
-
-        if (accounts.length == 0) {
-            if (mListener != null) mListener.onCredentialError("No Google accounts found on this device.");
-        } else {
-            showAccountPickerDialog(accounts);
-        }
-    }
-
-    private void showAccountPickerDialog(final Account[] accounts) {
-        BaseAdapter adapter = new BaseAdapter() {
-            @Override
-            public int getCount() { return accounts.length + 1; } // +1 for "Add account"
-
-            @Override
-            public Object getItem(int position) {
-                if (position < accounts.length) return accounts[position];
-                return null;
-            }
-
-            @Override
-            public long getItemId(int position) { return position; }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(mContext).inflate(R.layout.row_account, parent, false);
-                }
-                TextView emailText = convertView.findViewById(R.id.row_email);
-                ImageView icon = convertView.findViewById(R.id.row_icon);
-
-                if (position < accounts.length) {
-                    emailText.setText(accounts[position].name);
-                    icon.setImageResource(R.drawable.ic_menu_author);
-                } else {
-                    emailText.setText(R.string.button_add_account);
-                    icon.setImageResource(R.drawable.ic_menu_new);
-                }
-                return convertView;
-            }
-        };
-
-        new MaterialAlertDialogBuilder(mContext)
-                .setTitle(R.string.title_choose_account)
-                .setAdapter(adapter, (dialog, which) -> {
-                    if (which < accounts.length) {
-                        showOptInDialog(accounts[which].name);
-                    } else {
-                        addNewAccount();
-                    }
-                })
-                .setNegativeButton(R.string.button_cancel, null)
-                .show();
-    }
-
-    private void addNewAccount() {
-        if (!(mContext instanceof android.app.Activity)) return;
-        AccountManager accountManager = AccountManager.get(mContext);
-        accountManager.addAccount("com.google", null, null, null, (android.app.Activity) mContext, future -> {
-            try {
-                Bundle result = future.getResult();
-                if (result.containsKey(AccountManager.KEY_ACCOUNT_NAME)) {
-                    final String email = result.getString(AccountManager.KEY_ACCOUNT_NAME);
-                    mMainThreadHandler.post(() -> showOptInDialog(email));
-                }
-            } catch (Exception e) {
-                Log.e("APICredentials", "Failed to add account", e);
-            }
-        }, mMainThreadHandler);
+        // On modern Android (API 30+), getAccountsByType() is restricted and requires GET_ACCOUNTS permission,
+        // which is no longer recommended. Using newChooseAccountIntent() is the correct, privacy-respecting
+        // way to let the user pick an account and share its name with the app.
+        tryAccountManagerFallback();
     }
 
     /**

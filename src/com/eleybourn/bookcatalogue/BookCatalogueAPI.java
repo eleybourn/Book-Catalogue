@@ -369,7 +369,11 @@ public class BookCatalogueAPI implements SimpleTask {
                             if (!db.checkBookExists(bcid)) {
                                 // Book exists in cloud but not locally, delete it
                                 notifyProgress(i + 1, serverTotal, "Removing orphaned records...");
-                                connection("/book/" + bcid, METHOD_DEL);
+                                try {
+                                    connection("/book/" + bcid, METHOD_DEL);
+                                } catch (Exception e) {
+                                    Log.w("BookCatalogueAPI", "Failed to delete orphaned book " + bcid + ": " + e.getMessage());
+                                }
                             } else {
                                 // Keep track of it for the next phase (delta backup)
                                 serverMap.put(bcid, serverBook);
@@ -556,6 +560,7 @@ public class BookCatalogueAPI implements SimpleTask {
 
             ArrayList<String> batchFields = new ArrayList<>();
             ArrayList<String> batchValues = new ArrayList<>();
+            ArrayList<Integer> batchBookIds = new ArrayList<>();
             ArrayList<ThumbnailTask> thumbnailTasks = new ArrayList<>();
             int batchCount = 0;
 
@@ -591,18 +596,14 @@ public class BookCatalogueAPI implements SimpleTask {
                     if (needsBackup) {
                         // Add to batch
                         populateBookFields(batchFields, batchValues, "books[" + batchCount + "][", "]", bookId, bookCursor, authors, bookshelves, series, anthology, "SKIP");
+                        batchBookIds.add(bookId);
                         batchCount++;
                     }
 
                     // Check if thumbnail changed independently
-                    boolean thumbChanged = true;
-                    if (serverBook != null) {
-                        String localMd5 = (thumbFile != null && thumbFile.exists()) ? Utils.calculateMD5(thumbFile) : "";
-                        String serverMd5 = getStringOrEmpty(serverBook, "thumbnail_md5");
-                        if (localMd5.equals(serverMd5)) {
-                            thumbChanged = false;
-                        }
-                    }
+                    String localMd5 = (thumbFile != null && thumbFile.exists()) ? Utils.calculateMD5(thumbFile) : "";
+                    String serverMd5 = (serverBook != null) ? getStringOrEmpty(serverBook, "thumbnail_md5") : "";
+                    boolean thumbChanged = !localMd5.equals(serverMd5);
 
                     if (thumbChanged) {
                         // Queue thumbnail work
@@ -612,9 +613,20 @@ public class BookCatalogueAPI implements SimpleTask {
                     if (batchCount >= 30) {
                         try {
                             sendBatch(batchFields, batchValues);
+                        } catch (Exception e) {
+                            Log.e("BookCatalogueAPI", "Batch failed, removing associated thumbnails from queue", e);
+                            // If batch fails, remove any thumbnails from this batch from the tasks
+                            for (Integer failedId : batchBookIds) {
+                                for (int i = thumbnailTasks.size() - 1; i >= 0; i--) {
+                                    if (thumbnailTasks.get(i).id == failedId) {
+                                        thumbnailTasks.remove(i);
+                                    }
+                                }
+                            }
                         } finally {
                             batchFields.clear();
                             batchValues.clear();
+                            batchBookIds.clear();
                             batchCount = 0;
                         }
                     }
@@ -634,7 +646,14 @@ public class BookCatalogueAPI implements SimpleTask {
                 try {
                     sendBatch(batchFields, batchValues);
                 } catch (Exception e) {
-                    Log.e("BookCatalogueAPI", "Final batch failed", e);
+                    Log.e("BookCatalogueAPI", "Final batch failed, removing associated thumbnails from queue", e);
+                    for (Integer failedId : batchBookIds) {
+                        for (int i = thumbnailTasks.size() - 1; i >= 0; i--) {
+                            if (thumbnailTasks.get(i).id == failedId) {
+                                thumbnailTasks.remove(i);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -850,9 +869,6 @@ public class BookCatalogueAPI implements SimpleTask {
         populateBookFields(fields, values, "", "", bookId, bookCursor, authors, bookshelves, series, anthology, thumbRequest);
 
         String response = connection("/book", METHOD_POST, fields, values, thumbnailFile);
-        if (response == null) {
-            throw new Exception("Upload failed for book ID " + bookId);
-        }
         JSONObject json = new JSONObject(response);
         if (json.has("id")) {
             return;
@@ -861,22 +877,33 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     private void sendBatch(ArrayList<String> fields, ArrayList<String> values) throws Exception {
-        String response = connection("/books", METHOD_POST, fields, values);
-        if (response == null) {
-            throw new Exception("Batch upload failed");
-        }
+        connection("/books", METHOD_POST, fields, values);
     }
 
     public void backupThumbnail(long bookId, File thumbFile) throws Exception {
         String url = "/book/" + bookId + "/thumb";
-        String response = connection(url, METHOD_POST, null, null, thumbFile);
-        if (response == null) throw new Exception("Thumbnail upload failed");
+        try {
+            connection(url, METHOD_POST, null, null, thumbFile);
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("error code 404")) {
+                Log.w("BookCatalogueAPI", "Skipping thumbnail for book " + bookId + " - book not found on server (likely batch failure)");
+            } else {
+                throw e;
+            }
+        }
     }
 
     public void deleteThumbnail(long bookId) throws Exception {
         String url = "/book/" + bookId + "/thumb";
-        String response = connection(url, METHOD_DEL);
-        if (response == null) throw new Exception("Thumbnail delete failed");
+        try {
+            connection(url, METHOD_DEL);
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("error code 404")) {
+                Log.w("BookCatalogueAPI", "Thumbnail for book " + bookId + " already gone or book not found");
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
@@ -1308,19 +1335,19 @@ public class BookCatalogueAPI implements SimpleTask {
         }
     }
 
-    public String connection(String urlEndPoint, String method) {
+    public String connection(String urlEndPoint, String method) throws Exception {
         File thumbnailFile = null;
         ArrayList<String> fields = new ArrayList<>();
         ArrayList<String> values = new ArrayList<>();
         return connection(urlEndPoint, method, fields, values, thumbnailFile);
     }
 
-    public String connection(String urlEndPoint, String method, ArrayList<String> fields, ArrayList<String> values) {
+    public String connection(String urlEndPoint, String method, ArrayList<String> fields, ArrayList<String> values) throws Exception {
         File thumbnailFile = null;
         return connection(urlEndPoint, method, fields, values, thumbnailFile);
     }
 
-    public String connection(String urlEndPoint, String method, ArrayList<String> fields, ArrayList<String> values, File thumbnailFile) {
+    public String connection(String urlEndPoint, String method, ArrayList<String> fields, ArrayList<String> values, File thumbnailFile) throws Exception {
         int deadlockRetries = 3;
         while (true) {
             HttpURLConnection conn = null;
@@ -1331,8 +1358,8 @@ public class BookCatalogueAPI implements SimpleTask {
                 conn = (HttpURLConnection) new URL(urlString).openConnection();
                 conn.setRequestMethod(method);
                 conn.setRequestProperty("Accept", "application/json");
-                conn.setReadTimeout(30000); // 30 seconds
-                conn.setConnectTimeout(30000); // 30 seconds
+                conn.setReadTimeout(60000); // 60 seconds
+                conn.setConnectTimeout(60000); // 60 seconds
                 if (mApiToken != null && !mApiToken.isEmpty()) {
                     conn.setRequestProperty("Authorization", "Bearer " + mApiToken);
                 }
@@ -1363,7 +1390,6 @@ public class BookCatalogueAPI implements SimpleTask {
                 String response;
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     response = readStream(conn.getInputStream());
-                    if (response.isEmpty()) return null; // Handle empty success response
                     return response;
                 } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && retry) {
                     login();
@@ -1387,9 +1413,6 @@ public class BookCatalogueAPI implements SimpleTask {
                     // Propagate the error so the calling method knows it failed.
                     throw new Exception("Server returned error code " + responseCode + ": " + response);
                 }
-            } catch (Exception e) {
-                Log.e("BookCatalogueAPI", "Connection Error", e);
-                return null;
             } finally {
                 if (conn != null) {
                     conn.disconnect();

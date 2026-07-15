@@ -21,6 +21,7 @@ package com.eleybourn.bookcatalogue.backup;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
@@ -55,8 +56,39 @@ public class CsvImporter {
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(exportStream, StandardCharsets.UTF_8), BUFFER_SIZE);
 		String line;
+		StringBuilder recordBuilder = new StringBuilder();
+		boolean inQuote = false;
+
 		while ((line = in.readLine()) != null) {
-			importedString.add(line);
+			if (recordBuilder.length() > 0) {
+				recordBuilder.append("\n");
+			}
+			recordBuilder.append(line);
+
+			// Detect if we are in a quoted section to handle multi-line records
+			for (int i = 0; i < line.length(); i++) {
+				char c = line.charAt(i);
+				// Handle both standard CSV escaped quotes ("") and backslash escapes (\")
+				if (c == ESCAPE_CHAR && i + 1 < line.length() && line.charAt(i + 1) == QUOTE_CHAR) {
+					i++; // Skip the escaped quote
+				} else if (c == QUOTE_CHAR) {
+					if (i + 1 < line.length() && line.charAt(i + 1) == QUOTE_CHAR) {
+						i++; // Skip the second quote in ""
+					} else {
+						inQuote = !inQuote;
+					}
+				}
+			}
+
+			if (!inQuote) {
+				importedString.add(recordBuilder.toString());
+				recordBuilder.setLength(0);
+			}
+		}
+
+		// Add any remaining data if the file ended unexpectedly (e.g. unclosed quote)
+		if (recordBuilder.length() > 0) {
+			importedString.add(recordBuilder.toString());
 		}
 
 		importBooks(context, importedString, listener, importFlags);
@@ -147,7 +179,7 @@ public class CsvImporter {
 				String[] imported = returnRow(export.get(row), fullEscaping);
 
 				values.clear();
-				for(int i = 0; i < names.length; i++) {
+				for(int i = 0; i < names.length && i < imported.length; i++) {
 					values.putString(names[i], imported[i]);
 				}
 
@@ -398,7 +430,7 @@ public class CsvImporter {
 			}	
 		} catch (Exception e) {
 			Logger.logError(e);
-			throw new RuntimeException(e);
+			Log.d("BC", "Import failed at row " + row);
 		} finally {
 			if (inTx) {
 				db.setTransactionSuccessful();

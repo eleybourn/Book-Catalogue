@@ -389,7 +389,7 @@ public class Datum {
 			else
 				try {
 					return Long.parseLong(s);					
-				}catch (NumberFormatException e1) {
+				} catch (NumberFormatException e1) {
 					if ( Utils.objectToBoolean(o) ) {
 						return 1;
 					} else {

@@ -165,7 +165,7 @@ public class BookCatalogueAPI implements SimpleTask {
             String dateStr = c.getString(index).trim();
 
             // Avoid returning a date for empty or "0" which often means "not set"
-            if (dateStr == null || dateStr.isEmpty() || dateStr.equals("0")) {
+            if (dateStr == null || dateStr.isEmpty() || dateStr.equals("0") || dateStr.equalsIgnoreCase("not set")) {
                 return "";
             }
 
@@ -274,11 +274,12 @@ public class BookCatalogueAPI implements SimpleTask {
 
     private static String readStream(InputStream in) throws IOException {
         if (in == null) return "No error stream";
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
             StringBuilder result = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                result.append(line);
+            char[] buffer = new char[8192];
+            int n;
+            while ((n = reader.read(buffer)) != -1) {
+                result.append(buffer, 0, n);
             }
             return result.toString();
         }
@@ -741,9 +742,9 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     private boolean checkDiff(long bookId, String fieldName, String localValue, String serverValue, boolean isDate) {
-        // Updated normalization in BookCatalogueAPI.java
-        String l = localValue.replaceAll("[\\s\\p{Z}]+", " ").trim();
-        String s = serverValue.replaceAll("[\\s\\p{Z}]+", " ").trim();
+        // Replace all whitespace, separators, and formatting characters (like zero-width space) with a single space, then trim
+        String l = localValue.replaceAll("[\\s\\p{Z}\\p{Cf}]+", " ").trim();
+        String s = serverValue.replaceAll("[\\s\\p{Z}\\p{Cf}]+", " ").trim();
 
         // If it's a date and one side is just a date (10 chars), truncate the other side for comparison
         if (isDate && !l.isEmpty() && !s.isEmpty()) {
@@ -773,7 +774,9 @@ public class BookCatalogueAPI implements SimpleTask {
                     if (ds == null) Log.d("BC", "Semantic check: failed to parse server date: " + serverValue);
                 }
             }
-            Log.d("BC", "Diff found for book " + bookId + " on field '" + fieldValue(fieldName) + "'. Local: '" + localValue + "', Server: '" + serverValue + "'");
+            Log.d("BC", "Diff found for book " + bookId + " on field '" + fieldValue(fieldName) + "'");
+            Log.d("BC", "Local Value:  '" + localValue + "'");
+            Log.d("BC", "Server Value: '" + serverValue + "'");
             return true;
         }
         return false;

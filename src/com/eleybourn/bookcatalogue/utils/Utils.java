@@ -1478,7 +1478,7 @@ public class Utils {
                         int i = Integer.parseInt(s);
                         return i != 0;
                     } catch (Exception e) {
-                        throw new RuntimeException("Not a valid boolean value");
+                        throw new RuntimeException(s + " is not a valid boolean value");
                     }
             }
         }

@@ -71,7 +71,8 @@ public class Logger {
 	/**
 	 * Clear the error log each time the app is started; preserve previous if non-empty
 	 */
-	public static void clearLog() {
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void clearLog() {
 		try {
 			try { 
 				File orig = new File(StorageUtils.getErrorLog());

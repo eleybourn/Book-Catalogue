@@ -173,6 +173,17 @@ public class Utils {
         addParseDateFormat(!isEnglish, "EEE MMM dd HH:mm ZZZZ yyyy");
         addParseDateFormat(!isEnglish, "EEE MMM dd ZZZZ yyyy");
         addParseDateFormat(!isEnglish, "EEE, MMM dd, yyyy");
+        addParseDateFormat(!isEnglish, "MMMM dd, yyyy");
+        addParseDateFormat(!isEnglish, "MMMM d, yyyy");
+        addParseDateFormat(!isEnglish, "MMMM dd yyyy");
+        addParseDateFormat(!isEnglish, "MMMM d yyyy");
+        addParseDateFormat(!isEnglish, "MMM dd, yyyy");
+        addParseDateFormat(!isEnglish, "MMM d, yyyy");
+        addParseDateFormat(!isEnglish, "MMM dd yyyy");
+        addParseDateFormat(!isEnglish, "MMM d yyyy");
+        addParseDateFormat(!isEnglish, "MMMM yyyy");
+        addParseDateFormat(!isEnglish, "MMM yyyy");
+        addParseDateFormat(!isEnglish, "yyyy");
         addParseDateFormat(!isEnglish, "EEE, dd MMM yyyy HH:mm:ss Z");
         addParseDateFormat(!isEnglish, "EEE, dd MMM yyyy HH:mm:ss");
 
@@ -263,8 +274,15 @@ public class Utils {
         for (SimpleDateFormat sdf : mParseDateFormats) {
             try {
                 sdf.setLenient(lenient);
+                // We MUST set the timezone explicitly because these SDFs are shared
                 if (forceUtc) {
-                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    sdf.setTimeZone(tzUtc);
+                } else if (sdf == mLocalDateSqlSdf) {
+                    sdf.setTimeZone(TimeZone.getDefault());
+                } else {
+                    // Default to UTC for consistency with SQL dates, 
+                    // except for the explicit local one.
+                    sdf.setTimeZone(tzUtc);
                 }
                 d = sdf.parse(s);
                 return d;
@@ -273,13 +291,16 @@ public class Utils {
             }
         }
         // All SDFs failed, try locale-specific...
-        try {
-            java.text.DateFormat df = java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT);
-            df.setLenient(lenient);
-            d = df.parse(s);
-            return d;
-        } catch (Exception e) {
-            // Ignore
+        int[] styles = {java.text.DateFormat.SHORT, java.text.DateFormat.MEDIUM, java.text.DateFormat.LONG, java.text.DateFormat.FULL};
+        for (int style : styles) {
+            try {
+                java.text.DateFormat df = java.text.DateFormat.getDateInstance(style);
+                df.setLenient(lenient);
+                d = df.parse(s);
+                return d;
+            } catch (Exception e) {
+                // Ignore
+            }
         }
         return null;
     }

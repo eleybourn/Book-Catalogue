@@ -227,6 +227,11 @@ public class BookCatalogueAPI implements SimpleTask {
         return "";
     }
 
+    private static String cleanInt(String pages) {
+        if (pages == null) return "";
+        return pages.replaceAll("[^0-9]", "");
+    }
+
     private static int getInt(Cursor c, String columnName) {
         int index = c.getColumnIndex(columnName);
         if (index > -1 && !c.isNull(index)) {
@@ -435,7 +440,7 @@ public class BookCatalogueAPI implements SimpleTask {
         }
 
         fields.add(prefix + "pages" + suffix);
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_PAGES));
+        values.add(cleanInt(getString(bookCursor, CatalogueDBAdapter.KEY_PAGES)));
 
         fields.add(prefix + "notes" + suffix);
         values.add(getString(bookCursor, CatalogueDBAdapter.KEY_NOTES));
@@ -668,7 +673,7 @@ public class BookCatalogueAPI implements SimpleTask {
             if (checkDiff(bookId, "date_published", getDate(local, CatalogueDBAdapter.KEY_DATE_PUBLISHED), normalizeServerDate(getStringOrEmpty(server, "date_published")), true)) return true;
             if (checkDiff(bookId, "rating", getString(local, CatalogueDBAdapter.KEY_RATING), getStringOrEmpty(server, "rating"))) return true;
             if (checkDiff(bookId, "read", String.valueOf(getInt(local, CatalogueDBAdapter.KEY_READ)), String.valueOf(server.optInt("read", 0)))) return true;
-            if (checkDiff(bookId, "pages", getString(local, CatalogueDBAdapter.KEY_PAGES), getStringOrEmpty(server, "pages"))) return true;
+            if (checkDiff(bookId, "pages", cleanInt(getString(local, CatalogueDBAdapter.KEY_PAGES)), cleanInt(getStringOrEmpty(server, "pages")))) return true;
             if (checkDiff(bookId, "notes", getString(local, CatalogueDBAdapter.KEY_NOTES), getStringOrEmpty(server, "notes"))) return true;
             if (checkDiff(bookId, "list_price", getString(local, CatalogueDBAdapter.KEY_LIST_PRICE), getStringOrEmpty(server, "list_price"))) return true;
             if (checkDiff(bookId, "location", getString(local, CatalogueDBAdapter.KEY_LOCATION), getStringOrEmpty(server, "location"))) return true;
@@ -1018,7 +1023,7 @@ public class BookCatalogueAPI implements SimpleTask {
                 values.putString(CatalogueDBAdapter.KEY_DATE_PUBLISHED, getStringOrEmpty(bookJson, "date_published"));
                 values.putString(CatalogueDBAdapter.KEY_RATING, getStringOrEmpty(bookJson, "rating"));
                 values.putInt(CatalogueDBAdapter.KEY_READ, bookJson.optInt("read", 0));
-                values.putString(CatalogueDBAdapter.KEY_PAGES, getStringOrEmpty(bookJson, "pages"));
+                values.putString(CatalogueDBAdapter.KEY_PAGES, cleanInt(getStringOrEmpty(bookJson, "pages")));
                 values.putString(CatalogueDBAdapter.KEY_NOTES, getStringOrEmpty(bookJson, "notes"));
                 values.putString(CatalogueDBAdapter.KEY_LIST_PRICE, getStringOrEmpty(bookJson, "list_price"));
                 values.putString(CatalogueDBAdapter.KEY_LOCATION, getStringOrEmpty(bookJson, "location"));
@@ -1326,8 +1331,8 @@ public class BookCatalogueAPI implements SimpleTask {
                 conn = (HttpURLConnection) new URL(urlString).openConnection();
                 conn.setRequestMethod(method);
                 conn.setRequestProperty("Accept", "application/json");
-                conn.setReadTimeout(15000); // 15 seconds
-                conn.setConnectTimeout(15000); // 15 seconds
+                conn.setReadTimeout(30000); // 30 seconds
+                conn.setConnectTimeout(30000); // 30 seconds
                 if (mApiToken != null && !mApiToken.isEmpty()) {
                     conn.setRequestProperty("Authorization", "Bearer " + mApiToken);
                 }

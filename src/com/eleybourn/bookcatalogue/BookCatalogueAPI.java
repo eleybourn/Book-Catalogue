@@ -741,8 +741,9 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     private boolean checkDiff(long bookId, String fieldName, String localValue, String serverValue, boolean isDate) {
-        String l = localValue.replace('\u00A0', ' ').trim();
-        String s = serverValue.replace('\u00A0', ' ').trim();
+        // Updated normalization in BookCatalogueAPI.java
+        String l = localValue.replaceAll("[\\s\\p{Z}]+", " ").trim();
+        String s = serverValue.replaceAll("[\\s\\p{Z}]+", " ").trim();
 
         // If it's a date and one side is just a date (10 chars), truncate the other side for comparison
         if (isDate && !l.isEmpty() && !s.isEmpty()) {

@@ -436,6 +436,7 @@ public class CatalogueDBAdapter {
      * Debug counter
      */
     private static Integer mInstanceCount = 0;
+    private static final Object mDbLock = new Object();
     private static DatabaseHelper mDbHelper;
     private static SynchronizedDb mDb;
     private SqlStatementManager mStatements;
@@ -527,8 +528,10 @@ public class CatalogueDBAdapter {
                 addInstance(this);
             }
         }
-        if (mDbHelper == null)
-            mDbHelper = new DatabaseHelper(ctx);
+        synchronized (mDbLock) {
+            if (mDbHelper == null)
+                mDbHelper = new DatabaseHelper(ctx);
+        }
     }
 
     private static String getAuthorFields(String idName) {
@@ -904,13 +907,15 @@ public class CatalogueDBAdapter {
      * @throws SQLException if the database could be neither opened nor created
      */
     public CatalogueDBAdapter open() throws SQLException {
-        if (mDb == null) {
-            // Get the DB wrapper
-            mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
-            // Turn on foreign key support so that CASCADE works.
-            mDb.execSQL("PRAGMA foreign_keys = ON");
-            // Turn on recursive triggers; not strictly necessary
-            mDb.execSQL("PRAGMA recursive_triggers = ON");
+        synchronized (mDbLock) {
+            if (mDb == null) {
+                // Get the DB wrapper
+                mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
+                // Turn on foreign key support so that CASCADE works.
+                mDb.execSQL("PRAGMA foreign_keys = ON");
+                // Turn on recursive triggers; not strictly necessary
+                mDb.execSQL("PRAGMA recursive_triggers = ON");
+            }
         }
         //mDb.execSQL("PRAGMA temp_store = FILE");
         if (mStatements != null) {
@@ -920,7 +925,7 @@ public class CatalogueDBAdapter {
                 Logger.logError(e);
             }
         }
-        mStatements = new SqlStatementManager(mDb);
+        mStatements = new SqlStatementManager(getDb());
         clearCachedStatements();
         mCloseWasCalled = false;
 
@@ -4593,8 +4598,10 @@ public class CatalogueDBAdapter {
      * @return Database connection
      */
     public SynchronizedDb getDb() {
-        if (mDb == null || !mDb.isOpen())
-            this.open();
+        synchronized (mDbLock) {
+            if (mDb == null || !mDb.isOpen())
+                this.open();
+        }
         return mDb;
     }
 

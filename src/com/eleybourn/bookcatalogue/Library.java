@@ -273,9 +273,6 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             // This sets the search capability to local (application) search
             setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
-            // This sets the search capability to local (application) search
-            setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
-
             Intent intent = getIntent();
             if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
                 // Return the search results instead of all books (for the bookshelf)
@@ -1173,7 +1170,8 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         public void onFinish(Exception e) {
             // If activity dead, just do a local cleanup and exit.
             if (mIsDead) {
-                mTempList.close();
+                if (mTempList != null)
+                    mTempList.close();
                 return;
             }
             // Dismiss the progress dialog, if present
@@ -1183,6 +1181,9 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
             // Update the data
             if (mTempList != null) {
                 displayList(mTempList, mTargetRows);
+            } else if (e != null) {
+                Logger.logError(e, "Failed to build book list");
+                Toast.makeText(Library.this, R.string.search_fail, Toast.LENGTH_LONG).show();
             }
             mTempList = null;
         }

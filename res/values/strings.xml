@@ -843,6 +843,7 @@
     <string name="preference_theme_default">Use System Default</string>
     <string name="preference_theme_light">Use Light Mode</string>
     <string name="preference_theme_previous">Original Theme &amp; Background</string>
+    <string name="preference_remember_last_bookshelves">Remember last bookshelves when adding new book</string>
     <string name="preference_screen_orientation">Screen Orientation</string>
     <string name="option_orientation_portrait">Always Portrait</string>
     <string name="option_orientation_landscape">Always Landscape</string>

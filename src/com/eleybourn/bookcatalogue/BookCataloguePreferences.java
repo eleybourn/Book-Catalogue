@@ -51,6 +51,7 @@ public class BookCataloguePreferences {
     public static final String PREF_SCREEN_ORIENTATION_PORTRAIT = "portrait";
     public static final String PREF_SCREEN_ORIENTATION_LANDSCAPE = "landscape";
     public static final String PREF_LAST_BOOKSHELVES = "App.LastBookshelves";
+    public static final String PREF_REMEMBER_LAST_BOOKSHELVES = "App.RememberLastBookshelves";
 
 	/** Get startup activity preference */
 	public boolean getStartInMyBook() {

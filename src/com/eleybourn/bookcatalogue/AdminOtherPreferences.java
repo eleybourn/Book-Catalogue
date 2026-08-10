@@ -114,6 +114,13 @@ public class AdminOtherPreferences extends PreferencesBase {
             .setGlobal(true)
             .setNameResourceId(R.string.preference_global_opening_book_mode)
             .setGroup(PropertyGroup.GRP_USER_INTERFACE))
+
+    .add(new BooleanProperty(BookCataloguePreferences.PREF_REMEMBER_LAST_BOOKSHELVES)
+            .setDefaultValue(true)
+            .setPreferenceKey(BookCataloguePreferences.PREF_REMEMBER_LAST_BOOKSHELVES)
+            .setGlobal(true)
+            .setNameResourceId(R.string.preference_remember_last_bookshelves)
+            .setGroup(PropertyGroup.GRP_USER_INTERFACE))
 		
 	.add(new BooleanProperty(BookCataloguePreferences.PREF_CROP_FRAME_WHOLE_IMAGE)
             .setDefaultValue(false)

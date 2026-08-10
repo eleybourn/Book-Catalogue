@@ -446,11 +446,14 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
         // If it's a new book and not restoring from a saved instance, use the last used bookshelves
         if (rowId == 0 && !isRestoring) {
-            String currentBookshelves = mBookData.getBookshelfList();
-            if (currentBookshelves == null || currentBookshelves.isEmpty()) {
-                String lastBookshelves = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_LAST_BOOKSHELVES, "");
-                if (!lastBookshelves.isEmpty()) {
-                    mBookData.setBookshelfList(lastBookshelves);
+            boolean rememberBookshelves = BookCatalogueApp.getAppPreferences().getBoolean(BookCataloguePreferences.PREF_REMEMBER_LAST_BOOKSHELVES, true);
+            if (rememberBookshelves) {
+                String currentBookshelves = mBookData.getBookshelfList();
+                if (currentBookshelves == null || currentBookshelves.isEmpty()) {
+                    String lastBookshelves = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_LAST_BOOKSHELVES, "");
+                    if (!lastBookshelves.isEmpty()) {
+                        mBookData.setBookshelfList(lastBookshelves);
+                    }
                 }
             }
         }

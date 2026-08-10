@@ -20,7 +20,6 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Class for representing read-only book details.
@@ -214,12 +213,12 @@ public class BookDetails extends BookAbstract {
         String value;
 
         if (hasDate) {
-            try {
-                Date d = Utils.parseDate(date, true);
-                date = Utils.toPrettyDate(d);
-            } catch (Exception e) {
-                // Ignore; just use what we have
-            }
+            /*
+             * We use DateFieldFormatter here because it uses Fields.parseDate which only succeeds
+             * for full dates. This avoids partial dates (like just a year) being
+             * filled with Jan 1st. It also ensures the timezone is consistent with the edit screen.
+             */
+            date = new Fields.DateFieldFormatter().format(null, date);
         }
 
         if (hasPub) {

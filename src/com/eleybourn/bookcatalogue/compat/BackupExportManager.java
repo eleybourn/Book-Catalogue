@@ -1,5 +1,8 @@
 package com.eleybourn.bookcatalogue.compat;
 
+import android.content.ActivityNotFoundException;
+import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument;
 import androidx.documentfile.provider.DocumentFile;
@@ -27,11 +30,13 @@ public class BackupExportManager
         implements OnExportTypeSelectionDialogResultListener,
         BackupListener {
     private final int mId;
+    private final BookCatalogueActivity mActivity;
     private ActivityResultLauncher<String> mBackupExportPickerLauncher = null;
     private DocumentFile mBackupFile = null;
 
     public BackupExportManager(int id, BookCatalogueActivity activity) {
         mId = id;
+        mActivity = activity;
         register(activity);
     }
 
@@ -64,7 +69,12 @@ public class BackupExportManager
     public void start() {
         final String sqlDate = Utils.toLocalSqlDateOnly(new Date());
         final String name = "BookCatalogue-" + sqlDate.replace(" ", "-").replace(":", "") + ".bcbk";
-        mBackupExportPickerLauncher.launch(name);
+        try {
+            mBackupExportPickerLauncher.launch(name);
+        } catch (ActivityNotFoundException e) {
+            Logger.logError(e);
+            Toast.makeText(mActivity, R.string.alert_export_failed_sdcard, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

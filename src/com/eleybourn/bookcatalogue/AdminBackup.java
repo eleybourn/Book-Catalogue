@@ -21,6 +21,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -285,7 +286,12 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
      */
     private void launchCsvImportPicker() {
         // 3. Just LAUNCH the already-registered launcher. Do not register again.
-        mCsvImportPickerLauncher.launch(new String[]{"*/*"});
+        try {
+            mCsvImportPickerLauncher.launch(new String[]{"*/*"});
+        } catch (ActivityNotFoundException e) {
+            Logger.logError(e);
+            Toast.makeText(this, R.string.alert_import_failed_is_location_correct, Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
@@ -293,7 +299,12 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
      */
     private void launchCsvExportPicker() {
         // 3. Just LAUNCH the already-registered launcher. Do not register again.
-        mCsvExportPickerLauncher.launch("Export.csv");
+        try {
+            mCsvExportPickerLauncher.launch("Export.csv");
+        } catch (ActivityNotFoundException e) {
+            Logger.logError(e);
+            Toast.makeText(this, R.string.alert_import_failed_is_location_correct, Toast.LENGTH_LONG).show();
+        }
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.eleybourn.bookcatalogue.compat;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.widget.Toast;
 
@@ -24,9 +25,11 @@ public class BackupImportManager
 		implements OnImportTypeSelectionDialogResultListener,
 				   BackupListener
 {
+	private final BookCatalogueActivity mActivity;
 	ActivityResultLauncher<String[]> mBackupImportPickerLauncher;
 
     public BackupImportManager(BookCatalogueActivity activity) {
+		mActivity = activity;
 		register(activity);
 	}
 
@@ -71,7 +74,12 @@ public class BackupImportManager
 	}
 
 	public void start() {
-		mBackupImportPickerLauncher.launch(new String[] {"*/*"});
+		try {
+			mBackupImportPickerLauncher.launch(new String[] {"*/*"});
+		} catch (ActivityNotFoundException e) {
+			Logger.logError(e);
+			Toast.makeText(mActivity, R.string.alert_import_failed_is_location_correct, Toast.LENGTH_LONG).show();
+		}
 	}
 
 	@Override

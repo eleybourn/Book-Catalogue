@@ -3,6 +3,7 @@ package com.eleybourn.bookcatalogue.compat;
 import android.Manifest.permission;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree;
@@ -448,7 +450,12 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
     }
 
     protected void startImportOldFiles() {
-        mOldFilesTreeLauncher.launch(null);
+        try {
+            mOldFilesTreeLauncher.launch(null);
+        } catch (ActivityNotFoundException e) {
+            Logger.logError(e);
+            Toast.makeText(this, R.string.alert_import_failed_is_location_correct, Toast.LENGTH_LONG).show();
+        }
     }
 
     // ========================

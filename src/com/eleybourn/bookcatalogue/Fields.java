@@ -708,7 +708,13 @@ public class Fields extends ArrayList<Fields.Field> {
                 return;
             }
             if (mFormatHtml && s != null) {
-                v.setText(HtmlCompat.fromHtml(field.format(s), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                String formatted = field.format(s);
+                // If we are formatting as HTML, but the string has newlines,
+                // we should convert them to <br/> so they are displayed.
+                if (formatted.contains("\n")) {
+                    formatted = formatted.replace("\n", "<br/>");
+                }
+                v.setText(HtmlCompat.fromHtml(formatted, HtmlCompat.FROM_HTML_MODE_LEGACY));
                 v.setFocusable(false);
                 int colorOnPrimary = Utils.getThemeColor(v.getContext(), com.google.android.material.R.attr.colorOnSurface);
                 v.setTextColor(ColorStateList.valueOf(colorOnPrimary));

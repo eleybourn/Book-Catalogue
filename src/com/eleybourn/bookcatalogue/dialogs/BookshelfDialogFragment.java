@@ -218,7 +218,7 @@ public class BookshelfDialogFragment extends BookCatalogueDialogFragment {
                                 BookshelfDialogFragment.this,
                                 cb.isChecked(), name, mCurrText, mCurrList);
                     });
-                    cbRoot.addView(cb, cbRoot.getChildCount() - 1);
+                    cbRoot.addView(cb);
                     LayoutParams lp = cb.getLayoutParams();
                     lp.height = LayoutParams.WRAP_CONTENT;
                     lp.width = LayoutParams.WRAP_CONTENT;

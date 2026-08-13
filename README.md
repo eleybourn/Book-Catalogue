@@ -39,6 +39,58 @@ Features include:
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
+new in 7.1.8 - 7.1.9
+* When adding a new book, it will remember the last bookshelf you used (now a configurable setting in Other Preferences)
+* Minor bug fixes
+
+new in 7.1.7
+* When adding a new book, it will remember the last bookshelf you used
+* Minor bug fixes to the login screen
+
+new in 7.1.6
+* Introducing a lifetime backup option
+* Backup now occurs in the background, even after you close the app.
+
+new in 7.1.5
+* Online backup will check that the backup is up to date on start up (subscribers)
+* Improvements to manage formats screen
+* Screen orientation lock option
+* Minor bug fixes
+* Smoother sign in process for subscribers
+
+new in 7.1.1 - 7.1.4
+* Improvements to manage formats screen
+* Screen orientation lock option
+* Minor bug fixes
+* Smoother sign in for Samsung devices
+
+new in 7.1.0
+* You can now manage all books formats (in bulk) from the Settings screen.
+
+new in 7.0.7
+* Introducing Online Backup & Sync: Our new subscription service! Keep your library safe in the cloud and accessible across all your Android devices.
+* Real-time Sync: Changes to your books, authors, and cover images are now backed up automatically as you make them.
+* Note: Local backup/restore and CSV exports will always remain free and available for all users.
+* General performance improvements and fixes for intermittent connection issues
+* Minor bug fixes for Samsung devices to log into the backup services.
+
+new in 7.0.4 - 7.0.6
+* New theme option available in Preferences (bringing back the original 2012 theme and colours)
+* Series number is no longer limited to numbers. Use all the characters you like.
+* Clearer labels for anthologies
+* Minor bug fixes
+
+new in 7.0.1 - 7.0.3
+* By popular demand, you can bring back the original (2012) background to the app
+* Minor bug fixes
+
+new in 7.0.0
+* Completely new and modern interface based on Android material design.
+* Improvements to ISBN search to replace sources (such as Amazon) that are no longer available. 
+* Discontinued support for Android Nougat (2016) and earlier.
+* Many bug fixes.
+* The next upgrade will contain enable the most requested feature - online backup and sync.
+
 new in 6.0.7
 * Check for missing covers on startup if upgraded from older version and startup message possibly missed or ignored.
 

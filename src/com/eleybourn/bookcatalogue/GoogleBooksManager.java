@@ -1,6 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
 
@@ -62,13 +63,19 @@ public class GoogleBooksManager {
 			int count;
 			// We can't Toast anything from here; it no longer runs in UI thread. So let the caller deal 
 			// with any exceptions.
-			parser.parse(Utils.getInputStream(url), handler);
-			count = handler.getCount();
-			if (count > 0) {
-				String id = handler.getId();
-				url = new URL(id);
-				parser = factory.newSAXParser();
-				parser.parse(Utils.getInputStream(url), entryHandler);
+			InputStream is = Utils.getInputStream(url);
+			if (is != null) {
+				parser.parse(is, handler);
+				count = handler.getCount();
+				if (count > 0) {
+					String id = handler.getId();
+					url = new URL(id);
+					parser = factory.newSAXParser();
+					is = Utils.getInputStream(url);
+					if (is != null) {
+						parser.parse(is, entryHandler);
+					}
+				}
 			}
 		} catch (Exception e) {
 			Logger.logError(e);

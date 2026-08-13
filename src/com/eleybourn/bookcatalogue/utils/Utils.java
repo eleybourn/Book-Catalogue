@@ -652,6 +652,8 @@ public class Utils {
                         Thread.sleep(500);
                     } catch (Exception ignored) {
                     }
+                } catch (java.io.FileNotFoundException e) {
+                    return null;
                 } catch (Exception e) {
                     Logger.logError(e);
                     throw new RuntimeException(e);

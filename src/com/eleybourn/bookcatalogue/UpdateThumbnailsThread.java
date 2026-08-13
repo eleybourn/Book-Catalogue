@@ -67,6 +67,8 @@ public class UpdateThumbnailsThread extends ManagedTask {
     private FieldUsages mCurrFieldUsages;
     // Active search manager
     private final SearchManager mSearchManager;
+    /** Flag to indicate search is complete */
+    private boolean mSearchFinished = false;
 
     /**
      * Constructor.
@@ -224,16 +226,21 @@ public class UpdateThumbnailsThread extends ManagedTask {
 
                 // Start searching if we need it, then wait...
                 if (wantSearch) {
-                    mSearchManager.search(author, title, isbn, tmpThumbWanted, SearchManager.SEARCH_ALL);
-                    // Wait for the search to complete; when the search has completed it uses class-level state
-                    // data when processing the results. It will signal this lock when it no longer needs any class
-                    // level state data (e.g. mOrigData).
                     mSearchLock.lock();
                     try {
-                        mSearchDone.await();
+                        mSearchFinished = false;
+                        mSearchManager.search(author, title, isbn, tmpThumbWanted, SearchManager.SEARCH_ALL);
+                        // Wait for the search to complete; when the search has completed it uses class-level state
+                        // data when processing the results. It will signal this lock when it no longer needs any class
+                        // level state data (e.g. mOrigData).
+                        while (!mSearchFinished && !isCancelled()) {
+                            mSearchDone.await();
+                        }
                     } finally {
                         mSearchLock.unlock();
                     }
+                    // Small delay to avoid hammering the servers
+                    Thread.sleep(500);
                 }
 
             }
@@ -391,7 +398,8 @@ public class UpdateThumbnailsThread extends ManagedTask {
         // Let another search begin
         mSearchLock.lock();
         try {
-            mSearchDone.signal();
+            mSearchFinished = true;
+            mSearchDone.signalAll();
         } finally {
             mSearchLock.unlock();
         }

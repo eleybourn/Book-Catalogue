@@ -30,6 +30,7 @@ import com.eleybourn.bookcatalogue.AdminUpdateFromInternet.FieldUsages.Usages;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.data.Series;
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 import java.io.File;
@@ -67,8 +68,14 @@ public class UpdateThumbnailsThread extends ManagedTask {
     private FieldUsages mCurrFieldUsages;
     // Active search manager
     private final SearchManager mSearchManager;
+    // Search listener
+    private final SearchManager.SearchListener mSearchListener = this::handleSearchFinished;
     /** Flag to indicate search is complete */
     private boolean mSearchFinished = false;
+    /** Data from search */
+    private Bundle mNewBookData = null;
+    /** Flag to indicate if search was cancelled */
+    private boolean mSearchCancelled = false;
 
     /**
      * Constructor.
@@ -84,7 +91,6 @@ public class UpdateThumbnailsThread extends ManagedTask {
         mDbHelper.open();
 
         mRequestedFields = requestedFields;
-        SearchManager.SearchListener mSearchListener = this::handleSearchFinished;
         mSearchManager = new SearchManager(mManager, mSearchListener);
         mManager.doProgress(BookCatalogueApp.getRes().getString(R.string.starting_search));
         getMessageSwitch().addListener(getSenderId(), listener, false);
@@ -120,6 +126,9 @@ public class UpdateThumbnailsThread extends ManagedTask {
 
         // ENHANCE: Allow caller to pass cursor (again) so that specific books can be updated (e.g. just one book)
         Cursor books = mDbHelper.fetchAllBooks("b." + CatalogueDBAdapter.KEY_ROW_ID, "", "", "", "", "", "");
+        if (books == null)
+            return;
+
         mManager.setMax(this, books.getCount());
         try {
             while (books.moveToNext() && !isCancelled()) {
@@ -141,12 +150,9 @@ public class UpdateThumbnailsThread extends ManagedTask {
                 mOrigData.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, mDbHelper.getBookSeriesList(mCurrId));
 
                 // Grab the searchable fields. Ideally we will have an ISBN, but we may not.
-                String isbn = mOrigData.getString(CatalogueDBAdapter.KEY_ISBN);
-                // Make sure ISBN is not NULL (legacy data, and possibly set to null when adding new book)
-                if (isbn == null)
-                    isbn = "";
-                String author = mOrigData.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED);
-                String title = mOrigData.getString(CatalogueDBAdapter.KEY_TITLE);
+                String isbn = mOrigData.getString(CatalogueDBAdapter.KEY_ISBN, "");
+                String author = mOrigData.getString(CatalogueDBAdapter.KEY_AUTHOR_FORMATTED, "");
+                String title = mOrigData.getString(CatalogueDBAdapter.KEY_TITLE, "");
 
                 // Reset the fields we want for THIS book
                 mCurrFieldUsages = new FieldUsages();
@@ -212,11 +218,10 @@ public class UpdateThumbnailsThread extends ManagedTask {
                 // Use this to flag if we actually need a search.
                 boolean wantSearch = false;
                 // Update the progress appropriately
-                if (mCurrFieldUsages.isEmpty() || isbn.isEmpty() && (Objects.requireNonNull(author).isEmpty() || Objects.requireNonNull(title).isEmpty())) {
+                if (mCurrFieldUsages.isEmpty() || (isbn.isEmpty() && (author.isEmpty() || title.isEmpty()))) {
                     mManager.doProgress(String.format(getString(R.string.skip_title), title));
                 } else {
                     wantSearch = true;
-                    assert title != null;
                     if (!title.isEmpty())
                         mManager.doProgress(title);
                     else
@@ -226,21 +231,42 @@ public class UpdateThumbnailsThread extends ManagedTask {
 
                 // Start searching if we need it, then wait...
                 if (wantSearch) {
+                    //Logger.logError(new RuntimeException("BC_DEBUG: Starting search for book " + counter + ": " + title));
                     mSearchLock.lock();
                     try {
                         mSearchFinished = false;
-                        mSearchManager.search(author, title, isbn, tmpThumbWanted, SearchManager.SEARCH_ALL);
-                        // Wait for the search to complete; when the search has completed it uses class-level state
-                        // data when processing the results. It will signal this lock when it no longer needs any class
-                        // level state data (e.g. mOrigData).
+                        mNewBookData = null;
+                        mSearchCancelled = false;
+                    } finally {
+                        mSearchLock.unlock();
+                    }
+
+                    mSearchManager.search(author, title, isbn, tmpThumbWanted, SearchManager.SEARCH_ALL);
+
+                    // Wait for the search to complete; when the search has completed it uses class-level state
+                    // data when processing the results. It will signal this lock when it no longer needs any class
+                    // level state data (e.g. mOrigData).
+                    mSearchLock.lock();
+                    try {
                         while (!mSearchFinished && !isCancelled()) {
                             mSearchDone.await();
                         }
                     } finally {
                         mSearchLock.unlock();
                     }
+
+                    if (!isCancelled() && mNewBookData != null) {
+                        //Logger.logError(new RuntimeException("BC_DEBUG: Search finished for book " + counter + ", processing results"));
+                        processSearchResults(mCurrId, mCurrUuid, mCurrFieldUsages, mNewBookData, mOrigData);
+                    } else if (mNewBookData == null) {
+                        //Logger.logError(new RuntimeException("BC_DEBUG: Search finished for book " + counter + " with no results"));
+                    }
+                    mNewBookData = null;
+
                     // Small delay to avoid hammering the servers
                     Thread.sleep(500);
+                } else {
+                    //Logger.logError(new RuntimeException("BC_DEBUG: Skipping search for book " + counter + ": " + title));
                 }
 
             }
@@ -278,13 +304,8 @@ public class UpdateThumbnailsThread extends ManagedTask {
             mManager.doToast("Unable to find book details");
         }
 
-        // Save the local data from the context so we can start a new search
-        long rowId = mCurrId;
-        Bundle origData = mOrigData;
-        FieldUsages requestedFields = mCurrFieldUsages;
-
-        if (!isCancelled() && bookData != null)
-            processSearchResults(rowId, mCurrUuid, requestedFields, bookData, origData);
+        mNewBookData = bookData;
+        mSearchCancelled = cancelled;
 
         // Done! This need to go after processSearchResults() because doSearchDone() frees
         // main thread which may disconnect database connection if on last book.
@@ -329,10 +350,16 @@ public class UpdateThumbnailsThread extends ManagedTask {
                     } else if (usage.usage == Usages.OVERWRITE) {
                         copyThumb = true;
                     }
-                    if (copyThumb) {
+                    if (copyThumb && bookUuid != null && !bookUuid.isEmpty()) {
                         File file = CatalogueDBAdapter.fetchThumbnailByUuid(bookUuid);
-                        downloadedFile.renameTo(file);
-                        thumbChanged = true;
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                        if (downloadedFile.renameTo(file)) {
+                            thumbChanged = true;
+                        } else {
+                            downloadedFile.delete();
+                        }
                     } else {
                         downloadedFile.delete();
                     }

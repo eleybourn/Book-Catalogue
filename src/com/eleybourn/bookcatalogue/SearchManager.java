@@ -119,7 +119,8 @@ public class SearchManager implements TaskManagerListener {
 	 */
 	@Override
 	public void onTaskEnded(TaskManager manager, ManagedTask task) {
-		int size;
+		//Logger.logError(new RuntimeException("BC_DEBUG: SearchManager.onTaskEnded: " + task.getClass().getSimpleName()));
+		boolean allDone = false;
 
 		// Handle the result, and optionally queue another task
 		if (task instanceof SearchThread)
@@ -128,9 +129,12 @@ public class SearchManager implements TaskManagerListener {
 		// Remove the finished task, and terminate if no more.
 		synchronized(mRunningTasks) {
 			mRunningTasks.remove(task);
-			size = mRunningTasks.size();
-        }
-		if (size == 0) {
+			if (mRunningTasks.isEmpty()) {
+				allDone = true;
+			}
+		}
+
+		if (allDone) {
 			// Stop listening FIRST...otherwise, if sendResults() calls a listener that starts
 			// a new task, we will stop listening for the new task.
 			TaskManager.getMessageSwitch().removeListener(mTaskManager.getSenderId(), this);
@@ -195,6 +199,7 @@ public class SearchManager implements TaskManagerListener {
 	 * @param isbn		ISBN to search for
 	 */
 	public void search(String author, String title, String isbn, boolean fetchThumbnail, int searchFlags) {
+		//Logger.logError(new RuntimeException("BC_DEBUG: SearchManager.search: " + title));
 		if ( (searchFlags & SEARCH_ALL) == 0)
 			throw new RuntimeException("Must specify at least one source to use");
 
@@ -231,32 +236,33 @@ public class SearchManager implements TaskManagerListener {
 		// these in series.
 		boolean tasksStarted = false;
 		mSearchingAsin = false;
-		try {
-			if (mIsbn != null && !mIsbn.isEmpty()) {
-				if (IsbnUtils.isValid(mIsbn)) {
-					// We have an ISBN, just do the search
-					mWaitingForIsbn = false;
-					tasksStarted = this.startSearches(mSearchFlags);
+		synchronized(mRunningTasks) {
+			try {
+				if (mIsbn != null && !mIsbn.isEmpty()) {
+					if (IsbnUtils.isValid(mIsbn)) {
+						// We have an ISBN, just do the search
+						mWaitingForIsbn = false;
+						tasksStarted = this.startSearches(mSearchFlags);
+					} else {
+						// Assume it's an ASIN, and just search Amazon
+						mSearchingAsin = true;
+						mWaitingForIsbn = false;
+						//mSearchFlags = SEARCH_AMAZON;
+						tasksStarted = startOneSearch(SEARCH_BC);
+						//tasksStarted = this.startSearches(mSearchFlags);
+					}
 				} else {
-					// Assume it's an ASIN, and just search Amazon
-					mSearchingAsin = true;
-					mWaitingForIsbn = false;
-					//mSearchFlags = SEARCH_AMAZON;
-					tasksStarted = startOneSearch(SEARCH_BC);
-					//tasksStarted = this.startSearches(mSearchFlags);
+					// Run one at a time, startNext() defined the order.
+					mWaitingForIsbn = true;
+					tasksStarted = startNext();
 				}
-			} else {
-				// Run one at a time, startNext() defined the order.
-				mWaitingForIsbn = true;
-				tasksStarted = startNext();
-			}			
-		} finally {
-			if (!tasksStarted) {
-				sendResults();
-				TaskManager.getMessageSwitch().removeListener(mTaskManager.getSenderId(), this);
+			} finally {
+				if (!tasksStarted) {
+					sendResults();
+					TaskManager.getMessageSwitch().removeListener(mTaskManager.getSenderId(), this);
+				}
 			}
 		}
-
 	}
 
 	/**
@@ -321,6 +327,7 @@ public class SearchManager implements TaskManagerListener {
 	 * Combine all the data and create a book or display an error.
 	 */
 	private void sendResults() {
+		//Logger.logError(new RuntimeException("BC_DEBUG: SearchManager.sendResults"));
 		// This list will be the actual order of the result we apply, based on the
 		// actual results and the default order.
 		ArrayList<DataSource> results = new ArrayList<>();

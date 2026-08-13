@@ -908,7 +908,7 @@ public class CatalogueDBAdapter {
      */
     public CatalogueDBAdapter open() throws SQLException {
         synchronized (mDbLock) {
-            if (mDb == null) {
+            if (mDb == null || !mDb.isOpen()) {
                 // Get the DB wrapper
                 mDb = new SynchronizedDb(mDbHelper, mSynchronizer);
                 // Turn on foreign key support so that CASCADE works.
@@ -4599,8 +4599,12 @@ public class CatalogueDBAdapter {
      */
     public SynchronizedDb getDb() {
         synchronized (mDbLock) {
-            if (mDb == null || !mDb.isOpen())
+            if (mDb == null || !mDb.isOpen()) {
                 this.open();
+            }
+            if (mDb == null) {
+                throw new RuntimeException("Database not initialized");
+            }
         }
         return mDb;
     }

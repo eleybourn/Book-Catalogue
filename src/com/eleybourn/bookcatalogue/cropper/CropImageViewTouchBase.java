@@ -27,7 +27,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-abstract class CropImageViewTouchBase extends androidx.appcompat.widget.AppCompatImageView {
+public abstract class CropImageViewTouchBase extends androidx.appcompat.widget.AppCompatImageView {
 
     static final float SCALE_RATE = 1.25F;
     /**
@@ -62,7 +62,7 @@ abstract class CropImageViewTouchBase extends androidx.appcompat.widget.AppCompa
     protected int mLastXTouchPos;
     protected int mLastYTouchPos;
     int mThisWidth = -1, mThisHeight = -1;
-    float mMaxZoom;
+    protected float mMaxZoom;
     int mScrollY;
     int mScrollX;
     int mLeft;

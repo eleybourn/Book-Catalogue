@@ -1043,7 +1043,7 @@ public class Utils {
                 // Fixup ratio based on new sample size and scale it.
                 ratio = ratio / (1.0f / opt.inSampleSize);
                 matrix.postScale(ratio, ratio);
-                bm = Bitmap.createBitmap(tmpBm, 0, 0, opt.outWidth, opt.outHeight, matrix, true);
+                bm = Bitmap.createBitmap(tmpBm, 0, 0, tmpBm.getWidth(), tmpBm.getHeight(), matrix, true);
                 // Recycle if original was not returned
                 if (bm != tmpBm) {
                     tmpBm.recycle();

@@ -48,6 +48,7 @@ import com.eleybourn.bookcatalogue.utils.HintManager;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import com.eleybourn.bookcatalogue.widgets.ZoomableImageView;
 
 /**
  * Abstract class for creating activities containing book details.
@@ -62,7 +63,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
 
     // Target size of a thumbnail in edit dialog and zoom dialog (bounding box dim)
     protected static final int MAX_EDIT_THUMBNAIL_SIZE = 256;
-    protected static final int MAX_ZOOM_THUMBNAIL_SIZE = 1024;
+    protected static final int MAX_ZOOM_THUMBNAIL_SIZE = 2048;
 
     private static final int CONTEXT_ID_DELETE = 1;
     private static final int CONTEXT_SUBMENU_REPLACE_THUMB = 2;
@@ -107,19 +108,27 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     );
 
     // Launcher for taking a photo
-    private final ActivityResultLauncher<Void> mTakePhotoLauncher = registerForActivityResult(
-            new ActivityResultContracts.TakePicturePreview(),
-            bitmap -> {
-                if (bitmap != null) {
+    private final ActivityResultLauncher<Uri> mTakePhotoLauncher = registerForActivityResult(
+            new ActivityResultContracts.TakePicture(),
+            success -> {
+                if (success) {
                     try {
-                        // Apply rotation preference
-                        Matrix m = new Matrix();
-                        m.postRotate(BookCatalogueApp.getAppPreferences().getInt(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES, 0));
-                        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
-
                         File cameraFile = getCameraImageFile();
-                        try (FileOutputStream f = new FileOutputStream(cameraFile.getAbsoluteFile())) {
-                            rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, f);
+
+                        // Apply rotation preference if needed
+                        int rotation = BookCatalogueApp.getAppPreferences().getInt(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES, 0);
+                        if (rotation != 0) {
+                            Bitmap bitmap = BitmapFactory.decodeFile(cameraFile.getAbsolutePath());
+                            if (bitmap != null) {
+                                Matrix m = new Matrix();
+                                m.postRotate(rotation);
+                                Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+                                try (FileOutputStream f = new FileOutputStream(cameraFile.getAbsoluteFile())) {
+                                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, f);
+                                }
+                                rotatedBitmap.recycle();
+                                bitmap.recycle();
+                            }
                         }
 
                         // Start crop on the newly saved file
@@ -129,7 +138,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
                         Logger.logError(e);
                     }
                 } else {
-                    Tracker.handleEvent(BookAbstract.this, "TakePhotoLauncher - bitmap empty", Tracker.States.Running);
+                    Tracker.handleEvent(BookAbstract.this, "TakePhotoLauncher - failed", Tracker.States.Running);
                 }
             }
     );
@@ -348,7 +357,12 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         mTempImageCounter++;
         cleanupTempImages();
         // Get a photo
-        mTakePhotoLauncher.launch(null);
+        File cameraFile = getCameraImageFile();
+        Context context = getContext();
+        if (context != null) {
+            Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", cameraFile);
+            mTakePhotoLauncher.launch(uri);
+        }
     }
 
     /**
@@ -742,7 +756,6 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     private void showZoomedThumb(Long rowId) {
         // Create dialog and set layout
         final Dialog dialog = new Dialog(requireActivity(), R.style.AppTheme);
-        dialog.setContentView(R.layout.dialog_zoom_thumbnail);
 
         // Check if we have a file and/or it is valid
         File thumbFile = getCoverFile(rowId);
@@ -762,15 +775,15 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
                 return;
             } else {
                 dialog.setTitle(getResources().getString(R.string.cover_detail));
-                ImageView cover = new ImageView(getActivity());
-                Utils.fetchFileIntoImageView(thumbFile, cover, mThumbZoomSize, mThumbZoomSize, true);
-                cover.setAdjustViewBounds(true);
+                ZoomableImageView cover = new ZoomableImageView(getActivity());
+                Bitmap bm = Utils.fetchFileIntoImageView(thumbFile, null, mThumbZoomSize, mThumbZoomSize, true);
+                cover.setImageBitmapResetBase(bm, true);
                 cover.setOnClickListener(v -> dialog.dismiss());
 
                 LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
                 int pad = getResources().getDimensionPixelOffset(R.dimen.cover_zoom_padding);
                 cover.setPadding(pad, pad, pad, pad);
-                dialog.addContentView(cover, lp);
+                dialog.setContentView(cover, lp);
             }
         }
         dialog.show();

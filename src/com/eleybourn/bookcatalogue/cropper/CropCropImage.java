@@ -409,8 +409,7 @@ public class CropCropImage extends CropMonitoredActivity {
 
         // If we are circle cropping, we want alpha channel, which is the
         // third param here.
-        Bitmap croppedImage = Bitmap.createBitmap(width, height,
-                mCircleCrop ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
+        Bitmap croppedImage = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         {
             Canvas canvas = new Canvas(croppedImage);
             Rect dstRect = new Rect(0, 0, width, height);
@@ -451,7 +450,7 @@ public class CropCropImage extends CropMonitoredActivity {
                 // Don't scale the image but instead fill it so it's the
                 // required dimension
                 Bitmap b = Bitmap.createBitmap(mOutputX, mOutputY,
-                        Bitmap.Config.RGB_565);
+                        Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(b);
 
                 Rect srcRect = mCrop.getCropRect();
@@ -498,7 +497,7 @@ public class CropCropImage extends CropMonitoredActivity {
             try {
                 outputStream = mContentResolver.openOutputStream(mSaveUri);
                 if (outputStream != null) {
-                    croppedImage.compress(mOutputFormat, 75, outputStream);
+                    croppedImage.compress(mOutputFormat, 90, outputStream);
                 }
             } catch (IOException ex) {
                 // TODO: report error to caller

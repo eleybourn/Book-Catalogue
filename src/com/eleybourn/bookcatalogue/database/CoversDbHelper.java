@@ -222,7 +222,7 @@ public class CoversDbHelper {
 	 */
 	public void saveFile(final String filename, final Bitmap bm) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		bm.compress(Bitmap.CompressFormat.JPEG, 70, out);
+		bm.compress(Bitmap.CompressFormat.JPEG, 90, out);
 		byte[] bytes = out.toByteArray();
 
 		saveFile(filename, bm.getHeight(), bm.getWidth(), bytes);

@@ -261,12 +261,19 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                 bar.setLogo(0);
         }
         checkPermissions();
-        if (Objects.equals(BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_THEME, BookCataloguePreferences.PREF_THEME_DEFAULT), BookCataloguePreferences.PREF_THEME_PREVIOUS)) {
+        String theme = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_THEME, BookCataloguePreferences.PREF_THEME_DEFAULT);
+        if (Objects.equals(theme, BookCataloguePreferences.PREF_THEME_PREVIOUS)) {
             setTheme(R.style.DarkerTheme);
             Utils.initBackground(this, false);
+        }
+
+        if (Objects.equals(theme, BookCataloguePreferences.PREF_THEME_PREVIOUS) ||
+                Objects.equals(theme, BookCataloguePreferences.PREF_THEME_LIGHT_NO_SILHOUETTE) ||
+                Objects.equals(theme, BookCataloguePreferences.PREF_THEME_DARK_NO_SILHOUETTE)) {
             try {
                 findViewById(R.id.bg_bookshelf).setVisibility(View.GONE);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
     }
 
@@ -310,11 +317,18 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
     protected void onResume() {
         reloadIfLocaleChanged();
         reloadIfOrientationChanged();
-        if (Objects.equals(BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_THEME, BookCataloguePreferences.PREF_THEME_DEFAULT), BookCataloguePreferences.PREF_THEME_PREVIOUS)) {
+        String theme = BookCatalogueApp.getAppPreferences().getString(BookCataloguePreferences.PREF_THEME, BookCataloguePreferences.PREF_THEME_DEFAULT);
+        if (Objects.equals(theme, BookCataloguePreferences.PREF_THEME_PREVIOUS)) {
             Utils.initBackground(this, false);
+        }
+
+        if (Objects.equals(theme, BookCataloguePreferences.PREF_THEME_PREVIOUS) ||
+                Objects.equals(theme, BookCataloguePreferences.PREF_THEME_LIGHT_NO_SILHOUETTE) ||
+                Objects.equals(theme, BookCataloguePreferences.PREF_THEME_DARK_NO_SILHOUETTE)) {
             try {
                 findViewById(R.id.bg_bookshelf).setVisibility(View.GONE);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         super.onResume();
     }

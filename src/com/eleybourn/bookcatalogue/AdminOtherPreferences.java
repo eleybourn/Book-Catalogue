@@ -58,6 +58,8 @@ public class AdminOtherPreferences extends PreferencesBase {
             .add(BookCataloguePreferences.PREF_THEME_DEFAULT, R.string.preference_theme_default)
             .add(BookCataloguePreferences.PREF_THEME_LIGHT, R.string.preference_theme_light)
 			.add(BookCataloguePreferences.PREF_THEME_DARK, R.string.preference_theme_dark)
+            .add(BookCataloguePreferences.PREF_THEME_LIGHT_NO_SILHOUETTE, R.string.preference_theme_light_no_silhouette)
+            .add(BookCataloguePreferences.PREF_THEME_DARK_NO_SILHOUETTE, R.string.preference_theme_dark_no_silhouette)
             .add(BookCataloguePreferences.PREF_THEME_PREVIOUS, R.string.preference_theme_previous);
 
 	/** Screen orientation property values */

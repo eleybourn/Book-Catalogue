@@ -840,6 +840,8 @@
     <string name="preference_summary_details_in_header">Summary details in header</string>
     <string name="preference_theme">Change Theme</string>
     <string name="preference_theme_dark">Use Dark Mode</string>
+    <string name="preference_theme_light_no_silhouette">Use Light Mode (hide silhouette)</string>
+    <string name="preference_theme_dark_no_silhouette">Use Dark Mode (hide silhouette)</string>
     <string name="preference_theme_default">Use System Default</string>
     <string name="preference_theme_light">Use Light Mode</string>
     <string name="preference_theme_previous">Original Theme &amp; Background</string>

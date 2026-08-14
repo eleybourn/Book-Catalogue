@@ -44,6 +44,8 @@ public class BookCataloguePreferences {
     public static final String PREF_THEME_DEFAULT = "App.Theme.Default";
     public static final String PREF_THEME_LIGHT = "App.Theme.Light";
     public static final String PREF_THEME_DARK = "App.Theme.Dark";
+    public static final String PREF_THEME_LIGHT_NO_SILHOUETTE = "App.Theme.Light.NoSilhouette";
+    public static final String PREF_THEME_DARK_NO_SILHOUETTE = "App.Theme.Dark.NoSilhouette";
     public static final String PREF_THEME_PREVIOUS = "App.Theme.Previous";
 
     public static final String PREF_SCREEN_ORIENTATION = "App.ScreenOrientation";

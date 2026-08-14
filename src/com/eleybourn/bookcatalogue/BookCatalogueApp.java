@@ -325,9 +325,11 @@ public class BookCatalogueApp extends Application {
         String theme = getAppPreferences().getString(BookCataloguePreferences.PREF_THEME, BookCataloguePreferences.PREF_THEME_DEFAULT);
         switch (theme) {
             case BookCataloguePreferences.PREF_THEME_LIGHT:
+            case BookCataloguePreferences.PREF_THEME_LIGHT_NO_SILHOUETTE:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 break;
             case BookCataloguePreferences.PREF_THEME_DARK:
+            case BookCataloguePreferences.PREF_THEME_DARK_NO_SILHOUETTE:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 break;
             case BookCataloguePreferences.PREF_THEME_PREVIOUS:

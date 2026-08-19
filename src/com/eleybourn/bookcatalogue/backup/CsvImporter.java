@@ -52,62 +52,23 @@ public class CsvImporter {
 	private static final int BUFFER_SIZE = 32768;
 
 	public void importBooks(Context context, InputStream exportStream, Importer.OnImporterListener listener, int importFlags) throws IOException {
-		ArrayList<String> importedString = new ArrayList<>();
-
 		BufferedReader in = new BufferedReader(new InputStreamReader(exportStream, StandardCharsets.UTF_8), BUFFER_SIZE);
-		String line;
-		StringBuilder recordBuilder = new StringBuilder();
-		boolean inQuote = false;
-
-		while ((line = in.readLine()) != null) {
-			if (recordBuilder.length() > 0) {
-				recordBuilder.append("\n");
-			}
-			recordBuilder.append(line);
-
-			// Detect if we are in a quoted section to handle multi-line records
-			for (int i = 0; i < line.length(); i++) {
-				char c = line.charAt(i);
-				// Handle both standard CSV escaped quotes ("") and backslash escapes (\")
-				if (c == ESCAPE_CHAR && i + 1 < line.length() && line.charAt(i + 1) == QUOTE_CHAR) {
-					i++; // Skip the escaped quote
-				} else if (c == QUOTE_CHAR) {
-					if (i + 1 < line.length() && line.charAt(i + 1) == QUOTE_CHAR) {
-						i++; // Skip the second quote in ""
-					} else {
-						inQuote = !inQuote;
-					}
-				}
-			}
-
-			if (!inQuote) {
-				importedString.add(recordBuilder.toString());
-				recordBuilder.setLength(0);
-			}
-		}
-
-		// Add any remaining data if the file ended unexpectedly (e.g. unclosed quote)
-		if (recordBuilder.length() > 0) {
-			importedString.add(recordBuilder.toString());
-		}
-
-		importBooks(context, importedString, listener, importFlags);
+		importBooks(context, in, listener, importFlags);
 	}
 
-	private void importBooks(Context context, ArrayList<String> export, Importer.OnImporterListener listener, int importFlags) {
+	private void importBooks(Context context, BufferedReader in, Importer.OnImporterListener listener, int importFlags) throws IOException {
 
-		if (export == null || export.isEmpty())
+		String firstRecord = readNextRecord(in);
+		if (firstRecord == null)
 			return;
 
 		Integer nCreated = 0;
 		Integer nUpdated = 0;
 
-		listener.setMax(export.size() - 1);
-
 		// Container for values.
 		BookData values = new BookData(context);
 
-		String[] names = returnRow(export.get(0), true);
+		String[] names = returnRow(firstRecord, true);
 
 		// Store the names so we can check what is present
 		for(int i = 0; i < names.length; i++) {
@@ -161,8 +122,9 @@ public class CsvImporter {
 		long lastUpdate = 0;
 		/* Iterate through each imported row */
 		SyncLock txLock = null;
+		String record;
 		try {
-			while (row < export.size() && !listener.isCancelled()) {
+			while ((record = readNextRecord(in)) != null && !listener.isCancelled()) {
 				if (inTx && txRowCount > 10) {
 					db.setTransactionSuccessful();
 					db.endTransaction(txLock);
@@ -176,7 +138,7 @@ public class CsvImporter {
 				txRowCount++;
 
 				// Get row
-				String[] imported = returnRow(export.get(row), fullEscaping);
+				String[] imported = returnRow(record, fullEscaping);
 
 				values.clear();
 				for(int i = 0; i < names.length && i < imported.length; i++) {
@@ -457,6 +419,42 @@ public class CsvImporter {
 	// This CSV parser is not a complete parser, but it will parse files exported by older 
 	// versions. At some stage in the future it would be good to allow full CSV export 
 	// and import to allow for escape('\') chars so that cr/lf can be preserved.
+	// 
+	private String readNextRecord(BufferedReader in) throws IOException {
+		StringBuilder recordBuilder = new StringBuilder();
+		String line;
+		boolean inQuote = false;
+		while ((line = in.readLine()) != null) {
+			if (recordBuilder.length() > 0) {
+				recordBuilder.append("\n");
+			}
+			recordBuilder.append(line);
+
+			// Detect if we are in a quoted section to handle multi-line records
+			for (int i = 0; i < line.length(); i++) {
+				char c = line.charAt(i);
+				// Handle both standard CSV escaped quotes ("") and backslash escapes (\")
+				if (c == ESCAPE_CHAR && i + 1 < line.length() && line.charAt(i + 1) == QUOTE_CHAR) {
+					i++; // Skip the escaped quote
+				} else if (c == QUOTE_CHAR) {
+					if (i + 1 < line.length() && line.charAt(i + 1) == QUOTE_CHAR) {
+						i++; // Skip the second quote in ""
+					} else {
+						inQuote = !inQuote;
+					}
+				}
+			}
+
+			if (!inQuote) {
+				return recordBuilder.toString();
+			}
+		}
+		if (recordBuilder.length() > 0) {
+			return recordBuilder.toString();
+		}
+		return null;
+	}
+
 	// 
 	private String[] returnRow(String row, boolean fullEscaping) {
 		// Need to handle double quotes etc

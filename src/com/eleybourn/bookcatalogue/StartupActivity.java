@@ -33,6 +33,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.eleybourn.bookcatalogue.booklist.AdminLibraryPreferences;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.compat.BookCatalogueDialogFragment;
@@ -109,10 +111,10 @@ public class StartupActivity
      * Flag indicating THIS instance was really the startup instance
      */
     private boolean mWasReallyStartup = false;
-    ///**
-    // * Flag indicating an export is required after startup
-    // */
-    //private boolean mExportRequired = false;
+    /**
+     * Flag indicating an export is required after startup
+     */
+    private boolean mExportRequired = false;
     /**
      * UI thread
      */
@@ -345,32 +347,32 @@ public class StartupActivity
         ed.putInt(PREF_START_COUNT, startCount);
         ed.commit();
 
-        //mExportRequired = false;
-        //
-        //	if (opened == 0) {
-        //		AlertDialog alertDialog = new MaterialAlertDialogBuilder(this).setMessage(R.string.backup_request).create();
-        //		alertDialog.setCanceledOnTouchOutside(false);
-        //		alertDialog.setTitle(R.string.backup_title);
-        //		alertDialog.setIcon(R.drawable.ic_menu_info);
-        //		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.button_cancel),
-        //							  (dialog, which) -> dialog.dismiss());
-        //		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.button_ok),
-        //							  (dialog, which) -> {
-        //								  mExportRequired = true;
-        //								  dialog.dismiss();
-        //							  });
-        //		alertDialog.setOnCancelListener(DialogInterface::dismiss);
-        //		alertDialog.setOnDismissListener(dialog -> {
-        //			if (mExportRequired) {
-        //				launchBackupExport();
-        //			} else {
-        //				stage4Startup();
-        //			}
-        //		});
-        //		alertDialog.show();
-        //	} else {
-        stage4Startup();
-        //}
+        mExportRequired = false;
+
+        if (opened == 0 && !(prefs.isSubscribed() || prefs.isLifetime())) {
+            AlertDialog alertDialog = new MaterialAlertDialogBuilder(this).setMessage(R.string.label_backup_request).create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setTitle(R.string.label_backup);
+            alertDialog.setIcon(R.drawable.ic_menu_info);
+            alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.button_cancel),
+                                  (dialog, which) -> dialog.dismiss());
+            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.button_ok),
+                                  (dialog, which) -> {
+                                      mExportRequired = true;
+                                      dialog.dismiss();
+                                  });
+            alertDialog.setOnCancelListener(DialogInterface::dismiss);
+            alertDialog.setOnDismissListener(dialog -> {
+                if (mExportRequired) {
+                    launchBackupExport();
+                } else {
+                    stage4Startup();
+                }
+            });
+            alertDialog.show();
+        } else {
+            stage4Startup();
+        }
     }
 
     /**

@@ -1099,6 +1099,46 @@ public class Fields extends ArrayList<Fields.Field> {
     }
 
     /**
+     * Formatter for price fields. On failure just return the raw string.
+     *
+     * @author Philip Warner
+     *
+     */
+    static public class PriceFormatter implements FieldFormatter {
+
+        /**
+         * Display as a human-friendly price (2 decimal places)
+         */
+        public String format(Field f, String source) {
+            try {
+                if (source == null || source.isEmpty())
+                    return "";
+
+                // If the user is currently editing the field, don't format it as it fights the user.
+                View v = f.getView();
+                if (v instanceof EditText && v.isFocused())
+                    return source;
+
+                float val = Float.parseFloat(source.replace(',', '.'));
+                if (val == (long) val) {
+                    return String.format(Locale.getDefault(), "%d", (long) val);
+                } else {
+                    return String.format(Locale.getDefault(), "%.2f", val);
+                }
+            } catch (Exception e) {
+                return source;
+            }
+        }
+
+        /**
+         * Extract as a raw float string.
+         */
+        public String extract(Field f, String source) {
+            return source;
+        }
+    }
+
+    /**
      * Field definition contains all information and methods necessary to manage display and
      * extraction of data in a view.
      *

@@ -3075,6 +3075,20 @@ public class CatalogueDBAdapter {
             }
         }
 
+        // Ensure list price is formatted with 2 decimal places if it's a number,
+        // but keep integers as integers.
+        if (values.containsKey(KEY_LIST_PRICE)) {
+            Object o = values.get(KEY_LIST_PRICE);
+            if (o instanceof Float || o instanceof Double) {
+                float val = ((Number) o).floatValue();
+                if (val == (long) val) {
+                    values.putString(KEY_LIST_PRICE, String.format(java.util.Locale.US, "%d", (long) val));
+                } else {
+                    values.putString(KEY_LIST_PRICE, String.format(java.util.Locale.US, "%.2f", val));
+                }
+            }
+        }
+
         // Remove blank/null fields that have default values defined in the database or which should
         // never be blank.
         for (String name : new String[]{

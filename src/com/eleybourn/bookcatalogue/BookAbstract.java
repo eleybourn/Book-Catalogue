@@ -654,7 +654,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
                     null, new Fields.DateFieldFormatter());
 
         mFields.add(R.id.field_series, CatalogueDBAdapter.KEY_SERIES_NAME, CatalogueDBAdapter.KEY_SERIES_NAME, null);
-        mFields.add(R.id.field_list_price, "list_price", null);
+        mFields.add(R.id.field_list_price, "list_price", null, new Fields.PriceFormatter());
         mFields.add(R.id.field_pages, CatalogueDBAdapter.KEY_PAGES, null);
         mFields.add(R.id.field_format, CatalogueDBAdapter.KEY_FORMAT, null);
         //mFields.add(R.id.bookshelf, CatalogueDBAdapter.KEY_BOOKSHELF, null);

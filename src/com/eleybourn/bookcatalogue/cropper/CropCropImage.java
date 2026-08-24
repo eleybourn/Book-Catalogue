@@ -69,9 +69,6 @@ public class CropCropImage extends CropMonitoredActivity {
     boolean mWaitingToPick; // Whether we are wait the user to pick a face.
     boolean mSaving; // Whether the "save" button is already clicked.
     CropHighlightView mCrop;
-    // used
-    // with
-    // mSaveUri
     private Uri mSaveUri = null;
     private int mAspectX, mAspectY;
     private boolean mCircleCrop = false;
@@ -174,21 +171,25 @@ public class CropCropImage extends CropMonitoredActivity {
 
         // Scale the image down for faster face detection.
         private Bitmap prepareBitmap() {
-            if (mBitmap == null) {
+            final Bitmap b = mBitmap;
+            if (b == null || b.isRecycled()) {
                 return null;
             }
 
             // 256 pixels wide is enough.
-            if (mBitmap.getWidth() > 256) {
-                mScale = 256.0F / mBitmap.getWidth();
+            if (b.getWidth() > 256) {
+                mScale = 256.0F / b.getWidth();
             }
             Matrix matrix = new Matrix();
             matrix.setScale(mScale, mScale);
-            return Bitmap.createBitmap(mBitmap, 0, 0,
-                    mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
+            return Bitmap.createBitmap(b, 0, 0,
+                    b.getWidth(), b.getHeight(), matrix, true);
         }
 
         public void run() {
+            if (isFinishing()) {
+                return;
+            }
             mImageMatrix = mImageView.getImageMatrix();
             Bitmap faceBitmap = prepareBitmap();
 
@@ -366,16 +367,18 @@ public class CropCropImage extends CropMonitoredActivity {
                             .fullSizeBitmap(CropIImage.UNCONSTRAINED,
                                     1024 * 1024) : mBitmap;
                     mHandler.post(() -> {
-                        if (b != mBitmap && b != null) {
+                        if (!isFinishing() && b != mBitmap && b != null) {
                             // Do not recycle until mBitmap has been set
                             // to the new bitmap!
                             Bitmap toRecycle = mBitmap;
                             mBitmap = b;
                             mImageView.setImageBitmapResetBase(mBitmap,
                                     true);
-                            toRecycle.recycle();
+                            if (toRecycle != null && !toRecycle.isRecycled()) {
+                                toRecycle.recycle();
+                            }
                         }
-                        if (mImageView.getScale() == 1F) {
+                        if (!isFinishing() && mImageView.getScale() == 1F) {
                             mImageView.center(true, true);
                         }
                         latch.countDown();
@@ -385,7 +388,9 @@ public class CropCropImage extends CropMonitoredActivity {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    mRunFaceDetection.run();
+                    if (!isFinishing()) {
+                        mRunFaceDetection.run();
+                    }
                 }, mHandler);
     }
 

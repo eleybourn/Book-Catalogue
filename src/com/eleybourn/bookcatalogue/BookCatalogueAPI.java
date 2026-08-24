@@ -2,6 +2,8 @@ package com.eleybourn.bookcatalogue;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Handler;
@@ -39,6 +41,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 
 public class BookCatalogueAPI implements SimpleTask {
@@ -48,6 +53,12 @@ public class BookCatalogueAPI implements SimpleTask {
     public static final String REQUEST_BACKUP_ALL = "full_backup";
     public static final String REQUEST_BACKUP_BOOK = "backup_book";
     public static final String REQUEST_RESTORE_ALL = "restore";
+
+    /**
+     * Set of localized strings for "not set" to check against when reading dates from the DB.
+     */
+    private static final Set<String> sNotSetStrings = new HashSet<>();
+    private static boolean sNotSetStringsLoaded = false;
     public static final String REQUEST_DELETE_BOOK = "delete_book";
     public static final String REQUEST_DELETE_ALL = "delete_all";
     public static final String METHOD_POST = "POST";
@@ -75,6 +86,7 @@ public class BookCatalogueAPI implements SimpleTask {
 
     public BookCatalogueAPI(Context context, String request, long book_id, ApiListener listener) {
         mContext = context;
+        initNotSetStrings(mContext);
         mBookId = book_id;
         this.mRequest = request;
         mInstanceListener = listener;
@@ -91,6 +103,7 @@ public class BookCatalogueAPI implements SimpleTask {
 
     public BookCatalogueAPI(Context context, String request, ApiListener listener) {
         mContext = context;
+        initNotSetStrings(mContext);
         this.mRequest = request;
         mInstanceListener = listener;
         if (listener != null) {
@@ -158,6 +171,51 @@ public class BookCatalogueAPI implements SimpleTask {
         }
     }
 
+    /**
+     * Automatically looks up all translations of the "not set" string from resources.
+     * Only loads them once.
+     */
+    public static void initNotSetStrings(Context context) {
+        if (sNotSetStringsLoaded) {
+            return;
+        }
+        synchronized (sNotSetStrings) {
+            if (sNotSetStringsLoaded) {
+                return;
+            }
+
+            sNotSetStrings.add("not set"); // Default/Fallback
+            sNotSetStrings.add("0");
+
+            try {
+                Resources res = context.getResources();
+                String[] locales = context.getAssets().getLocales();
+                Configuration config = new Configuration(res.getConfiguration());
+
+                for (String localeStr : locales) {
+                    if (localeStr == null || localeStr.isEmpty()) {
+                        continue;
+                    }
+                    // Handle both underscore and hyphen separated locale tags
+                    Locale locale = Locale.forLanguageTag(localeStr.replace('_', '-'));
+                    config.setLocale(locale);
+                    Context localeContext = context.createConfigurationContext(config);
+                    try {
+                        String translated = localeContext.getString(R.string.not_set);
+                        if (translated != null && !translated.isEmpty()) {
+                            sNotSetStrings.add(translated.trim().toLowerCase());
+                        }
+                    } catch (Exception e) {
+                        // Ignore if resource not found in this locale
+                    }
+                }
+            } catch (Exception e) {
+                Logger.logError(e, "Error loading 'not set' translations");
+            }
+            sNotSetStringsLoaded = true;
+        }
+    }
+
     private static String getDate(Cursor c, String columnName) {
         int index = c.getColumnIndex(columnName);
         if (index > -1 && !c.isNull(index)) {
@@ -165,7 +223,10 @@ public class BookCatalogueAPI implements SimpleTask {
             String dateStr = c.getString(index).trim();
 
             // Avoid returning a date for empty or "0" which often means "not set"
-            if (dateStr == null || dateStr.isEmpty() || dateStr.equals("0") || dateStr.equalsIgnoreCase("not set")) {
+            if (dateStr == null || dateStr.isEmpty()) {
+                return "";
+            }
+            if (sNotSetStrings.contains(dateStr.toLowerCase())) {
                 return "";
             }
 

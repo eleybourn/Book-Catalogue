@@ -273,6 +273,7 @@ public class BookCatalogueApp extends Application {
         applyLocaleSettings();
         applyTheme();
         res = getResources();
+        BookCatalogueAPI.initNotSetStrings(this);
 
         Terminator.init();
 

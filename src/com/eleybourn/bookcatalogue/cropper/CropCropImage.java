@@ -28,15 +28,17 @@ import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.media.FaceDetector;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.StatFs;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -222,7 +224,6 @@ public class CropCropImage extends CropMonitoredActivity {
             });
         }
     };
-    private CropIImage mImage;
 
     public static void showStorageToast(Activity activity) {
         showStorageToast(activity, calculatePicturesRemaining());
@@ -256,8 +257,8 @@ public class CropCropImage extends CropMonitoredActivity {
             String storageDirectory = Environment.getExternalStorageDirectory()
                     .toString();
             StatFs stat = new StatFs(storageDirectory);
-            float remaining = ((float) stat.getAvailableBlocks() * (float) stat
-                    .getBlockSize()) / 400000F;
+            float remaining = ((float) stat.getAvailableBlocksLong() * (float) stat
+                    .getBlockSizeLong()) / 400000F;
             return (int) remaining;
             // }
         } catch (Exception ex) {
@@ -323,7 +324,16 @@ public class CropCropImage extends CropMonitoredActivity {
         }
 
         // Make UI fullscreen.
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            final WindowInsetsController controller = getWindow().getInsetsController();
+            if (controller != null) {
+                controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+        } else {
+            //noinspection deprecation
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
 
         findViewById(R.id.discard).setOnClickListener(
                 v -> {
@@ -363,9 +373,7 @@ public class CropCropImage extends CropMonitoredActivity {
         CropUtil.startBackgroundJob(this, null, "Please wait…",
                 () -> {
                     final CountDownLatch latch = new CountDownLatch(1);
-                    final Bitmap b = (mImage != null) ? mImage
-                            .fullSizeBitmap(CropIImage.UNCONSTRAINED,
-                                    1024 * 1024) : mBitmap;
+                    final Bitmap b = mBitmap;
                     mHandler.post(() -> {
                         if (!isFinishing() && b != mBitmap && b != null) {
                             // Do not recycle until mBitmap has been set
@@ -430,7 +438,7 @@ public class CropCropImage extends CropMonitoredActivity {
             Canvas c = new Canvas(croppedImage);
             Path p = new Path();
             p.addCircle(width / 2F, height / 2F, width / 2F, Path.Direction.CW);
-            c.clipPath(p, Region.Op.DIFFERENCE);
+            c.clipOutPath(p);
             c.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
         }
 
@@ -481,9 +489,18 @@ public class CropCropImage extends CropMonitoredActivity {
 
         // Return the cropped image directly or save it to the specified URI.
         Bundle myExtras = getIntent().getExtras();
+        Bitmap data = null;
+        if (myExtras != null) {
+            if (Build.VERSION.SDK_INT >= 33) {
+                data = myExtras.getParcelable("data", Bitmap.class);
+            } else {
+                //noinspection deprecation
+                data = myExtras.getParcelable("data");
+            }
+        }
+
         if (myExtras != null
-                && (myExtras.getParcelable("data") != null || myExtras
-                .getBoolean("return-data"))) {
+                && (data != null || myExtras.getBoolean("return-data"))) {
             Bundle extras = new Bundle();
             extras.putParcelable("data", croppedImage);
             setResult(RESULT_OK, (new Intent()).setAction("inline-data")

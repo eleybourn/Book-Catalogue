@@ -641,7 +641,12 @@ public class BookISBNSearch extends ActivityWithTasks {
         mSearchManagerId = inState.getLong("SearchManagerId");
 
         // Now do 'standard' stuff
-        mLastBookIntent = inState.getParcelable("LastBookIntent");
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            mLastBookIntent = inState.getParcelable("LastBookIntent", android.content.Intent.class);
+        } else {
+            //noinspection deprecation
+            mLastBookIntent = inState.getParcelable("LastBookIntent");
+        }
 
         // Call the super method only after we have the searchManager set up
         super.onRestoreInstanceState(inState);

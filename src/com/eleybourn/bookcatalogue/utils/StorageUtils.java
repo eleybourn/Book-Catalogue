@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Environment;
 
 import androidx.core.content.FileProvider;
+import androidx.core.content.pm.PackageInfoCompat;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.eleybourn.bookcatalogue.BookCatalogueApp;
@@ -186,7 +187,7 @@ public class StorageUtils {
             PackageManager manager = context.getPackageManager();
             PackageInfo appInfo = manager.getPackageInfo(context.getPackageName(), 0);
             message.append("App: ").append(appInfo.packageName).append("\n");
-            message.append("Version: ").append(appInfo.versionName).append(" (").append(appInfo.versionCode).append(")\n");
+            message.append("Version: ").append(appInfo.versionName).append(" (").append(PackageInfoCompat.getLongVersionCode(appInfo)).append(")\n");
         } catch (Exception e1) {
             // Not much we can do inside error logger...
         }

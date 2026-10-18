@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
@@ -687,7 +688,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
      * Get display metrics and set {@link #mMetrics} with it.
      */
     private void setDisplayMetrics() {
-        mMetrics = new android.util.DisplayMetrics();
+        mMetrics = new DisplayMetrics();
         assert getActivity() != null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             WindowMetrics windowMetrics = getActivity().getWindowManager().getCurrentWindowMetrics();

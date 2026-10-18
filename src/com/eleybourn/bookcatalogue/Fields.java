@@ -20,9 +20,11 @@
 
 package com.eleybourn.bookcatalogue;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,7 +51,9 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 import java.lang.ref.WeakReference;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -116,8 +120,8 @@ import java.util.Locale;
  */
 public class Fields extends ArrayList<Fields.Field> {
     // Used for date parsing
-    static final java.text.SimpleDateFormat mDateSqlSdf = new java.text.SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
-    static final java.text.DateFormat mDateDisplaySdf = java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM);
+    static final SimpleDateFormat mDateSqlSdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+    static final DateFormat mDateDisplaySdf = DateFormat.getDateInstance(DateFormat.MEDIUM);
     // Java likes this
     private static final long serialVersionUID = 1L;
     // The activity and preferences related to this object.
@@ -138,7 +142,7 @@ public class Fields extends ArrayList<Fields.Field> {
         super();
         mContext = new FragmentContext(f);
         assert f.getActivity() != null;
-        mPrefs = f.getActivity().getSharedPreferences("bookCatalogue", android.content.Context.MODE_PRIVATE);
+        mPrefs = f.getActivity().getSharedPreferences("bookCatalogue", Context.MODE_PRIVATE);
     }
 
     /**
@@ -158,7 +162,7 @@ public class Fields extends ArrayList<Fields.Field> {
             try {
                 d = mDateDisplaySdf.parse(s);
             } catch (Exception e1) {
-                java.text.DateFormat df = java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT);
+                DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
                 d = df.parse(s);
             }
 
@@ -285,6 +289,14 @@ public class Fields extends ArrayList<Fields.Field> {
                 return f;
         }
         throw new IllegalArgumentException();
+    }
+
+    public boolean hasField(int id) {
+        for (Field f : this) {
+            if (f.id == id)
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -1078,7 +1090,7 @@ public class Fields extends ArrayList<Fields.Field> {
          */
         public String format(Field f, String source) {
             try {
-                java.util.Date d = parseDate(source);
+                Date d = parseDate(source);
                 return mDateDisplaySdf.format(d);
             } catch (Exception e) {
                 return source;
@@ -1090,7 +1102,7 @@ public class Fields extends ArrayList<Fields.Field> {
          */
         public String extract(Field f, String source) {
             try {
-                java.util.Date d = parseDate(source);
+                Date d = parseDate(source);
                 return mDateSqlSdf.format(d);
             } catch (Exception e) {
                 return source;
@@ -1434,7 +1446,7 @@ public class Fields extends ArrayList<Fields.Field> {
             if (!column.isEmpty() && !doNoFetch) {
                 try {
                     mAccessor.set(this, c);
-                } catch (android.database.CursorIndexOutOfBoundsException e) {
+                } catch (CursorIndexOutOfBoundsException e) {
                     throw new RuntimeException("Column '" + this.column + "' not found in cursor", e);
                 }
             }
@@ -1450,7 +1462,7 @@ public class Fields extends ArrayList<Fields.Field> {
             if (!column.isEmpty() && !doNoFetch) {
                 try {
                     mAccessor.set(this, b);
-                } catch (android.database.CursorIndexOutOfBoundsException e) {
+                } catch (CursorIndexOutOfBoundsException e) {
                     throw new RuntimeException("Column '" + this.column + "' not found in cursor", e);
                 }
             }
@@ -1466,7 +1478,7 @@ public class Fields extends ArrayList<Fields.Field> {
             if (!column.isEmpty() && !doNoFetch) {
                 try {
                     mAccessor.set(this, data);
-                } catch (android.database.CursorIndexOutOfBoundsException e) {
+                } catch (CursorIndexOutOfBoundsException e) {
                     throw new RuntimeException("Column '" + this.column + "' not found in data", e);
                 }
             }

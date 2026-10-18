@@ -35,6 +35,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
@@ -219,7 +220,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
         mApiListener = new StaticApiListener(this);
 
         // Register the back press callback
-        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @SuppressWarnings("ResultOfMethodCallIgnored")
             @Override
             public void handleOnBackPressed() {
@@ -965,8 +966,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      */
     @Override
     public void onPartialDatePickerSet(int dialogId, PartialDatePickerFragment dialog, Integer year, Integer month, Integer day) {
-        ViewPager2 viewPager = findViewById(R.id.view_pager);
-        Fragment frag = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+        Fragment frag = findFragmentForDialog(dialogId, OnPartialDatePickerListener.class);
         if (frag instanceof OnPartialDatePickerListener) {
             ((OnPartialDatePickerListener) frag).onPartialDatePickerSet(dialogId, dialog, year, month, day);
         } else {
@@ -983,8 +983,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      */
     @Override
     public void onPartialDatePickerCancel(int dialogId, PartialDatePickerFragment dialog) {
-        ViewPager2 viewPager = findViewById(R.id.view_pager);
-        Fragment frag = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+        Fragment frag = findFragmentForDialog(dialogId, OnPartialDatePickerListener.class);
         if (frag instanceof OnPartialDatePickerListener) {
             ((OnPartialDatePickerListener) frag).onPartialDatePickerCancel(dialogId, dialog);
         } else {
@@ -1002,8 +1001,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      */
     @Override
     public void onTextFieldEditorSave(int dialogId, TextFieldEditorFragment dialog, String newText) {
-        ViewPager2 viewPager = findViewById(R.id.view_pager);
-        Fragment frag = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+        Fragment frag = findFragmentForDialog(dialogId, OnTextFieldEditorListener.class);
         if (frag instanceof OnTextFieldEditorListener) {
             ((OnTextFieldEditorListener) frag).onTextFieldEditorSave(dialogId, dialog, newText);
         } else {
@@ -1020,8 +1018,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
      */
     @Override
     public void onTextFieldEditorCancel(int dialogId, TextFieldEditorFragment dialog) {
-        ViewPager2 viewPager = findViewById(R.id.view_pager);
-        Fragment frag = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+        Fragment frag = findFragmentForDialog(dialogId, OnTextFieldEditorListener.class);
         if (frag instanceof OnTextFieldEditorListener) {
             ((OnTextFieldEditorListener) frag).onTextFieldEditorCancel(dialogId, dialog);
         } else {
@@ -1040,14 +1037,55 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
     public void onBookshelfCheckChanged(int dialogId, BookshelfDialogFragment dialog, boolean checked, String shelf,
                                         String textList, String encodedList) {
 
-        ViewPager2 viewPager = findViewById(R.id.view_pager);
-        Fragment frag = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+        Fragment frag = findFragmentForDialog(dialogId, OnBookshelfCheckChangeListener.class);
         if (frag instanceof OnBookshelfCheckChangeListener) {
             ((OnBookshelfCheckChangeListener) frag).onBookshelfCheckChanged(dialogId, dialog, checked, shelf, textList, encodedList);
         } else {
             Toast.makeText(this, R.string.alert_unexpected_error, Toast.LENGTH_LONG).show();
             Logger.logError(new RuntimeException("Received onBookshelfCheckChanged result with no fragment to handle it"));
         }
+    }
+
+    private Fragment findFragmentForDialog(int dialogId, Class<?> listenerInterface) {
+        ViewPager2 viewPager = findViewById(R.id.view_pager);
+        // 1. Try current item first
+        Fragment frag = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+        if (frag != null && listenerInterface.isInstance(frag)) {
+            if (hasField(frag, dialogId)) {
+                return frag;
+            }
+        }
+        // 2. Search all possible fragments ("f0", "f1", "f2", "f3", etc.)
+        for (int i = 0; i < 10; i++) {
+            Fragment f = getSupportFragmentManager().findFragmentByTag("f" + i);
+            if (f != null && listenerInterface.isInstance(f)) {
+                if (hasField(f, dialogId)) {
+                    return f;
+                }
+            }
+        }
+        // 3. Fallback to current item if it implements listener
+        if (frag != null && listenerInterface.isInstance(frag)) {
+            return frag;
+        }
+        // 4. Fallback to any fragment implementing listener
+        for (int i = 0; i < 10; i++) {
+            Fragment f = getSupportFragmentManager().findFragmentByTag("f" + i);
+            if (f != null && listenerInterface.isInstance(f)) {
+                return f;
+            }
+        }
+        return null;
+    }
+
+    private boolean hasField(Fragment frag, int dialogId) {
+        try {
+            if (frag instanceof BookEditFragmentAbstract) {
+                Fields fields = ((BookEditFragmentAbstract) frag).getFields();
+                return fields != null && fields.hasField(dialogId);
+            }
+        } catch (Exception ignored) {}
+        return false;
     }
 
     public interface PostSaveAction {

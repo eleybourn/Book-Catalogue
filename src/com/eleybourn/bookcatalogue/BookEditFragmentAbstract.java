@@ -40,6 +40,10 @@ import java.util.ArrayList;
  */
 public abstract class BookEditFragmentAbstract extends Fragment implements DataEditor {
     protected Fields mFields;
+
+    public Fields getFields() {
+        return mFields;
+    }
     /**
      * A link to the BookEditManager for this fragment (the activity)
      */

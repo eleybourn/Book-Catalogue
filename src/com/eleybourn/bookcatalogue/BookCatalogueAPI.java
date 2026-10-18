@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -66,8 +65,6 @@ public class BookCatalogueAPI implements SimpleTask {
     public static final String METHOD_DEL = "DELETE";
     private static final SimpleTaskQueue mSyncQueue = new SimpleTaskQueue("BookCatalogueSyncQueue");
     private static final String BASE_URL = "https://book-catalogue.com/api";
-    public static String REQUEST_GET_BOOKS = "get_books";
-    public static String REQUEST_GET_BOOK = "get_book";
     public static volatile boolean isBackupRunning = false;
     public static volatile boolean isRestoreRunning = false;
     private final String mEmail;
@@ -202,7 +199,7 @@ public class BookCatalogueAPI implements SimpleTask {
                     Context localeContext = context.createConfigurationContext(config);
                     try {
                         String translated = localeContext.getString(R.string.not_set);
-                        if (translated != null && !translated.isEmpty()) {
+                        if (!translated.isEmpty()) {
                             sNotSetStrings.add(translated.trim().toLowerCase());
                         }
                     } catch (Exception e) {
@@ -223,7 +220,7 @@ public class BookCatalogueAPI implements SimpleTask {
             String dateStr = c.getString(index).trim();
 
             // Avoid returning a date for empty or "0" which often means "not set"
-            if (dateStr == null || dateStr.isEmpty()) {
+            if (dateStr.isEmpty()) {
                 return "";
             }
             if (sNotSetStrings.contains(dateStr.toLowerCase())) {
@@ -649,11 +646,8 @@ public class BookCatalogueAPI implements SimpleTask {
                     JSONObject serverBook = (serverMap != null) ? serverMap.get((long) bookId) : null;
 
                     // Check if we need to back up this book record (ignoring thumbnail)
-                    boolean needsBackup = true;
+                    boolean needsBackup = serverBook == null || isBookDifferent(bookCursor, authors, bookshelves, series, anthology, thumbFile, serverBook, false);
                     //Log.d("BC", "Book " + bookId + " title: " + getString(bookCursor, CatalogueDBAdapter.KEY_TITLE));
-                    if (serverBook != null && !isBookDifferent(bookCursor, authors, bookshelves, series, anthology, thumbFile, serverBook, false)) {
-                        needsBackup = false;
-                    }
 
                     if (needsBackup) {
                         // Add to batch
@@ -663,13 +657,13 @@ public class BookCatalogueAPI implements SimpleTask {
                     }
 
                     // Check if thumbnail changed independently
-                    String localMd5 = (thumbFile != null && thumbFile.exists()) ? Utils.calculateMD5(thumbFile) : "";
+                    String localMd5 = thumbFile.exists() ? Utils.calculateMD5(thumbFile) : "";
                     String serverMd5 = (serverBook != null) ? getStringOrEmpty(serverBook, "thumbnail_md5") : "";
                     boolean thumbChanged = !localMd5.equals(serverMd5);
 
                     if (thumbChanged) {
                         // Queue thumbnail work
-                        thumbnailTasks.add(new ThumbnailTask(bookId, (thumbFile != null && thumbFile.exists()) ? thumbFile : null));
+                        thumbnailTasks.add(new ThumbnailTask(bookId, thumbFile.exists() ? thumbFile : null));
                     }
 
                     if (batchCount >= 30) {
@@ -1401,15 +1395,13 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public String connection(String urlEndPoint, String method) throws Exception {
-        File thumbnailFile = null;
         ArrayList<String> fields = new ArrayList<>();
         ArrayList<String> values = new ArrayList<>();
-        return connection(urlEndPoint, method, fields, values, thumbnailFile);
+        return connection(urlEndPoint, method, fields, values, null);
     }
 
     public String connection(String urlEndPoint, String method, ArrayList<String> fields, ArrayList<String> values) throws Exception {
-        File thumbnailFile = null;
-        return connection(urlEndPoint, method, fields, values, thumbnailFile);
+        return connection(urlEndPoint, method, fields, values, null);
     }
 
     public String connection(String urlEndPoint, String method, ArrayList<String> fields, ArrayList<String> values, File thumbnailFile) throws Exception {
@@ -1459,7 +1451,7 @@ public class BookCatalogueAPI implements SimpleTask {
                 } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED && retry) {
                     login();
                     retry = false;
-                    continue; // Retry after login
+                    // Retry after login
                 } else {
                     // If it's an error, read the error stream.
                     response = readStream(conn.getErrorStream());
@@ -1550,11 +1542,7 @@ public class BookCatalogueAPI implements SimpleTask {
 
     private void startSyncService(Context context) {
         Intent serviceIntent = new Intent(context, SyncService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(serviceIntent);
-        } else {
-            context.startService(serviceIntent);
-        }
+        context.startForegroundService(serviceIntent);
     }
 
     private void stopSyncService(Context context) {

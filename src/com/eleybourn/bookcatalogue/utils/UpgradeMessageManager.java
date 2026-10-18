@@ -70,6 +70,7 @@ public class UpgradeMessageManager {
 	.add(187, R.string.new_in_530)
 	.add(193, R.string.new_in_600)
     .add(210, R.string.new_in_700)
+	.add(236, R.string.new_in_720)
 	;
 
 	

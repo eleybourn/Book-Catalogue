@@ -692,6 +692,15 @@
     <string name="new_in_700"><![CDATA[
 			<p><b>New in 7.0.0</b>\n\n<ul><li> Completely new and modern interface based on Android material design.</li><li> Improvements to ISBN search to replace sources (such as Amazon) that are no longer available. </li><li> Discontinued support for Android Nougat (2016) and earlier.</li><li> Many bug fixes.</li><li> The next upgrade will contain enable the most requested feature - online backup and sync.</li></ul></p>
 		]]></string>
+    <string name="new_in_720"><![CDATA[
+			<p><b>New in 7.2</b>\n\n<ul>
+				<li>Pinch to zoom thumbnail</li>
+				<li>Decimal points in list price are now stored correctly</li>
+				<li>The prompt to back up the database has been added back</li>
+				<li>More UI design options (remove the silhouette)</li>
+				<li>Fixed crashes (importing large backups, navigating with away with an open dialogue, cropping covers)</li>
+			</ul></p>
+		]]></string>
     <string name="new_style">New style</string>
 
     <string name="no_author">(no author)</string>

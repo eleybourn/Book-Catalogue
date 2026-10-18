@@ -108,8 +108,9 @@ public class DbSync {
             purgeOldLocks();
             try {
                 int count;
-                if (mSharedOwners.containsKey(t)) {
-                    count = mSharedOwners.get(t) + 1;
+                Integer existing = mSharedOwners.get(t);
+                if (existing != null) {
+                    count = existing + 1;
                 } else {
                     count = 1;
                 }
@@ -128,7 +129,8 @@ public class DbSync {
             mLock.lock();
             try {
                 if (mSharedOwners.containsKey(t)) {
-                    int count = mSharedOwners.get(t) - 1;
+                    Integer existing = mSharedOwners.get(t);
+                    int count = (existing != null ? existing : 1) - 1;
                     if (count < 0)
                         throw new RuntimeException("Release a lock count already zero");
                     if (count != 0) {
@@ -165,7 +167,7 @@ public class DbSync {
                     if (mSharedOwners.isEmpty())
                         return mExclusiveLock;
                     // Check for one lock, and it being this thread.
-                    if (mSharedOwners.size() == 1 && mSharedOwners.containsValue(t)) {
+                    if (mSharedOwners.size() == 1 && mSharedOwners.containsKey(t)) {
                         // One locker, and it is us...so upgrade is OK.
                         return mExclusiveLock;
                     }
@@ -307,6 +309,7 @@ public class DbSync {
          * @param opener DbOpener interface
          * @return            The opened database
          */
+        @SuppressWarnings("BusyWait")
         private SQLiteDatabase openWithRetries(DbOpener opener) {
             int wait = 10; // 10ms
             //int retriesLeft = 5; // up to 320ms
@@ -556,7 +559,9 @@ public class DbSync {
                 throw new RuntimeException("Ending a transaction with wrong transaction lock");
 
             try {
-                mDb.endTransaction();
+                if (mDb != null && mDb.isOpen()) {
+                    mDb.endTransaction();
+                }
             } finally {
                 // Clear mTxLock before unlocking so another thread does not
                 // see the old lock when it gets the lock
@@ -570,7 +575,9 @@ public class DbSync {
          *
          */
         public void setTransactionSuccessful() {
-            mDb.setTransactionSuccessful();
+            if (mDb != null && mDb.isOpen()) {
+                mDb.setTransactionSuccessful();
+            }
         }
 
         /**

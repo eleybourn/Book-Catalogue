@@ -41,8 +41,7 @@ import com.eleybourn.bookcatalogue.R;
  * Class to manage the display of 'hints' withing the application. Each hint dialogue has
  * a 'Do not show again' option, that results in an update to the preferences which 
  * are checked by this code.
- * To add a new hint, create a string resource and add it to mHints. Then, to display the
- * hint, simply call HintManager.displayHint(a, stringId).
+ * To add a new hint, create a string resource and add it to mHints.
  * 
  * @author Philip Warner
  */
@@ -80,16 +79,6 @@ public class HintManager {
 			h.setVisibility(true);
 			h.setHasBeenDisplayed(false);
 		}
-	}
-
-	public static boolean shouldBeShown(int hintStringId) {
-		final Hint h = mHints.getHint(hintStringId);
-		return h.shouldBeShown();
-	}
-
-	public static void setShouldBeShown(int hintStringId, boolean show) {
-		final Hint h = mHints.getHint(hintStringId);
-		h.setVisibility(show);
 	}
 
 	/**

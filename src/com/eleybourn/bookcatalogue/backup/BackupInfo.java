@@ -25,6 +25,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.core.content.pm.PackageInfoCompat;
+
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 import java.util.Date;
@@ -102,7 +104,7 @@ public class BackupInfo {
             PackageInfo appInfo = manager.getPackageInfo(context.getPackageName(), 0);
             info.putString(INFO_APP_PACKAGE, appInfo.packageName);
             info.putString(INFO_APP_VERSION_NAME, appInfo.versionName);
-            info.putInt(INFO_APP_VERSION_CODE, appInfo.versionCode);
+            info.putInt(INFO_APP_VERSION_CODE, (int) PackageInfoCompat.getLongVersionCode(appInfo));
         } catch (Exception e1) {
             // Not much we can do inside error logger...
         }

@@ -1,21 +1,21 @@
 
 # BOOK CATALOGUE
 > @copyright 2010 Evan Leybourn
-> @license GNU General Public License
+> @license GNU General Public Licence
  
 This file is part of Book Catalogue.
 
 Book Catalogue is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+it under the terms of the GNU General Public Licence as published by
+the Free Software Foundation, either version 3 of the Licence, or
 (at your option) any later version.
 
 Book Catalogue is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU General Public Licence for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU General Public Licence
 along with Book Catalogue.  If not, see <http://www.gnu.org/licenses/>.
 
 This is an open source Android application. Please feel free to fork, bug fix 
@@ -38,6 +38,13 @@ Features include:
 * When downloading book information, authors and titles are converted to proper
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
+
+new in 7.2
+* Pinch to zoom thumbnail
+* Decimal points in list price are now stored correctly
+* The prompt to back up the database has been added back
+* More UI design options (remove the silhouette)
+* Fixed crashes (importing large backups, navigating with away with an open dialogue, cropping covers)
 
 new in 7.1.8 - 7.1.9
 * When adding a new book, it will remember the last bookshelf you used (now a configurable setting in Other Preferences)
@@ -98,9 +105,9 @@ new in 6.0
 * Builtin scanner! We now use native machine Android library to read barcodes. Old scanners
 are still available in case there are issues, but will be removed in a future release.
 * Complete reorganization of files. Google does not like us writing files to the location we were
-using. Covers now go in private app folders and we use the \'standard\' interface for
+using. Covers now go in private app folders, and we use the \'standard\' interface for
 importing or exporting to backups and CSV files.
-* goodreads support is no more. They disabled their API a while ago and it has not come back.
+* Goodreads support is no more. They disabled their API a while ago and it has not come back.
 * LibraryThing support is no more. They disabled their API a while ago and it has not come back.
 * Many, many, many bug fixes
 
@@ -130,19 +137,19 @@ new in 5.0.5
 new in 5.0.4
 * New field: Language
 * Translation updates (Imkal)
-* Code cleanups
+* Code clean-ups
 * Scanner info sent in 'Help'->'Send Info'
 
 new in 5.0.3
 * Bug fix: 'duplicate' series no longer incorrectly causing errors
 * Bug fix: Prevent editing series and formats in list if empty
 * Bug fix: Ensure default bookshelf is really set when adding books
-* Bug fix: Handle broken android versions that do not accept null number format for progress dialogs
+* Bug fix: Handle broken android versions that do not accept null number format for progress dialogues
 * French Translation update (Imkal)
 
 new in 5.0.1/2
 * Bug fix: Author text in 'Search Internet' now correct colour
-* Bug fix: goodreads sync no longer causes crash if not registered
+* Bug fix: Goodreads sync no longer causes crash if not registered
 * Updated icons to match marketplace images
 
 new in 5.0.0
@@ -150,7 +157,7 @@ new in 5.0.0
 * Archiving (Backup & Import) of entire catalogue, including books, covers, preferences and styles
 * Updated interface with Action Bar support for usability and to work better on devices without menu buttons
 * Support for pic2shop scanner (better for fixed focus, low light and in front-facing cameras)
-* goodreads now appears in main menu if you authorize it
+* Goodreads now appears in main menu if you authorize it
 * Check internet connection earlier when trying to scan books
 * Add greater granularity to book list header info preference
 * Better ASIN search support
@@ -161,14 +168,14 @@ new in 5.0.0
 * Bug fixes
 
 new in 4.2.3
-* Improve handling of invalid ISBNs when sending to goodreads
+* Improve handling of invalid ISBNs when sending to Goodreads
 * Other minor bug fixes
 
 new in 4.2.2
 * Fix tiling of background image for some Android versions
 * Better handling of incompatible scanner apps
 * Send more details on crash or when asking for help
-* Cleanup of layouts (Nick Silin)
+* Clean-up of layouts (Nick Silin)
 * Bug fixes
 
 new in 4.2.1
@@ -192,7 +199,7 @@ new in 4.2
 * Better detection of 'changes' when editing books
 * Support for a wider range of Gallery and file browsers
 * Various import bugs fixed
-* Various code cleanups and NPEs fixed
+* Various code clean-ups and NPEs fixed
 * Internal: prep for fragments by separating message delivery from activities
 * Internal: one database connection for all activities and threads
 
@@ -205,11 +212,11 @@ new in 4.1.4
 
 new in 4.1.3
 * fix for long-standing bug during rotation while editing a book
-* fix for  for long-standing bug in date parsing when in non-english locales
+* fix for long-standing bug in date parsing when in non-english locales
 
 new in 4.1.2
 * Translation updates (Robert Wetzlmayr)
-* Bug fix for 'read' date import from goodreads
+* Bug fix for 'read' date import from Goodreads
 
 new in 4.1.1
 * Fix bug relating to commas in bookshelf names creating extra shelves
@@ -220,7 +227,7 @@ new in 4.1
 * new style options: location and date read
 * sharing can now send via any app that advertises the interface (e.g. mail)
 * if fields have been edited, and 'back' is pressed, ask the user for confirmation
-* assume book is read when importing from goodreads if the user has rated it
+* assume book is read when importing from Goodreads if the user has rated it
 * change install location to avoid problems with encrypted SD cards
 * changes to French translations
 * bug fixes in file import and data import
@@ -244,7 +251,7 @@ new in 4.0.5
 new in 4.0.4
 * search now searches series and anthology data
 * allows non-numeric data entry in series position
-* better sorting of leading numerics in series position
+* better sorting of leading numeric in series position
 * various esoteric bugs fixed
 
 new in 4.0.3
@@ -268,14 +275,14 @@ new in 4.0.1
 * Fixed: tiled background bitmap is no longer stretched in some android versions
 * Fixed: crash in classic book list if certain fields were hidden
 * Fixed: crash when dragging only author or series above top of list
-* Fixed: problem with goodreads and UNICODE characters in bookshelf names
+* Fixed: problem with Goodreads and UNICODE characters in bookshelf names
 * Fixed: problem caused by using old shortcuts to start app
 * Fixed: rare crash when returning from scanning or adding books
-* Fixed: rare crash when interacting with goodreads
+* Fixed: rare crash when interacting with Goodreads
 * Fixed: rare crash when returning to Task list from other application
 
 new in 4.0
-* goodreads support including
+* Goodreads support including
   - import
   - export
   - search
@@ -355,12 +362,12 @@ New in v3.5
 
 New in v3.4 - Most updates courtesy of Grunthos
 * Multiple Authors per book (Editing a book now displays an author button which takes the user to a new activity for managing the authors of this book.)
-* Multiple Series per book (Editing a book now displays an series button which takes the user to a new activity for managing the series of this book.)
+* Multiple Series per book (Editing a book now displays a series button which takes the user to a new activity for managing the series of this book.)
 * Fetches series (and other stuff) from LibraryThing
 * Can now make global changes to Author and Series (Access this feature via the catalogue screen; long-click on an author or series name Editing can also be accessed while editing series or authors in an individual books.)
 * Can replace a cover thumbnail from a different edition via LibraryThing. (Access this via long-clicking the cover while editing the book. It will display a gallery of thumbnails; clicking on the small thumbnail will display a larger version. Clicking on the larger version will select it.)
 * Does concurrent ISBN searches at Amazon, Google and LibraryThing (it's faster)
-* Displays a progress dialog while searching for a book on the internet.
+* Displays a progress dialogue while searching for a book on the internet.
 * Adding by Amazon's ASIN is supported on the "Add by ISBN" page
 * Duplicate books allowed, with a warning message
 * User-selectable fields when reloading data from internet (e.g. just update authors).
@@ -380,7 +387,7 @@ New in v3.3 - Updates courtesy of Grunthos
 * The application should be significantly faster now - Fixed a bug with database index creation
 * The thumbnail can be rotated in both directions now
 * You can zoom in the thumbnail to see full detail
-* The help page will redirect to the, more frequently updated, online wiki
+* The help page will redirect to the more frequently updated online wiki
 * Dollar signs in the text fields will no longer FC on import/export  
 
 New in v3.2
@@ -411,7 +418,7 @@ New in v3.0
 * A .nomedia file will be automatically created which will stop the thumbnails showing up in the gallery (thanks Brandon)
 * The "Add Book by ISBN" page has been redesigned to be simpler and more stable (thanks Vinikia)
 * The export file is now formatted correctly (.csv) (thanks glohr)
-* You will be prompted to backup your books on a regular basis 
+* You will be prompted to back up your books on a regular basis 
 
 New in v2.9
 Tip: If you long click on a book title on the main list you can delete it
@@ -467,7 +474,7 @@ New in v2.3
 * Emailing the developer now works from the admin page
 * The Change Bookshelf option is now more obvious (Thanks Mike)
 * The exports have been renamed to csv, use the correct published date and are 
-  now unicode safe (Thanks Mike)
+  now Unicode safe (Thanks Mike)
 
 New in v2.2.
 * There are two additional sort functions, by series and by loaned (Request from N4ppy)
@@ -485,10 +492,10 @@ New in v2.0
 * The new comments tab also includes a notes field where you can add personal 
   notes for any book (Requested by Luke).
 * The new loaned books tab allows you to record books loaned to friends. This 
-  will lookup your phone contacts to pre-populate the list (Requested by Luke)
+  will look up your phone contacts to pre-populate the list (Requested by Luke)
 * Scanned books that already exist in the database (based on ISBN) will no 
   longer be added (Identified by Colin)
-* After adding a book, the main view will now scroll to a appropriate location. 
+* After adding a book, the main view will now scroll to an appropriate location. 
 * Searching has been made significantly faster.
 
 New in v1.10
@@ -504,9 +511,9 @@ New in v1.08
 * Fixed an issue for books where the date of publication is just a year
 
 New in v1.07
-* Fixes a crash if zxing (barcode scanner) if not installed (as found by Jesse)
+* Fixes a crash if ZXing (barcode scanner) if not installed (as found by Jesse)
 * Adds a book count number to the main page (as requested by Keridel)
-* The administration page now has a paypal donation link. Please use :-)
+* The administration page now has a PayPal donation link. Please use :-)
 
 New in v1.06
 * Import / Export and Manage Bookshelves have been moved to an admin page.

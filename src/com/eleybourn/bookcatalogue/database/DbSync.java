@@ -559,7 +559,7 @@ public class DbSync {
                 throw new RuntimeException("Ending a transaction with wrong transaction lock");
 
             try {
-                if (mDb != null && mDb.isOpen()) {
+                if (mDb != null && mDb.isOpen() && mDb.inTransaction()) {
                     mDb.endTransaction();
                 }
             } finally {

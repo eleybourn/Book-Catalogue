@@ -149,7 +149,9 @@ public abstract class GenericOpenHelper {
                     db.setVersion(mNewVersion);
                     db.setTransactionSuccessful();
                 } finally {
-                    db.endTransaction();
+                    if (db.inTransaction()) {
+                        db.endTransaction();
+                    }
                 }
             }
 

@@ -120,7 +120,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         );
 
         mCsvExportPickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.CreateDocument("*/*"),
+                new ActivityResultContracts.CreateDocument("text/csv"),
                 result -> {
                     if (result != null) {
                         DocumentFile f = DocumentFile.fromSingleUri(this, result);
@@ -303,7 +303,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             mCsvExportPickerLauncher.launch("Export.csv");
         } catch (ActivityNotFoundException e) {
             Logger.logError(e);
-            Toast.makeText(this, R.string.alert_import_failed_is_location_correct, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.alert_export_failed_sdcard, Toast.LENGTH_LONG).show();
         }
     }
 

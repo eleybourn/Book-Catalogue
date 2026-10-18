@@ -53,7 +53,7 @@ android {
             buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", properties.getProperty("GOOGLE_OAUTH_CLIENT_ID", "\"\"")
         }
     }
-    compileSdk = 36
+    compileSdk = 37
 
     packaging {
         resources {
@@ -77,7 +77,7 @@ android {
     defaultConfig {
         applicationId "com.eleybourn.bookcatalogue"
         minSdk = 27
-        targetSdk = 36
+        targetSdk = 37
     }
 
     flavorDimensions "distributor"

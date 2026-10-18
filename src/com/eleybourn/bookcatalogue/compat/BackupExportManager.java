@@ -50,7 +50,7 @@ public class BackupExportManager
         final FragmentManager fm = activity.getSupportFragmentManager();
 
         mBackupExportPickerLauncher = activity.registerForActivityResult(
-                new CreateDocument("*/*"),
+                new CreateDocument("application/octet-stream"),
                 result -> {
                     if (result != null) {
                         DocumentFile f = DocumentFile.fromSingleUri(activity, result);

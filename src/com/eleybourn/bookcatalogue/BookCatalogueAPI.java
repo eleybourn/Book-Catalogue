@@ -557,7 +557,20 @@ public class BookCatalogueAPI implements SimpleTask {
         values.add(getDate(bookCursor, CatalogueDBAdapter.KEY_LAST_UPDATE_DATE));
 
         fields.add(prefix + "book_uuid" + suffix);
-        values.add(getString(bookCursor, CatalogueDBAdapter.KEY_BOOK_UUID));
+        String bookUuid = getString(bookCursor, CatalogueDBAdapter.KEY_BOOK_UUID);
+        values.add(bookUuid);
+
+        // Include MD5 hashes for additional images (thumbnail_md5_1, thumbnail_md5_2, etc.)
+        if (bookUuid != null && !bookUuid.isEmpty()) {
+            ArrayList<File> allThumbs = CatalogueDBAdapter.fetchAllThumbnailsByUuid(bookUuid);
+            for (int i = 1; i < allThumbs.size(); i++) {
+                File extraThumb = allThumbs.get(i);
+                if (extraThumb.exists()) {
+                    fields.add(prefix + "thumbnail_md5_" + i + suffix);
+                    values.add(Utils.calculateMD5(extraThumb));
+                }
+            }
+        }
 
         if (thumbnailRequest != null && !thumbnailRequest.isEmpty()) {
             fields.add(prefix + "thumbnail_request" + suffix);
@@ -778,11 +791,28 @@ public class BookCatalogueAPI implements SimpleTask {
             JSONArray sAnthology = server.optJSONArray("anthologies");
             if (checkDiff(bookId, "anthologies_count", String.valueOf(anthology == null ? 0 : anthology.size()), String.valueOf(sAnthology == null ? 0 : sAnthology.length()))) return true;
 
-            // Check Thumbnail MD5
+            // Check Thumbnail MD5 (Primary and Additional)
             if (checkThumbnail) {
                 String localMd5 = (thumbFile != null && thumbFile.exists()) ? Utils.calculateMD5(thumbFile) : "";
                 String serverMd5 = getStringOrEmpty(server, "thumbnail_md5");
                 if (checkDiff(bookId, "thumbnail_md5", localMd5, serverMd5)) return true;
+
+                String uuid = getString(local, DatabaseDefinitions.DOM_BOOK_UUID.name);
+                if (!uuid.isEmpty()) {
+                    ArrayList<File> allThumbs = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
+                    // Check local extra thumbs against server
+                    for (int i = 1; i < allThumbs.size(); i++) {
+                        File extra = allThumbs.get(i);
+                        String localExtraMd5 = extra.exists() ? Utils.calculateMD5(extra) : "";
+                        String serverExtraMd5 = getStringOrEmpty(server, "thumbnail_md5_" + i);
+                        if (checkDiff(bookId, "thumbnail_md5_" + i, localExtraMd5, serverExtraMd5)) return true;
+                    }
+                    // Check if server has an extra thumb that local does not have
+                    int nextIdx = allThumbs.size();
+                    if (server.has("thumbnail_md5_" + nextIdx) && !getStringOrEmpty(server, "thumbnail_md5_" + nextIdx).isEmpty()) {
+                        return true;
+                    }
+                }
             }
 
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:requiresFadingEdge="vertical"
     android:fadingEdgeLength="50dp"
@@ -22,6 +23,17 @@
             android:contentDescription="@string/label_thumbnail"
             android:gravity="center"
             android:padding="@dimen/p_md" />
+
+        <TextView
+            android:id="@+id/row_img_caption"
+            style="@style/book_text_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            android:visibility="gone"
+            tools:text="Cover 1/2" />
 
         <RelativeLayout
             android:id="@+id/row_author"

@@ -440,6 +440,10 @@
 
     <string name="menu_add_thumb_gallery">From Gallery…</string>
     <string name="menu_add_thumb_photo">From Camera…</string>
+    <string name="menu_full_screen">Full Screen</string>
+    <string name="menu_add_additional_photo">Add Additional Photo…</string>
+    <string name="photo_counter_format">%1$d / %2$d</string>
+    <string name="cover_caption_format">Cover %1$d/%2$d</string>
     <!-- Menu item -->
     <string name="menu_amazon_books_by_author">Books by this author</string>
     <!-- Menu item -->

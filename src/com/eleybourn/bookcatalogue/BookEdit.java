@@ -48,6 +48,7 @@ import com.eleybourn.bookcatalogue.compat.BookCatalogueActivity;
 import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.datamanager.DataEditor;
+import com.eleybourn.bookcatalogue.utils.StorageUtils;
 import com.eleybourn.bookcatalogue.debug.Tracker;
 import com.eleybourn.bookcatalogue.dialogs.BookshelfDialogFragment;
 import com.eleybourn.bookcatalogue.dialogs.BookshelfDialogFragment.OnBookshelfCheckChangeListener;
@@ -820,9 +821,18 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
             if (id > 0) {
                 setRowId(id);
-                File thumb = CatalogueDBAdapter.getTempThumbnail();
-                File real = CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(mRowId));
-                thumb.renameTo(real);
+                String bookUuid = mDbHelper.getBookUuid(mRowId);
+                ArrayList<File> tempThumbs = CatalogueDBAdapter.fetchAllThumbnailsByUuid("");
+                for (int i = 0; i < tempThumbs.size(); i++) {
+                    File tempFile = tempThumbs.get(i);
+                    String ext = tempFile.getName().endsWith(".png") ? ".png" : ".jpg";
+                    String suffix = (i == 0) ? "" : ("_" + i);
+                    File permanentFile = new File(StorageUtils.getBCCoversPath(), bookUuid + suffix + ext);
+                    if (permanentFile.exists()) {
+                        permanentFile.delete();
+                    }
+                    tempFile.renameTo(permanentFile);
+                }
                 BookCatalogueAPI.syncBook(this, mRowId);
             }
         } else {

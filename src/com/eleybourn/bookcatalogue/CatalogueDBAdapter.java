@@ -70,6 +70,7 @@ import com.eleybourn.bookcatalogue.booklist.LibraryStyle;
 import com.eleybourn.bookcatalogue.data.AnthologyTitle;
 import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.data.Bookshelf;
+import com.eleybourn.bookcatalogue.data.FormatCount;
 import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedDb;
 import com.eleybourn.bookcatalogue.database.DbSync.SynchronizedStatement;
@@ -751,6 +752,117 @@ public class CatalogueDBAdapter {
      */
     public static File fetchThumbnailByUuid(String uuid, String suffix) {
         return fetchThumbnailByName(uuid, suffix);
+    }
+
+    /**
+     * Fetch all thumbnails associated with a book UUID (or temporary thumbnails if uuid is null/empty).
+     * Index 0 is the primary cover ([uuid].jpg/.png or tmp.jpg/.png), followed by indexed covers
+     * ([uuid]_[N].jpg/.png or tmp_[N].jpg/.png) sorted sequentially.
+     */
+    public static ArrayList<File> fetchAllThumbnailsByUuid(String uuid) {
+        ArrayList<File> result = new ArrayList<>();
+        boolean isTemp = (uuid == null || uuid.isEmpty());
+        File dir = isTemp ? StorageUtils.getBCCache() : StorageUtils.getBCCovers();
+        if (dir == null || !dir.exists()) {
+            return result;
+        }
+
+        // Primary cover (index 0)
+        File primary;
+        if (isTemp) {
+            primary = new File(dir, "tmp.jpg");
+            if (!primary.exists()) {
+                File primaryPng = new File(dir, "tmp.png");
+                if (primaryPng.exists()) primary = primaryPng;
+            }
+        } else {
+            primary = fetchThumbnailByUuid(uuid, "");
+        }
+        if (primary.exists()) {
+            result.add(primary);
+        }
+
+        // Additional covers (_1, _2, etc.)
+        int index = 1;
+        while (true) {
+            String suffix = "_" + index;
+            File indexedFile;
+            if (isTemp) {
+                indexedFile = new File(dir, "tmp" + suffix + ".jpg");
+                if (!indexedFile.exists()) {
+                    File png = new File(dir, "tmp" + suffix + ".png");
+                    if (png.exists()) indexedFile = png;
+                }
+            } else {
+                indexedFile = fetchThumbnailByUuid(uuid, suffix);
+            }
+
+            if (indexedFile.exists()) {
+                result.add(indexedFile);
+                index++;
+            } else {
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Return the next available File for appending an additional photo to the gallery.
+     */
+    public static File getNextThumbnailFile(String uuid) {
+        boolean isTemp = (uuid == null || uuid.isEmpty());
+        ArrayList<File> all = fetchAllThumbnailsByUuid(uuid);
+        if (all.isEmpty()) {
+            // First photo becomes the primary cover
+            return isTemp ? getTempThumbnail("") : fetchThumbnailByUuid(uuid, "");
+        }
+        int nextIndex = all.size();
+        String suffix = "_" + nextIndex;
+        return isTemp ? getTempThumbnail(suffix) : new File(StorageUtils.getBCCoversPath(), uuid + suffix + ".jpg");
+    }
+
+    /**
+     * When an image at deletedIndex is deleted, shift all higher indexed files down by 1
+     * so that there are never gaps.
+     * If index 0 was deleted, index 1 becomes index 0 ([uuid].jpg / tmp.jpg), index 2 becomes index 1, etc.
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void closeThumbnailGaps(String uuid, int deletedIndex) {
+        boolean isTemp = (uuid == null || uuid.isEmpty());
+        File dir = isTemp ? StorageUtils.getBCCache() : StorageUtils.getBCCovers();
+        if (dir == null || !dir.exists()) return;
+
+        // Collect existing indices up to a break
+        int currIndex = deletedIndex + 1;
+        while (true) {
+            String currSuffix = "_" + currIndex;
+            File fileJpg = isTemp ? new File(dir, "tmp" + currSuffix + ".jpg") : new File(dir, uuid + currSuffix + ".jpg");
+            File filePng = isTemp ? new File(dir, "tmp" + currSuffix + ".png") : new File(dir, uuid + currSuffix + ".png");
+            File fileToMove = null;
+            String ext = ".jpg";
+            if (fileJpg.exists()) {
+                fileToMove = fileJpg;
+                ext = ".jpg";
+            } else if (filePng.exists()) {
+                fileToMove = filePng;
+                ext = ".png";
+            }
+
+            if (fileToMove == null) {
+                break; // No more files in sequence
+            }
+
+            // Target location
+            int targetIndex = currIndex - 1;
+            String targetSuffix = (targetIndex == 0) ? "" : ("_" + targetIndex);
+            File dest = isTemp ? new File(dir, "tmp" + targetSuffix + ext) : new File(dir, uuid + targetSuffix + ext);
+            if (dest.exists()) {
+                dest.delete();
+            }
+            fileToMove.renameTo(dest);
+            currIndex++;
+        }
     }
 
     /**
@@ -2837,8 +2949,8 @@ public class CatalogueDBAdapter {
     /**
      * Returns a unique list of all formats in the database with the number of books for each.
      */
-    public ArrayList<com.eleybourn.bookcatalogue.data.FormatCount> getFormatsWithCount() {
-        ArrayList<com.eleybourn.bookcatalogue.data.FormatCount> list = new ArrayList<>();
+    public ArrayList<FormatCount> getFormatsWithCount() {
+        ArrayList<FormatCount> list = new ArrayList<>();
         String sql = "Select " + KEY_FORMAT + ", count(*) from " + DB_TB_BOOKS +
                 " Group by " + KEY_FORMAT +
                 " Order by lower(" + KEY_FORMAT + ") " + COLLATION;
@@ -2846,7 +2958,7 @@ public class CatalogueDBAdapter {
             while (c.moveToNext()) {
                 String name = c.getString(0);
                 if (name != null && !name.isEmpty()) {
-                    list.add(new com.eleybourn.bookcatalogue.data.FormatCount(name, c.getInt(1)));
+                    list.add(new FormatCount(name, c.getInt(1)));
                 }
             }
         }
@@ -3082,9 +3194,9 @@ public class CatalogueDBAdapter {
             if (o instanceof Float || o instanceof Double) {
                 float val = ((Number) o).floatValue();
                 if (val == (long) val) {
-                    values.putString(KEY_LIST_PRICE, String.format(java.util.Locale.US, "%d", (long) val));
+                    values.putString(KEY_LIST_PRICE, String.format(Locale.US, "%d", (long) val));
                 } else {
-                    values.putString(KEY_LIST_PRICE, String.format(java.util.Locale.US, "%.2f", val));
+                    values.putString(KEY_LIST_PRICE, String.format(Locale.US, "%.2f", val));
                 }
             }
         }
@@ -3092,10 +3204,10 @@ public class CatalogueDBAdapter {
         // Remove blank/null fields that have default values defined in the database or which should
         // never be blank.
         for (String name : new String[]{
-                DatabaseDefinitions.DOM_BOOK_UUID.name, KEY_ANTHOLOGY_MASK,
+                DOM_BOOK_UUID.name, KEY_ANTHOLOGY_MASK,
                 KEY_RATING, KEY_READ, KEY_SIGNED, KEY_DATE_ADDED,
-                DatabaseDefinitions.DOM_LAST_GOODREADS_SYNC_DATE.name,
-                DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name}) {
+                DOM_LAST_GOODREADS_SYNC_DATE.name,
+                DOM_LAST_UPDATE_DATE.name}) {
             if (values.containsKey(name)) {
                 Object o = values.get(name);
                 // Need to allow for the possibility the stored value is not
@@ -4631,12 +4743,12 @@ public class CatalogueDBAdapter {
     }
 
     public Cursor getUuidList() {
-        String sql = "select " + DatabaseDefinitions.DOM_BOOK_UUID + " as " + DatabaseDefinitions.DOM_BOOK_UUID + " From " + DatabaseDefinitions.TBL_BOOKS.ref();
+        String sql = "select " + DOM_BOOK_UUID + " as " + DOM_BOOK_UUID + " From " + TBL_BOOKS.ref();
         return mDb.rawQuery(sql);
     }
 
     public long getBookCount() {
-        String sql = "select Count(*) From " + DatabaseDefinitions.TBL_BOOKS.ref();
+        String sql = "select Count(*) From " + TBL_BOOKS.ref();
         try (Cursor c = mDb.rawQuery(sql)) {
             c.moveToFirst();
             return c.getLong(0);
@@ -4644,7 +4756,7 @@ public class CatalogueDBAdapter {
     }
 
     public long[] getFirstAndLastBookRowId() {
-        String sql = "select Min(" + DOM_ID + "), Max(" + DOM_ID + ") From " + DatabaseDefinitions.TBL_BOOKS.ref();
+        String sql = "select Min(" + DOM_ID + "), Max(" + DOM_ID + ") From " + TBL_BOOKS.ref();
         try (Cursor c = mDb.rawQuery(sql)) {
             c.moveToFirst();
             return new long[]{c.getLong(0), c.getLong(1)};
@@ -4693,8 +4805,8 @@ public class CatalogueDBAdapter {
             SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
 
             DatabaseDefinitions.TBL_BOOK_LIST_NODE_SETTINGS.createAll(sdb, true);
-            DatabaseDefinitions.TBL_BOOKS_FTS.create(sdb, false);
-            DatabaseDefinitions.TBL_BOOK_LIST_STYLES.createAll(sdb, true);
+            TBL_BOOKS_FTS.create(sdb, false);
+            TBL_BOOK_LIST_STYLES.createAll(sdb, true);
 
             createTriggers(sdb);
         }
@@ -5540,14 +5652,14 @@ public class CatalogueDBAdapter {
             }
             if (curVersion == 66) {
                 curVersion++;
-                DatabaseDefinitions.TBL_BOOKS_FTS.drop(sdb);
-                DatabaseDefinitions.TBL_BOOKS_FTS.create(sdb, false);
+                TBL_BOOKS_FTS.drop(sdb);
+                TBL_BOOKS_FTS.create(sdb, false);
                 StartupActivity.scheduleFtsRebuild();
             }
             if (curVersion == 67) {
                 curVersion++;
-                DatabaseDefinitions.TBL_BOOK_LIST_STYLES.drop(sdb);
-                DatabaseDefinitions.TBL_BOOK_LIST_STYLES.createAll(sdb, true);
+                TBL_BOOK_LIST_STYLES.drop(sdb);
+                TBL_BOOK_LIST_STYLES.createAll(sdb, true);
             }
             if (curVersion == 68) {
                 curVersion++;

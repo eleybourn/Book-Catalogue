@@ -32,11 +32,13 @@ import androidx.core.content.FileProvider;
 
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowMetrics;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eleybourn.bookcatalogue.Fields.Field;
@@ -66,15 +68,25 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     protected static final int MAX_EDIT_THUMBNAIL_SIZE = 256;
     protected static final int MAX_ZOOM_THUMBNAIL_SIZE = 2048;
 
+    private static final int CONTEXT_ID_FULL_SCREEN = 0;
     private static final int CONTEXT_ID_DELETE = 1;
     private static final int CONTEXT_SUBMENU_REPLACE_THUMB = 2;
     private static final int CONTEXT_ID_SUBMENU_ROTATE_THUMB = 3;
+    private static final int CONTEXT_SUBMENU_ADD_THUMB = 4;
     private static final int CONTEXT_ID_CROP_THUMB = 6;
     private static final int CODE_ADD_PHOTO = 21;
     private static final int CODE_ADD_GALLERY = 22;
+    private static final int CODE_APPEND_PHOTO = 23;
+    private static final int CODE_APPEND_GALLERY = 24;
     private static final int CONTEXT_ID_ROTATE_THUMB_CW = 31;
     private static final int CONTEXT_ID_ROTATE_THUMB_CCW = 32;
     private static final int CONTEXT_ID_ROTATE_THUMB_180 = 33;
+
+    /**
+     * Track active image index within the gallery
+     */
+    protected int mCurrentThumbIndex = 0;
+    private boolean mIsAppendingPhoto = false;
 
     /**
      * Counter used to prevent images being reused accidentally
@@ -86,7 +98,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
      */
     private boolean mGotCameraImage = false;
 
-    protected android.util.DisplayMetrics mMetrics;
+    protected DisplayMetrics mMetrics;
     /**
      * Minimum of MAX_EDIT_THUMBNAIL_SIZE and 1/3rd of largest screen dimension
      */
@@ -155,33 +167,47 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
             }
     );
 
+    private void handleCropResult() {
+        try {
+            File cropFile = getCroppedImageFileName();
+            long rowId = mEditManager.getBookData().getRowId();
+            String uuid = (rowId == 0) ? "" : mDbHelper.getBookUuid(rowId);
+            File targetFile;
+            if (mIsAppendingPhoto) {
+                targetFile = CatalogueDBAdapter.getNextThumbnailFile(uuid);
+            } else {
+                targetFile = getCoverFile(rowId, mCurrentThumbIndex);
+            }
+
+            if (cropFile.exists()) {
+                // Copy the cropped temp file to the target cover file
+                Utils.copyFile(cropFile, targetFile);
+                if (mIsAppendingPhoto) {
+                    ArrayList<File> all = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
+                    mCurrentThumbIndex = Math.max(0, all.size() - 1);
+                    mIsAppendingPhoto = false;
+                }
+                // Refresh the view
+                setCoverImage();
+                // Sync if it's an existing book
+                if (rowId > 0) {
+                    BookCatalogueAPI.syncBook(getActivity(), rowId);
+                }
+                // Cleanup
+                cropFile.delete();
+            }
+        } catch (IOException e) {
+            Logger.logError(e, "Failed to save cropped image");
+        }
+    }
+
     // Launcher for cropping (Replaces CODE_CROP_RESULT_INTERNAL / EXTERNAL)
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private final ActivityResultLauncher<Intent> mCropLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    // This logic comes from your old onActivityResult for the crop codes
-                    try {
-                        File cropFile = getCroppedImageFileName();
-                        File coverFile = getCoverFile(mEditManager.getBookData().getRowId());
-
-                        if (cropFile.exists()) {
-                            // Copy the cropped temp file to the actual book cover file
-                            Utils.copyFile(cropFile, coverFile);
-                            // Refresh the view
-                            setCoverImage();
-                            // Sync if it's an existing book
-                            long rowId = mEditManager.getBookData().getRowId();
-                            if (rowId > 0) {
-                                BookCatalogueAPI.syncBook(getActivity(), rowId);
-                            }
-                            // Cleanup
-                            cropFile.delete();
-                        }
-                    } catch (IOException e) {
-                        Logger.logError(e, "Failed to save cropped image");
-                    }
+                    handleCropResult();
                 }
             }
     );
@@ -189,20 +215,31 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     private void handleGalleryResult(Uri selectedImageUri) {
         if (selectedImageUri == null) return;
 
-        // Use the original BC code for anything that has a 'content' scheme and if pre-KitKat
-        // Modern approach / content resolver
+        long rowId = mEditManager.getBookData().getRowId();
+        String uuid = (rowId == 0) ? "" : mDbHelper.getBookUuid(rowId);
+        File targetFile;
+        if (mIsAppendingPhoto) {
+            targetFile = CatalogueDBAdapter.getNextThumbnailFile(uuid);
+        } else {
+            targetFile = getCoverFile(rowId, mCurrentThumbIndex);
+        }
+
         boolean imageOk = false;
         assert getActivity() != null;
         try (InputStream in = getActivity().getContentResolver().openInputStream(selectedImageUri)) {
             assert in != null;
-            imageOk = Utils.saveInputToFile(in, getCoverFile(mEditManager.getBookData().getRowId()));
+            imageOk = Utils.saveInputToFile(in, targetFile);
         } catch (IOException e) {
             Logger.logError(e, "Unable to copy content to file");
         }
         if (imageOk) {
+            if (mIsAppendingPhoto) {
+                ArrayList<File> all = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
+                mCurrentThumbIndex = Math.max(0, all.size() - 1);
+                mIsAppendingPhoto = false;
+            }
             setCoverImage();
             // Sync if it's an existing book
-            long rowId = mEditManager.getBookData().getRowId();
             if (rowId > 0) {
                 BookCatalogueAPI.syncBook(getActivity(), rowId);
             }
@@ -220,25 +257,31 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
      * Listener for creating context menu for book thumbnail.
      */
     private final OnCreateContextMenuListener mCreateBookThumbContextMenuListener = (menu, v, menuInfo) -> {
-        MenuItem delete = menu.add(0, CONTEXT_ID_DELETE, 0, R.string.menu_delete_thumb);
-        delete.setIcon(R.drawable.ic_menu_edit);
+        // "Full Screen"
+        MenuItem fullScreen = menu.add(0, CONTEXT_ID_FULL_SCREEN, 0, R.string.menu_full_screen);
+        fullScreen.setIcon(R.drawable.ic_menu_search);
 
-        // Creating submenu item for rotate
-        android.view.SubMenu replaceSubmenu = menu.addSubMenu(0, CONTEXT_SUBMENU_REPLACE_THUMB, 2,
-                R.string.menu_replace_thumb);
+        // "Add Additional Photo…" (Submenu)
+        SubMenu addSubmenu = menu.addSubMenu(0, CONTEXT_SUBMENU_ADD_THUMB, 1, R.string.menu_add_additional_photo);
+        addSubmenu.setIcon(R.drawable.ic_menu_camera);
+
+        MenuItem append_photo = addSubmenu.add(0, CODE_APPEND_PHOTO, 1, R.string.menu_add_thumb_photo);
+        append_photo.setIcon(R.drawable.ic_menu_camera);
+        MenuItem append_gallery = addSubmenu.add(0, CODE_APPEND_GALLERY, 2, R.string.menu_add_thumb_gallery);
+        append_gallery.setIcon(R.drawable.ic_menu_gallery);
+
+        // "Replace Thumbnail…" (Submenu)
+        SubMenu replaceSubmenu = menu.addSubMenu(0, CONTEXT_SUBMENU_REPLACE_THUMB, 2, R.string.menu_replace_thumb);
         replaceSubmenu.setIcon(R.drawable.ic_menu_gallery);
 
         MenuItem add_photo = replaceSubmenu.add(0, CODE_ADD_PHOTO, 1, R.string.menu_add_thumb_photo);
         add_photo.setIcon(R.drawable.ic_menu_camera);
         MenuItem add_gallery = replaceSubmenu.add(0, CODE_ADD_GALLERY, 2, R.string.menu_add_thumb_gallery);
         add_gallery.setIcon(R.drawable.ic_menu_gallery);
-        // TODO EDITIONS
-        //MenuItem alt_covers = replaceSubmenu.add(0, CONTEXT_ID_SHOW_ALT_COVERS, 3, R.string.menu_thumb_alt_editions);
-        //alt_covers.setIcon(R.drawable.ic_menu_zoom);
 
-        // Implementing submenu for rotate
-        android.view.SubMenu submenu = menu.addSubMenu(0, CONTEXT_ID_SUBMENU_ROTATE_THUMB, 3, R.string.menu_rotate_thumb);
-        add_gallery.setIcon(android.R.drawable.ic_menu_rotate);
+        // "Rotate Thumbnail…" (Submenu)
+        SubMenu submenu = menu.addSubMenu(0, CONTEXT_ID_SUBMENU_ROTATE_THUMB, 3, R.string.menu_rotate_thumb);
+        submenu.setIcon(android.R.drawable.ic_menu_rotate);
 
         MenuItem rotate_photo_cw = submenu.add(0, CONTEXT_ID_ROTATE_THUMB_CW, 1, R.string.menu_rotate_thumb_cw);
         rotate_photo_cw.setIcon(R.drawable.ic_menu_rotate_cw);
@@ -247,8 +290,13 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         MenuItem rotate_photo_180 = submenu.add(0, CONTEXT_ID_ROTATE_THUMB_180, 3, R.string.menu_rotate_thumb_180);
         rotate_photo_180.setIcon(R.drawable.ic_menu_rotate);
 
+        // "Crop Thumbnail"
         MenuItem crop_thumb = menu.add(0, CONTEXT_ID_CROP_THUMB, 4, R.string.menu_crop_thumb);
         crop_thumb.setIcon(R.drawable.ic_button_crop);
+
+        // "Delete Thumbnail"
+        MenuItem delete = menu.add(0, CONTEXT_ID_DELETE, 5, R.string.menu_delete_thumb);
+        delete.setIcon(R.drawable.ic_menu_edit);
     };
 
     /**
@@ -273,9 +321,27 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
 
         initFields();
 
-        //Set zooming by default on clicking on image
-        view.findViewById(R.id.row_img).setOnClickListener(v -> showZoomedThumb(mEditManager.getBookData().getRowId()));
+        // Tapping thumbnail or caption: if multiple images cycle to next; if single or none, open zoom view
+        View imgView = view.findViewById(R.id.row_img);
+        if (imgView != null) {
+            imgView.setOnClickListener(v -> onThumbnailClicked());
+        }
+        View captionView = view.findViewById(R.id.row_img_caption);
+        if (captionView != null) {
+            captionView.setOnClickListener(v -> onThumbnailClicked());
+        }
+    }
 
+    private void onThumbnailClicked() {
+        long rowId = mEditManager.getBookData().getRowId();
+        String uuid = (rowId == 0) ? "" : mDbHelper.getBookUuid(rowId);
+        ArrayList<File> all = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
+        if (all.size() > 1) {
+            mCurrentThumbIndex = (mCurrentThumbIndex + 1) % all.size();
+            setCoverImage();
+        } else {
+            showZoomedThumb(rowId);
+        }
     }
 
     @Override
@@ -310,9 +376,12 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
             File thumbFile = getCoverFile(mEditManager.getBookData().getRowId());
 
             switch (item.getItemId()) {
+                case CONTEXT_ID_FULL_SCREEN:
+                    showZoomedThumb(mEditManager.getBookData().getRowId());
+                    return true;
                 case CONTEXT_ID_DELETE:
                     deleteThumbnail();
-                    Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
+                    setCoverImage();
                     return true;
                 case CONTEXT_ID_SUBMENU_ROTATE_THUMB:
                     // Just a submenu; skip, but display a hint if user is rotating a camera image
@@ -323,24 +392,30 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
                     return true;
                 case CONTEXT_ID_ROTATE_THUMB_CW:
                     rotateThumbnail(90);
-                    Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
+                    setCoverImage();
                     return true;
                 case CONTEXT_ID_ROTATE_THUMB_CCW:
                     rotateThumbnail(-90);
-                    Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
+                    setCoverImage();
                     return true;
                 case CONTEXT_ID_ROTATE_THUMB_180:
                     rotateThumbnail(180);
-                    Utils.fetchFileIntoImageView(thumbFile, iv, mThumbEditSize, mThumbEditSize, true);
+                    setCoverImage();
                     return true;
                 case CODE_ADD_PHOTO:
-                    BookCatalogueActivity a = (BookCatalogueActivity) getActivity();
-                    if (!BookCatalogueActivity.checkPermissions(a, false, mCameraPermissionsLauncher, BookCatalogueActivity.mScannerPermissions)) {
-                        return true;
-                    }
-                    requestPhoto();
+                    mIsAppendingPhoto = false;
+                    launchCamera();
                     return true;
                 case CODE_ADD_GALLERY:
+                    mIsAppendingPhoto = false;
+                    mGetContentLauncher.launch("image/*");
+                    return true;
+                case CODE_APPEND_PHOTO:
+                    mIsAppendingPhoto = true;
+                    launchCamera();
+                    return true;
+                case CODE_APPEND_GALLERY:
+                    mIsAppendingPhoto = true;
                     mGetContentLauncher.launch("image/*");
                     return true;
                 case CONTEXT_ID_CROP_THUMB:
@@ -351,6 +426,14 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         } finally {
             Tracker.handleEvent(this, "Context Menu Item " + item.getItemId(), Tracker.States.Exit);
         }
+    }
+
+    private void launchCamera() {
+        BookCatalogueActivity a = (BookCatalogueActivity) getActivity();
+        if (!BookCatalogueActivity.checkPermissions(a, false, mCameraPermissionsLauncher, BookCatalogueActivity.mScannerPermissions)) {
+            return;
+        }
+        requestPhoto();
     }
 
     private void requestPhoto() {
@@ -459,17 +542,25 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     }
 
     /**
-     * Delete the provided thumbnail from the sdcard
+     * Delete the currently active thumbnail and close index gaps
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void deleteThumbnail() {
         try {
             long rowId = mEditManager.getBookData().getRowId();
-            File thumbFile = getCoverFile(rowId);
+            String uuid = (rowId == 0) ? "" : mDbHelper.getBookUuid(rowId);
+            File thumbFile = getCoverFile(rowId, mCurrentThumbIndex);
             if (thumbFile != null && thumbFile.exists()) {
-                //noinspection ResultOfMethodCallIgnored
                 thumbFile.delete();
             }
+            CatalogueDBAdapter.closeThumbnailGaps(uuid, mCurrentThumbIndex);
+
+            // Re-evaluate index
+            ArrayList<File> remaining = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
+            if (mCurrentThumbIndex >= remaining.size()) {
+                mCurrentThumbIndex = Math.max(0, remaining.size() - 1);
+            }
+
             // Sync if it's an existing book
             if (rowId > 0) {
                 BookCatalogueAPI.syncBook(getActivity(), rowId);
@@ -493,10 +584,33 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
      * is new, return the standard temp file.
      */
     protected File getCoverFile(Long rowId) {
-        if (rowId == null || rowId == 0)
-            return CatalogueDBAdapter.getTempThumbnail();
-        else
-            return CatalogueDBAdapter.fetchThumbnailByUuid(mDbHelper.getBookUuid(rowId));
+        return getCoverFile(rowId, mCurrentThumbIndex);
+    }
+
+    /**
+     * Get the File object for a specific cover index of the book we are editing.
+     */
+    protected File getCoverFile(Long rowId, int index) {
+        String uuid = (rowId == null || rowId == 0) ? "" : mDbHelper.getBookUuid(rowId);
+        ArrayList<File> all = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
+        if (index >= 0 && index < all.size()) {
+            return all.get(index);
+        }
+        String suffix = (index == 0) ? "" : ("_" + index);
+        if (rowId == null || rowId == 0) {
+            return CatalogueDBAdapter.getTempThumbnail(suffix);
+        } else {
+            return CatalogueDBAdapter.fetchThumbnailByUuid(uuid, suffix);
+        }
+    }
+
+    /**
+     * Return all thumbnails for current book
+     */
+    protected ArrayList<File> getAllCoverFiles() {
+        long rowId = mEditManager.getBookData().getRowId();
+        String uuid = (rowId == 0) ? "" : mDbHelper.getBookUuid(rowId);
+        return CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
     }
 
     /**
@@ -600,7 +714,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
                 if (rowId > 0) {
                     BookCatalogueAPI.syncBook(getActivity(), rowId);
                 }
-            } catch (java.lang.OutOfMemoryError e) {
+            } catch (OutOfMemoryError e) {
                 System.gc();
             }
             retry = false;
@@ -747,6 +861,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         assert getView() != null;
         ImageView iv = getView().findViewById(R.id.row_img);
         Utils.fetchFileIntoImageView(getCoverFile(rowId), iv, maxWidth, maxHeight, true);
+        updateCoverCaption();
     }
 
     /**
@@ -818,7 +933,28 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         assert getView() != null;
         ImageView iv = getView().findViewById(R.id.row_img);
         Utils.fetchFileIntoImageView(getCoverFile(mEditManager.getBookData().getRowId()), iv, mThumbEditSize, mThumbEditSize, true);
+        updateCoverCaption();
         // Make sure the cached thumbnails (if present) are deleted
         invalidateCachedThumbnail();
+    }
+
+    protected void updateCoverCaption() {
+        if (getView() == null) return;
+        TextView captionView = getView().findViewById(R.id.row_img_caption);
+        if (captionView == null) return;
+
+        long rowId = mEditManager.getBookData().getRowId();
+        String uuid = (rowId == 0) ? "" : mDbHelper.getBookUuid(rowId);
+        ArrayList<File> all = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
+        if (all.size() > 1) {
+            if (mCurrentThumbIndex >= all.size()) {
+                mCurrentThumbIndex = Math.max(0, all.size() - 1);
+            }
+            String text = getString(R.string.cover_caption_format, mCurrentThumbIndex + 1, all.size());
+            captionView.setText(text);
+            captionView.setVisibility(View.VISIBLE);
+        } else {
+            captionView.setVisibility(View.GONE);
+        }
     }
 }

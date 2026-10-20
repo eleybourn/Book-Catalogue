@@ -861,7 +861,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         assert getView() != null;
         ImageView iv = getView().findViewById(R.id.row_img);
         Utils.fetchFileIntoImageView(getCoverFile(rowId), iv, maxWidth, maxHeight, true);
-        updateCoverCaption();
+        updateCoverCaption(rowId);
     }
 
     /**
@@ -932,18 +932,25 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     protected void setCoverImage() {
         assert getView() != null;
         ImageView iv = getView().findViewById(R.id.row_img);
-        Utils.fetchFileIntoImageView(getCoverFile(mEditManager.getBookData().getRowId()), iv, mThumbEditSize, mThumbEditSize, true);
-        updateCoverCaption();
+        long rowId = mEditManager.getBookData().getRowId();
+        Utils.fetchFileIntoImageView(getCoverFile(rowId), iv, mThumbEditSize, mThumbEditSize, true);
+        updateCoverCaption(rowId);
         // Make sure the cached thumbnails (if present) are deleted
         invalidateCachedThumbnail();
     }
 
     protected void updateCoverCaption() {
+        updateCoverCaption(null);
+    }
+
+    protected void updateCoverCaption(Long rowId) {
         if (getView() == null) return;
         TextView captionView = getView().findViewById(R.id.row_img_caption);
         if (captionView == null) return;
 
-        long rowId = mEditManager.getBookData().getRowId();
+        if (rowId == null || rowId == 0) {
+            rowId = mEditManager.getBookData().getRowId();
+        }
         String uuid = (rowId == 0) ? "" : mDbHelper.getBookUuid(rowId);
         ArrayList<File> all = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
         if (all.size() > 1) {

@@ -117,39 +117,37 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <!-- layout_height for image_wrapper used to be wrap_content but caused the image to disappear??? wtf? -->
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/image_wrapper"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="top|center_horizontal"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/row_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
                     android:adjustViewBounds="true"
                     android:background="?attr/colorSurfaceContainer"
                     android:contentDescription="@string/label_thumbnail"
                     android:padding="@dimen/p_md"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_launcher2" />
+                    android:scaleType="centerInside" />
 
                 <TextView
                     android:id="@+id/row_img_caption"
                     style="@style/book_text_small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/row_img"
-                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:visibility="gone"
                     tools:text="Cover 1/2" />
-            </RelativeLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <View style="@style/layout_divider" />

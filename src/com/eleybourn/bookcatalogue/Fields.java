@@ -712,11 +712,9 @@ public class Fields extends ArrayList<Fields.Field> {
                 if (fs == null || fs.isContextInvalid()) {
                     return;
                 }
-                // Log the error. Not much more we can do.
+                // Log the event. Not much more we can do.
                 String msg = getString(field);
                 Tracker.handleEvent(this, msg, Tracker.States.Running);
-                // This should NEVER happen, but it does. So we need more info about why & when.
-                Logger.logError(new RuntimeException("Unable to get associated View object"));
                 return;
             }
             if (mFormatHtml && s != null) {
@@ -803,7 +801,6 @@ public class Fields extends ArrayList<Fields.Field> {
                     }
                     String msg = getString(field);
                     Tracker.handleEvent(this, msg, Tracker.States.Running);
-                    Logger.logError(new RuntimeException("Unable to get associated View object"));
                 }
 
                 // If the view is still present, make sure it is accurate.

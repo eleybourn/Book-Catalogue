@@ -2,6 +2,8 @@ package com.eleybourn.bookcatalogue;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import com.eleybourn.bookcatalogue.utils.Utils;
+import java.util.Date;
 
 /**
  * Class to manage application preferences rather than rely on each activity knowing how to 
@@ -163,7 +165,17 @@ public class BookCataloguePreferences {
     }
 
     public boolean isSubscribed() {
-        return getBoolean(PREF_IS_SUBSCRIBED, false);
+        boolean subscribed = getBoolean(PREF_IS_SUBSCRIBED, false);
+        if (subscribed) {
+            String expiry = getSubscriptionExpiry();
+            if (!expiry.isEmpty() && !isLifetime()) {
+                Date expiryDate = Utils.parseDate(expiry);
+                if (expiryDate != null && expiryDate.before(new Date())) {
+                    return false;
+                }
+            }
+        }
+        return subscribed;
     }
 
     public void setSubscribed(boolean value) {

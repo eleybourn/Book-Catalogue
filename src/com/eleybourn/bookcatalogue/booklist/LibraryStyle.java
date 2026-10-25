@@ -242,6 +242,9 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	 * Accessor. Returns system name or user-defined name based on kind of style this object defines.
 	 */
 	public String getDisplayName() {
+		if (mNameProperty == null) {
+			initProperties();
+		}
 		String s = mNameProperty.getResolvedValue();
 		if (!s.isEmpty())
 			return s;
@@ -252,6 +255,9 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	 * Accessor. Sets user-defined name.
 	 */
 	public void setName(String name) {
+		if (mNameProperty == null) {
+			initProperties();
+		}
 		mNameProperty.set(name);
 		mNameStringId = 0;
 	}
@@ -341,6 +347,9 @@ public class LibraryStyle implements Iterable<LibraryGroup>, Serializable {
 	 * Get all the properties of this Style and its groups.
 	 */
 	public Properties getProperties() {
+		if (mNameProperty == null) {
+			initProperties();
+		}
 		Properties props = new Properties();
 
 		props.add(mExtraShowThumbnails);

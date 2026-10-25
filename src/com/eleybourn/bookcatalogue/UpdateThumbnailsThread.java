@@ -355,9 +355,11 @@ public class UpdateThumbnailsThread extends ManagedTask {
                         if (file.exists()) {
                             file.delete();
                         }
-                        if (downloadedFile.renameTo(file)) {
+                        try {
+                            Utils.copyFile(downloadedFile, file);
+                            downloadedFile.delete();
                             thumbChanged = true;
-                        } else {
+                        } catch (Exception e) {
                             downloadedFile.delete();
                         }
                     } else {

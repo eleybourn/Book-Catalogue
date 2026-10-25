@@ -1,6 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import com.android.billingclient.api.AcknowledgePurchaseParams;
@@ -16,7 +17,9 @@ import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
  * Manages Google Play Billing for subscription services and one-time purchases.
@@ -58,6 +61,10 @@ public class BillingManager implements PurchasesUpdatedListener {
     }
 
     public void startConnection() {
+        if (mBillingClient.getConnectionState() == BillingClient.ConnectionState.CONNECTED) {
+            queryPurchases();
+            return;
+        }
         if (mBillingClient.getConnectionState() == BillingClient.ConnectionState.CONNECTING) {
             return;
         }
@@ -68,15 +75,26 @@ public class BillingManager implements PurchasesUpdatedListener {
                     queryPurchases();
                     queryProductDetails();
                 } else {
-                    mActivity.runOnUiThread(() ->
-                            android.widget.Toast.makeText(mActivity, "Billing connection failed: " + billingResult.getDebugMessage(), android.widget.Toast.LENGTH_SHORT).show()
-                    );
+                    // Billing unavailable -> check server expiry / lifetime before clearing
+                    boolean serverSubscribed = false;
+                    String expiry = mPrefs.getSubscriptionExpiry();
+                    if (!expiry.isEmpty() && !mPrefs.isLifetime()) {
+                        Date expiryDate = Utils.parseDate(expiry);
+                        if (expiryDate != null && expiryDate.after(new Date())) {
+                            serverSubscribed = true;
+                        }
+                    }
+                    if (!mPrefs.isLifetime() && !serverSubscribed) {
+                        mPrefs.setSubscribed(false);
+                        if (mListener != null) {
+                            mActivity.runOnUiThread(() -> mListener.onSubscriptionStatusChanged(false));
+                        }
+                    }
                 }
             }
 
             @Override
             public void onBillingServiceDisconnected() {
-                // Connection lost, should handle retry if needed.
             }
         });
     }
@@ -88,6 +106,7 @@ public class BillingManager implements PurchasesUpdatedListener {
         }
 
         mFoundSubscribed = false;
+        mFoundLifetime = false;
         mFoundAutoRenewing = false;
 
         // Query subscriptions first
@@ -96,7 +115,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                         .setProductType(BillingClient.ProductType.SUBS)
                         .build(),
                 (billingResult, purchases) -> {
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
                         for (Purchase purchase : purchases) {
                             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED && !purchase.isSuspended()) {
                                 for (String productId : purchase.getProducts()) {
@@ -116,7 +135,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                                     .setProductType(BillingClient.ProductType.INAPP)
                                     .build(),
                             (billingResult2, purchases2) -> {
-                                if (billingResult2.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                if (billingResult2.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases2 != null) {
                                     for (Purchase purchase : purchases2) {
                                         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
                                             for (String productId : purchase.getProducts()) {
@@ -131,12 +150,24 @@ public class BillingManager implements PurchasesUpdatedListener {
                                     }
                                 }
 
-                                mPrefs.setSubscribed(mFoundSubscribed);
+                                // Check server subscription expiry or lifetime if Play Billing didn't find an active sub
+                                boolean serverSubscribed = false;
+                                String expiry = mPrefs.getSubscriptionExpiry();
+                                if (!expiry.isEmpty() && !mPrefs.isLifetime()) {
+                                    Date expiryDate = Utils.parseDate(expiry);
+                                    if (expiryDate != null && expiryDate.after(new Date())) {
+                                        serverSubscribed = true;
+                                    }
+                                }
+
+                                boolean finalSubscribed = mFoundSubscribed || mFoundLifetime || serverSubscribed;
+                                mPrefs.setSubscribed(finalSubscribed);
                                 mPrefs.setLifetime(mFoundLifetime);
                                 mPrefs.setAutoRenewing(mFoundAutoRenewing);
+
                                 if (mListener != null) {
-                                    final boolean finalIsSubscribed = mFoundSubscribed;
-                                    mActivity.runOnUiThread(() -> mListener.onSubscriptionStatusChanged(finalIsSubscribed));
+                                    final boolean finalIsSub = finalSubscribed;
+                                    mActivity.runOnUiThread(() -> mListener.onSubscriptionStatusChanged(finalIsSub));
                                 }
                             }
                     );

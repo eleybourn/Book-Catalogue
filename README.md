@@ -40,6 +40,7 @@ Features include:
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 
 new in 7.2
+* Ability to add multiple thumbnails per book (long press on the thumbnail to access context menu)
 * Pinch to zoom thumbnail
 * Decimal points in list price are now stored correctly
 * The prompt to back up the database has been added back

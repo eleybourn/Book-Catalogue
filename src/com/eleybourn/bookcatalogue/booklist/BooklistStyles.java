@@ -41,6 +41,7 @@ import com.eleybourn.bookcatalogue.UniqueId;
 import com.eleybourn.bookcatalogue.booklist.LibraryGroup.RowKinds;
 import com.eleybourn.bookcatalogue.database.SerializationUtils;
 import com.eleybourn.bookcatalogue.database.SerializationUtils.DeserializationException;
+import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 /**
@@ -247,8 +248,7 @@ public class BooklistStyles implements Iterable<LibraryStyle> {
                 try {
                     style = SerializationUtils.deserializeObject(blob);
                 } catch (DeserializationException e) {
-                    // Not much we can do; just delete it. Really should only happen in development.
-                    db.deleteBooklistStyle(id);
+                    Logger.logError(e, "Failed to deserialize custom style with id " + id);
                     style = null;
                 }
                 if (style != null) {

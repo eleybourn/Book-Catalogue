@@ -22,6 +22,18 @@
 # If you use reflection for any of your data classes, keep them here:
 -keep class com.eleybourn.bookcatalogue.data.** { *; }
 -keep class com.eleybourn.bookcatalogue.database.** { *; }
+-keep class com.eleybourn.bookcatalogue.booklist.** { *; }
+-keep class com.eleybourn.bookcatalogue.properties.** { *; }
+
+# Preserve standard Java serialization methods and fields across all Serializable classes
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
 
 # Room
 -keep class * extends androidx.room.RoomDatabase
@@ -29,3 +41,4 @@
 
 # Keep line numbers for better stack traces in crash reports
 -keepattributes SourceFile,LineNumberTable
+

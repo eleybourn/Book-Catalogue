@@ -249,7 +249,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         BookCatalogueAPI.setActiveListener(mApiListener);
 
         if (mBillingManager != null) {
-            mBillingManager.queryPurchases();
+            mBillingManager.startConnection();
         }
         updateSubscriptionUi();
 

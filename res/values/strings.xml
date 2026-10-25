@@ -698,6 +698,7 @@
 		]]></string>
     <string name="new_in_720"><![CDATA[
 			<p><b>New in 7.2</b>\n\n<ul>
+			    <li>Ability to add multiple thumbnails per book (long press on the thumbnail to access context menu)</li>
 				<li>Pinch to zoom thumbnail</li>
 				<li>Decimal points in list price are now stored correctly</li>
 				<li>The prompt to back up the database has been added back</li>

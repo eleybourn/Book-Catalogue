@@ -38,8 +38,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -347,6 +348,7 @@ public class BookCatalogueAPI implements SimpleTask {
      * Performs the Login API call.
      */
     public void login() {
+        Log.i("BC", "API login");
         try {
             if (mEmail.isEmpty()) {
                 throw new Exception("No email address set");
@@ -367,7 +369,12 @@ public class BookCatalogueAPI implements SimpleTask {
                 mApiToken = json.getString("api_token");
                 mPrefs.setAccountApiToken(mApiToken);
                 if (json.has("subscription_expiry")) {
-                    mPrefs.setSubscriptionExpiry(json.getString("subscription_expiry"));
+                    String expiry = json.getString("subscription_expiry");
+                    mPrefs.setSubscriptionExpiry(expiry);
+                    Date expiryDate = Utils.parseDate(expiry);
+                    if (expiryDate != null && expiryDate.before(new Date()) && !mPrefs.isLifetime()) {
+                        mPrefs.setSubscribed(false);
+                    }
                 }
                 // If they are logging in and are subscribed, enable sync by default.
                 if (mPrefs.isSubscribed()) {
@@ -384,6 +391,7 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public void runBackupBook() {
+        Log.i("BC", "API runBackupBook for book " + mBookId);
         CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
         try {
             db.open();
@@ -406,6 +414,7 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public void runFullBackup() {
+        Log.i("BC", "API runFullBackup started");
         CatalogueDBAdapter db = new CatalogueDBAdapter(mContext);
         try {
             isBackupRunning = true;
@@ -561,14 +570,13 @@ public class BookCatalogueAPI implements SimpleTask {
         values.add(bookUuid);
 
         // Include MD5 hashes for additional images (thumbnail_md5_1, thumbnail_md5_2, etc.)
-        if (bookUuid != null && !bookUuid.isEmpty()) {
-            ArrayList<File> allThumbs = CatalogueDBAdapter.fetchAllThumbnailsByUuid(bookUuid);
-            for (int i = 1; i < allThumbs.size(); i++) {
-                File extraThumb = allThumbs.get(i);
-                if (extraThumb.exists()) {
-                    fields.add(prefix + "thumbnail_md5_" + i + suffix);
-                    values.add(Utils.calculateMD5(extraThumb));
-                }
+        long bId = getInt(bookCursor, CatalogueDBAdapter.KEY_ROW_ID);
+        ArrayList<File> allThumbsForFields = getAllThumbnailFilesForBook(bookUuid, bId);
+        for (int i = 1; i < allThumbsForFields.size(); i++) {
+            File extraThumb = allThumbsForFields.get(i);
+            if (extraThumb.exists()) {
+                fields.add(prefix + "thumbnail_md5_" + i + suffix);
+                values.add(Utils.calculateMD5(extraThumb));
             }
         }
 
@@ -576,6 +584,39 @@ public class BookCatalogueAPI implements SimpleTask {
             fields.add(prefix + "thumbnail_request" + suffix);
             values.add(thumbnailRequest);
         }
+    }
+
+    private static File getThumbnailFileForBook(String uuid, long bookId) {
+        if (uuid != null && !uuid.isEmpty()) {
+            File f = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
+            if (f.exists()) return f;
+        }
+        return CatalogueDBAdapter.fetchThumbnailByUuid(String.valueOf(bookId));
+    }
+
+    private static ArrayList<File> getAllThumbnailFilesForBook(String uuid, long bookId) {
+        if (uuid != null && !uuid.isEmpty()) {
+            ArrayList<File> list = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
+            if (!list.isEmpty()) return list;
+        }
+        return CatalogueDBAdapter.fetchAllThumbnailsByUuid(String.valueOf(bookId));
+    }
+
+    private String getServerPrimaryThumbnailMd5(JSONObject serverBook) {
+        if (serverBook == null) return "";
+        String md5 = getStringOrEmpty(serverBook, "thumbnail_md5");
+        if (md5.isEmpty() && serverBook.has("images")) {
+            JSONArray imagesArr = serverBook.optJSONArray("images");
+            if (imagesArr != null) {
+                for (int i = 0; i < imagesArr.length(); i++) {
+                    JSONObject imgObj = imagesArr.optJSONObject(i);
+                    if (imgObj != null && imgObj.optInt("index", -1) == 0) {
+                        return getStringOrEmpty(imgObj, "md5");
+                    }
+                }
+            }
+        }
+        return md5;
     }
 
     private void runBackup(Cursor bookCursor, CatalogueDBAdapter db, HashMap<Long, JSONObject> serverMap) {
@@ -597,7 +638,7 @@ public class BookCatalogueAPI implements SimpleTask {
                 try {
                     int bookId = bookCursor.getInt(idIndex);
                     String uuid = bookCursor.getString(uuidIndex);
-                    File thumbFile = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
+                    File thumbFile = getThumbnailFileForBook(uuid, bookId);
                     ArrayList<Author> authors = db.getBookAuthorList(bookId);
                     ArrayList<Bookshelf> bookshelves = db.getBookBookshelfList(bookId);
                     ArrayList<Series> series = db.getBookSeriesList(bookId);
@@ -605,8 +646,9 @@ public class BookCatalogueAPI implements SimpleTask {
 
                     // Check if we need to back up this book
                     boolean needsBackup = true;
+                    JSONObject serverBook = null;
                     if (serverMap != null && serverMap.containsKey((long) bookId)) {
-                        JSONObject serverBook = serverMap.get((long) bookId);
+                        serverBook = serverMap.get((long) bookId);
                         if (serverBook != null && !isBookDifferent(bookCursor, authors, bookshelves, series, anthology, thumbFile, serverBook, true)) {
                             needsBackup = false;
                         }
@@ -614,7 +656,7 @@ public class BookCatalogueAPI implements SimpleTask {
 
                     if (needsBackup) {
                         // Upload using the single-book endpoint with thumbnail
-                        backupBook(bookId, bookCursor, authors, bookshelves, series, anthology, thumbFile);
+                        backupBook(bookId, bookCursor, authors, bookshelves, series, anthology, thumbFile, serverBook);
                     }
                 } catch (Exception e) {
                     // Log the specific error for this book, but continue the loop
@@ -650,7 +692,7 @@ public class BookCatalogueAPI implements SimpleTask {
                 try {
                     int bookId = bookCursor.getInt(idIndex);
                     String uuid = bookCursor.getString(uuidIndex);
-                    File thumbFile = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
+                    File thumbFile = getThumbnailFileForBook(uuid, bookId);
                     ArrayList<Author> authors = db.getBookAuthorList(bookId);
                     ArrayList<Bookshelf> bookshelves = db.getBookBookshelfList(bookId);
                     ArrayList<Series> series = db.getBookSeriesList(bookId);
@@ -669,14 +711,70 @@ public class BookCatalogueAPI implements SimpleTask {
                         batchCount++;
                     }
 
-                    // Check if thumbnail changed independently
+                    // Check if thumbnail changed independently (Primary & Gallery)
                     String localMd5 = thumbFile.exists() ? Utils.calculateMD5(thumbFile) : "";
-                    String serverMd5 = (serverBook != null) ? getStringOrEmpty(serverBook, "thumbnail_md5") : "";
+                    String serverMd5 = getServerPrimaryThumbnailMd5(serverBook);
                     boolean thumbChanged = !localMd5.equals(serverMd5);
 
                     if (thumbChanged) {
-                        // Queue thumbnail work
-                        thumbnailTasks.add(new ThumbnailTask(bookId, thumbFile.exists() ? thumbFile : null));
+                        // Queue primary thumbnail work
+                        thumbnailTasks.add(new ThumbnailTask(bookId, 0, thumbFile.exists() ? thumbFile : null));
+                    }
+
+                    // Check additional images (Index >= 1)
+                    if (serverBook != null && serverBook.has("images")) {
+                        JSONArray imagesArr = serverBook.optJSONArray("images");
+                        HashMap<Integer, String> serverImgMap = new HashMap<>();
+                        if (imagesArr != null) {
+                            for (int img_i = 0; img_i < imagesArr.length(); img_i++) {
+                                JSONObject imgObj = imagesArr.optJSONObject(img_i);
+                                if (imgObj != null) {
+                                    int sIdx = imgObj.optInt("index", -1);
+                                    if (sIdx > 0) {
+                                        serverImgMap.put(sIdx, getStringOrEmpty(imgObj, "md5"));
+                                    }
+                                }
+                            }
+                        }
+
+                        ArrayList<File> allThumbs = getAllThumbnailFilesForBook(uuid, bookId);
+                        // Check local images against server
+                        for (int i = 1; i < allThumbs.size(); i++) {
+                            File extra = allThumbs.get(i);
+                            String localExtraMd5 = extra.exists() ? Utils.calculateMD5(extra) : "";
+                            String sMd5 = serverImgMap.getOrDefault(i, "");
+                            if (!localExtraMd5.equals(sMd5)) {
+                                thumbnailTasks.add(new ThumbnailTask(bookId, i, extra));
+                            }
+                        }
+
+                        // Check if server has indices that were deleted locally
+                        for (Map.Entry<Integer, String> entry : serverImgMap.entrySet()) {
+                            int sIdx = entry.getKey();
+                            if (sIdx >= allThumbs.size() && !entry.getValue().isEmpty()) {
+                                thumbnailTasks.add(new ThumbnailTask(bookId, sIdx, null));
+                            }
+                        }
+                    } else if (serverBook != null) {
+                        // Fallback: check thumbnail_md5_N if server lacks images array
+                        ArrayList<File> allThumbs = getAllThumbnailFilesForBook(uuid, bookId);
+                        for (int i = 1; i < allThumbs.size(); i++) {
+                            File extra = allThumbs.get(i);
+                            String localExtraMd5 = extra.exists() ? Utils.calculateMD5(extra) : "";
+                            String sMd5 = getStringOrEmpty(serverBook, "thumbnail_md5_" + i);
+                            if (!localExtraMd5.equals(sMd5)) {
+                                thumbnailTasks.add(new ThumbnailTask(bookId, i, extra));
+                            }
+                        }
+                    } else {
+                        // New book: upload all extra thumbnails if any
+                        ArrayList<File> allThumbs = getAllThumbnailFilesForBook(uuid, bookId);
+                        for (int i = 1; i < allThumbs.size(); i++) {
+                            File extra = allThumbs.get(i);
+                            if (extra.exists()) {
+                                thumbnailTasks.add(new ThumbnailTask(bookId, i, extra));
+                            }
+                        }
                     }
 
                     if (batchCount >= 30) {
@@ -737,12 +835,12 @@ public class BookCatalogueAPI implements SimpleTask {
                 notifyProgress(skippedThumbs + i + 1, total, "thumbnails backed up");
                 try {
                     if (task.file != null) {
-                        backupThumbnail(task.id, task.file);
+                        backupThumbnail(task.id, task.index, task.file);
                     } else {
-                        deleteThumbnail(task.id);
+                        deleteThumbnail(task.id, task.index);
                     }
                 } catch (Exception e) {
-                    Log.e("BookCatalogueAPI", "Thumbnail sync failed for book " + task.id, e);
+                    Log.e("BookCatalogueAPI", "Thumbnail sync failed for book " + task.id + " index " + task.index, e);
                 }
             }
         }
@@ -753,61 +851,92 @@ public class BookCatalogueAPI implements SimpleTask {
      */
     private boolean isBookDifferent(Cursor local, ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves, ArrayList<Series> series, ArrayList<AnthologyTitle> anthology, File thumbFile, JSONObject server, boolean checkThumbnail) {
         long bookId = getInt(local, CatalogueDBAdapter.KEY_ROW_ID);
+        String bookTitle = getString(local, CatalogueDBAdapter.KEY_TITLE);
         try {
             // Check basic fields
-            if (checkDiff(bookId, "title", getString(local, CatalogueDBAdapter.KEY_TITLE), getStringOrEmpty(server, "title"))) return true;
-            if (checkDiff(bookId, "isbn", getString(local, CatalogueDBAdapter.KEY_ISBN), getStringOrEmpty(server, "isbn"))) return true;
-            if (checkDiff(bookId, "publisher", getString(local, CatalogueDBAdapter.KEY_PUBLISHER), getStringOrEmpty(server, "publisher"))) return true;
-            if (checkDiff(bookId, "date_published", getDate(local, CatalogueDBAdapter.KEY_DATE_PUBLISHED), normalizeServerDate(getStringOrEmpty(server, "date_published")), true)) return true;
-            if (checkDiff(bookId, "rating", getString(local, CatalogueDBAdapter.KEY_RATING), getStringOrEmpty(server, "rating"))) return true;
-            if (checkDiff(bookId, "read", String.valueOf(getInt(local, CatalogueDBAdapter.KEY_READ)), String.valueOf(server.optInt("read", 0)))) return true;
-            if (checkDiff(bookId, "pages", cleanInt(getString(local, CatalogueDBAdapter.KEY_PAGES)), cleanInt(getStringOrEmpty(server, "pages")))) return true;
-            if (checkDiff(bookId, "notes", getString(local, CatalogueDBAdapter.KEY_NOTES), getStringOrEmpty(server, "notes"))) return true;
-            if (checkDiff(bookId, "list_price", getString(local, CatalogueDBAdapter.KEY_LIST_PRICE), getStringOrEmpty(server, "list_price"))) return true;
-            if (checkDiff(bookId, "location", getString(local, CatalogueDBAdapter.KEY_LOCATION), getStringOrEmpty(server, "location"))) return true;
-            if (checkDiff(bookId, "read_start", getDate(local, CatalogueDBAdapter.KEY_READ_START), normalizeServerDate(getStringOrEmpty(server, "read_start")), true)) return true;
-            if (checkDiff(bookId, "read_end", getDate(local, CatalogueDBAdapter.KEY_READ_END), normalizeServerDate(getStringOrEmpty(server, "read_end")), true)) return true;
-            if (checkDiff(bookId, "format", getString(local, CatalogueDBAdapter.KEY_FORMAT), getStringOrEmpty(server, "format"))) return true;
-            if (checkDiff(bookId, "signed", String.valueOf(getInt(local, CatalogueDBAdapter.KEY_SIGNED) > 0 ? 1 : 0), String.valueOf(server.optInt("signed", 0)))) return true;
-            if (checkDiff(bookId, "loaned_to", getString(local, CatalogueDBAdapter.KEY_LOANED_TO), getStringOrEmpty(server, "loaned_to"))) return true;
-            if (checkDiff(bookId, "anthology", String.valueOf(getInt(local, CatalogueDBAdapter.KEY_ANTHOLOGY_MASK) > 0 ? 1 : 0), String.valueOf(server.optInt("anthology", 0)))) return true;
-            if (checkDiff(bookId, "description", getString(local, CatalogueDBAdapter.KEY_DESCRIPTION), getStringOrEmpty(server, "description"))) return true;
-            if (checkDiff(bookId, "genre", getString(local, CatalogueDBAdapter.KEY_GENRE), getStringOrEmpty(server, "genre"))) return true;
-            if (checkDiff(bookId, "language", getString(local, CatalogueDBAdapter.KEY_LANGUAGE), getStringOrEmpty(server, "language"))) return true;
-            if (checkDiff(bookId, "date_added", getDate(local, CatalogueDBAdapter.KEY_DATE_ADDED), normalizeServerDate(getStringOrEmpty(server, "date_added")), true)) return true;
-            if (checkDiff(bookId, "book_uuid", getString(local, CatalogueDBAdapter.KEY_BOOK_UUID), getStringOrEmpty(server, "book_uuid"))) return true;
+            if (checkDiff(bookId, bookTitle, "title", bookTitle, getStringOrEmpty(server, "title"))) return true;
+            if (checkDiff(bookId, bookTitle, "isbn", getString(local, CatalogueDBAdapter.KEY_ISBN), getStringOrEmpty(server, "isbn"))) return true;
+            if (checkDiff(bookId, bookTitle, "publisher", getString(local, CatalogueDBAdapter.KEY_PUBLISHER), getStringOrEmpty(server, "publisher"))) return true;
+            if (checkDiff(bookId, bookTitle, "date_published", getDate(local, CatalogueDBAdapter.KEY_DATE_PUBLISHED), normalizeServerDate(getStringOrEmpty(server, "date_published")), true)) return true;
+            if (checkDiff(bookId, bookTitle, "rating", getString(local, CatalogueDBAdapter.KEY_RATING), getStringOrEmpty(server, "rating"))) return true;
+            if (checkDiff(bookId, bookTitle, "read", String.valueOf(getInt(local, CatalogueDBAdapter.KEY_READ)), String.valueOf(server.optInt("read", 0)))) return true;
+            if (checkDiff(bookId, bookTitle, "pages", cleanInt(getString(local, CatalogueDBAdapter.KEY_PAGES)), cleanInt(getStringOrEmpty(server, "pages")))) return true;
+            if (checkDiff(bookId, bookTitle, "notes", getString(local, CatalogueDBAdapter.KEY_NOTES), getStringOrEmpty(server, "notes"))) return true;
+            if (checkDiff(bookId, bookTitle, "list_price", getString(local, CatalogueDBAdapter.KEY_LIST_PRICE), getStringOrEmpty(server, "list_price"))) return true;
+            if (checkDiff(bookId, bookTitle, "location", getString(local, CatalogueDBAdapter.KEY_LOCATION), getStringOrEmpty(server, "location"))) return true;
+            if (checkDiff(bookId, bookTitle, "read_start", getDate(local, CatalogueDBAdapter.KEY_READ_START), normalizeServerDate(getStringOrEmpty(server, "read_start")), true)) return true;
+            if (checkDiff(bookId, bookTitle, "read_end", getDate(local, CatalogueDBAdapter.KEY_READ_END), normalizeServerDate(getStringOrEmpty(server, "read_end")), true)) return true;
+            if (checkDiff(bookId, bookTitle, "format", getString(local, CatalogueDBAdapter.KEY_FORMAT), getStringOrEmpty(server, "format"))) return true;
+            if (checkDiff(bookId, bookTitle, "signed", String.valueOf(getInt(local, CatalogueDBAdapter.KEY_SIGNED) > 0 ? 1 : 0), String.valueOf(server.optInt("signed", 0)))) return true;
+            if (checkDiff(bookId, bookTitle, "loaned_to", getString(local, CatalogueDBAdapter.KEY_LOANED_TO), getStringOrEmpty(server, "loaned_to"))) return true;
+            if (checkDiff(bookId, bookTitle, "anthology", String.valueOf(getInt(local, CatalogueDBAdapter.KEY_ANTHOLOGY_MASK) > 0 ? 1 : 0), String.valueOf(server.optInt("anthology", 0)))) return true;
+            if (checkDiff(bookId, bookTitle, "description", getString(local, CatalogueDBAdapter.KEY_DESCRIPTION), getStringOrEmpty(server, "description"))) return true;
+            if (checkDiff(bookId, bookTitle, "genre", getString(local, CatalogueDBAdapter.KEY_GENRE), getStringOrEmpty(server, "genre"))) return true;
+            if (checkDiff(bookId, bookTitle, "language", getString(local, CatalogueDBAdapter.KEY_LANGUAGE), getStringOrEmpty(server, "language"))) return true;
+            if (checkDiff(bookId, bookTitle, "date_added", getDate(local, CatalogueDBAdapter.KEY_DATE_ADDED), normalizeServerDate(getStringOrEmpty(server, "date_added")), true)) return true;
+            if (checkDiff(bookId, bookTitle, "book_uuid", getString(local, CatalogueDBAdapter.KEY_BOOK_UUID), getStringOrEmpty(server, "book_uuid"))) return true;
 
             // Check relations - simple counts and string checks for speed
             JSONArray sAuthors = server.optJSONArray("authors");
-            if (checkDiff(bookId, "authors_count", String.valueOf(authors == null ? 0 : authors.size()), String.valueOf(sAuthors == null ? 0 : sAuthors.length()))) return true;
+            if (checkDiff(bookId, bookTitle, "authors_count", String.valueOf(authors == null ? 0 : authors.size()), String.valueOf(sAuthors == null ? 0 : sAuthors.length()))) return true;
             
             JSONArray sBookshelves = server.optJSONArray("bookshelves");
-            if (checkDiff(bookId, "bookshelves_count", String.valueOf(bookshelves == null ? 0 : bookshelves.size()), String.valueOf(sBookshelves == null ? 0 : sBookshelves.length()))) return true;
+            if (checkDiff(bookId, bookTitle, "bookshelves_count", String.valueOf(bookshelves == null ? 0 : bookshelves.size()), String.valueOf(sBookshelves == null ? 0 : sBookshelves.length()))) return true;
             
             JSONArray sSeries = server.optJSONArray("series");
-            if (checkDiff(bookId, "series_count", String.valueOf(series == null ? 0 : series.size()), String.valueOf(sSeries == null ? 0 : sSeries.length()))) return true;
+            if (checkDiff(bookId, bookTitle, "series_count", String.valueOf(series == null ? 0 : series.size()), String.valueOf(sSeries == null ? 0 : sSeries.length()))) return true;
 
             // Check Anthology Titles
             JSONArray sAnthology = server.optJSONArray("anthologies");
-            if (checkDiff(bookId, "anthologies_count", String.valueOf(anthology == null ? 0 : anthology.size()), String.valueOf(sAnthology == null ? 0 : sAnthology.length()))) return true;
+            if (checkDiff(bookId, bookTitle, "anthologies_count", String.valueOf(anthology == null ? 0 : anthology.size()), String.valueOf(sAnthology == null ? 0 : sAnthology.length()))) return true;
 
             // Check Thumbnail MD5 (Primary and Additional)
             if (checkThumbnail) {
                 String localMd5 = (thumbFile != null && thumbFile.exists()) ? Utils.calculateMD5(thumbFile) : "";
-                String serverMd5 = getStringOrEmpty(server, "thumbnail_md5");
-                if (checkDiff(bookId, "thumbnail_md5", localMd5, serverMd5)) return true;
+                String serverMd5 = getServerPrimaryThumbnailMd5(server);
+                if (checkDiff(bookId, bookTitle, "thumbnail_md5", localMd5, serverMd5)) return true;
 
                 String uuid = getString(local, DatabaseDefinitions.DOM_BOOK_UUID.name);
-                if (!uuid.isEmpty()) {
-                    ArrayList<File> allThumbs = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
-                    // Check local extra thumbs against server
+                ArrayList<File> allThumbs = getAllThumbnailFilesForBook(uuid, bookId);
+
+                if (server.has("images")) {
+                    JSONArray imagesArr = server.optJSONArray("images");
+                    HashMap<Integer, String> serverImagesMap = new HashMap<>();
+                    if (imagesArr != null) {
+                        for (int img_i = 0; img_i < imagesArr.length(); img_i++) {
+                            JSONObject imgObj = imagesArr.optJSONObject(img_i);
+                            if (imgObj != null) {
+                                int idx = imgObj.optInt("index", -1);
+                                if (idx >= 0) {
+                                    serverImagesMap.put(idx, getStringOrEmpty(imgObj, "md5"));
+                                }
+                            }
+                        }
+                    }
+
+                    // Check each local image (index 0 is already checked via thumbnail_md5)
+                    for (int i = 1; i < allThumbs.size(); i++) {
+                        File extra = allThumbs.get(i);
+                        String localExtraMd5 = extra.exists() ? Utils.calculateMD5(extra) : "";
+                        String serverExtraMd5 = serverImagesMap.getOrDefault(i, "");
+                        if (checkDiff(bookId, bookTitle, "image_md5_" + i, localExtraMd5, serverExtraMd5)) return true;
+                    }
+
+                    // Check if server has indices >= 1 that local does not have
+                    for (Map.Entry<Integer, String> entry : serverImagesMap.entrySet()) {
+                        int sIdx = entry.getKey();
+                        if (sIdx >= allThumbs.size() && !entry.getValue().isEmpty()) {
+                            return true;
+                        }
+                    }
+                } else {
+                    // Fallback: Check local extra thumbs against server thumbnail_md5_N if present
                     for (int i = 1; i < allThumbs.size(); i++) {
                         File extra = allThumbs.get(i);
                         String localExtraMd5 = extra.exists() ? Utils.calculateMD5(extra) : "";
                         String serverExtraMd5 = getStringOrEmpty(server, "thumbnail_md5_" + i);
-                        if (checkDiff(bookId, "thumbnail_md5_" + i, localExtraMd5, serverExtraMd5)) return true;
+                        if (checkDiff(bookId, bookTitle, "thumbnail_md5_" + i, localExtraMd5, serverExtraMd5)) return true;
                     }
-                    // Check if server has an extra thumb that local does not have
                     int nextIdx = allThumbs.size();
                     if (server.has("thumbnail_md5_" + nextIdx) && !getStringOrEmpty(server, "thumbnail_md5_" + nextIdx).isEmpty()) {
                         return true;
@@ -823,10 +952,18 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     private boolean checkDiff(long bookId, String fieldName, String localValue, String serverValue) {
-        return checkDiff(bookId, fieldName, localValue, serverValue, false);
+        return checkDiff(bookId, "", fieldName, localValue, serverValue, false);
+    }
+
+    private boolean checkDiff(long bookId, String title, String fieldName, String localValue, String serverValue) {
+        return checkDiff(bookId, title, fieldName, localValue, serverValue, false);
     }
 
     private boolean checkDiff(long bookId, String fieldName, String localValue, String serverValue, boolean isDate) {
+        return checkDiff(bookId, "", fieldName, localValue, serverValue, isDate);
+    }
+
+    private boolean checkDiff(long bookId, String title, String fieldName, String localValue, String serverValue, boolean isDate) {
         // Replace all whitespace, separators, and formatting characters (like zero-width space) with a single space, then trim
         String l = localValue.replaceAll("[\\s\\p{Z}\\p{Cf}]+", " ").trim();
         String s = serverValue.replaceAll("[\\s\\p{Z}\\p{Cf}]+", " ").trim();
@@ -859,9 +996,8 @@ public class BookCatalogueAPI implements SimpleTask {
                     if (ds == null) Log.d("BC", "Semantic check: failed to parse server date: " + serverValue);
                 }
             }
-            Log.d("BC", "Diff found for book " + bookId + " on field '" + fieldValue(fieldName) + "'");
-            Log.d("BC", "Local Value:  '" + localValue + "'");
-            Log.d("BC", "Server Value: '" + serverValue + "'");
+            String titleStr = (title != null && !title.isEmpty()) ? " ('" + title + "')" : "";
+            Log.d("BC", "Diff found for book " + bookId + titleStr + " on field '" + fieldValue(fieldName) + "'. Local: '" + localValue + "' / Server: '" + serverValue + "'");
             return true;
         }
         return false;
@@ -948,6 +1084,11 @@ public class BookCatalogueAPI implements SimpleTask {
      * Executes the API Sync Logic in background for a single book.
      */
     public void backupBook(int bookId, Cursor bookCursor, ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves, ArrayList<Series> series, ArrayList<AnthologyTitle> anthology, File thumbnailFile) throws Exception {
+        backupBook(bookId, bookCursor, authors, bookshelves, series, anthology, thumbnailFile, null);
+    }
+
+    public void backupBook(int bookId, Cursor bookCursor, ArrayList<Author> authors, ArrayList<Bookshelf> bookshelves, ArrayList<Series> series, ArrayList<AnthologyTitle> anthology, File thumbnailFile, JSONObject serverBook) throws Exception {
+        Log.i("BC", "API backupBook for book " + bookId);
         if (mApiToken.isEmpty()) {
             throw new Exception("No API Token set for backupBook");
         }
@@ -960,22 +1101,70 @@ public class BookCatalogueAPI implements SimpleTask {
         String response = connection("/book", METHOD_POST, fields, values, thumbnailFile);
         JSONObject json = new JSONObject(response);
         if (json.has("id")) {
+            // Also sync gallery images (Index >= 1) if present
+            String uuid = getString(bookCursor, DatabaseDefinitions.DOM_BOOK_UUID.name);
+            ArrayList<File> allThumbs = getAllThumbnailFilesForBook(uuid, bookId);
+            for (int i = 1; i < allThumbs.size(); i++) {
+                File extra = allThumbs.get(i);
+                if (extra.exists()) {
+                    backupThumbnail(bookId, i, extra);
+                }
+            }
+
+            // Delete any remaining server images at indices >= allThumbs.size()
+            HashSet<Integer> indicesToDelete = new HashSet<>();
+            collectServerImageIndices(json, allThumbs.size(), indicesToDelete);
+            collectServerImageIndices(serverBook, allThumbs.size(), indicesToDelete);
+
+            for (int sIdx : indicesToDelete) {
+                deleteThumbnail(bookId, sIdx);
+            }
             return;
         }
         throw new Exception("Upload failed for book ID " + bookId);
     }
 
+    private void collectServerImageIndices(JSONObject obj, int localThumbCount, HashSet<Integer> indicesToDelete) {
+        if (obj == null) return;
+        if (obj.has("images")) {
+            JSONArray imagesArr = obj.optJSONArray("images");
+            if (imagesArr != null) {
+                for (int i = 0; i < imagesArr.length(); i++) {
+                    JSONObject imgObj = imagesArr.optJSONObject(i);
+                    if (imgObj != null) {
+                        int sIdx = imgObj.optInt("index", -1);
+                        if (sIdx >= localThumbCount) {
+                            indicesToDelete.add(sIdx);
+                        }
+                    }
+                }
+            }
+        }
+        // Check thumbnail_md5_N fields
+        int checkIdx = Math.max(1, localThumbCount);
+        while (obj.has("thumbnail_md5_" + checkIdx)) {
+            indicesToDelete.add(checkIdx);
+            checkIdx++;
+        }
+    }
+
     private void sendBatch(ArrayList<String> fields, ArrayList<String> values) throws Exception {
+        Log.i("BC", "API sendBatch with " + (fields != null ? fields.size() : 0) + " fields");
         connection("/books", METHOD_POST, fields, values);
     }
 
     public void backupThumbnail(long bookId, File thumbFile) throws Exception {
-        String url = "/book/" + bookId + "/thumb";
+        backupThumbnail(bookId, 0, thumbFile);
+    }
+
+    public void backupThumbnail(long bookId, int index, File thumbFile) throws Exception {
+        String url = (index == 0) ? ("/book/" + bookId + "/thumb") : ("/book/" + bookId + "/thumb/" + index);
+        Log.d("BC", "Backup thumbnail /book/" + bookId + "/thumb/" + index);
         try {
             connection(url, METHOD_POST, null, null, thumbFile);
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("error code 404")) {
-                Log.w("BookCatalogueAPI", "Skipping thumbnail for book " + bookId + " - book not found on server (likely batch failure)");
+                Log.w("BookCatalogueAPI", "Skipping thumbnail index " + index + " for book " + bookId + " - book not found on server (likely batch failure)");
             } else {
                 throw e;
             }
@@ -983,12 +1172,17 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public void deleteThumbnail(long bookId) throws Exception {
-        String url = "/book/" + bookId + "/thumb";
+        deleteThumbnail(bookId, 0);
+    }
+
+    public void deleteThumbnail(long bookId, int index) throws Exception {
+        String url = (index == 0) ? ("/book/" + bookId + "/thumb") : ("/book/" + bookId + "/thumb/" + index);
+        Log.d("BC", "Delete thumbnail /book/" + bookId + "/thumb/" + index);
         try {
             connection(url, METHOD_DEL);
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().contains("error code 404")) {
-                Log.w("BookCatalogueAPI", "Thumbnail for book " + bookId + " already gone or book not found");
+                Log.w("BookCatalogueAPI", "Thumbnail index " + index + " for book " + bookId + " already gone or book not found");
             } else {
                 throw e;
             }
@@ -1007,6 +1201,7 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public void runDeleteBook() {
+        Log.i("BC", "API runDeleteBook for book " + mBookId);
         try {
             if (mApiToken.isEmpty()) {
                 throw new Exception("No API Token set for runDeleteBook");
@@ -1023,13 +1218,14 @@ public class BookCatalogueAPI implements SimpleTask {
                 throw new Exception("Invalid response from /book/<id> endpoint. JSON: " + book);
             }
         } catch (Exception e) {
-            Log.e("BookCatalogueAPI", "API failed", e);
+            Log.e("BookCatalogueAPI", "API (deleteBook) failed", e);
             final String errorMessage = e.getMessage();
             notifyError(errorMessage);
         }
     }
 
     public void runDeleteAll() {
+        Log.i("BC", "API runDeleteAll");
         try {
             if (mApiToken.isEmpty()) {
                 throw new Exception("No API Token set for runDeleteAll");
@@ -1045,13 +1241,14 @@ public class BookCatalogueAPI implements SimpleTask {
                 throw new Exception("Invalid response from delete_all endpoint.");
             }
         } catch (Exception e) {
-            Log.e("BookCatalogueAPI", "API failed", e);
+            Log.e("BookCatalogueAPI", "API (DeleteAll) failed", e);
             final String errorMessage = e.getMessage();
             notifyError(errorMessage);
         }
     }
 
     public JSONObject getBook(boolean notifyComplete) {
+        Log.i("BC", "API getBook for book " + mBookId);
         JSONObject book = null;
         try {
             if (mApiToken.isEmpty()) {
@@ -1071,7 +1268,7 @@ public class BookCatalogueAPI implements SimpleTask {
                 throw new Exception("Invalid response from /books/count endpoint. JSON: " + book);
             }
         } catch (Exception e) {
-            Log.e("BookCatalogueAPI", "API failed", e);
+            Log.e("BookCatalogueAPI", "API (getBook) failed", e);
             final String errorMessage = e.getMessage();
             notifyError(errorMessage);
         }
@@ -1079,6 +1276,7 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public JSONArray getAllBooks(boolean notifyComplete) {
+        Log.i("BC", "API getAllBooks");
         JSONArray books = null;
         try {
             if (mApiToken.isEmpty()) {
@@ -1091,7 +1289,7 @@ public class BookCatalogueAPI implements SimpleTask {
                 notifyComplete(String.valueOf(total));
             }
         } catch (Exception e) {
-            Log.e("BookCatalogueAPI", "API failed", e);
+            Log.e("BookCatalogueAPI", "API (getAllBooks) failed", e);
             final String errorMessage = e.getMessage();
             notifyError(errorMessage);
         }
@@ -1099,6 +1297,7 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public void runRestoreAll() {
+        Log.i("BC", "API runRestoreAll started");
         CatalogueDBAdapter db = null;
         DbSync.Synchronizer.SyncLock txLock = null;
         ArrayList<HashMap<String, String>> thumbnailTasks = new ArrayList<>();
@@ -1227,18 +1426,45 @@ public class BookCatalogueAPI implements SimpleTask {
                     }
                     values.putString(CatalogueDBAdapter.KEY_ROW_ID, Long.toString(bcid));
 
-                    // Defer thumbnail download
-                    String backup_filename = getStringOrEmpty(bookJson, "thumbnail");
-                    if (!backup_filename.isEmpty()) {
-                        HashMap<String, String> task = new HashMap<>();
-                        task.put("bcid", Long.toString(bcid));
-                        task.put("url", backup_filename);
-                        task.put("uuid", uuid);
-                        String md5 = getStringOrEmpty(bookJson, "thumbnail_md5");
-                        if (!md5.isEmpty()) {
-                            task.put("md5", md5);
+                    // Defer thumbnail download (Primary and Gallery)
+                    if (bookJson.has("images")) {
+                        JSONArray imagesArr = bookJson.optJSONArray("images");
+                        if (imagesArr != null) {
+                            for (int img_i = 0; img_i < imagesArr.length(); img_i++) {
+                                JSONObject imgObj = imagesArr.optJSONObject(img_i);
+                                if (imgObj != null) {
+                                    int imgIdx = imgObj.optInt("index", -1);
+                                    String imgUrl = getStringOrEmpty(imgObj, "url");
+                                    if (imgIdx >= 0 && !imgUrl.isEmpty()) {
+                                        HashMap<String, String> task = new HashMap<>();
+                                        task.put("bcid", Long.toString(bcid));
+                                        task.put("url", imgUrl);
+                                        task.put("uuid", uuid);
+                                        task.put("index", Integer.toString(imgIdx));
+                                        String md5 = getStringOrEmpty(imgObj, "md5");
+                                        if (!md5.isEmpty()) {
+                                            task.put("md5", md5);
+                                        }
+                                        thumbnailTasks.add(task);
+                                    }
+                                }
+                            }
                         }
-                        thumbnailTasks.add(task);
+                    } else {
+                        // Fallback: older server without images array
+                        String backup_filename = getStringOrEmpty(bookJson, "thumbnail");
+                        if (!backup_filename.isEmpty()) {
+                            HashMap<String, String> task = new HashMap<>();
+                            task.put("bcid", Long.toString(bcid));
+                            task.put("url", backup_filename);
+                            task.put("uuid", uuid);
+                            task.put("index", "0");
+                            String md5 = getStringOrEmpty(bookJson, "thumbnail_md5");
+                            if (!md5.isEmpty()) {
+                                task.put("md5", md5);
+                            }
+                            thumbnailTasks.add(task);
+                        }
                     }
 
                     if (values.containsKey(CatalogueDBAdapter.KEY_LOANED_TO) && !values.get(CatalogueDBAdapter.KEY_LOANED_TO).equals("")) {
@@ -1247,34 +1473,58 @@ public class BookCatalogueAPI implements SimpleTask {
                     }
 
                     if (values.containsKey(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK)) {
-                        int anthology;
-                        try {
-                            anthology = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ANTHOLOGY_MASK));
-                        } catch (Exception e) {
-                            anthology = 0;
-                        }
+                        int anthology = bookJson.optInt("anthology", 0);
                         if (anthology != 0) {
-                            int id = Integer.parseInt(values.getString(CatalogueDBAdapter.KEY_ROW_ID));
-                            // We have anthology details, delete the current details.
-                            db.deleteAnthologyTitles(id, false);
-                            int oldi = 0;
-                            String anthology_titles = values.getString("anthology_titles");
-                            try {
-                                int anthology_i = anthology_titles.indexOf("|", oldi);
-                                while (anthology_i > -1) {
-                                    String extracted_title = anthology_titles.substring(oldi, anthology_i).trim();
+                            db.deleteAnthologyTitles(bcid, false);
 
-                                    int anthology_j = extracted_title.indexOf("*");
-                                    if (anthology_j > -1) {
-                                        String anthology_title = extracted_title.substring(0, anthology_j).trim();
-                                        String anthology_author = extracted_title.substring((anthology_j + 1)).trim();
-                                        db.createAnthologyTitle(id, anthology_author, anthology_title, true, false);
+                            JSONArray anthologiesJson = bookJson.optJSONArray("anthologies");
+                            if (anthologiesJson != null && anthologiesJson.length() > 0) {
+                                for (int anth_i = 0; anth_i < anthologiesJson.length(); anth_i++) {
+                                    try {
+                                        JSONObject anthJson = anthologiesJson.getJSONObject(anth_i);
+                                        String aTitle = getStringOrEmpty(anthJson, "title");
+                                        if (aTitle.isEmpty()) {
+                                            aTitle = getStringOrEmpty(anthJson, "anthology_title");
+                                        }
+                                        String aAuthor = "";
+                                        if (anthJson.has("author")) {
+                                            Object aAuthorObj = anthJson.get("author");
+                                            if (aAuthorObj instanceof JSONObject) {
+                                                JSONObject aAuthorJson = (JSONObject) aAuthorObj;
+                                                String family = getStringOrEmpty(aAuthorJson, "family_name");
+                                                String given = getStringOrEmpty(aAuthorJson, "given_names");
+                                                aAuthor = (given + " " + family).trim();
+                                            } else {
+                                                aAuthor = aAuthorObj.toString();
+                                            }
+                                        }
+                                        if (aAuthor.isEmpty()) {
+                                            aAuthor = getStringOrEmpty(anthJson, "author_name");
+                                        }
+                                        if (!aTitle.isEmpty()) {
+                                            db.createAnthologyTitle(bcid, aAuthor, aTitle, true, false);
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e("BookCatalogueAPI", "Failed to parse anthology title for book " + title, e);
                                     }
-                                    oldi = anthology_i + 1;
-                                    anthology_i = anthology_titles.indexOf("|", oldi);
                                 }
-                            } catch (NullPointerException e) {
-                                //do nothing. There are no anthology titles
+                            } else {
+                                String anthology_titles = values.getString("anthology_titles");
+                                if (anthology_titles != null && !anthology_titles.isEmpty()) {
+                                    int oldi = 0;
+                                    int anthology_i = anthology_titles.indexOf("|", oldi);
+                                    while (anthology_i > -1) {
+                                        String extracted_title = anthology_titles.substring(oldi, anthology_i).trim();
+                                        int anthology_j = extracted_title.indexOf("*");
+                                        if (anthology_j > -1) {
+                                            String anthology_title = extracted_title.substring(0, anthology_j).trim();
+                                            String anthology_author = extracted_title.substring((anthology_j + 1)).trim();
+                                            db.createAnthologyTitle(bcid, anthology_author, anthology_title, true, false);
+                                        }
+                                        oldi = anthology_i + 1;
+                                        anthology_i = anthology_titles.indexOf("|", oldi);
+                                    }
+                                }
                             }
                         }
                     }
@@ -1303,12 +1553,20 @@ public class BookCatalogueAPI implements SimpleTask {
                     String uuid = task.get("uuid");
                     String bcid = task.get("bcid");
                     String remoteMd5 = task.get("md5");
+                    String indexStr = task.get("index");
+                    int index = 0;
+                    if (indexStr != null) {
+                        try {
+                            index = Integer.parseInt(indexStr);
+                        } catch (Exception ignored) {}
+                    }
 
+                    String suffix = (index == 0) ? "" : ("_" + index);
                     File permanentFile;
                     if (uuid != null && !uuid.isEmpty()) {
-                        permanentFile = CatalogueDBAdapter.fetchThumbnailByUuid(uuid);
+                        permanentFile = CatalogueDBAdapter.fetchThumbnailByUuid(uuid, suffix);
                     } else {
-                        permanentFile = CatalogueDBAdapter.fetchThumbnailByUuid(bcid);
+                        permanentFile = CatalogueDBAdapter.fetchThumbnailByUuid(bcid, suffix);
                     }
 
                     // Optimization: Check if the file already exists and if MD5 matches
@@ -1333,16 +1591,13 @@ public class BookCatalogueAPI implements SimpleTask {
                             parent.mkdirs();
                         }
 
-                        // Move the file to its permanent location. Try to rename first, then copy if necessary.
-                        boolean moved = downloadedFile.renameTo(permanentFile);
-                        if (!moved) {
-                            try {
-                                Utils.copyFile(downloadedFile, permanentFile);
-                                //noinspection ResultOfMethodCallIgnored
-                                downloadedFile.delete();
-                            } catch (IOException e) {
-                                Log.e("BookCatalogueAPI", "Failed to copy thumbnail for UUID/ID " + (uuid != null ? uuid : bcid), e);
-                            }
+                        // Move the file to its permanent location by copying (avoids cross-directory rename system logs)
+                        try {
+                            Utils.copyFile(downloadedFile, permanentFile);
+                            //noinspection ResultOfMethodCallIgnored
+                            downloadedFile.delete();
+                        } catch (IOException e) {
+                            Log.e("BookCatalogueAPI", "Failed to copy thumbnail for UUID/ID " + (uuid != null ? uuid : bcid), e);
                         }
                     }
                 } catch (Exception e) {
@@ -1384,7 +1639,12 @@ public class BookCatalogueAPI implements SimpleTask {
                 // Retrieve the count from the JSON response.
                 String bookCount = json.getString("count");
                 if (json.has("subscription_expiry")) {
-                    mPrefs.setSubscriptionExpiry(json.getString("subscription_expiry"));
+                    String expiry = json.getString("subscription_expiry");
+                    mPrefs.setSubscriptionExpiry(expiry);
+                    Date expiryDate = Utils.parseDate(expiry);
+                    if (expiryDate != null && expiryDate.before(new Date()) && !mPrefs.isLifetime()) {
+                        mPrefs.setSubscribed(false);
+                    }
                 }
                 notifyComplete(bookCount);
             } else {
@@ -1392,7 +1652,7 @@ public class BookCatalogueAPI implements SimpleTask {
                 throw new Exception("Invalid response from /books/count endpoint. JSON: " + json);
             }
         } catch (Exception e) {
-            Log.e("BookCatalogueAPI", "API failed", e);
+            Log.e("BookCatalogueAPI", "API (infoCount) failed", e);
             final String errorMessage = e.getMessage();
             notifyError(errorMessage);
         }
@@ -1418,7 +1678,7 @@ public class BookCatalogueAPI implements SimpleTask {
                 throw new Exception("Invalid response from /books/last_backup endpoint. JSON: " + json);
             }
         } catch (Exception e) {
-            Log.e("BookCatalogueAPI", "API failed", e);
+            Log.e("BookCatalogueAPI", "API (infoLast) failed", e);
             final String errorMessage = e.getMessage();
             notifyError(errorMessage);
         }
@@ -1435,6 +1695,7 @@ public class BookCatalogueAPI implements SimpleTask {
     }
 
     public String connection(String urlEndPoint, String method, ArrayList<String> fields, ArrayList<String> values, File thumbnailFile) throws Exception {
+        //Log.i("BC", "API Call: " + method + " " + urlEndPoint);
         int deadlockRetries = 3;
         while (true) {
             HttpURLConnection conn = null;
@@ -1589,10 +1850,16 @@ public class BookCatalogueAPI implements SimpleTask {
 
     private static class ThumbnailTask {
         long id;
+        int index;
         File file;
 
         ThumbnailTask(long id, File file) {
+            this(id, 0, file);
+        }
+
+        ThumbnailTask(long id, int index, File file) {
             this.id = id;
+            this.index = index;
             this.file = file;
         }
     }

@@ -573,6 +573,9 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             item.setIcon(R.drawable.ic_menu_search_globe);
         }
 
+        MenuItem item = menu.add(0, R.id.MENU_BACKUP, 0, R.string.label_sync_tmp);
+        item.setIcon(R.drawable.ic_menu_upload);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -588,6 +591,10 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
                 if (id == R.id.MENU_THUMBNAIL_OPTIONS) {
                     showCoverContextMenu();
+                    return true;
+                } else if (id == R.id.MENU_BACKUP) {
+                    Intent i = new Intent(this, AdminBackup.class);
+                    startActivity(i);
                     return true;
                 } else if (id == R.id.MENU_SHARE) {
                     BookUtils.shareBook(this, mDbHelper, mRowId);

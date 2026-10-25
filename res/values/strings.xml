@@ -704,6 +704,7 @@
 				<li>The prompt to back up the database has been added back</li>
 				<li>More UI design options (remove the silhouette)</li>
 				<li>Fixed crashes (importing large backups, navigating with away with an open dialogue, cropping covers)</li>
+				<li>Fixed a defect that prevented custom styles from being used</li>
 			</ul></p>
 		]]></string>
     <string name="new_style">New style</string>

@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -97,6 +99,11 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
      * Used to display a hint if user rotates a camera image
      */
     private boolean mGotCameraImage = false;
+
+    /**
+     * Executor for offloading image processing, rotation and file operations to background thread.
+     */
+    private final ExecutorService mImageExecutor = Executors.newSingleThreadExecutor();
 
     protected DisplayMetrics mMetrics;
     /**
@@ -206,41 +213,56 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     private void handleGalleryResult(Uri selectedImageUri) {
         if (selectedImageUri == null) return;
 
-        long rowId = mEditManager.getBookData().getRowId();
-        String uuid = (rowId == 0) ? "" : mDbHelper.getBookUuid(rowId);
-        File targetFile;
-        if (mIsAppendingPhoto) {
+        final Activity activity = getActivity();
+        if (activity == null) return;
+
+        final long rowId = mEditManager.getBookData().getRowId();
+        final String uuid = (rowId == 0) ? "" : mDbHelper.getBookUuid(rowId);
+        final File targetFile;
+        final boolean isAppending = mIsAppendingPhoto;
+        if (isAppending) {
             targetFile = CatalogueDBAdapter.getNextThumbnailFile(uuid);
         } else {
             targetFile = getCoverFile(rowId, mCurrentThumbIndex);
         }
 
-        boolean imageOk = false;
-        assert getActivity() != null;
-        try (InputStream in = getActivity().getContentResolver().openInputStream(selectedImageUri)) {
-            assert in != null;
-            imageOk = Utils.saveInputToFile(in, targetFile);
-        } catch (IOException e) {
-            Logger.logError(e, "Unable to copy content to file");
-        }
-        if (imageOk) {
-            int exifRotation = getExifRotation(targetFile.getAbsolutePath());
-            if (exifRotation != 0) {
-                rotateImageFile(targetFile, exifRotation);
+        mImageExecutor.execute(() -> {
+            boolean imageOk = false;
+            try (InputStream in = activity.getContentResolver().openInputStream(selectedImageUri)) {
+                if (in != null) {
+                    imageOk = Utils.saveInputToFile(in, targetFile);
+                }
+            } catch (IOException e) {
+                Logger.logError(e, "Unable to copy content to file");
             }
-            if (mIsAppendingPhoto) {
-                ArrayList<File> all = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
-                mCurrentThumbIndex = Math.max(0, all.size() - 1);
-                mIsAppendingPhoto = false;
+
+            final boolean success = imageOk;
+            if (success) {
+                int exifRotation = getExifRotation(targetFile.getAbsolutePath());
+                if (exifRotation != 0) {
+                    rotateImageFile(targetFile, exifRotation);
+                }
             }
-            setCoverImage();
-            // Sync if it's an existing book
-            if (rowId > 0) {
-                BookCatalogueAPI.syncBook(getActivity(), rowId);
-            }
-        } else {
-            showCopyErrorToast();
-        }
+
+            activity.runOnUiThread(() -> {
+                if (!isAdded()) return;
+
+                if (success) {
+                    if (isAppending) {
+                        ArrayList<File> all = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
+                        mCurrentThumbIndex = Math.max(0, all.size() - 1);
+                        mIsAppendingPhoto = false;
+                    }
+                    setCoverImage();
+                    // Sync if it's an existing book
+                    if (rowId > 0) {
+                        BookCatalogueAPI.syncBook(activity, rowId);
+                    }
+                } else {
+                    showCopyErrorToast();
+                }
+            });
+        });
     }
 
     private int getExifRotation(String path) {
@@ -396,6 +418,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     public void onDestroy() {
         Tracker.enterOnDestroy(this);
         super.onDestroy();
+        mImageExecutor.shutdown();
         mDbHelper.close();
         Tracker.exitOnDestroy(this);
     }
@@ -426,15 +449,12 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
                     return true;
                 case CONTEXT_ID_ROTATE_THUMB_CW:
                     rotateThumbnail(90);
-                    setCoverImage();
                     return true;
                 case CONTEXT_ID_ROTATE_THUMB_CCW:
                     rotateThumbnail(-90);
-                    setCoverImage();
                     return true;
                 case CONTEXT_ID_ROTATE_THUMB_180:
                     rotateThumbnail(180);
-                    setCoverImage();
                     return true;
                 case CODE_ADD_PHOTO:
                     mIsAppendingPhoto = false;
@@ -713,46 +733,61 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     }
 
     /**
-     * Rotate the thumbnail a specified amount
+     * Rotate the thumbnail a specified amount in a background thread.
      */
     private void rotateThumbnail(long angle) {
-        boolean retry = true;
-        while (retry) {
-            try {
-                File thumbFile = getCoverFile(mEditManager.getBookData().getRowId());
+        final Activity activity = getActivity();
+        if (activity == null) return;
 
-                Bitmap origBm = Utils.fetchFileIntoImageView(thumbFile, null, mThumbZoomSize * 2, mThumbZoomSize * 2, true);
-                if (origBm == null)
-                    return;
+        final long rowId = mEditManager.getBookData().getRowId();
+        final File thumbFile = getCoverFile(rowId);
 
-                Matrix m = new Matrix();
-                m.postRotate(angle);
-                Bitmap rotBm = Bitmap.createBitmap(origBm, 0, 0, origBm.getWidth(), origBm.getHeight(), m, true);
-                if (rotBm != origBm) {
-                    origBm.recycle();
-                }
-
-                /* Create a file to copy the thumbnail into */
-                FileOutputStream f;
+        mImageExecutor.execute(() -> {
+            boolean retry = true;
+            boolean success = false;
+            while (retry) {
                 try {
-                    f = new FileOutputStream(thumbFile.getAbsoluteFile());
-                } catch (FileNotFoundException e) {
-                    Logger.logError(e);
-                    return;
-                }
-                rotBm.compress(Bitmap.CompressFormat.PNG, 100, f);
-                rotBm.recycle();
+                    Bitmap origBm = Utils.fetchFileIntoImageView(thumbFile, null, mThumbZoomSize * 2, mThumbZoomSize * 2, true);
+                    if (origBm == null)
+                        return;
 
-                // Sync if it's an existing book
-                long rowId = mEditManager.getBookData().getRowId();
-                if (rowId > 0) {
-                    BookCatalogueAPI.syncBook(getActivity(), rowId);
+                    Matrix m = new Matrix();
+                    m.postRotate(angle);
+                    Bitmap rotBm = Bitmap.createBitmap(origBm, 0, 0, origBm.getWidth(), origBm.getHeight(), m, true);
+                    if (rotBm != origBm) {
+                        origBm.recycle();
+                    }
+
+                    /* Create a file to copy the thumbnail into */
+                    FileOutputStream f;
+                    try {
+                        f = new FileOutputStream(thumbFile.getAbsoluteFile());
+                    } catch (FileNotFoundException e) {
+                        Logger.logError(e);
+                        return;
+                    }
+                    rotBm.compress(Bitmap.CompressFormat.PNG, 100, f);
+                    rotBm.recycle();
+
+                    // Sync if it's an existing book
+                    if (rowId > 0) {
+                        BookCatalogueAPI.syncBook(activity, rowId);
+                    }
+                    success = true;
+                } catch (OutOfMemoryError e) {
+                    System.gc();
                 }
-            } catch (OutOfMemoryError e) {
-                System.gc();
+                retry = false;
             }
-            retry = false;
-        }
+
+            if (success) {
+                activity.runOnUiThread(() -> {
+                    if (isAdded()) {
+                        setCoverImage();
+                    }
+                });
+            }
+        });
     }
 
     /**

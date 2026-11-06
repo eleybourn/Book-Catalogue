@@ -102,7 +102,7 @@ public class BookEditSeriesList extends BookEditObjectList<Series> {
                 Logger.logError(e, "while adding series");
             }
             if (foundMatch) {
-                Toast.makeText(BookEditSeriesList.this, getResources().getString(R.string.series_already_in_list), Toast.LENGTH_LONG).show();
+                Toast.makeText(BookEditSeriesList.this, getResources().getString(R.string.alert_series_already_in_list), Toast.LENGTH_LONG).show();
                 return;
             }
             mList.add(series);
@@ -110,7 +110,7 @@ public class BookEditSeriesList extends BookEditObjectList<Series> {
             t.setText("");
             et.setText("");
         } else {
-            Toast.makeText(BookEditSeriesList.this, getResources().getString(R.string.series_is_blank), Toast.LENGTH_LONG).show();
+            Toast.makeText(BookEditSeriesList.this, getResources().getString(R.string.alert_series_is_blank), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -137,7 +137,7 @@ public class BookEditSeriesList extends BookEditObjectList<Series> {
         saveButton.setOnClickListener(v -> {
             String newName = seriesView.getText().toString().trim();
             if (newName.isEmpty()) {
-                Toast.makeText(BookEditSeriesList.this, R.string.series_is_blank, Toast.LENGTH_LONG).show();
+                Toast.makeText(BookEditSeriesList.this, R.string.alert_series_is_blank, Toast.LENGTH_LONG).show();
                 return;
             }
             Series newSeries = new Series(newName, numView.getText().toString());

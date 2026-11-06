@@ -215,12 +215,6 @@ public class CropCropImage extends CropMonitoredActivity {
                     mCrop = mImageView.mHighlightViews.get(0);
                     mCrop.setFocus(true);
                 }
-
-                if (mNumFaces > 1) {
-                    Toast t = Toast.makeText(CropCropImage.this,
-                            "Multi face crop help", Toast.LENGTH_SHORT);
-                    t.show();
-                }
             });
         }
     };
@@ -235,12 +229,12 @@ public class CropCropImage extends CropMonitoredActivity {
         if (remaining == NO_STORAGE_ERROR) {
             String state = Environment.getExternalStorageState();
             if (state.equals(Environment.MEDIA_CHECKING)) {
-                noStorageText = "Preparing card";
+                noStorageText = activity.getString(R.string.alert_crop_preparing_card);
             } else {
-                noStorageText = "No storage card";
+                noStorageText = activity.getString(R.string.alert_crop_no_storage_card);
             }
         } else if (remaining < 1) {
-            noStorageText = "Not enough space";
+            noStorageText = activity.getString(R.string.alert_crop_not_enough_space);
         }
 
         if (noStorageText != null) {

@@ -63,7 +63,7 @@ public class LibraryEditSeriesDialog {
 		saveButton.setOnClickListener(v -> {
             String newName = seriesView.getText().toString().trim();
             if (newName.isEmpty()) {
-                Toast.makeText(mContext, R.string.series_is_blank, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.alert_series_is_blank, Toast.LENGTH_LONG).show();
                 return;
             }
             Series newSeries = new Series(newName, "");

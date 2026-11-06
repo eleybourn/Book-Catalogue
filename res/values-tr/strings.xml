@@ -32,7 +32,7 @@
     <string name="alert_cancelled">İptal edildi</string>
     <string name="alert_export_failed_sdcard">Dışa aktarma başarısız - SD karta yazılamadı</string>
     <string name="alert_hints_have_been_reset">İpuçları sıfırlandı</string>
-    <string name="alert_if_the_problem_persists">Eğer sorun sürerse lütfen ana seçkedeki Yardım bölümünden destek ile iletişime geçin.</string>
+    <string name="message_import_alert_if_the_problem_persists">Eğer sorun sürerse lütfen ana seçkedeki Yardım bölümünden destek ile iletişime geçin.</string>
     <string name="alert_import">Uyarı: Bilgileri içe aktarırken eğer içe aktardığınız dosyaların ID numarası var olan bir kitabın ID\'si ile aynı ise, varolan kitap verilerinin üstüne yazılmasına neden olabilir. Eğer dışa aktarılmış bir dosyada bir giriyi değiştirdiyseniz bu sorun değildir; ancak yeni bir kitap girişi oluşturuyorsanız ID bölümünün boş olduğundan emin olun.</string>
     <string name="alert_import_failed_is_location_correct">Hata: SD karttan içe aktarma başarısız oldu. Dosyalar yerli yerinde mi acaba?</string>
     <!-- Descriptive text associated with import options not available with older archives -->
@@ -48,25 +48,25 @@
 
     <string name="app_name">Kitap Kataloğu</string>
 
-    <string name="author_already_in_list">Yazar zaten ekli</string>
-    <string name="author_is_blank">Yazar alanı boş</string>
-    <string name="author_required">En azından bir yazar belirtilmeli</string>
+    <string name="alert_author_already_in_list">Yazar zaten ekli</string>
+    <string name="alert_author_is_blank">Yazar alanı boş</string>
+    <string name="alert_author_required">En azından bir yazar belirtilmeli</string>
 
     <string name="alert_automatic_population_failed">Kitap adlarının kendiliğinden doldurulması başarısız oldu</string>
 
     <string name="available">Uygun</string>
 
     <!-- Showed in progress dialog when an import starts -->
-    <string name="backing_up_ellipsis">Yedekleniyor…</string>
+    <string name="label_backing_up">Yedekleniyor…</string>
 
-    <string name="bad_scanner">Görünüşe göre var olan barkod tarayıcı uygulamanız Book Catalogue ile uyumlu değil. Biz Zxing barkod tarayıcısını yüklemenizi öneriyoruz. Eğer zaten yüklüyse silip yeniden yüklemeniz yardımcı olabilir.</string>
+    <string name="alert_bad_scanner">Görünüşe göre var olan barkod tarayıcı uygulamanız Book Catalogue ile uyumlu değil. Biz Zxing barkod tarayıcısını yüklemenizi öneriyoruz. Eğer zaten yüklüyse silip yeniden yüklemeniz yardımcı olabilir.</string>
 
     <string name="book">Kitap</string>
     <string name="book_catalogue_startup">BookCatalogue başlangıç</string>
     <string name="book_details_readonly_by">ile</string>
     <string name="book_details_readonly_loaned_to">%1$s kişisine ödünç verilmiş</string>
     <string name="book_details_readonly_pages">%1$s bet</string>
-    <string name="book_not_found">Aranan kitap bulunamadı. Bazen doğru barkodu kitap kapağının içinde bulabilirsiniz. Bulamazsanız, bilgileri elle giriniz.</string>
+    <string name="alert_book_not_found">Aranan kitap bulunamadı. Bazen doğru barkodu kitap kapağının içinde bulabilirsiniz. Bulamazsanız, bilgileri elle giriniz.</string>
 
     <string name="brackets">(%1$s)</string>
 
@@ -84,13 +84,13 @@
     <string name="button_send_info">Bilgi gönder</string>
     <string name="button_update">Güncelle</string>
 
-    <string name="bytes">%.0f bit</string>
+    <string name="progress_bytes">%.0f bit</string>
 
-    <string name="cancelled_info">İptal edildi - %s</string>
+    <string name="alert_cancelled_info">İptal edildi - %s</string>
 
     <string name="cancelling">İptal ediliyor…</string>
 
-    <string name="cannot_edit_system">Sistem değerlerini düzenleyemezsiniz</string>
+    <string name="alert_cannot_edit_system">Sistem değerlerini düzenleyemezsiniz</string>
 
     <string name="changed_author_how_apply">Yazarı şundan:\n  \'%1$s\' şuna:\n  \'%2$s\' değiştirdiniz.\nDeğişiklikleri nasıl uygulamak istersiniz?\nNot: \'%3$s\' seçimi anında uygulanacaktır.</string>
     <string name="changed_series_how_apply">Seriyi şundan:\n  \'%1$s\' şuna: \n  \'%2$s\' değiştirdiniz.\nDeğişiklikleri nasıl uygulamak istersiniz?\nNot: \'Tüm kitaplar\' seçimi anında uygulanacaktır.</string>
@@ -114,17 +114,17 @@
 
     <string name="could_not_copy_image">Resim eşlemlenemedi</string>
 
-    <string name="cover_corrupt">Kapak hasarlı</string>
+    <string name="alert_cover_corrupt">Kapak hasarlı</string>
     <string name="cover_detail">Kapak ayrıntısı</string>
     <string name="cover_options_cc_ellipsis">Kapak seçenekleri…</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
-    <string name="covers_progress">%1$d kapak işlendi (%2$d bulunamadı)</string>
+    <string name="progress_covers">%1$d kapak işlendi (%2$d bulunamadı)</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$d kapak işlendi (%2$d bulunamadı, %3$d atlandı)</string>
+    <string name="progress_covers_increment">%1$d kapak işlendi (%2$d bulunamadı, %3$d atlandı)</string>
 
     <string name="crash_dialog_ok_toast">Sağ olun!</string>
     <string name="crash_dialog_text">Sanırız BookCatalogue çöktü. Eğer bu çökme ile ilgili olabileceğini düşündüğünüz bir şeyler varsa lütfen "Tamam"a basarak bu çökme hakkında bir e-posta gönderin. Göndermeden önce e-postayı göreceksiniz.</string>
@@ -139,7 +139,7 @@
     <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Hata ayıklama bilgisi alındı</string>
 
-    <string name="delete_1st_bs">Birinci kitaplık silinemiyor</string>
+    <string name="alert_delete_1st_bookshelf">Birinci kitaplık silinemiyor</string>
     <string name="delete_event">Olayı sil</string>
     <string name="delete_series">Serileri sil</string>
     <string name="delete_style">Biçemi sil</string>
@@ -166,7 +166,7 @@
     <!-- Begin: Added/Updated in [Next Version] -->
     <!--  Explanatory text for 'import' dialogue -->
     <string name="description_import_books_blurb">Arşivdeki kitaplar içe aktarılacaktır. Aktarmaya başlamak için iki seçenekten birini seçin, iptal etmek için ise \'geri\' düğmesine basın:</string>
-    <string name="description_import_complete">İçe aktarma başarılı</string>
+    <string name="alert_import_complete">İçe aktarma başarılı</string>
     <!-- Description of the 'import new & changed' option -->
     <string name="description_new_and_changed_books_blurb">Yalnızca yeni olan veya son zamanlarda arşivde güncellenmiş kitapları içe aktar. Bu seçenek özellikle örneğin iki aygıtı eşlerken yararlıdır.</string>
     <string name="description_no_bookshelves">Henüz hiçbir kitaplık oluşturmadınız. Ekranın alt kısmındaki bölümü kullanarak yeni kitaplık oluşturun.</string>
@@ -251,14 +251,14 @@
     <string name="hint_view_only_help">Bu ekran salt okunur kitap ayrıntıları ekranıdır; sağa/sola kaydırarak diğer kitaplara geçebilir, seçke düğmesi veya taşan seçke simgesini kullanıp seçenekler bölümünden kitabı düzenleyebilirsiniz.
 </string>
 
-    <string name="if_day_is_specified_month_and_year_must_be">Eğer gün belirtmiş iseniz hem ay hem yıl bölümlerini de doldurmalısınız.</string>
-    <string name="if_month_is_specified_year_must_be">Eğer bir ay belirtmiş iseniz yıl da belirtmelisiniz.</string>
+    <string name="alert_if_day_is_specified_month_and_year_must_be">Eğer gün belirtmiş iseniz hem ay hem yıl bölümlerini de doldurmalısınız.</string>
+    <string name="alert_if_month_is_specified_year_must_be">Eğer bir ay belirtmiş iseniz yıl da belirtmelisiniz.</string>
 
     <!-- Displayed when an archive operation fails -->
-    <string name="import_failed">İçe aktarma başarısız.</string>
+    <string name="message_import_failed">İçe aktarma başarısız.</string>
 
     <!-- Showed in progress dialog when an import starts -->
-    <string name="importing_ellipsis">İçe aktarılıyor…</string>
+    <string name="title_importing">İçe aktarılıyor…</string>
 
     <string name="install_scan_title">Barkod Tarayıcıyı yükleyin</string>
 
@@ -427,7 +427,7 @@
         <item quantity="other">%1$s kapak</item>
     </plurals>
     <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$d oluşturuldu, %2$d güncellendi</string>
+    <string name="progress_n_created_m_updated">%1$d oluşturuldu, %2$d güncellendi</string>
     <!-- Short text for 'n stars' -->
     <plurals name="n_stars" tools:ignore="UnusedQuantity">
         <item quantity="zero">%1$s yıldız</item>
@@ -435,7 +435,7 @@
         <item quantity="other">%1$s yıldız</item>
     </plurals>
 
-    <string name="name_can_not_be_blank">Ad kısmı boş olamaz</string>
+    <string name="alert_name_can_not_be_blank">Ad kısmı boş olamaz</string>
 
     <string name="new_in_42"><![CDATA[
     <p><b>New in 4.2</b>\n\n
@@ -574,7 +574,7 @@
     <string name="new_style">Yeni biçem</string>
 
     <string name="no_author">(yazar yok)</string>
-    <string name="no_connection">Ağ bağlantısı yok.</string>
+    <string name="alert_no_connection">Ağ bağlantısı yok.</string>
     <string name="no_genre">(tür yok)</string>
     <string name="no_publisher">(yayımcı yok)</string>
     <string name="no_series">(seri yok)</string>
@@ -582,7 +582,7 @@
 
     <string name="not_set">Ayarlı değil</string>
 
-    <string name="num_books_searched">%s kitap arandı</string>
+    <string name="progress_num_books_searched">%s kitap arandı</string>
 
     <string name="optimizing_databases">Veritabanları eniyileniyor…</string>
 
@@ -650,7 +650,7 @@
     <string name="para_translators">Kitap Kataloğu birçok kişinin emeğinin ürünü olan bir yazılım. Burada gönüllü çevirmenlerimizin katkılarını \nbelirtmeden olmaz; onların çabaları olmadan bu kadar fazla kişiye ulaşamazdık. \nBu güzel insanlar: %1$s (eğer unuttuğumuz birisi var ise lütfen belirtin).</string>
 
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_readable">SD kartın erişilebilir olduğundan emin olun.</string>
+    <string name="message_import_please_check_sd_readable">SD kartın erişilebilir olduğundan emin olun.</string>
 
     <string name="populate_anthology_titles">Kitap adlarını kendiliğinden doldur (DENEYSEL ÖZELLİK)</string>
 
@@ -678,7 +678,7 @@
 
     <string name="preferred_styles">Yeğlenen biçemler</string>
 
-    <string name="really_delete_book">Bu işlem bu kitabı tümüyle silecektir: \'%1$s\' - %2$s. Sürdürmek istediğinizden emin misiniz?</string>
+    <string name="message_really_delete_book">Bu işlem bu kitabı tümüyle silecektir: \'%1$s\' - %2$s. Sürdürmek istediğinizden emin misiniz?</string>
     <string name="really_delete_series">\'%s\' serisi gerçekten silinsin mi?\n\nKitabın kendisi silinmeyecektir.\n\nSeriyi düzenleyip seri adını başka bir serininkiyle değiştirip bu veriyi korumayı düşünün.</string>
 
     <string name="rebuilding_search_index">Arama dizini yeniden oluşturuluyor…</string>
@@ -688,8 +688,8 @@
 
     <string name="scope_of_change">Değişiklik kapsamı</string>
 
-    <string name="search_exception">%1$s sırasında arama başarısız oldu: %2$s</string>
-    <string name="search_fail">Kitap araması başarısız oldu. Ağ ayarlarınızı denetleyiniz.</string>
+    <string name="alert_search_exception">%1$s sırasında arama başarısız oldu: %2$s</string>
+    <string name="alert_search_fail">Kitap araması başarısız oldu. Ağ ayarlarınızı denetleyiniz.</string>
 
     <!-- End: Added/Updated in 5.1.1 -->
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
@@ -701,8 +701,8 @@
     <string name="select_based_on_read_status">\'Okunma\' durumuna göre seç</string>
     <string name="select_style">Biçem seç</string>
 
-    <string name="series_already_in_list">Seri zaten ekli</string>
-    <string name="series_is_blank">Seri alanı boş</string>
+    <string name="alert_series_already_in_list">Seri zaten ekli</string>
+    <string name="alert_series_is_blank">Seri alanı boş</string>
 
     <string name="set_series">Seri ekle…</string>
 
@@ -730,7 +730,7 @@
 
     <string name="status_adding_book_ellipsis">Kitap ekle…</string>
 
-    <string name="the_title_already_exists">Bu kitap adı zaten var</string>
+    <string name="alert_the_title_already_exists">Bu kitap adı zaten var</string>
 
     <string name="thing_must_not_be_blank">%1$s boş olamaz</string>
 
@@ -751,11 +751,11 @@
     <string name="title_manage_bookshelves">Kitaplıkları yönet</string>
     <string name="title_manage_fields">Alan görünürlüğünü yönet</string>
     <string name="title_other_preferences">Diğer seçenekler</string>
-    <string name="title_required">Boş olmayan bir kitap adı kesinlikle belirtilmeli</string>
+    <string name="alert_title_required">Boş olmayan bir kitap adı kesinlikle belirtilmeli</string>
     <string name="title_select_fields_to_update">Güncellenecek alanları seçin</string>
     <string name="title_settings">Yönetim ve Seçenekler</string>
 
-    <string name="unable_to_find_book">Belirtilen kitap bulunamıyor</string>
+    <string name="alert_unable_to_find_book">Belirtilen kitap bulunamıyor</string>
 
     <string name="unknown">Bilinmeyen</string>
     <string name="unknown_uc">BİLİNMEYEN</string>
@@ -794,9 +794,9 @@
     <string name="validator_real_expected">\'%s\' için bir gerçek sayı gerekli</string>
     <string name="validator_unable_to_get_value">\'%s\' için değer alınamıyor</string>
 
-    <string name="x_is_not_a_valid_isbn">%1$s geçerli birISBN değil</string>
-    <string name="x_is_not_a_valid_isbn_or_asin">%1$s geçerli bir ISBN veya ASIN değil</string>
+    <string name="alert_x_is_not_a_valid_isbn">%1$s geçerli birISBN değil</string>
+    <string name="alert_x_is_not_a_valid_isbn_or_asin">%1$s geçerli bir ISBN veya ASIN değil</string>
     <string name="x_of_y">%1$d (Toplam %2$d)</string>
 
-    <string name="you_have_unsaved_changes">Saklanmamış değişiklikler var, şimdi çıkarsanız hepsi silinecektir.</string>
+    <string name="message_you_have_unsaved_changes">Saklanmamış değişiklikler var, şimdi çıkarsanız hepsi silinecektir.</string>
 </resources>

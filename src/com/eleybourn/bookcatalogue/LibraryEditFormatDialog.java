@@ -59,7 +59,7 @@ public class LibraryEditFormatDialog {
 		saveButton.setOnClickListener(v -> {
             String newName = nameView.getText().toString().trim();
             if (newName.isEmpty()) {
-                Toast.makeText(mContext, R.string.name_can_not_be_blank, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.alert_name_can_not_be_blank, Toast.LENGTH_LONG).show();
                 return;
             }
             confirmEditFormat(origFormat, newName);

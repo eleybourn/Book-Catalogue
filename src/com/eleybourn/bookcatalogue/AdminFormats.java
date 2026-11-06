@@ -104,7 +104,6 @@ public class AdminFormats extends BookCatalogueActivity {
                     if (!newFormat.isEmpty() && !newFormat.equals(format)) {
                         mDbHelper.globalReplaceFormat(format, newFormat);
                         fillData();
-                        Toast.makeText(AdminFormats.this, R.string.button_save, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.button_cancel, null)
@@ -173,7 +172,6 @@ public class AdminFormats extends BookCatalogueActivity {
                         mDbHelper.globalReplaceFormat(source, targetFormat);
                     }
                     fillData();
-                    Toast.makeText(AdminFormats.this, R.string.button_save, Toast.LENGTH_SHORT).show();
                 })
                 .setNegativeButton(R.string.button_cancel, null)
                 .show();

@@ -249,7 +249,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     }
 
     private void showCopyErrorToast() {
-        String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.alert_if_the_problem_persists);
+        String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.message_import_alert_if_the_problem_persists);
         Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
     }
 
@@ -527,7 +527,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
             List<ResolveInfo> list = getActivity().getPackageManager().queryIntentActivities(intent, 0);
             int size = list.size();
             if (size == 0) {
-                Toast.makeText(getActivity(), "Can not find image crop app", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.alert_can_not_find_image_crop_app, Toast.LENGTH_SHORT).show();
             } else {
                 // Grant each possible package for the intent access.
                 for (ResolveInfo resolveInfo : list) {
@@ -887,7 +887,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
 
             // If no size info, assume file bad and return appropriate icon
             if (opt.outHeight <= 0 || opt.outWidth <= 0) {
-                Toast.makeText(getActivity(), R.string.cover_corrupt, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.alert_cover_corrupt, Toast.LENGTH_LONG).show();
                 return;
             } else {
                 dialog.setTitle(getResources().getString(R.string.cover_detail));

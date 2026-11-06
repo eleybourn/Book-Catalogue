@@ -118,7 +118,7 @@ public class BookEditAuthorList extends BookEditObjectList<Author> {
                 }
             }
             if (foundMatch) {
-                Toast.makeText(BookEditAuthorList.this, getResources().getString(R.string.author_already_in_list), Toast.LENGTH_LONG).show();
+                Toast.makeText(BookEditAuthorList.this, getResources().getString(R.string.alert_author_already_in_list), Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -126,7 +126,7 @@ public class BookEditAuthorList extends BookEditObjectList<Author> {
             mAdapter.notifyDataSetChanged();
             t.setText("");
         } else {
-            Toast.makeText(BookEditAuthorList.this, getResources().getString(R.string.author_is_blank), Toast.LENGTH_LONG).show();
+            Toast.makeText(BookEditAuthorList.this, getResources().getString(R.string.alert_author_is_blank), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -148,7 +148,7 @@ public class BookEditAuthorList extends BookEditObjectList<Author> {
         saveButton.setOnClickListener(v -> {
             String newFamily = familyView.getText().toString().trim();
             if (newFamily.isEmpty()) {
-                Toast.makeText(BookEditAuthorList.this, R.string.author_is_blank, Toast.LENGTH_LONG).show();
+                Toast.makeText(BookEditAuthorList.this, R.string.alert_author_is_blank, Toast.LENGTH_LONG).show();
                 return;
             }
             String newGiven = givenView.getText().toString();

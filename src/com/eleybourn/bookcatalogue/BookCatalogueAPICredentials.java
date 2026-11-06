@@ -3,16 +3,9 @@ package com.eleybourn.bookcatalogue;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -75,7 +68,7 @@ public class BookCatalogueAPICredentials {
 
         // Ensure we are using an Activity context as required by SDKs for UI
         if (!(mContext instanceof android.app.Activity)) {
-            if (mListener != null) mListener.onCredentialError("Login failed: Activity context required.");
+            if (mListener != null) mListener.onCredentialError(mContext.getString(R.string.alert_api_login_failed));
             return;
         }
         android.app.Activity activity = (android.app.Activity) mContext;
@@ -101,7 +94,7 @@ public class BookCatalogueAPICredentials {
             if (apiAvailability.isUserResolvableError(resultCode)) {
                 Objects.requireNonNull(apiAvailability.getErrorDialog(activity, resultCode, 9000)).show();
             } else {
-                if (mListener != null) mListener.onCredentialError("Google Play Services are not available on this device.");
+                if (mListener != null) mListener.onCredentialError(activity.getString(R.string.alert_api_google_play_services_are_not_available));
             }
             return;
         }
@@ -110,7 +103,6 @@ public class BookCatalogueAPICredentials {
 
         // If client ID is missing, skip to legacy flow as GetGoogleIdOption requires it
         if (clientId == null || clientId.isEmpty()) {
-            Log.w("APICredentials", "Google Client ID is missing. Falling back to legacy sign-in.");
             mMainThreadHandler.post(this::tryLegacySignIn);
             return;
         }
@@ -151,7 +143,6 @@ public class BookCatalogueAPICredentials {
 
                         // If it's a cancellation, we just stop.
                         if (e instanceof GetCredentialCancellationException) {
-                            Log.d("APICredentials", "Credential Manager sign-in cancelled by user.");
                             return;
                         }
 
@@ -198,12 +189,12 @@ public class BookCatalogueAPICredentials {
                     try {
                         mLegacySignInLauncher.launch(client.getSignInIntent());
                     } catch (Exception e) {
-                        Log.e("APICredentials", "Failed to launch legacy sign-in", e);
-                        if (mListener != null) mListener.onCredentialError("Unable to start sign-in process.");
+                        Log.e("APICredentials", activity.getString(R.string.alert_api_unable_to_start_sign_in_process), e);
+                        if (mListener != null) mListener.onCredentialError(activity.getString(R.string.alert_api_unable_to_start_sign_in_process));
                     }
                 });
             } else if (mListener != null) {
-                mMainThreadHandler.post(() -> mListener.onCredentialError("Unable to find a Google account (Code L1). Please ensure you are signed into Google on this device and your device's date/time is set to Automatic."));
+                mMainThreadHandler.post(() -> mListener.onCredentialError(activity.getString(R.string.alert_api_unable_to_find_a_google_account)));
             }
         });
     }
@@ -245,19 +236,19 @@ public class BookCatalogueAPICredentials {
             String message;
             switch (statusCode) {
                 case 10: // DEVELOPER_ERROR
-                    message = "Sign-in configuration error (Code 10). Please ensure your device's date/time is correct and the app is correctly registered in Google Cloud.";
+                    message = mContext.getString(R.string.alert_api_login_config_error);
                     break;
                 case 7: // NETWORK_ERROR
-                    message = "Network error. Please check your internet connection.";
+                    message = mContext.getString(R.string.alert_no_connection);
                     break;
                 case 12500: // SIGN_IN_FAILED
-                    message = "Google Sign-In failed (Code 12500). Please ensure your Google Play Services are enabled and updated.";
+                    message = mContext.getString(R.string.alert_api_login_failed_play_services);
                     break;
                 case 12501: // SIGN_IN_CANCELLED
                     Log.d("APICredentials", "Legacy sign-in cancelled by user.");
                     return;
                 default:
-                    message = "Sign-in failed (Error " + statusCode + "). Please check your Google account settings.";
+                    message = mContext.getString(R.string.alert_api_login_failed_format, statusCode);
                     break;
             }
             if (mListener != null) {
@@ -273,11 +264,11 @@ public class BookCatalogueAPICredentials {
      */
     private void tryAccountManagerFallback() {
         if (!(mContext instanceof android.app.Activity)) {
-            if (mListener != null) mListener.onCredentialError("Login failed: Activity context required.");
+            if (mListener != null) mListener.onCredentialError(mContext.getString(R.string.alert_api_login_failed));
             return;
         }
         if (mLegacySignInLauncher == null) {
-            if (mListener != null) mListener.onCredentialError("Login failed: Sign-in launcher not initialized.");
+            if (mListener != null) mListener.onCredentialError(mContext.getString(R.string.alert_api_login_failed_launcher_not_initialized));
             return;
         }
 
@@ -289,7 +280,7 @@ public class BookCatalogueAPICredentials {
                 mLegacySignInLauncher.launch(intent);
             } catch (Exception e) {
                 Log.e("APICredentials", "Failed to launch AccountManager choice intent", e);
-                if (mListener != null) mListener.onCredentialError("Unable to start account selection process.");
+                if (mListener != null) mListener.onCredentialError(mContext.getString(R.string.alert_api_unable_to_start_account_selection));
             }
         });
     }
@@ -322,14 +313,14 @@ public class BookCatalogueAPICredentials {
             } catch (Exception e) {
                 Log.e("APICredentials", "Failed to create GoogleIdTokenCredential from data", e);
                 if (mListener != null) {
-                    mListener.onCredentialError("Invalid credential data received.");
+                    mListener.onCredentialError(mContext.getString(R.string.alert_api_invalid_credential_data));
                 }
             }
         } else {
             String unexpectedType = credential.getClass().getName();
             Log.e("APICredentials", "Unexpected credential type: " + unexpectedType);
             if (mListener != null) {
-                mListener.onCredentialError("Unexpected credential type: " + unexpectedType);
+                mListener.onCredentialError(mContext.getString(R.string.alert_api_unexpected_credential_type, unexpectedType));
             }
         }
         return "";
@@ -342,8 +333,8 @@ public class BookCatalogueAPICredentials {
         new MaterialAlertDialogBuilder(mContext)
                 .setTitle(R.string.title_enhance_search)
                 .setMessage(R.string.para_enhance_search)
-                .setPositiveButton("Yes, I'll help", (dialog, which) -> savePreferences(email, true))
-                .setNegativeButton("No, keep private", (dialog, which) -> savePreferences(email, false))
+                .setPositiveButton(R.string.button_enhance_search_opt_in, (dialog, which) -> savePreferences(email, true))
+                .setNegativeButton(R.string.button_enhance_search_opt_out, (dialog, which) -> savePreferences(email, false))
                 .setNeutralButton(R.string.button_cancel, null)
                 .setCancelable(true)
                 .show();

@@ -1108,7 +1108,7 @@ public class Utils {
     public static String formatFileSize(float space) {
         String sizeFmt;
         if (space < 3072) { // Show 'bytes' if < 3k
-            sizeFmt = BookCatalogueApp.getRes().getString(R.string.bytes);
+            sizeFmt = BookCatalogueApp.getRes().getString(R.string.progress_bytes);
         } else if (space < 250 * 1024) { // Show Kb if less than 250kB
             sizeFmt = BookCatalogueApp.getRes().getString(R.string.kilobytes);
             space = space / 1024;

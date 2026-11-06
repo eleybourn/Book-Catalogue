@@ -46,7 +46,6 @@ import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.ViewTagger;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class StandardDialogs {
@@ -58,7 +57,7 @@ public class StandardDialogs {
     public static void showConfirmUnsavedEditsDialog(final Activity a, final Runnable r) {
         new MaterialAlertDialogBuilder(a)
                 .setTitle(R.string.details_have_changed)
-                .setMessage(R.string.you_have_unsaved_changes)
+                .setMessage(R.string.message_you_have_unsaved_changes)
                 .setCancelable(false)
                 .setPositiveButton(R.string.exit, (dialog1, which) -> {
                     dialog1.dismiss();
@@ -102,7 +101,7 @@ public class StandardDialogs {
         String title;
         try (Cursor cur = dbHelper.fetchBookById(id)) {
             if (cur == null || !cur.moveToFirst())
-                return R.string.unable_to_find_book;
+                return R.string.alert_unable_to_find_book;
             int titleId = cur.getColumnIndex(CatalogueDBAdapter.KEY_TITLE);
             title = cur.getString(titleId);
             if (title == null || title.isEmpty())
@@ -124,7 +123,7 @@ public class StandardDialogs {
         }
 
         // Get the title		
-        String format = context.getResources().getString(R.string.really_delete_book);
+        String format = context.getResources().getString(R.string.message_really_delete_book);
 
         String message = String.format(format, title, authors);
         // Modern Builder approach

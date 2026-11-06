@@ -147,7 +147,7 @@ public class BookISBNSearch extends ActivityWithTasks {
             //do we have a network connection?
             boolean network_available = Utils.isNetworkAvailable(this);
             if (!network_available) {
-                Toast.makeText(this, R.string.no_connection, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.alert_no_connection, Toast.LENGTH_LONG).show();
                 finish();
                 return;
             }
@@ -339,7 +339,7 @@ public class BookISBNSearch extends ActivityWithTasks {
 
     private void getAlertDialog() {
         new MaterialAlertDialogBuilder(this)
-                .setMessage(R.string.bad_scanner)
+                .setMessage(R.string.alert_bad_scanner)
                 .setTitle(R.string.install_scan_title)
                 .setPositiveButton(R.string.button_cancel, (dialog1, which) -> {
                     dialog1.dismiss();
@@ -402,9 +402,9 @@ public class BookISBNSearch extends ActivityWithTasks {
                 if (!IsbnUtils.isValid(isbn) && (!allowAsin || !AsinUtils.isValid(isbn))) {
                     int msg;
                     if (allowAsin) {
-                        msg = R.string.x_is_not_a_valid_isbn_or_asin;
+                        msg = R.string.alert_x_is_not_a_valid_isbn_or_asin;
                     } else {
-                        msg = R.string.x_is_not_a_valid_isbn;
+                        msg = R.string.alert_x_is_not_a_valid_isbn;
                     }
                     Toast.makeText(this, getString(msg, isbn), Toast.LENGTH_LONG).show();
                     if (mMode == MODE_SCAN) {
@@ -490,7 +490,7 @@ public class BookISBNSearch extends ActivityWithTasks {
                 mIsbn = "";
             } catch (Exception e) {
                 Logger.logError(e);
-                Toast.makeText(this, R.string.search_fail, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.alert_search_fail, Toast.LENGTH_LONG).show();
                 finish();
             }
         } else {

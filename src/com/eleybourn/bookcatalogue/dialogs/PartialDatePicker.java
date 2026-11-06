@@ -311,10 +311,10 @@ public class PartialDatePicker extends FrameLayout {
     public boolean isDateValid() {
         // Ensure the date is 'hierarchically valid'; require year, if month is non-null, require month if day non-null
         if (mDay != null && mDay > 0 && (mMonth == null || mMonth == 0)) {
-            Toast.makeText(mContext, R.string.if_day_is_specified_month_and_year_must_be, Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, R.string.alert_if_day_is_specified_month_and_year_must_be, Toast.LENGTH_LONG).show();
             return false;
         } else if (mMonth != null && mMonth > 0 && mYear == null) {
-            Toast.makeText(mContext, R.string.if_month_is_specified_year_must_be, Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, R.string.alert_if_month_is_specified_year_must_be, Toast.LENGTH_LONG).show();
             return false;
         }
         return true;

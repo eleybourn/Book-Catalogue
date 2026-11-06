@@ -170,7 +170,7 @@ public class BackupManager {
 			}
 
 		};
-		SimpleTaskQueueProgressFragment.runTaskWithProgress(context.getSupportFragmentManager(), R.string.backing_up_ellipsis, task, false, taskId);
+		SimpleTaskQueueProgressFragment.runTaskWithProgress(context.getSupportFragmentManager(), R.string.label_backing_up, task, false, taskId);
 		return requestedFile;
 	}
 
@@ -213,6 +213,6 @@ public class BackupManager {
 			}
 		};
 		SimpleTaskQueueProgressFragment.runTaskWithProgress(context.getSupportFragmentManager(),
-				R.string.importing_ellipsis, task, false, taskId);
+				R.string.title_importing, task, false, taskId);
 	}
 }

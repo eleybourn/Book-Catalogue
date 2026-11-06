@@ -7,7 +7,7 @@
     <string name="alert_cancelled">Geannuleerd</string>
     <string name="alert_export_failed_sdcard">Export mislukt - kon niet naar de SD kaart wegschrijven</string>
     <string name="alert_hints_have_been_reset">Aanwijzingen zijn hersteld</string>
-    <string name="alert_if_the_problem_persists">Als het probleem aanhoud, maak dan contact met ondersteuning via Help in het hoofdmenu.</string>
+    <string name="message_import_alert_if_the_problem_persists">Als het probleem aanhoud, maak dan contact met ondersteuning via Help in het hoofdmenu.</string>
     <string name="alert_import">Waarschuwing. Het importeren van gegevens kan bestaande boekgegevens onbedoeld bijwerken met nieuwe informatie als de UUID-kolom niet aanwezig is en de id in het import-bestand dezelfde is als het bestaande id. Dit is meestal geen bezwaar als u een veld in een exportbestand heeft veranderd. Als u een nieuwe boek item heeft gemaakt, of iemand anders zijn boeken importeert, zorg dan dat het UUID veld aanwezig is of dat het id veld leeg is.</string>
     <string name="alert_import_failed_is_location_correct">FOUT: Import van gegevens (van SD kaart) mislukt. Staat het bestand op de juiste plaats?</string>
     <!-- Descriptive text associated with import options not available with older archives -->
@@ -23,25 +23,25 @@
 
     <string name="app_name">Book Catalogue</string>
 
-    <string name="author_already_in_list">Auteur staat al in de lijst</string>
-    <string name="author_is_blank">Auteurveld is leeg</string>
-    <string name="author_required">Er moet tenminste één auteur worden vermeld</string>
+    <string name="alert_author_already_in_list">Auteur staat al in de lijst</string>
+    <string name="alert_author_is_blank">Auteurveld is leeg</string>
+    <string name="alert_author_required">Er moet tenminste één auteur worden vermeld</string>
 
     <string name="alert_automatic_population_failed">Automatisch titels invullen mislukt</string>
 
     <string name="available">Beschikbaar</string>
 
     <!-- Showed in progress dialog when an import starts -->
-    <string name="backing_up_ellipsis">Aan \'t Back-uppen…</string>
+    <string name="label_backing_up">Aan \'t Back-uppen…</string>
 
-    <string name="bad_scanner">Het lijkt er op dat de door u gebruikt streepjescode scanner app niet compatibel is met Book Catalogue. Wij kunnen de Zxing streepjescode scanner application aanbevelen. als deze al is geïnstalleerd raden we aan deze te deïnstalleren en daarna weer opnieuw te installeren.</string>
+    <string name="alert_bad_scanner">Het lijkt er op dat de door u gebruikt streepjescode scanner app niet compatibel is met Book Catalogue. Wij kunnen de Zxing streepjescode scanner application aanbevelen. als deze al is geïnstalleerd raden we aan deze te deïnstalleren en daarna weer opnieuw te installeren.</string>
 
     <string name="book">Boek</string>
     <string name="book_catalogue_startup">BookCatalogue Opstart</string>
     <string name="book_details_readonly_by">door</string>
     <string name="book_details_readonly_loaned_to">Uitgeleend aan %1$s</string>
     <string name="book_details_readonly_pages">%1$s pagina\'s</string>
-    <string name="book_not_found">Het gescande boek is niet gevonden. U kunt de juiste streepjescode aan de achterkant van de omslag vinden. Vul anders de gegevens handmatig in.</string>
+    <string name="alert_book_not_found">Het gescande boek is niet gevonden. U kunt de juiste streepjescode aan de achterkant van de omslag vinden. Vul anders de gegevens handmatig in.</string>
 
     <string name="brackets">(%1$s)</string>
 
@@ -59,13 +59,13 @@
     <string name="button_send_info">Zend informatie</string>
     <string name="button_update">Bijwerken</string>
 
-    <string name="bytes">%.0f bytes</string>
+    <string name="progress_bytes">%.0f bytes</string>
 
-    <string name="cancelled_info">Geannuleerd - %s</string>
+    <string name="alert_cancelled_info">Geannuleerd - %s</string>
 
     <string name="cancelling">Aan \'t Annuleren</string>
 
-    <string name="cannot_edit_system">U kunt de systeemwaarden niet bewerken</string>
+    <string name="alert_cannot_edit_system">U kunt de systeemwaarden niet bewerken</string>
 
     <string name="changed_author_how_apply">U heeft de auteursnaam veranderd van:\n  \'%1$s\' naar \n  \'%2$s\'\nHoe wilt u deze verandering toepassen?\nNB: De keuze \'%3$s\' wordt onmiddelijk toegepast.</string>
     <string name="changed_series_how_apply">U heeft de serie veranderd van:\n  \'%1$s\' naar \n  \'%2$s\'\nHoe wilt u deze verandering doorvoeren?\nNB: De keuze \'Alle Boeken\' wordt onmiddelijk toegepast.</string>
@@ -89,17 +89,17 @@
 
     <string name="could_not_copy_image">Kon afbeelding niet kopiëren</string>
 
-    <string name="cover_corrupt">Omslagafbeelding is niet geldig</string>
+    <string name="alert_cover_corrupt">Omslagafbeelding is niet geldig</string>
     <string name="cover_detail">Omslagafbeelding detail</string>
     <string name="cover_options_cc_ellipsis">Boekomslag opties…</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
-    <string name="covers_progress">%1$d boekomslagen verwerkt (%2$d missend)</string>
+    <string name="progress_covers">%1$d boekomslagen verwerkt (%2$d missend)</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$d boekomslagen verwerkt (%2$d missend, %3$d overgeslagen)</string>
+    <string name="progress_covers_increment">%1$d boekomslagen verwerkt (%2$d missend, %3$d overgeslagen)</string>
 
     <string name="crash_dialog_ok_toast">Dank u!</string>
     <string name="crash_dialog_text">Het lijkt er op dat BookCatalogue is gecrasht. Beschrijf indien mogelijk hieronder wat de oorzaak kan zijn en druk op "OK" om ons een e-mail te sturen over deze crash. U kunt het bericht inzien voordat het wordt verzonden.</string>
@@ -114,7 +114,7 @@
     <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Verzamelde foutopsporingsgegevens</string>
 
-    <string name="delete_1st_bs">De eerste boekenplank kan niet verwijderd worden</string>
+    <string name="alert_delete_1st_bookshelf">De eerste boekenplank kan niet verwijderd worden</string>
     <string name="delete_event">Verwijder gebeurtenis</string>
     <string name="delete_series">Verwijderen serie</string>
     <string name="delete_style">Stijl verwijderen</string>
@@ -140,7 +140,7 @@
     <!-- Begin: Added/Updated in 5.1.0 -->
     <!--  Explanatory text for 'import' dialogue -->
     <string name="description_import_books_blurb">De boeken in dit archief zullen worden geïmporteerd. Tik op één van de twee opties om de import te starten of druk op \'terug\' om te annuleren:</string>
-    <string name="description_import_complete">Import Compleet</string>
+    <string name="alert_import_complete">Import Compleet</string>
     <!-- Description of the 'import new & changed' option -->
     <string name="description_new_and_changed_books_blurb">Alleen nieuwe boeken importeren of boeken die onlangs zijn bijgewerkt in het archief. Dit is handig bij het synchroniseren van twee apparaten.</string>
     <string name="description_no_bookshelves">U heef nog geen boekenplank aangemaakt. Voeg er een toe via het menu onderaan dit scherm.</string>
@@ -233,14 +233,14 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="hint_view_only_help">Dit is het alleen-lezen detailoverzicht. U kunt naar link en rechts vegen om naar andere boeken te gaan en u kunt het boek bewerken via het opties menu door gebruik te maken van de menuknop of overvloeiend menu-pictogram.
 </string>
 
-    <string name="if_day_is_specified_month_and_year_must_be">Als de dag is gespecificeerd dan moet ook de maand en het jaar ingevuld worden.</string>
-    <string name="if_month_is_specified_year_must_be">Als de maand is gespecificeerd moet ook het jaar worden ingevuld.</string>
+    <string name="alert_if_day_is_specified_month_and_year_must_be">Als de dag is gespecificeerd dan moet ook de maand en het jaar ingevuld worden.</string>
+    <string name="alert_if_month_is_specified_year_must_be">Als de maand is gespecificeerd moet ook het jaar worden ingevuld.</string>
 
     <!-- Displayed when an archive operation fails -->
-    <string name="import_failed">Import mislukt.</string>
+    <string name="message_import_failed">Import mislukt.</string>
 
     <!-- Showed in progress dialog when an import starts -->
-    <string name="importing_ellipsis">Aan \'t Importeren…</string>
+    <string name="title_importing">Aan \'t Importeren…</string>
 
     <string name="install_scan_title">Streepjescode Scanner Installeren</string>
 
@@ -414,7 +414,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
         <item quantity="other">%1$s omslagen</item>
     </plurals>
     <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$d toegevoegd, %2$d bijgewerkt</string>
+    <string name="progress_n_created_m_updated">%1$d toegevoegd, %2$d bijgewerkt</string>
     <!-- Short text for 'n stars' -->
     <plurals name="n_stars" tools:ignore="UnusedQuantity">
         <item quantity="zero">%1$s sterren</item>
@@ -422,7 +422,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
         <item quantity="other">%1$s sterren</item>
     </plurals>
 
-    <string name="name_can_not_be_blank">Naamveld mag niet leeg zijn</string>
+    <string name="alert_name_can_not_be_blank">Naamveld mag niet leeg zijn</string>
 
     <string name="new_in_42"><![CDATA[
     <p><b>New in 4.2</b>\n\n
@@ -587,7 +587,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="new_style">Nieuwe stijl</string>
 
     <string name="no_author">(geen auteur)</string>
-    <string name="no_connection">Geen Internet verbinding beschikbaar.</string>
+    <string name="alert_no_connection">Geen Internet verbinding beschikbaar.</string>
     <string name="no_genre">(geen genre)</string>
     <string name="no_publisher">(geen uitgever)</string>
     <string name="no_series">(geen series)</string>
@@ -595,7 +595,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <string name="not_set">Niet Ingevuld</string>
 
-    <string name="num_books_searched">%s Boeken gezocht</string>
+    <string name="progress_num_books_searched">%s Boeken gezocht</string>
 
     <string name="optimizing_databases">Databases optimaliseren…</string>
 
@@ -665,7 +665,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="para_translators">BookCatalogue is het resultaat van de inspanning van vele personen en zou niet zo\'n grote verspreiding \nkennen zonder de genereuse hulp van vrijwillige vertalers: %1$s (als we iemand zijn vergeten, laat het ons aub weten).</string>
 
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_readable">Controleer aub of de SD Kaart toegankelijk is.</string>
+    <string name="message_import_please_check_sd_readable">Controleer aub of de SD Kaart toegankelijk is.</string>
 
     <string name="populate_anthology_titles">Automatisch titels invullen (EXPERIMENTEEL)</string>
 
@@ -705,7 +705,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <string name="preferred_styles">Voorkeursstijlen</string>
 
-    <string name="really_delete_book">Dit zal het boek met de titel \'%1$s\' door %2$s compleet verwijderen. Weet u zeker dat u door wilt gaan?</string>
+    <string name="message_really_delete_book">Dit zal het boek met de titel \'%1$s\' door %2$s compleet verwijderen. Weet u zeker dat u door wilt gaan?</string>
     <string name="really_delete_series">Wilt u werkelijk de serie \'%s\'verwijderen?\n\nDe boeken zelf worden niet verwijderd.\n\nOverweeg de serie te bewerken en de serienaam te veranderen om deze gegevens te behouden</string>
 
     <string name="rebuilding_search_index">Zoekindex opnieuw opbouwen…</string>
@@ -715,8 +715,8 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <string name="scope_of_change">Omvang van de verandering</string>
 
-    <string name="search_exception">Zoeken mislukt terwijl %1$s: %2$s</string>
-    <string name="search_fail">Het zoeken naar het boek is mislukt. Controleer uw netwerk instellingen.</string>
+    <string name="alert_search_exception">Zoeken mislukt terwijl %1$s: %2$s</string>
+    <string name="alert_search_fail">Het zoeken naar het boek is mislukt. Controleer uw netwerk instellingen.</string>
 
     <!-- End: Added/Updated in 5.2.2 -->
     <!-- Begin: Added/Updated in [Next Version] DO NOT TRANSLATE YET! MAY CHANGE OR BE DELETED! -->
@@ -727,8 +727,8 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="select_based_on_read_status">Selecteer op \'Gelezen\' status</string>
     <string name="select_style">Selecteer stijl</string>
 
-    <string name="series_already_in_list">Serie staat al in de lijst</string>
-    <string name="series_is_blank">Serieveld is leeg</string>
+    <string name="alert_series_already_in_list">Serie staat al in de lijst</string>
+    <string name="alert_series_is_blank">Serieveld is leeg</string>
 
     <string name="set_series">Invullen Serie…</string>
 
@@ -758,7 +758,7 @@ Zie "Meer voorkeuren" voor de relevante instelling.
 
     <string name="system_locale">Systeem taal</string>
 
-    <string name="the_title_already_exists">De titel bestaat al</string>
+    <string name="alert_the_title_already_exists">De titel bestaat al</string>
 
     <string name="thing_must_not_be_blank">%1$s mag niet leeg zijn</string>
 
@@ -779,11 +779,11 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="title_manage_bookshelves">Beheer boekenplanken</string>
     <string name="title_manage_fields">Zichtbaarheid velden beheren</string>
     <string name="title_other_preferences">Meer voorkeuren</string>
-    <string name="title_required">Het titelveld mag niet leeg zijn</string>
+    <string name="alert_title_required">Het titelveld mag niet leeg zijn</string>
     <string name="title_select_fields_to_update">Selecteer bij te werken velden</string>
     <string name="title_settings">Administratie en voorkeuren</string>
 
-    <string name="unable_to_find_book">Kan gespecificeerd boek niet vinden</string>
+    <string name="alert_unable_to_find_book">Kan gespecificeerd boek niet vinden</string>
 
     <string name="unknown">Onbekend</string>
     <string name="unknown_uc">ONBEKEND</string>
@@ -821,9 +821,9 @@ Zie "Meer voorkeuren" voor de relevante instelling.
     <string name="validator_real_expected">Verwachtte een echt nummer voor \'%s\'</string>
     <string name="validator_unable_to_get_value">Kan de waarde voor \'%s\' niet krijgen</string>
 
-    <string name="x_is_not_a_valid_isbn">%1$s is geen geldige ISBN</string>
-    <string name="x_is_not_a_valid_isbn_or_asin">%1$s is geen geldig ISBN of ASIN</string>
+    <string name="alert_x_is_not_a_valid_isbn">%1$s is geen geldige ISBN</string>
+    <string name="alert_x_is_not_a_valid_isbn_or_asin">%1$s is geen geldig ISBN of ASIN</string>
     <string name="x_of_y">%1$d van %2$d</string>
 
-    <string name="you_have_unsaved_changes">U heeft niet opgeslagen veranderingen. Als u nu afsluit gaan die verloren.</string>
+    <string name="message_you_have_unsaved_changes">U heeft niet opgeslagen veranderingen. Als u nu afsluit gaan die verloren.</string>
 </resources>

@@ -176,7 +176,7 @@ public class BookEditAnthology extends BookEditFragmentAbstract {
                 mAuthorText.setText("");
                 mEditManager.setDirty(true);
             } catch (AnthologyTitleExistsException e) {
-                Toast.makeText(getActivity(), R.string.the_title_already_exists, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.alert_the_title_already_exists, Toast.LENGTH_LONG).show();
             }
         });
 

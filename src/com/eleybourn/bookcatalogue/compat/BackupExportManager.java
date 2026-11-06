@@ -127,7 +127,7 @@ public class BackupExportManager
         } else if (!fragment.getSuccess()) {
             msg = activity.getString(R.string.alert_backup_failed)
                     + " " + activity.getString(R.string.alert_please_check_sd_writable)
-                    + "\n\n" + activity.getString(R.string.alert_if_the_problem_persists);
+                    + "\n\n" + activity.getString(R.string.message_import_alert_if_the_problem_persists);
         } else {
             msg = activity.getString(R.string.para_archive_complete_details,
                     activity.getString(R.string.fragment_selected_thing),

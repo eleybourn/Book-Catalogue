@@ -395,7 +395,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
         BooklistStyles styles = BooklistStyles.getAllStyles(mDb);
         LibraryStyle style = styles.findCanonical(name);
         if (style == null) {
-            Toast.makeText(this, "Could not find appropriate list", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.alert_could_not_find_appropriate_list, Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -1183,7 +1183,7 @@ public class Library extends BookCatalogueActivity implements BooklistChangeList
                 displayList(mTempList, mTargetRows);
             } else if (e != null) {
                 Logger.logError(e, "Failed to build book list");
-                Toast.makeText(Library.this, R.string.search_fail, Toast.LENGTH_LONG).show();
+                Toast.makeText(Library.this, R.string.alert_search_fail, Toast.LENGTH_LONG).show();
             }
             mTempList = null;
         }

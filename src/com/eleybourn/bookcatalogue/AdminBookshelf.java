@@ -158,7 +158,7 @@ public class AdminBookshelf extends BookCatalogueActivity {
         if (item.getItemId() == DELETE_ID) {
             if (mSelectedBookshelfForContext != null) {
                 if (mSelectedBookshelfForContext.id == 1) {
-                    Toast.makeText(this, R.string.delete_1st_bs, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.alert_delete_1st_bookshelf, Toast.LENGTH_LONG).show();
                 } else {
                     mViewModel.deleteBookshelf(mSelectedBookshelfForContext.id);
                 }

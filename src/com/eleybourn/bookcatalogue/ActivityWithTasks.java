@@ -303,9 +303,6 @@ abstract public class ActivityWithTasks extends BookCatalogueActivity {
     private final OnKeyListener mDialogKeyListener = (dialog, keyCode, event) -> {
         if (event.getAction() == KeyEvent.ACTION_UP) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
-                // Toasting a message here makes the app look less responsive, because
-                // the final 'Cancelled...' message is delayed too much.
-                //Toast.makeText(ActivityWithTasks.this, R.string.cancelling, Toast.LENGTH_LONG).show();
                 cancelAndUpdateProgress();
                 return true;
             }

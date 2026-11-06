@@ -408,7 +408,7 @@ public class LibraryMultitypeHandler implements MultitypeListHandler {
         } else if (itemId == R.id.MENU_EDIT_SERIES) {
             long id = rowView.getSeriesId();
             if (id == -1) {
-                Toast.makeText(context, R.string.cannot_edit_system, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.alert_cannot_edit_system, Toast.LENGTH_LONG).show();
             } else {
                 Series s = dba.getSeriesById(id);
                 LibraryEditSeriesDialog d = new LibraryEditSeriesDialog(context, dba, () -> {

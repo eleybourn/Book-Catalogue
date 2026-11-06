@@ -56,7 +56,7 @@ public class BackupImportManager
 								// Each format should provide a validator of some kind
 								if (!bkp.isValid()) {
 									Toast.makeText(activity,
-												   R.string.invalid_backup_file,
+												   R.string.alert_invalid_backup_file,
 												   Toast.LENGTH_LONG).show();
 									start();
 									return;
@@ -104,12 +104,12 @@ public class BackupImportManager
 		if (fragment.isCancelled()) {
 			msg = activity.getString(R.string.alert_cancelled);
 		} else if (!fragment.getSuccess()) {
-			msg = activity.getString(R.string.import_failed)
-					+ " " + activity.getString(R.string.please_check_sd_readable)
-					+ "\n\n" + activity.getString(R.string.alert_if_the_problem_persists);
+			msg = activity.getString(R.string.message_import_failed)
+					+ " " + activity.getString(R.string.message_import_please_check_sd_readable)
+					+ "\n\n" + activity.getString(R.string.message_import_alert_if_the_problem_persists);
 
 		} else {
-			msg = activity.getString(R.string.description_import_complete);
+			msg = activity.getString(R.string.alert_import_complete);
 		}
 		MessageDialogFragment frag = MessageDialogFragment.newInstance(
 				ID.MSG_ID_BACKUP_IMPORT_COMPLETE,

@@ -30,7 +30,6 @@ import com.eleybourn.bookcatalogue.AdminUpdateFromInternet.FieldUsages.Usages;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
 import com.eleybourn.bookcatalogue.data.Author;
 import com.eleybourn.bookcatalogue.data.Series;
-import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
 
 import java.io.File;
@@ -278,9 +277,9 @@ public class UpdateThumbnailsThread extends ManagedTask {
             mManager.doProgress(null);
 
             // Make the final message
-            mFinalMessage = String.format(getString(R.string.num_books_searched), "" + counter);
+            mFinalMessage = String.format(getString(R.string.progress_num_books_searched), "" + counter);
             if (isCancelled())
-                mFinalMessage = String.format(BookCatalogueApp.getRes().getString(R.string.cancelled_info), mFinalMessage);
+                mFinalMessage = String.format(BookCatalogueApp.getRes().getString(R.string.alert_cancelled_info), mFinalMessage);
         }
     }
 
@@ -301,7 +300,7 @@ public class UpdateThumbnailsThread extends ManagedTask {
         if (cancelled) {
             cancelTask();
         } else if (bookData == null) {
-            mManager.doToast("Unable to find book details");
+            mManager.doToast(mContext.getString(R.string.alert_unable_to_find_book_details));
         }
 
         mNewBookData = bookData;

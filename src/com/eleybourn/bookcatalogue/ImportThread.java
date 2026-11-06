@@ -73,7 +73,7 @@ public class ImportThread extends ManagedTask {
             if (isCancelled()) {
                 doToast(getString(R.string.alert_cancelled));
             } else {
-                doToast(getString(R.string.description_import_complete));
+                doToast(getString(R.string.alert_import_complete));
             }
         } catch (IOException e) {
             doToast(BookCatalogueApp.getRes().getString(R.string.alert_import_failed_is_location_correct));

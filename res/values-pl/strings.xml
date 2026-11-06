@@ -12,13 +12,13 @@
 
     <string name="app_name">Katalog książek</string>
 
-    <string name="author_already_in_list">Autor jest już na liście</string>
-    <string name="author_is_blank">Pole autor jest puste</string>
-    <string name="author_required">Przynajmniej jeden autor jest wymagany</string>
+    <string name="alert_author_already_in_list">Autor jest już na liście</string>
+    <string name="alert_author_is_blank">Pole autor jest puste</string>
+    <string name="alert_author_required">Przynajmniej jeden autor jest wymagany</string>
 
     <string name="alert_automatic_population_failed">Automatyczne obsadzanie pozycji antologii nie powiodło się</string>
 
-    <string name="book_not_found">Zeskanowana książka nie została odnaleziona. Spóbuj ponownie z kodem, który może znajdować się w środku okładki lub wprowadź dane ręcznie.</string>
+    <string name="alert_book_not_found">Zeskanowana książka nie została odnaleziona. Spóbuj ponownie z kodem, który może znajdować się w środku okładki lub wprowadź dane ręcznie.</string>
 
     <string name="button_anthology_add">Dodaj</string>
     <string name="button_cancel">Anuluj</string>
@@ -32,13 +32,13 @@
     <string name="button_send_info">Wyślij</string>
     <string name="button_update">Aktualizuj</string>
 
-    <string name="bytes">%.0f bytes</string>
+    <string name="progress_bytes">%.0f bytes</string>
 
-    <string name="cancelled_info">Przerwano - %s</string>
+    <string name="alert_cancelled_info">Przerwano - %s</string>
 
     <string name="cancelling">Przerywam..</string>
 
-    <string name="cannot_edit_system">Nie możesz edytować danych systemowych</string>
+    <string name="alert_cannot_edit_system">Nie możesz edytować danych systemowych</string>
 
     <string name="changed_author_how_apply">Zmieniłeś autora z :\n  \'%1$s\' na \n  \'%2$s\'\nJak chcesz zastosować tę zmianę?\nUwaga: Zmiana \'%3$s\' zostanie wykonana natychmiast.</string>
     <string name="changed_series_how_apply">Zmieniłeś serię z:\n  \'%1$s\' na \n  \'%2$s\'\nJak chcesz zastosować tę zmianę?\nNote: Wybrane \'wszystkie książki\' będą zmienione natychmiast.</string>
@@ -54,14 +54,14 @@
 
     <string name="contact2">philip.warner@rhyme.com.au</string>
 
-    <string name="cover_corrupt">Okładka jest uszkodzona</string>
+    <string name="alert_cover_corrupt">Okładka jest uszkodzona</string>
     <string name="cover_detail">Szczegóły okładki</string>
 
     <string name="debug_body">Poświęć chwilę na krótki opis problemu, z którym się zetknąłeś.</string>
     <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Zbieranie informacji o problemach technicznych</string>
 
-    <string name="delete_1st_bs">Nie można usunąć pierwszej półki</string>
+    <string name="alert_delete_1st_bookshelf">Nie można usunąć pierwszej półki</string>
     <string name="delete_series">Usuń serię</string>
 
     <string name="description_no_bookshelves">Nie utworzyłeś jeszcze żadnej półki. Dodaj jakąś przy pomocy menu na dole ekranu.</string>
@@ -160,7 +160,7 @@
 
     <string name="not_set">Nie wybrany(a)</string>
 
-    <string name="num_books_searched">%s książek przeszukano</string>
+    <string name="progress_num_books_searched">%s książek przeszukano</string>
 
     <string name="option_all_books">Wszystkie książki</string>
     <string name="option_format1">Miękka okładka</string>
@@ -189,19 +189,19 @@
 
     <string name="populate_anthology_titles">Automatycznie obsadź pozycje antologii(EKSPERYMENTALNIE)</string>
 
-    <string name="really_delete_book">Zamierzasz usunąć książkę o tytule \'%1$s\' autora %2$s. Czy chcesz kontynuować?</string>
+    <string name="message_really_delete_book">Zamierzasz usunąć książkę o tytule \'%1$s\' autora %2$s. Czy chcesz kontynuować?</string>
     <string name="really_delete_series">Czy na pewno usunąć serię \'%s\'?\n\nKsiążki nie będą usuwane.\n\nRozważ zmianę nazwy serii by zachować te dane</string>
 
     <string name="scope_of_change">Zakres zmiany</string>
 
-    <string name="search_exception">Wyszukiwanie nie powiodło się: %1$s: %2$s</string>
-    <string name="search_fail">Wyszukiwanie książki nie powiodło się. Sprawdź połączenie z siecią.</string>
+    <string name="alert_search_exception">Wyszukiwanie nie powiodło się: %1$s: %2$s</string>
+    <string name="alert_search_fail">Wyszukiwanie książki nie powiodło się. Sprawdź połączenie z siecią.</string>
 
     <string name="searching_book_catalogue">Przeszukiwanie book-catalogue.com</string>
     <string name="searching_google_books">Przeszukiwanie Google Books</string>
 
-    <string name="series_already_in_list">Seria (tom) jest na liście</string>
-    <string name="series_is_blank">Pole serii(tomu) jest puste</string>
+    <string name="alert_series_already_in_list">Seria (tom) jest na liście</string>
+    <string name="alert_series_is_blank">Pole serii(tomu) jest puste</string>
 
     <string name="set_series">Ustaw serię (tom)…</string>
 
@@ -216,10 +216,10 @@
     <string name="title_isbn_search">Katalog książek: Szukj wg ISBN</string>
     <string name="title_manage_bookshelves">Zarządzaj półkami</string>
     <string name="title_manage_fields">Dostosuj widoczność pól</string>
-    <string name="title_required">Tytuł nie może by pusty</string>
+    <string name="alert_title_required">Tytuł nie może by pusty</string>
     <string name="title_select_fields_to_update">Wybierz pola do aktualizacji</string>
 
-    <string name="unable_to_find_book">Nie mogę znaleźć tej książki</string>
+    <string name="alert_unable_to_find_book">Nie mogę znaleźć tej książki</string>
 
     <string name="unsaved_edits">Nie zapisałeś zmian. Czy na pewno chcesz kontynuować?</string>
     <string name="unsaved_edits_title">Niezapisane zmiany</string>

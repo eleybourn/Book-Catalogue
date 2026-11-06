@@ -147,7 +147,7 @@ public class BookCatalogueAPI implements SimpleTask {
         BookCataloguePreferences prefs = new BookCataloguePreferences();
         if (prefs.isSubscribed() && prefs.isOnlineSyncEnabled() && !prefs.getAccountApiToken().isEmpty()) {
             final Context appContext = context.getApplicationContext();
-            Toast.makeText(appContext, "Checking online backup status...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(appContext, R.string.alert_api_checking_online_backup_status, Toast.LENGTH_SHORT).show();
             new BookCatalogueAPI(appContext, REQUEST_BACKUP_ALL, new ApiListener() {
                 @Override
                 public void onApiProgress(String request, int current, int total, String message) {}
@@ -158,7 +158,7 @@ public class BookCatalogueAPI implements SimpleTask {
                 @Override
                 public void onApiComplete(String request, String message) {
                     if (REQUEST_BACKUP_ALL.equals(request)) {
-                        Toast.makeText(appContext, "Backup check complete", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(appContext, R.string.alert_api_backup_check_complete, Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -1479,16 +1479,16 @@ public class BookCatalogueAPI implements SimpleTask {
 
                             JSONArray anthologiesJson = bookJson.optJSONArray("anthologies");
                             if (anthologiesJson != null && anthologiesJson.length() > 0) {
-                                for (int anth_i = 0; anth_i < anthologiesJson.length(); anth_i++) {
+                                for (int anthology_i = 0; anthology_i < anthologiesJson.length(); anthology_i++) {
                                     try {
-                                        JSONObject anthJson = anthologiesJson.getJSONObject(anth_i);
-                                        String aTitle = getStringOrEmpty(anthJson, "title");
+                                        JSONObject anthologyJson = anthologiesJson.getJSONObject(anthology_i);
+                                        String aTitle = getStringOrEmpty(anthologyJson, "title");
                                         if (aTitle.isEmpty()) {
-                                            aTitle = getStringOrEmpty(anthJson, "anthology_title");
+                                            aTitle = getStringOrEmpty(anthologyJson, "anthology_title");
                                         }
                                         String aAuthor = "";
-                                        if (anthJson.has("author")) {
-                                            Object aAuthorObj = anthJson.get("author");
+                                        if (anthologyJson.has("author")) {
+                                            Object aAuthorObj = anthologyJson.get("author");
                                             if (aAuthorObj instanceof JSONObject) {
                                                 JSONObject aAuthorJson = (JSONObject) aAuthorObj;
                                                 String family = getStringOrEmpty(aAuthorJson, "family_name");
@@ -1499,7 +1499,7 @@ public class BookCatalogueAPI implements SimpleTask {
                                             }
                                         }
                                         if (aAuthor.isEmpty()) {
-                                            aAuthor = getStringOrEmpty(anthJson, "author_name");
+                                            aAuthor = getStringOrEmpty(anthologyJson, "author_name");
                                         }
                                         if (!aTitle.isEmpty()) {
                                             db.createAnthologyTitle(bcid, aAuthor, aTitle, true, false);

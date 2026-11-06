@@ -383,7 +383,7 @@ public class CsvImporter {
 
 				long now = System.currentTimeMillis();
 				if ( (now - lastUpdate) > 200 && !listener.isCancelled()) {
-					listener.onProgress(title + "\n(" + BookCatalogueApp.getRes().getString(R.string.n_created_m_updated, nCreated, nUpdated) + ")", row);
+					listener.onProgress(title + "\n(" + BookCatalogueApp.getRes().getString(R.string.progress_n_created_m_updated, nCreated, nUpdated) + ")", row);
 					lastUpdate = now;
 				}
 

@@ -7,7 +7,7 @@
     <string name="alert_cancelled">Abgebrochen</string>
     <string name="alert_export_failed_sdcard">Der Export ist fehlgeschlagen. Auf den Datenspeicher kann nicht geschrieben werden</string>
     <string name="alert_hints_have_been_reset">Hinweise wurden zurückgesetzt</string>
-    <string name="alert_if_the_problem_persists">Wenn das Problem weiterhin besteht, kontaktieren Sie den Support über das Menü "Hilfe"</string>
+    <string name="message_import_alert_if_the_problem_persists">Wenn das Problem weiterhin besteht, kontaktieren Sie den Support über das Menü "Hilfe"</string>
     <string name="alert_import">Warnung. Der Import von Daten kann Informationen von bestehenden Büchern überschreiben, wenn die ID der Importdatei mit der bestehenden ID übereinstimmt. Normalerweise ist es kein Problem wenn ein Feld in der exportierten Datei geändert wurde. Bitte stellen Sie bei einem neuen Buch sicher, dass das ID-Feld leer ist.</string>
     <string name="alert_import_failed_is_location_correct">FEHLER: Der Import ist fehlgeschlagen. Bitte kontaktieren Sie den Support.</string>
     <!-- Descriptive text associated with import options not available with older archives -->
@@ -24,23 +24,23 @@
 
     <string name="app_name">Book Catalogue</string>
 
-    <string name="author_already_in_list">Der Autor befindet sich bereits in der Liste</string>
-    <string name="author_is_blank">Das Feld des Autors ist leer</string>
-    <string name="author_required">Es muss mindestens ein Autor angegeben werden</string>
+    <string name="alert_author_already_in_list">Der Autor befindet sich bereits in der Liste</string>
+    <string name="alert_author_is_blank">Das Feld des Autors ist leer</string>
+    <string name="alert_author_required">Es muss mindestens ein Autor angegeben werden</string>
 
     <string name="alert_automatic_population_failed">Das automatische Ausfüllen der Anthologie-Titel ist fehlgeschlagen</string>
 
     <string name="available">Verfügbar</string>
 
-    <string name="backing_up_ellipsis">Sichere…</string>
+    <string name="label_backing_up">Sichere…</string>
 
     <!--<string name="backup_request">Möchten Sie ihre Datenbank auf SD-Karte sichern?</string>-->
 
-    <string name="bad_scanner">Anscheinend ist Ihre derzeitige Scanner-App nicht mit Book Catalogue kompatible. Wir empfehlen, die App "Zxing Barcode Scanner" zu installieren. Falls sie bereits installiert ist, empfehlen wir eine Deinstalltion und erneute Installation.</string>
+    <string name="alert_bad_scanner">Anscheinend ist Ihre derzeitige Scanner-App nicht mit Book Catalogue kompatible. Wir empfehlen, die App "Zxing Barcode Scanner" zu installieren. Falls sie bereits installiert ist, empfehlen wir eine Deinstalltion und erneute Installation.</string>
 
     <string name="book">Buch</string>
     <string name="book_catalogue_startup">Beim Start von BookCatalogue</string>
-    <string name="book_not_found">Das gescannte Buch wurde nicht gefunden. Manchmal befindet sich der korrekte Barcode auf der Rückseite des Covers. Geben Sie ansonsten die Daten manuell ein.</string>
+    <string name="alert_book_not_found">Das gescannte Buch wurde nicht gefunden. Manchmal befindet sich der korrekte Barcode auf der Rückseite des Covers. Geben Sie ansonsten die Daten manuell ein.</string>
 
     <string name="builtin">Eingebaut</string>
 
@@ -57,13 +57,13 @@
     <string name="button_send_info">Sende Informationen</string>
     <string name="button_update">Aktualisieren</string>
 
-    <string name="bytes">%.0f Bytes</string>
+    <string name="progress_bytes">%.0f Bytes</string>
 
-    <string name="cancelled_info">Abgebrochen - %s</string>
+    <string name="alert_cancelled_info">Abgebrochen - %s</string>
 
     <string name="cancelling">Abbruch</string>
 
-    <string name="cannot_edit_system">Die Systemwerte können nicht geändert werden</string>
+    <string name="alert_cannot_edit_system">Die Systemwerte können nicht geändert werden</string>
 
     <string name="changed_author_how_apply">Der Autor wurde geändert von\n  \'%1$s\' in \n  \'%2$s\'\nWie wollen Sie diese Änderung übernehmen?\nHinweis: Die Auswahl \'%3$s\' wird sofort übernommen.</string>
     <string name="changed_series_how_apply">Die Serie wurde geändert von\n  \'%1$s\' in \n  \'%2$s\'\nWie wollen Sie diese Änderung übernehmen?\nHinweis: Die Auswahl \'Alle Bücher\' wird sofort übernommen.</string>
@@ -87,16 +87,16 @@
 
     <string name="could_not_copy_image">Konnte Bild nicht kopieren</string>
 
-    <string name="cover_corrupt">Das Cover ist unbrauchbar</string>
+    <string name="alert_cover_corrupt">Das Cover ist unbrauchbar</string>
     <string name="cover_detail">Coverdetails</string>
     <string name="cover_options_cc_ellipsis">Umschlag-Einstellungen…</string>
 
-    <string name="covers_progress">%1$d Cover bearbeitet (%2$d offen)</string>
+    <string name="progress_covers">%1$d Cover bearbeitet (%2$d offen)</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$d Cover bearbeitet (%2$d fehlen, %3$d übersprungen)</string>
+    <string name="progress_covers_increment">%1$d Cover bearbeitet (%2$d fehlen, %3$d übersprungen)</string>
 
     <string name="crash_dialog_ok_toast">Danke!</string>
     <string name="crash_dialog_text">Anscheinend ist BookCatalogue abgestürzt. Beschreiben Sie nach Möglichkeit alle relevanten Hinweise und drücken Sie "OK", um uns eine E-Mail zu diesem Absturz zu senden. Sie werden das E-Mail vor dem Versand sehen können.</string>
@@ -111,7 +111,7 @@
     <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Gesammelte Debug-Informationen</string>
 
-    <string name="delete_1st_bs">Das erste Bücherregal kann nicht gelöscht werden</string>
+    <string name="alert_delete_1st_bookshelf">Das erste Bücherregal kann nicht gelöscht werden</string>
     <string name="delete_event">Ereignis löschen</string>
     <string name="delete_series">Serie löschen</string>
     <string name="delete_style">Stil löschen</string>
@@ -137,7 +137,7 @@
     <!-- Begin: Added/Updated in 5.1.0 -->
     <!--  Explanatory text for 'import' dialogue -->
     <string name="description_import_books_blurb">Die Bücher aus diesem Archiv werden importiert. Tippen Sie auf eine der beiden Optionen, um den Import zu starten, oder auf \'Zurück\', um abzubrechen:</string>
-    <string name="description_import_complete">Import vollständig</string>
+    <string name="alert_import_complete">Import vollständig</string>
     <!-- Description of the 'import new & changed' option -->
     <string name="description_new_and_changed_books_blurb">Nur neue oder aktuellere Bücher im Archiv. Das ist nützlich, um zwei Geräte zu synchronisieren.</string>
     <string name="description_no_bookshelves">Es wurde noch kein Bücherregal erstellt. Bitte fügen Sie Bücherregale über das Menü am unteren Bildschirmrand hinzu.</string>
@@ -221,13 +221,13 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     und ein Buch über das Menü "Einstellungen" mit Hilfe des Menü-Buttons oder des Menü-Symbols bearbeiten.
 </string>
 
-    <string name="if_day_is_specified_month_and_year_must_be">Wenn der Tag angegeben wird, muss auch Monat und Jahr angegeben werden.</string>
-    <string name="if_month_is_specified_year_must_be">Wenn das Monat angegeben wird, muss auch das Jahr angegeben werden.</string>
+    <string name="alert_if_day_is_specified_month_and_year_must_be">Wenn der Tag angegeben wird, muss auch Monat und Jahr angegeben werden.</string>
+    <string name="alert_if_month_is_specified_year_must_be">Wenn das Monat angegeben wird, muss auch das Jahr angegeben werden.</string>
 
     <!-- Displayed when an archive operation fails -->
-    <string name="import_failed">Import gescheitert.</string>
+    <string name="message_import_failed">Import gescheitert.</string>
 
-    <string name="importing_ellipsis">Importiere…</string>
+    <string name="title_importing">Importiere…</string>
 
     <!--<string name="export_failed">FEHLER: Der Export auf die SD-Karte ist fehlgeschlagen.</string>-->
     <!--<string name="import_failed_is_location_correct">FEHLER: Der Import von Daten von der SD-Karte ist fehlgeschlagen. Ist die Datei bereits vorhanden?</string>-->
@@ -395,7 +395,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
         <item quantity="other">%1$s Cover</item>
     </plurals>
     <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$d erzeugt, %2$d aktualisiert</string>
+    <string name="progress_n_created_m_updated">%1$d erzeugt, %2$d aktualisiert</string>
     <!-- Short text for 'n stars' -->
     <plurals name="n_stars" tools:ignore="UnusedQuantity">
         <item quantity="zero">%1$s Sterne</item>
@@ -403,7 +403,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
         <item quantity="other">%1$s Sterne</item>
     </plurals>
 
-    <string name="name_can_not_be_blank">Name darf nicht leer sein</string>
+    <string name="alert_name_can_not_be_blank">Name darf nicht leer sein</string>
 
     <string name="new_in_42"><![CDATA[
 <p><b>Neu in 4.2</b>\n\n
@@ -581,7 +581,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <string name="new_style">Neuer Stil</string>
 
     <string name="no_author">(kein Autor)</string>
-    <string name="no_connection">Internet Verbindung nicht verfügbar.</string>
+    <string name="alert_no_connection">Internet Verbindung nicht verfügbar.</string>
     <string name="no_genre">(kein Genre)</string>
     <string name="no_publisher">(kein Verlag)</string>
     <string name="no_series">(keine Serie)</string>
@@ -589,7 +589,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
 
     <string name="not_set">Nicht gesetzt</string>
 
-    <string name="num_books_searched">%s Bücher gesucht</string>
+    <string name="progress_num_books_searched">%s Bücher gesucht</string>
 
     <string name="optimizing_databases">Datenbanken werden optimiert…</string>
 
@@ -680,7 +680,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
       Debug- und Wiederherstellungsinfos abzurufen.</string>
 
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_readable">Ihr Datenspeicher ist nicht verfügbar.</string>
+    <string name="message_import_please_check_sd_readable">Ihr Datenspeicher ist nicht verfügbar.</string>
 
     <string name="populate_anthology_titles">Automatisches Ausfüllen der Anthologie-Titel (EXPERIMENTELL)</string>
 
@@ -717,7 +717,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
 
     <string name="preferred_styles">Bevorzugte Stile</string>
 
-    <string name="really_delete_book">Dieser Vorgang löscht das Buch mit dem Titel \'%1$s\' von %2$s vollständig. Wollen Sie das Buch löschen?</string>
+    <string name="message_really_delete_book">Dieser Vorgang löscht das Buch mit dem Titel \'%1$s\' von %2$s vollständig. Wollen Sie das Buch löschen?</string>
     <string name="really_delete_series">Soll die Serie \'%s\' gelöscht werden?\n\nDie Bücher werden nicht gelöscht.\n\nBerücksichtigen Sie, dass Sie ggf. den Namen der Serie ändern können, um die Daten der Serie zu behalten.</string>
 
     <string name="rebuilding_search_index">Suchindex wird regeneriert…</string>
@@ -726,8 +726,8 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
 
     <string name="scope_of_change">Umfang der Änderung</string>
 
-    <string name="search_exception">Die Suche ist fehlgeschlagen während %1$s: %2$s</string>
-    <string name="search_fail">Die Suche nach dem Buch ist fehlgeschlagen. Bitte überprüfen Sie die Netzwerkeinstellungen.</string>
+    <string name="alert_search_exception">Die Suche ist fehlgeschlagen während %1$s: %2$s</string>
+    <string name="alert_search_fail">Die Suche nach dem Buch ist fehlgeschlagen. Bitte überprüfen Sie die Netzwerkeinstellungen.</string>
 
     <!-- End: Added/Updated in 5.2.0 -->
     <!-- Progress message -->
@@ -738,8 +738,8 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <string name="select_based_on_read_status">Auswahl auf Basis des Status \'Gelesen\'</string>
     <string name="select_style">Stil wählen</string>
 
-    <string name="series_already_in_list">Die Serie befindet sich bereits in der Liste</string>
-    <string name="series_is_blank">Das Feld Serie ist leer</string>
+    <string name="alert_series_already_in_list">Die Serie befindet sich bereits in der Liste</string>
+    <string name="alert_series_is_blank">Das Feld Serie ist leer</string>
 
     <string name="set_series">Serie angeben…</string>
 
@@ -771,7 +771,7 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
     <string name="system_locale">System Locale</string>
 
-    <string name="the_title_already_exists">Der Titel existiert bereits</string>
+    <string name="alert_the_title_already_exists">Der Titel existiert bereits</string>
 
     <string name="thing_must_not_be_blank">%1$s darf nicht leer sein</string>
 
@@ -792,11 +792,11 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <string name="title_manage_bookshelves">Bücherregale verwalten</string>
     <string name="title_manage_fields">Feld Sichtbarkeit bearbeiten</string>
     <string name="title_other_preferences">Weitere Einstellungen</string>
-    <string name="title_required">Es muss ein Titel angegeben werden</string>
+    <string name="alert_title_required">Es muss ein Titel angegeben werden</string>
     <string name="title_select_fields_to_update">Felder für Aktualisierung auswählen</string>
     <string name="title_settings">Verwaltung und Einstellungen</string>
 
-    <string name="unable_to_find_book">Das angegebene Buch wurde nicht gefunden</string>
+    <string name="alert_unable_to_find_book">Das angegebene Buch wurde nicht gefunden</string>
 
     <string name="unknown">Unbekannt</string>
     <string name="unknown_uc">UNBEKANNT</string>
@@ -834,9 +834,9 @@ Nach dem Klick auf eine Aufgabe können Sie die mit dieser Aufgabe verbundenen E
     <string name="validator_real_expected">Es wird ein Gleitkomma-Wert für \'%s\' erwartet</string>
     <string name="validator_unable_to_get_value">Der Wert für \'%s\' konnte nicht ermittelt werden</string>
 
-    <string name="x_is_not_a_valid_isbn">%1$s ist keine gültige ISBN</string>
-    <string name="x_is_not_a_valid_isbn_or_asin">%1$s ist keine gültige ISBN oder ASIN</string>
+    <string name="alert_x_is_not_a_valid_isbn">%1$s ist keine gültige ISBN</string>
+    <string name="alert_x_is_not_a_valid_isbn_or_asin">%1$s ist keine gültige ISBN oder ASIN</string>
     <string name="x_of_y">%1$d von %2$d</string>
 
-    <string name="you_have_unsaved_changes">Einige Änderungen wurden noch nicht gespeichert. Beim Beenden gehen diese Änderungen verloren.</string>
+    <string name="message_you_have_unsaved_changes">Einige Änderungen wurden noch nicht gespeichert. Beim Beenden gehen diese Änderungen verloren.</string>
 </resources>

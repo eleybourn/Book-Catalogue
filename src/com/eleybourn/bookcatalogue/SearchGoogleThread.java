@@ -32,7 +32,7 @@ public class SearchGoogleThread extends SearchThread {
 			checkForSeriesName();
 		} catch (Exception e) {
 			Logger.logError(e);
-			showException(R.string.search_fail, e);
+			showException(R.string.alert_search_fail, e);
 		}
 	}
 

@@ -4,7 +4,7 @@
     <string name="alert_backup_success">Zálohování úspěšně dokončeno</string>
     <string name="alert_export_failed_sdcard">Exportování selhalo - nelze zapisovat na SD kartu</string>
     <string name="alert_hints_have_been_reset">Rady byly obnoveny</string>
-    <string name="alert_if_the_problem_persists">Pokud problémy přetrvají, kontaktujte správce.</string>
+    <string name="message_import_alert_if_the_problem_persists">Pokud problémy přetrvají, kontaktujte správce.</string>
     <string name="alert_import">Pozor: Importovaná data mohou upravit existující záznamy knih - k takové situaci dojde v případě, že není vyplněno uuid, a id v importovaném souboru je totožné s již existujícím id. Doporučujeme proto zkontrolovat - a případně upravit - toto pole v exportovaném souboru. Pokud byl vytvořen nový záznam, nebo jsou importovány další knihy, tak se ujistěte, že je vyplněno uuid, nebo že pole id je prázdné.</string>
     <string name="alert_import_failed_is_location_correct">ERROR: Import dat (z SD karty) selhal. Je soubor na správném místě?</string>
     <string name="alert_problem_starting_import_arg">Vyskytl se problém při zahájení importu: %1$s</string>
@@ -16,15 +16,15 @@
 
     <string name="app_name">Book Catalogue</string>
 
-    <string name="author_already_in_list">Autor je již v seznamu</string>
-    <string name="author_is_blank">Pole pro autora je prázdné</string>
-    <string name="author_required">Musí být uveden alespoň jeden autor</string>
+    <string name="alert_author_already_in_list">Autor je již v seznamu</string>
+    <string name="alert_author_is_blank">Pole pro autora je prázdné</string>
+    <string name="alert_author_required">Musí být uveden alespoň jeden autor</string>
 
     <string name="alert_automatic_population_failed">Automatické naplnění titulů selhalo</string>
 
     <string name="book">Kniha</string>
     <string name="book_catalogue_startup">BookCatalogue spuštěn</string>
-    <string name="book_not_found">Nepodařilo se nalézt hledanou knihu. Zkuste prosím zadat potřebné údaje manuálně.</string>
+    <string name="alert_book_not_found">Nepodařilo se nalézt hledanou knihu. Zkuste prosím zadat potřebné údaje manuálně.</string>
 
     <string name="builtin">Vestavěný</string>
 
@@ -40,13 +40,13 @@
     <string name="button_send_info">Poslat informace</string>
     <string name="button_update">Upravit</string>
 
-    <string name="bytes">%.0f bytů</string>
+    <string name="progress_bytes">%.0f bytů</string>
 
-    <string name="cancelled_info">Zrušeno - %s</string>
+    <string name="alert_cancelled_info">Zrušeno - %s</string>
 
     <string name="cancelling">Rušení</string>
 
-    <string name="cannot_edit_system">Nemůžete upravovat systémové hodnoty</string>
+    <string name="alert_cannot_edit_system">Nemůžete upravovat systémové hodnoty</string>
 
     <string name="changed_author_how_apply">Změnil jste autora z:\n  \'%1$s\' na \n  \'%2$s\'\nJak si přejete aplikovat tuto změnu?\nUpozornění: Volba \'%3$s\' bude aplikována okamžitě.</string>
     <string name="changed_series_how_apply">Změnil jste sérii z:\n  \'%1$s\' na \n  \'%2$s\'\nJak si přejete aplikovat tuto změnu?\nUpozornění: Volba \'Všechny knihy\' bude aplikována okamžitě.</string>
@@ -66,7 +66,7 @@
 
     <string name="contact2">philip.warner@rhyme.com.au</string>
 
-    <string name="cover_corrupt">Obálka je poškozena</string>
+    <string name="alert_cover_corrupt">Obálka je poškozena</string>
     <string name="cover_detail">Detail obálky</string>
     <string name="cover_options_cc_ellipsis">Možnosti obálky…</string>
 
@@ -81,7 +81,7 @@
     <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Shromáždit informace o debugování</string>
 
-    <string name="delete_1st_bs">Nelze smazat defaultní knihovnu.</string>
+    <string name="alert_delete_1st_bookshelf">Nelze smazat defaultní knihovnu.</string>
     <string name="delete_series">Smazat série</string>
     <string name="delete_style">Smazat styl</string>
 
@@ -248,12 +248,12 @@
     <string name="menu_sort_by_author_collapsed">Sbalit vše</string>
     <string name="menu_sort_by_author_expanded">Rozbalit vše</string>
 
-    <string name="name_can_not_be_blank">Jméno nesmí být prázdné</string>
+    <string name="alert_name_can_not_be_blank">Jméno nesmí být prázdné</string>
 
     <string name="new_style">Nový styl</string>
 
     <string name="no_author">(žádný autor)</string>
-    <string name="no_connection">Připojení k internetu není k dispozici.</string>
+    <string name="alert_no_connection">Připojení k internetu není k dispozici.</string>
     <string name="no_genre">(žádný žánr)</string>
     <string name="no_publisher">(žádný vydavatel)</string>
     <string name="no_series">(žádná série)</string>
@@ -261,7 +261,7 @@
 
     <string name="not_set">Nenastaveno</string>
 
-    <string name="num_books_searched">%s knih nalezeno</string>
+    <string name="progress_num_books_searched">%s knih nalezeno</string>
 
     <string name="optimizing_databases">Optimalizování databáze…</string>
 
@@ -318,15 +318,15 @@
 
     <string name="preferred_styles">Preferované styly</string>
 
-    <string name="really_delete_book">Tímto kompletně odstraníte knihu \'%1$s\' od %2$s. Určitě chcete pokračovat?</string>
+    <string name="message_really_delete_book">Tímto kompletně odstraníte knihu \'%1$s\' od %2$s. Určitě chcete pokračovat?</string>
     <string name="really_delete_series">Opravdu chcete smazat série \'%s\'?\n\nSamotná kniha nebude smazána.\n\nZvažte prosím úpravu série a změnu názvu série s ohledem na korektnost dat.</string>
 
     <string name="rebuilding_search_index">Obnovování indexu pro vyhledávání…</string>
 
     <string name="scope_of_change">Rozsah změny</string>
 
-    <string name="search_exception">Hledání selhalo %1$s: %2$s</string>
-    <string name="search_fail">Vyhledávání knihy se nezdařilo. Zkontrolujte prosím své síťové připojení.</string>
+    <string name="alert_search_exception">Hledání selhalo %1$s: %2$s</string>
+    <string name="alert_search_fail">Vyhledávání knihy se nezdařilo. Zkontrolujte prosím své síťové připojení.</string>
 
     <string name="searching_book_catalogue">Vyhledávám na book-catalogue.com</string>
     <string name="searching_google_books">Vyhledávám na Google Books</string>
@@ -334,8 +334,8 @@
     <string name="select_based_on_read_status">Výběr založený na statusu \'Přečtení\'</string>
     <string name="select_style">Zvolit styl</string>
 
-    <string name="series_already_in_list">Série je již v seznamu</string>
-    <string name="series_is_blank">Pole pro sérii je prázdné</string>
+    <string name="alert_series_already_in_list">Série je již v seznamu</string>
+    <string name="alert_series_is_blank">Pole pro sérii je prázdné</string>
 
     <string name="set_series">Zadat série…</string>
 
@@ -377,11 +377,11 @@
     <string name="title_manage_bookshelves">Spravovat knihovny</string>
     <string name="title_manage_fields">Spravovat viditelnost jednotlivých polí</string>
     <string name="title_other_preferences">Další možnosti</string>
-    <string name="title_required">Musí být uveden titul knihy</string>
+    <string name="alert_title_required">Musí být uveden titul knihy</string>
     <string name="title_select_fields_to_update">Zvolit pole k aktualizaci</string>
     <string name="title_settings">Administrace a možnosti</string>
 
-    <string name="unable_to_find_book">Nepodařilo se nalézt zadanou knihu</string>
+    <string name="alert_unable_to_find_book">Nepodařilo se nalézt zadanou knihu</string>
 
     <string name="unknown">Neznámý</string>
     <string name="unknown_uc">NEZNÁMÉ</string>

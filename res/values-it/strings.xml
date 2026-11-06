@@ -32,7 +32,7 @@
     <string name="alert_cancelled">Cancellato</string>
     <string name="alert_export_failed_sdcard">Esportazione fallina - impossibile scrivere sulla scheda SD</string>
     <string name="alert_hints_have_been_reset">Suggerimenti azzerati</string>
-    <string name="alert_if_the_problem_persists">Se il problema persiste, contatta il supporto dalla voce Aiuto del menu principale.</string>
+    <string name="message_import_alert_if_the_problem_persists">Se il problema persiste, contatta il supporto dalla voce Aiuto del menu principale.</string>
     <string name="alert_import">Attenzione. L\'importazione dei dati potrebbe aggiornare i record esistenti con nuove informazioni se manca la colonna uuid e l\'id nel file di importazione è identico a un id esistente. Ciò è corretto se hai modificato un campo nel file di esportazione. Se hai registrato un nuovo libro, o stai importando libri di qualcun altro, assicurati che vi sia il campo uuid o il campo id sia vuoto.</string>
     <string name="alert_import_failed_is_location_correct">ERRORE: Importazione dei dati dalla SDCard non riuscita. Il file è nel posto corretto?</string>
     <!-- Descriptive text associated with import options not available with older archives -->
@@ -48,25 +48,25 @@
 
     <string name="app_name">Book Catalogue</string>
 
-    <string name="author_already_in_list">L\'autore è già presente in elenco</string>
-    <string name="author_is_blank">Il campo Autore è vuoto</string>
-    <string name="author_required">Deve essere specificato almeno un autore</string>
+    <string name="alert_author_already_in_list">L\'autore è già presente in elenco</string>
+    <string name="alert_author_is_blank">Il campo Autore è vuoto</string>
+    <string name="alert_author_required">Deve essere specificato almeno un autore</string>
 
     <string name="alert_automatic_population_failed">Inserimento titoli in automatico fallito</string>
 
     <string name="available">Disponibile</string>
 
     <!-- Showed in progress dialog when an import starts -->
-    <string name="backing_up_ellipsis">Creazione backup in corso…</string>
+    <string name="label_backing_up">Creazione backup in corso…</string>
 
-    <string name="bad_scanner">L\'applicazione prescelta per la scansione dei codici a barre sembra incompatibile con Book Catalogue. Ti raccomandiamo di utilizzare l\'applicazione Zxing, e, se è già installata, ti raccomandiamo di disinstallarla e installarla di nuovo.</string>
+    <string name="alert_bad_scanner">L\'applicazione prescelta per la scansione dei codici a barre sembra incompatibile con Book Catalogue. Ti raccomandiamo di utilizzare l\'applicazione Zxing, e, se è già installata, ti raccomandiamo di disinstallarla e installarla di nuovo.</string>
 
     <string name="book">Libro</string>
     <string name="book_catalogue_startup">Avvio BookCatalogue</string>
     <string name="book_details_readonly_by">di</string>
     <string name="book_details_readonly_loaned_to">Prestato a %1$s</string>
     <string name="book_details_readonly_pages">%1$s pagine</string>
-    <string name="book_not_found">Il libro scansionato non è stato trovato. A volte il codice a barre corretto si trova all\'interno della copertina. Altrimenti inserisci i dati manualmente.</string>
+    <string name="alert_book_not_found">Il libro scansionato non è stato trovato. A volte il codice a barre corretto si trova all\'interno della copertina. Altrimenti inserisci i dati manualmente.</string>
 
     <string name="brackets">(%1$s)</string>
 
@@ -84,13 +84,13 @@
     <string name="button_send_info">Invia informazioni</string>
     <string name="button_update">Aggiorna</string>
 
-    <string name="bytes">%.0f bytes</string>
+    <string name="progress_bytes">%.0f bytes</string>
 
-    <string name="cancelled_info">Annullati - %s</string>
+    <string name="alert_cancelled_info">Annullati - %s</string>
 
     <string name="cancelling">Annullamento</string>
 
-    <string name="cannot_edit_system">Impossibile modificare i valori di sistema</string>
+    <string name="alert_cannot_edit_system">Impossibile modificare i valori di sistema</string>
 
     <string name="changed_author_how_apply">Hai modificato l\'autore da:\n  \'%1$s\' a \n  \'%2$s\'\nCome desideri applicare questa modifica?\nNota: La scelta \'%3$s\' sarà applicata immediatamente.</string>
     <string name="changed_series_how_apply">Hai modificato le serie da:\n  \'%1$s\' a \n  \'%2$s\'\nCome desideri applicare questa modifica?\nNota: La scelta \'Tutti i libri\' sarà applicata immediatamente.</string>
@@ -114,17 +114,17 @@
 
     <string name="could_not_copy_image">Impossibile copiare l\'immagine</string>
 
-    <string name="cover_corrupt">Copertina danneggiata</string>
+    <string name="alert_cover_corrupt">Copertina danneggiata</string>
     <string name="cover_detail">Dettagli copertina</string>
     <string name="cover_options_cc_ellipsis">Opzioni Copertine…</string>
 
     <!-- Displayed in progress dialog when exporting covers -->
-    <string name="covers_progress">%1$d copertine processate (%2$d mancanti)</string>
+    <string name="progress_covers">%1$d copertine processate (%2$d mancanti)</string>
     <!-- Description of the 'import all books' option -->
     <!-- Description of the 'export new & changed' option -->
     <!-- Part of the progress message displayed when exporting books -->
     <!-- Displayed in progress dialog when exporting covers in incremental mode -->
-    <string name="covers_progress_increment">%1$d copertine elaborate (%2$d mancanti, %3$d saltate)</string>
+    <string name="progress_covers_increment">%1$d copertine elaborate (%2$d mancanti, %3$d saltate)</string>
 
     <string name="crash_dialog_ok_toast">Grazie!</string>
     <string name="crash_dialog_text">BookCatalogue sembra essersi bloccato. Se possibile, comunicaci qui sotto qualsiasi cosa ritieni pertinente e clicca \"OK\" per inviarci un\'email relativa al blocco. Potrai verificare l\'email prima dell\'invio.</string>
@@ -139,7 +139,7 @@
     <string name="debug_email">eleybourn@gmail.com</string>
     <string name="debug_subject">Informazioni di debug raccolte</string>
 
-    <string name="delete_1st_bs">Impossibile cancellare la prima libreria</string>
+    <string name="alert_delete_1st_bookshelf">Impossibile cancellare la prima libreria</string>
     <string name="delete_event">Cancella evento</string>
     <string name="delete_series">Cancella serie</string>
     <string name="delete_style">Elimina stile</string>
@@ -165,7 +165,7 @@
     <!-- Begin: Added/Updated in 5.1.0 -->
     <!--  Explanatory text for 'import' dialogue -->
     <string name="description_import_books_blurb">I libri di questo archivio saranno importati. Seleziona uno delle due opzioni per avviare l\'importazione, o premi \'back\' per annullare:</string>
-    <string name="description_import_complete">Importazione Completata</string>
+    <string name="alert_import_complete">Importazione Completata</string>
     <!-- Description of the 'import new & changed' option -->
     <string name="description_new_and_changed_books_blurb">Importa solo i libri nuovi, o che sono stati aggiornati più di recente nell\'archivio. Utile per sincronizzare due apparecchi.</string>
     <string name="description_no_bookshelves">Non hai creato ancora nessuna libreria. Per crearne utilizza il menù nella parte inferiore dello schermo.</string>
@@ -252,14 +252,14 @@
 	e puoi modificare il libro tramite il menu delle opzioni usando il pulsante del menu o l\'icona del menu di overflow.
 </string>
 
-    <string name="if_day_is_specified_month_and_year_must_be">Se si indica il giorno, occorre indicare anche mese ed anno.</string>
-    <string name="if_month_is_specified_year_must_be">Se si indica il mese, occorre indicare anche l\'anno.</string>
+    <string name="alert_if_day_is_specified_month_and_year_must_be">Se si indica il giorno, occorre indicare anche mese ed anno.</string>
+    <string name="alert_if_month_is_specified_year_must_be">Se si indica il mese, occorre indicare anche l\'anno.</string>
 
     <!-- Displayed when an archive operation fails -->
-    <string name="import_failed">Importazione fallita.</string>
+    <string name="message_import_failed">Importazione fallita.</string>
 
     <!-- Showed in progress dialog when an import starts -->
-    <string name="importing_ellipsis">Importazione in corso…</string>
+    <string name="title_importing">Importazione in corso…</string>
 
     <string name="install_scan_title">Installa app per la scansione</string>
 
@@ -424,7 +424,7 @@
         <item quantity="many">%1$s copertine</item>
     </plurals>
     <!-- Part of the progress message displayed when importing books -->
-    <string name="n_created_m_updated">%1$d creati, %2$d aggiornati</string>
+    <string name="progress_n_created_m_updated">%1$d creati, %2$d aggiornati</string>
     <!-- Short text for 'n stars' -->
     <plurals name="n_stars" tools:ignore="UnusedQuantity">
         <item quantity="zero">%1$s stelle</item>
@@ -433,7 +433,7 @@
         <item quantity="many">%1$s stelle</item>
     </plurals>
 
-    <string name="name_can_not_be_blank">Il nome non può essere vuoto</string>
+    <string name="alert_name_can_not_be_blank">Il nome non può essere vuoto</string>
 
     <string name="new_in_42"><![CDATA[
     <p><b>Novità nella versione 4.2</b>\n\n
@@ -589,7 +589,7 @@
     <string name="new_style">Nuovo stile</string>
 
     <string name="no_author">(autore non indicato)</string>
-    <string name="no_connection">Nessuna connessione disponibile.</string>
+    <string name="alert_no_connection">Nessuna connessione disponibile.</string>
     <string name="no_genre">(genere non indicato)</string>
     <string name="no_publisher">(editore non indicato)</string>
     <string name="no_series">(collana non indicata)</string>
@@ -597,7 +597,7 @@
 
     <string name="not_set">Non impostato</string>
 
-    <string name="num_books_searched">%s libri cercati</string>
+    <string name="progress_num_books_searched">%s libri cercati</string>
 
     <string name="optimizing_databases">Ottimizzazione archivi…</string>
 
@@ -663,7 +663,7 @@
     <string name="para_translators">BookCatalogue è il prodotto degli sforzi di molte persone, e non sarebbe così largamente utilizzato senza il generoso \naiuto dei nostri traduttori volontari: %1$s (se abbiamo dimenticato qualcuno, grazie per comunicarcelo).</string>
 
     <!-- Displayed when any write operation to the sd card fails -->
-    <string name="please_check_sd_readable">Prego verificare che la SD card sia accessibile.</string>
+    <string name="message_import_please_check_sd_readable">Prego verificare che la SD card sia accessibile.</string>
 
     <string name="populate_anthology_titles">Inserisci titoli automaticamente (SPERIMENTALE)</string>
 
@@ -703,7 +703,7 @@
 
     <string name="preferred_styles">Stili preferiti</string>
 
-    <string name="really_delete_book">Il libro intitolato \'%1$s\' verrà completamente cancellato da %2$s. Procedere?</string>
+    <string name="message_really_delete_book">Il libro intitolato \'%1$s\' verrà completamente cancellato da %2$s. Procedere?</string>
     <string name="really_delete_series">Cancellare la serie \'%s\'?\n\nI libri non verranno cancellati.\n\nValuta se modificare la serie e cambiare il nome della serie in quello di un\'altra serie per preservare i dati</string>
 
     <string name="rebuilding_search_index">Ricostruzione indice di ricerca…</string>
@@ -713,8 +713,8 @@
 
     <string name="scope_of_change">Intervallo modifica</string>
 
-    <string name="search_exception">Ricerca di %1$s: %2$s fallita</string>
-    <string name="search_fail">Ricerca del libro fallita. Controlla le impostazioni di rete.</string>
+    <string name="alert_search_exception">Ricerca di %1$s: %2$s fallita</string>
+    <string name="alert_search_fail">Ricerca del libro fallita. Controlla le impostazioni di rete.</string>
 
     <!-- End: Added/Updated in 5.2.0 -->
     <!-- Begin: Added/Updated in [Next Version] -->
@@ -725,8 +725,8 @@
     <string name="select_based_on_read_status">Seleziona in base allo stato \'Letto\'</string>
     <string name="select_style">Seleziona Stile</string>
 
-    <string name="series_already_in_list">La serie è già presente in elenco</string>
-    <string name="series_is_blank">Il campo Serie è vuoto</string>
+    <string name="alert_series_already_in_list">La serie è già presente in elenco</string>
+    <string name="alert_series_is_blank">Il campo Serie è vuoto</string>
 
     <string name="set_series">Imposta serie…</string>
 
@@ -758,7 +758,7 @@
     <!-- This is an UPDATED string copied from earlier in the file; "Google Googles" (sic) was removed from the list of scanners -->
     <string name="system_locale">Impostazioni locali di sistema</string>
 
-    <string name="the_title_already_exists">Titolo già presente in elenco</string>
+    <string name="alert_the_title_already_exists">Titolo già presente in elenco</string>
 
     <string name="thing_must_not_be_blank">%1$s deve contenere un valore</string>
 
@@ -779,11 +779,11 @@
     <string name="title_manage_bookshelves">Gestisci librerie</string>
     <string name="title_manage_fields">Gestisci visibilità campi</string>
     <string name="title_other_preferences">Altre Preferenze</string>
-    <string name="title_required">Deve essere specificato un titolo</string>
+    <string name="alert_title_required">Deve essere specificato un titolo</string>
     <string name="title_select_fields_to_update">Seleziona i campi da aggiornare</string>
     <string name="title_settings">Amministrazione e Preferenze</string>
 
-    <string name="unable_to_find_book">Impossibile trovare il libro specificato</string>
+    <string name="alert_unable_to_find_book">Impossibile trovare il libro specificato</string>
 
     <string name="unknown">Sconosciuto</string>
     <string name="unknown_uc">SCONOSCIUTO</string>
@@ -821,9 +821,9 @@
     <string name="validator_real_expected">È previsto un valore reale per \'%s\'</string>
     <string name="validator_unable_to_get_value">Impossibile ottenere un valore per \'%s\'</string>
 
-    <string name="x_is_not_a_valid_isbn">%1$s non è un codice ISBN valido</string>
-    <string name="x_is_not_a_valid_isbn_or_asin">%1$s non è un codice ISBN o ASIN valido</string>
+    <string name="alert_x_is_not_a_valid_isbn">%1$s non è un codice ISBN valido</string>
+    <string name="alert_x_is_not_a_valid_isbn_or_asin">%1$s non è un codice ISBN o ASIN valido</string>
     <string name="x_of_y">%1$d di %2$d</string>
 
-    <string name="you_have_unsaved_changes">Vi sono modifiche non salvate, se esci adesso saranno perse.</string>
+    <string name="message_you_have_unsaved_changes">Vi sono modifiche non salvate, se esci adesso saranno perse.</string>
 </resources>

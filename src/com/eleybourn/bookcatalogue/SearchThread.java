@@ -123,7 +123,7 @@ abstract public class SearchThread extends ManagedTask {
 	protected void showException(int id, Exception e) {
 		String s;
 		try {s = e.getMessage(); } catch (Exception e2) {s = "Unknown Exception";}
-        String msg = String.format(getString(R.string.search_exception), getString(id), s);
+        String msg = String.format(getString(R.string.alert_search_exception), getString(id), s);
 		doToast(msg);		
 	}
 	

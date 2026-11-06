@@ -1,7 +1,7 @@
 package com.eleybourn.bookcatalogue;
 
 import android.app.Activity;
-import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import com.android.billingclient.api.AcknowledgePurchaseParams;
@@ -115,7 +115,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                         .setProductType(BillingClient.ProductType.SUBS)
                         .build(),
                 (billingResult, purchases) -> {
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         for (Purchase purchase : purchases) {
                             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED && !purchase.isSuspended()) {
                                 for (String productId : purchase.getProducts()) {
@@ -135,7 +135,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                                     .setProductType(BillingClient.ProductType.INAPP)
                                     .build(),
                             (billingResult2, purchases2) -> {
-                                if (billingResult2.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases2 != null) {
+                                if (billingResult2.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                                     for (Purchase purchase : purchases2) {
                                         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
                                             for (String productId : purchase.getProducts()) {
@@ -193,7 +193,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
         mBillingClient.queryProductDetailsAsync(subsParams, (billingResult, productDetailsResult) -> {
             List<ProductDetails> productDetailsList = productDetailsResult.getProductDetailsList();
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && productDetailsList != null && !productDetailsList.isEmpty()) {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && !productDetailsList.isEmpty()) {
                 ProductDetails productDetails = productDetailsList.get(0);
                 List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
                 if (offerDetails != null && !offerDetails.isEmpty()) {
@@ -215,7 +215,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
         mBillingClient.queryProductDetailsAsync(inappParams, (billingResult, productDetailsResult) -> {
             List<ProductDetails> productDetailsList = productDetailsResult.getProductDetailsList();
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && productDetailsList != null && !productDetailsList.isEmpty()) {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && !productDetailsList.isEmpty()) {
                 ProductDetails productDetails = productDetailsList.get(0);
                 ProductDetails.OneTimePurchaseOfferDetails oneTimeDetails = productDetails.getOneTimePurchaseOfferDetails();
                 if (oneTimeDetails != null) {
@@ -239,7 +239,7 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     public void launchPurchaseFlow(String productId) {
         if (!mBillingClient.isReady()) {
-            android.widget.Toast.makeText(mActivity, "Billing service not ready. Connecting...", android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, R.string.alert_billing_service_not_ready_connecting, Toast.LENGTH_SHORT).show();
             startConnection();
             return;
         }
@@ -275,7 +275,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                                     paramsBuilder.setOfferToken(offerDetails.get(0).getOfferToken());
                                 } else {
                                     mActivity.runOnUiThread(() ->
-                                            android.widget.Toast.makeText(mActivity, "No active offers found for subscription.", android.widget.Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(mActivity, R.string.alert_billing_no_active_offers_found, Toast.LENGTH_SHORT).show()
                                     );
                                     return;
                                 }
@@ -288,13 +288,13 @@ public class BillingManager implements PurchasesUpdatedListener {
                             mBillingClient.launchBillingFlow(mActivity, billingFlowParams);
                         } else {
                             mActivity.runOnUiThread(() ->
-                                    android.widget.Toast.makeText(mActivity, "Product ID '" + productId + "' not found.", android.widget.Toast.LENGTH_LONG).show()
+                                    Toast.makeText(mActivity, mActivity.getString(R.string.alert_billing_product_not_found, productId), Toast.LENGTH_LONG).show()
                             );
                         }
                     } else {
                         final String debugMessage = billingResult.getDebugMessage();
                         mActivity.runOnUiThread(() ->
-                                android.widget.Toast.makeText(mActivity, "Error " + responseCode + ": " + debugMessage, android.widget.Toast.LENGTH_SHORT).show()
+                                Toast.makeText(mActivity, mActivity.getString(R.string.alert_error_with_detail, responseCode, debugMessage), Toast.LENGTH_SHORT).show()
                         );
                     }
                 }

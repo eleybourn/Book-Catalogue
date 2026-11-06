@@ -779,12 +779,12 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
 
         // However, there is some data that we really do require...
         if (mBookData.getAuthorList().isEmpty()) {
-            Toast.makeText(this, getResources().getText(R.string.author_required), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getResources().getText(R.string.alert_author_required), Toast.LENGTH_LONG).show();
             return;
         }
         if (!mBookData.containsKey(CatalogueDBAdapter.KEY_TITLE)
                 || mBookData.getString(CatalogueDBAdapter.KEY_TITLE).trim().isEmpty()) {
-            Toast.makeText(this, getResources().getText(R.string.title_required), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getResources().getText(R.string.alert_title_required), Toast.LENGTH_LONG).show();
             return;
         }
 

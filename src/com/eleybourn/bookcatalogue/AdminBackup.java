@@ -201,7 +201,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                         // Even if not OK, the data might contain a specific error code from Google
                         mApiCredentials.handleLegacySignInResult(result.getData());
                     } else {
-                        Toast.makeText(this, "Sign-in cancelled.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.alert_sign_in_cancelled, Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -354,7 +354,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
 
         new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.title_confirm_clean_backup)
-                .setMessage(R.string.alert_confirm_clean_backup)
+                .setMessage(R.string.para_confirm_clean_backup)
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> {
                     mBackupNowButton.setEnabled(false);
                     mRestoreNowButton.setEnabled(false);
@@ -380,7 +380,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
     private void showRestorePrompt(int count) {
         new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.title_restore_found_backup)
-                .setMessage(getString(R.string.alert_restore_found_backup, count))
+                .setMessage(getString(R.string.para_restore_found_backup, count))
                 .setPositiveButton(R.string.button_restore_now, (dialog, which) -> restore())
                 .setNegativeButton(R.string.button_cancel, (dialog, which) -> dialog.dismiss())
                 .show();
@@ -392,8 +392,8 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 getString(R.string.button_purchase_lifetime)
         };
         new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.subscription_required_title)
-                .setMessage(R.string.subscription_required_message)
+                .setTitle(R.string.title_subscription_required)
+                .setMessage(R.string.para_subscription_required)
                 .setItems(options, (dialog, which) -> {
                     if (which == 0) {
                         mBillingManager.launchPurchaseFlow(BillingManager.SUBSCRIPTION_ID);
@@ -630,7 +630,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                         // ignore
                     }
                     int backedUp = Math.min(totalLocalBooks, cloudCount);
-                    String statsText = activity.getString(R.string.stats_backup_combined, totalLocalBooks, backedUp, cloudCount);
+                    String statsText = activity.getString(R.string.progress_backup_combined, totalLocalBooks, backedUp, cloudCount);
                     activity.mBackupStatsField.setText(statsText);
 
                     // Prompt to restore if local is empty and cloud is not
@@ -686,7 +686,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
             // Show an error message to the user on the UI thread
             if (request.equals(BookCatalogueAPI.REQUEST_INFO_COUNT) || request.equals(BookCatalogueAPI.REQUEST_INFO_LAST)) {
                 activity.mBackupStatsField.setText(R.string.alert_could_not_load_backup_statistics);
-                Toast.makeText(activity, "Error: " + error, Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, activity.getString(R.string.alert_error, error), Toast.LENGTH_LONG).show();
             }
             activity.mSyncProgressBar.setVisibility(View.GONE);
             if (request.equals(BookCatalogueAPI.REQUEST_BACKUP_ALL) || request.equals(BookCatalogueAPI.REQUEST_RESTORE_ALL) || request.equals(BookCatalogueAPI.REQUEST_DELETE_ALL)) {
@@ -698,7 +698,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                 if (activity.mRestoreNowButton != null) {
                     activity.mRestoreNowButton.setEnabled(true);
                 }
-                Toast.makeText(activity, "Error: " + error, Toast.LENGTH_LONG).show(); // Show error for backup/restore
+                Toast.makeText(activity, activity.getString(R.string.alert_error, error), Toast.LENGTH_LONG).show(); // Show error for backup/restore
             }
         }
     }
@@ -734,6 +734,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
                                     try {
                                         uris.add(task.getFile().getUri());
                                         // Send it, if there are any files to send.
+                                        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
                                         startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                                     } catch (NullPointerException e) {

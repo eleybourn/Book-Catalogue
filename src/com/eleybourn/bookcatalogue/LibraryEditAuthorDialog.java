@@ -52,7 +52,7 @@ public class LibraryEditAuthorDialog {
 		saveButton.setOnClickListener(v -> {
             String newFamily = familyView.getText().toString().trim();
             if (newFamily.isEmpty()) {
-                Toast.makeText(mContext, R.string.author_is_blank, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.alert_author_is_blank, Toast.LENGTH_LONG).show();
                 return;
             }
             String newGiven = givenView.getText().toString();

@@ -218,7 +218,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
                     } else {
                         baseId = R.string.old_file_import_complete;
                     }
-                    String msg = BookCatalogueApp.getRes().getString(baseId) + "\n\n" + BookCatalogueApp.getRes().getString(R.string.old_file_import_stats, mResult.processed, mResult.total, extra);
+                    String msg = BookCatalogueApp.getRes().getString(baseId) + "\n\n" + BookCatalogueApp.getRes().getString(R.string.progress_old_file_import_stats, mResult.processed, mResult.total, extra);
                     MessageDialogFragment frag = MessageDialogFragment.newInstance(0, R.string.label_import_old_files, msg, R.string.button_ok, 0, 0);
                     frag.show(fm, null);
                 }
@@ -428,7 +428,7 @@ public abstract class BookCatalogueActivity extends AppCompatActivity implements
             // To avoid re-display on recreate of activity
             StartupActivity.setFileMoveRequired(false);
             String msg = this.getString(
-                    R.string.alert_old_files_message,
+                    R.string.para_old_files_message,
                     getString(R.string.button_ok),
                     getString(R.string.button_cancel),
                     getString(R.string.title_settings),

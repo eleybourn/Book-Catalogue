@@ -89,7 +89,7 @@ public class AdminBackup extends ActivityWithTasks implements CredentialListener
         setContentView(R.layout.admin_backup_preferences);
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
-        topAppBar.setTitle(R.string.title_backup_preferences_tmp);
+        topAppBar.setTitle(R.string.title_backup_preferences);
         topAppBar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         mBillingManager = new BillingManager(this);

@@ -957,7 +957,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
             if (mCurrentThumbIndex >= all.size()) {
                 mCurrentThumbIndex = Math.max(0, all.size() - 1);
             }
-            String text = getString(R.string.cover_caption_format, mCurrentThumbIndex + 1, all.size());
+            String text = getString(R.string.label_caption_format, mCurrentThumbIndex + 1, all.size());
             captionView.setText(text);
             captionView.setVisibility(View.VISIBLE);
         } else {

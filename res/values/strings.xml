@@ -92,8 +92,6 @@
     <string name="button_delete">Delete</string>
     <string name="button_loan_book">Loan Book</string>
     <string name="button_login_with_google">Login with Google</string>
-    <string name="button_login_device">Use Device Account</string>
-    <string name="button_add_account">Add account</string>
     <string name="button_logout">Logout</string>
     <string name="button_ok">OK</string>
     <string name="button_reorder">Reorder</string>
@@ -315,7 +313,6 @@
     <string name="label_backup_to_archive">Backup to Archive</string>
     <!-- Introduction for 'advanced export' option -->
     <!-- Text for button -->
-    <string name="label_books">books</string>
     <string name="label_book_details">Book details</string>
     <string name="label_bookshelf">Bookshelf</string>
     <string name="label_bookshelves">Bookshelves</string>
@@ -411,7 +408,6 @@
     <string name="label_sourcecode">Source Code:</string>
     <!-- Heading in 'about' dialog -->
     <string name="label_special_thanks">Special Thanks</string>
-    <string name="label_sync">Online Backup</string>
     <string name="label_backup">Backup</string>
     <string name="label_backup_request">Would you like to make a local backup of your catalogue?</string>
     <string name="label_sync_description">Never lose your book catalogue</string>
@@ -442,8 +438,7 @@
     <string name="menu_add_thumb_photo">From Camera…</string>
     <string name="menu_full_screen">Full Screen</string>
     <string name="menu_add_additional_photo">Add Additional Photo…</string>
-    <string name="photo_counter_format">%1$d / %2$d</string>
-    <string name="cover_caption_format">Cover %1$d/%2$d</string>
+    <string name="label_caption_format">Cover %1$d/%2$d</string>
     <!-- Menu item -->
     <string name="menu_amazon_books_by_author">Books by this author</string>
     <!-- Menu item -->
@@ -465,7 +460,6 @@
     <!-- Menu items -->
     <string name="menu_mark_as_read">Mark as read</string>
     <string name="menu_mark_as_unread">Mark as unread</string>
-    <string name="menu_merge_formats">Merge Formats</string>
     <string name="confirm_merge_formats">This will merge all selected formats into \'%s\'. Are you sure?</string>
     <string name="menu_replace_thumb">Replace Thumbnail…</string>
     <string name="menu_rotate_thumb">Rotate Thumbnail…</string>
@@ -791,7 +785,6 @@
     <string name="para_backup_logged_in_as">You are logged in and your data is being backed up as:</string>
     <string name="para_backup_logged_out_message">Log in with your Google account to automatically back up your book catalogue. This will keep your data safe and allow you to restore it on any device.</string>
     <string name="para_cleanup_files">Purgeable files currently use %s of storage. Log files and other data are saved at each upgrade, when you back up the database, or when the application crashes. Click the button below to purge these files from your storage. If you have been experiencing crashing or other errors, please consider using the \'Send Information\' button first.</string>
-    <string name="para_cloud_sync_coming_soon">"The ability to back up and sync your book catalogue online is coming very soon. "</string>
     <string name="para_donate">If you would like to support the development of this application, please donate using my Amazon Wishlist or the PayPal button below. Being in Australia means I cannot publish a paid version. :-) </string>
     <string name="para_enhance_search">Would you like to help other Book Catalogue users? \n\nBy clicking \'Yes\', you agree to allow public details from your book records (like ISBNs and Titles) to be used to improve search results for everyone.\n\nPrivate notes and personal details remain secure.\n\nYou can change this at any time in the Settings.</string>
     <string name="para_help_click_here">Please click here to access the online help pages</string>
@@ -940,8 +933,7 @@
     <string name="title_add_book">Add Book</string>
     <string name="title_add_style">Add style</string>
     <string name="title_anthology_confirm">Please confirm that these anthology titles are (mostly) correct</string>
-    <string name="title_backup_preferences"><![CDATA[Backup & Sync]]></string>
-    <string name="title_backup_preferences_tmp"><![CDATA[Backup & Restore]]></string>
+    <string name="title_backup_preferences"><![CDATA[Backup & Restore]]></string>
     <string name="title_clone_style_colon_name">Clone style: %1$s</string>
     <string name="title_edit_bookshelf">Edit Bookshelf</string>
     <string name="title_edit_library_styles">Edit Library Styles</string>
@@ -958,14 +950,12 @@
     <string name="menu_rename_format">Rename format</string>
     <string name="menu_select_formats_to_merge">Select formats To merge</string>
     <string name="title_select_formats_to_merge_into">Select formats to merge into %s</string>
-    <string name="menu_clear_format">Clear format</string>
     <string name="menu_clear_format_n_books">Clear format from %s</string>
     <string name="title_clear_format_n_books">Clear format %1$s from %2$s</string>
     <string name="title_other_preferences">Other Preferences</string>
     <string name="title_required">A non-blank title must be specified</string>
     <string name="title_select_fields_to_update">Select Fields to Update</string>
     <string name="title_settings">Settings</string>
-    <string name="title_choose_account">Choose an Account</string>
 
     <string name="unable_to_find_book">Unable to find the specified book</string>
 

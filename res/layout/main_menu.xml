@@ -103,11 +103,11 @@
                     <com.google.android.material.imageview.ShapeableImageView
                         style="@style/layout_card_icon"
                         android:src="@drawable/ic_menu_upload"
-                        android:contentDescription="@string/label_sync_tmp" />
+                        android:contentDescription="@string/label_sync" />
                     <LinearLayout style="@style/layout_card_content">
                         <TextView
                             style="@style/layout_card_title"
-                            android:text="@string/label_sync_tmp" />
+                            android:text="@string/label_sync" />
                         <TextView
                             style="@style/layout_card_subtitle"
                             android:text="@string/label_sync_description" />

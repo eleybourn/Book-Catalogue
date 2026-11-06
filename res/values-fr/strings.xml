@@ -87,7 +87,7 @@
 
     <string name="button_continue_editing">Continuer la modification</string>
 
-    <string name="could_not_copy_image">Impossible de copier l\'image</string>
+    <string name="alert_could_not_copy_image">Impossible de copier l\'image</string>
 
     <string name="alert_cover_corrupt">Couverture corrompue</string>
     <string name="cover_detail">Détails de la couverture</string>

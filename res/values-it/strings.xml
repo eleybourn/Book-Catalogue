@@ -112,7 +112,7 @@
 
     <string name="button_continue_editing">Annulla</string>
 
-    <string name="could_not_copy_image">Impossibile copiare l\'immagine</string>
+    <string name="alert_could_not_copy_image">Impossibile copiare l\'immagine</string>
 
     <string name="alert_cover_corrupt">Copertina danneggiata</string>
     <string name="cover_detail">Dettagli copertina</string>

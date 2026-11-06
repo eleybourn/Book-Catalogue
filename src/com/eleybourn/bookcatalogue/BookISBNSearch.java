@@ -582,7 +582,7 @@ public class BookISBNSearch extends ActivityWithTasks {
                     if (mLastBookIntent != null)
                         this.setResult(RESULT_OK, mLastBookIntent);
                     else
-                        this.setResult(RESULT_CANCELED, mLastBookIntent);
+                        this.setResult(RESULT_CANCELED, null);
                     if (!mDisplayingAlert)
                         finish();
                 }

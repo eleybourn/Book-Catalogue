@@ -573,7 +573,7 @@ public class BookEdit extends BookCatalogueActivity implements BookEditFragmentA
             item.setIcon(R.drawable.ic_menu_search_globe);
         }
 
-        MenuItem item = menu.add(0, R.id.MENU_BACKUP, 0, R.string.label_sync_tmp);
+        MenuItem item = menu.add(0, R.id.MENU_BACKUP, 0, R.string.label_sync);
         item.setIcon(R.drawable.ic_menu_upload);
 
         return super.onCreateOptionsMenu(menu);

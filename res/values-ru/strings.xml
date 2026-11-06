@@ -101,7 +101,7 @@
 
     <string name="button_continue_editing">Продолжить редактирование</string>
 
-    <string name="could_not_copy_image">Не возможно скопировать изображение</string>
+    <string name="alert_could_not_copy_image">Не возможно скопировать изображение</string>
 
     <string name="alert_cover_corrupt">Обложка испорчена</string>
     <string name="cover_detail">Детальная информация об обложке</string>

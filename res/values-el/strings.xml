@@ -87,7 +87,7 @@
 
     <string name="button_continue_editing">Συνέχεια Επεξεργασίας</string>
 
-    <string name="could_not_copy_image">Δεν ήταν δυνατή η αντιγραφή εικόνας</string>
+    <string name="alert_could_not_copy_image">Δεν ήταν δυνατή η αντιγραφή εικόνας</string>
 
     <string name="alert_cover_corrupt">Το εξώφυλλο είναι κατεστραμμένο</string>
     <string name="cover_detail">Λεπτομέρειες εξωφύλλου</string>

@@ -85,7 +85,7 @@
 
     <string name="button_continue_editing">Bearbeiten fortsetzen</string>
 
-    <string name="could_not_copy_image">Konnte Bild nicht kopieren</string>
+    <string name="alert_could_not_copy_image">Konnte Bild nicht kopieren</string>
 
     <string name="alert_cover_corrupt">Das Cover ist unbrauchbar</string>
     <string name="cover_detail">Coverdetails</string>

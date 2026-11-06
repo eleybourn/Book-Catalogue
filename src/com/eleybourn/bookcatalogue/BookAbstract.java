@@ -128,26 +128,18 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
                     try {
                         File cameraFile = getCameraImageFile();
 
-                        // Apply rotation preference if needed
-                        int rotation = BookCatalogueApp.getAppPreferences().getInt(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES, 0);
-                        if (rotation != 0) {
-                            Bitmap bitmap = BitmapFactory.decodeFile(cameraFile.getAbsolutePath());
-                            if (bitmap != null) {
-                                Matrix m = new Matrix();
-                                m.postRotate(rotation);
-                                Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
-                                try (FileOutputStream f = new FileOutputStream(cameraFile.getAbsoluteFile())) {
-                                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, f);
-                                }
-                                rotatedBitmap.recycle();
-                                bitmap.recycle();
-                            }
+                        // Auto-detect EXIF rotation and combine with user rotation preference
+                        int exifRotation = getExifRotation(cameraFile.getAbsolutePath());
+                        int prefRotation = BookCatalogueApp.getAppPreferences().getInt(BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES, 0);
+                        int totalRotation = (exifRotation + prefRotation) % 360;
+                        if (totalRotation != 0) {
+                            rotateImageFile(cameraFile, totalRotation);
                         }
 
                         // Start crop on the newly saved file
                         cropCoverImage(cameraFile);
                         mGotCameraImage = true;
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         Logger.logError(e);
                     }
                 } else {
@@ -202,7 +194,6 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     }
 
     // Launcher for cropping (Replaces CODE_CROP_RESULT_INTERNAL / EXTERNAL)
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private final ActivityResultLauncher<Intent> mCropLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -233,6 +224,10 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
             Logger.logError(e, "Unable to copy content to file");
         }
         if (imageOk) {
+            int exifRotation = getExifRotation(targetFile.getAbsolutePath());
+            if (exifRotation != 0) {
+                rotateImageFile(targetFile, exifRotation);
+            }
             if (mIsAppendingPhoto) {
                 ArrayList<File> all = CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
                 mCurrentThumbIndex = Math.max(0, all.size() - 1);
@@ -248,8 +243,47 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         }
     }
 
+    private int getExifRotation(String path) {
+        try {
+            android.media.ExifInterface exif = new android.media.ExifInterface(path);
+            int orientation = exif.getAttributeInt(android.media.ExifInterface.TAG_ORIENTATION, android.media.ExifInterface.ORIENTATION_UNDEFINED);
+            switch (orientation) {
+                case android.media.ExifInterface.ORIENTATION_ROTATE_90:
+                    return 90;
+                case android.media.ExifInterface.ORIENTATION_ROTATE_180:
+                    return 180;
+                case android.media.ExifInterface.ORIENTATION_ROTATE_270:
+                    return 270;
+                default:
+                    return 0;
+            }
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private void rotateImageFile(File file, int degrees) {
+        if (degrees % 360 == 0) return;
+        try {
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            if (bitmap != null) {
+                Matrix m = new Matrix();
+                m.postRotate(degrees);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+                try (FileOutputStream f = new FileOutputStream(file.getAbsoluteFile())) {
+                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, f);
+                }
+                if (rotatedBitmap != bitmap) {
+                    rotatedBitmap.recycle();
+                }
+                bitmap.recycle();
+            }
+        } catch (Exception e) {
+            Logger.logError(e);
+        }
+    }
     private void showCopyErrorToast() {
-        String s = getResources().getString(R.string.could_not_copy_image) + ". " + getResources().getString(R.string.message_import_alert_if_the_problem_persists);
+        String s = getResources().getString(R.string.alert_could_not_copy_image) + ". " + getResources().getString(R.string.message_import_alert_if_the_problem_persists);
         Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
     }
 

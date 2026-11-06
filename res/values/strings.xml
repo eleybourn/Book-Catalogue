@@ -128,7 +128,7 @@
 
     <string name="copying_files">Copying files…</string>
 
-    <string name="could_not_copy_image">Could not copy image</string>
+    <string name="alert_could_not_copy_image">Could not copy image</string>
 
     <string name="alert_cover_corrupt">Cover is corrupt</string>
     <string name="cover_detail">Cover Detail</string>
@@ -357,7 +357,7 @@
     <string name="label_backup">Backup</string>
     <string name="label_backup_request">Would you like to make a local backup of your catalogue?</string>
     <string name="label_sync_description">Never lose your book catalogue</string>
-    <string name="label_sync_tmp">Backup and Restore</string>
+    <string name="label_sync">Backup and Restore</string>
     <string name="label_thumbnail">Cover Thumbnail</string>
     <string name="label_title">Title</string>
     <string name="label_update_day">Update Day</string>
@@ -900,7 +900,7 @@
     <string name="alert_crop_no_storage_card">No storage card</string>
     <string name="alert_crop_not_enough_space">Not enough space</string>
     <string name="alert_unable_to_find_book_details">Unable to find book details</string>
-    <string name="alert_api_checking_online_backup_status">Checking online backup status...</string>
+    <string name="alert_api_checking_online_backup_status">Checking online backup status…</string>
     <string name="alert_api_backup_check_complete">Backup check complete</string>
     <string name="alert_can_not_find_image_crop_app">Can not find image crop app</string>
     <string name="alert_could_not_find_appropriate_list">Could not find appropriate list</string>

@@ -31,6 +31,7 @@ import androidx.activity.result.contract.ActivityResultContracts.RequestMultiple
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.exifinterface.media.ExifInterface;
 
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
@@ -166,6 +167,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
             }
     );
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void handleCropResult() {
         try {
             File cropFile = getCroppedImageFileName();
@@ -267,14 +269,14 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
 
     private int getExifRotation(String path) {
         try {
-            android.media.ExifInterface exif = new android.media.ExifInterface(path);
-            int orientation = exif.getAttributeInt(android.media.ExifInterface.TAG_ORIENTATION, android.media.ExifInterface.ORIENTATION_UNDEFINED);
+            ExifInterface exif = new ExifInterface(path);
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
             switch (orientation) {
-                case android.media.ExifInterface.ORIENTATION_ROTATE_90:
+                case ExifInterface.ORIENTATION_ROTATE_90:
                     return 90;
-                case android.media.ExifInterface.ORIENTATION_ROTATE_180:
+                case ExifInterface.ORIENTATION_ROTATE_180:
                     return 180;
-                case android.media.ExifInterface.ORIENTATION_ROTATE_270:
+                case ExifInterface.ORIENTATION_ROTATE_270:
                     return 270;
                 default:
                     return 0;
@@ -429,7 +431,6 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
 
         try {
             assert getView() != null;
-            ImageView iv = getView().findViewById(R.id.row_img);
             File thumbFile = getCoverFile(mEditManager.getBookData().getRowId());
 
             switch (item.getItemId()) {
@@ -656,15 +657,6 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         } else {
             return CatalogueDBAdapter.fetchThumbnailByUuid(uuid, suffix);
         }
-    }
-
-    /**
-     * Return all thumbnails for current book
-     */
-    protected ArrayList<File> getAllCoverFiles() {
-        long rowId = mEditManager.getBookData().getRowId();
-        String uuid = (rowId == 0) ? "" : mDbHelper.getBookUuid(rowId);
-        return CatalogueDBAdapter.fetchAllThumbnailsByUuid(uuid);
     }
 
     /**
@@ -1006,10 +998,6 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
         updateCoverCaption(rowId);
         // Make sure the cached thumbnails (if present) are deleted
         invalidateCachedThumbnail();
-    }
-
-    protected void updateCoverCaption() {
-        updateCoverCaption(null);
     }
 
     protected void updateCoverCaption(Long rowId) {

@@ -35,6 +35,7 @@ dependencies {
     implementation libs.acra.toast
     implementation libs.acra.dialog
     implementation libs.billing
+    implementation libs.androidx.exifinterface
 }
 
 android {

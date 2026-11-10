@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="_empty_"/>
+    <string name="_empty_" />
 
     <string name="alert_automatic_population_failed">Automatic Population of Titles Failed</string>
     <string name="alert_backup_failed">Backup Failed</string>

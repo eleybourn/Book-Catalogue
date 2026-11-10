@@ -887,4 +887,127 @@
     <string name="title_restore_found_backup">Restaurer la sauvegarde ?</string>
     <string name="title_select_formats_to_merge_into">Sélectionner les formats à fusionner dans %s</string>
     <string name="title_subscription_required">Abonnement requis</string>
+
+    <string name="alert_could_not_load_backup_statistics">Impossible de charger les statistiques de sauvegarde.</string>
+    <string name="para_old_files_message">
+        VEUILLEZ LIRE ATTENTIVEMENT CE MESSAGE
+        \n\nGoogle exige désormais que cette version et toutes les futures versions de Book Catalogue stockent leurs fichiers dans des dossiers plus standards.
+        \n\nL\'accès aux anciens dossiers n\'est plus autorisé.
+        \n\nUne mise à niveau depuis une ancienne version de l\'application a été détectée ; vous devez accorder l\'accès afin de déplacer les fichiers.
+        \n\nCliquez sur \'%1$s\' pour continuer, puis accordez l\'accès dans la boîte de dialogue suivante.
+        Si vous sélectionnez \'%2$s\', vous pourrez toujours relancer ce processus via \'%3$s\'-&gt;\'%4$s\'.
+    </string>
+    <string name="progress_backup_combined">Appareil local : %1$d livres (%2$d sauvegardés)\nSauvegarde cloud : %3$d livres</string>
+    <string name="para_subscription_required">Les fonctionnalités de sauvegarde et de restauration en ligne nécessitent un abonnement premium. Cela nous permet de maintenir les serveurs cloud et de garder vos données en sécurité et accessibles sur tous vos appareils.</string>
+    <string name="hint_online_backup_invite_title">Sauvegarde et synchronisation en ligne</string>
+    <string name="hint_online_backup_invite">Nous avons ajouté un nouveau service de sauvegarde et de synchronisation en ligne ! Vous pouvez maintenant garder votre collection en sécurité dans le cloud et synchronisée sur tous vos appareils. Appuyez sur \'Sauvegarde et restauration\' pour commencer.\n\nPensez à vous abonner à ce service premium pour soutenir le développement continu de Book Catalogue.</string>
+    <string name="para_subscription_benefits">Soutenez le développement de Book Catalogue et abonnez-vous pour débloquer les fonctionnalités de sauvegarde et synchronisation en ligne. Votre catalogue sera conservé en toute sécurité dans le cloud et accessible sur tous vos appareils.</string>
+    <string name="para_subscription_benefits_price">Soutenez le développement de Book Catalogue et abonnez-vous pour seulement %1$s par mois pour débloquer les fonctionnalités de sauvegarde et synchronisation en ligne. Votre catalogue sera conservé en toute sécurité dans le cloud et accessible sur tous vos appareils.</string>
+    <string name="para_subscription_benefits_both">Soutenez le développement de Book Catalogue et débloquez la sauvegarde et la synchronisation en ligne pour %1$s/mois ou %2$s pour une licence à vie. Votre catalogue sera conservé en toute sécurité dans le cloud et accessible sur tous vos appareils.</string>
+    <string name="para_subscription_benefits2">La sauvegarde et la restauration locales (ci-dessous) resteront toujours disponibles sans abonnement.</string>
+    <string name="book_details_readonly_pages">%1$s pages</string>
+    <string name="brackets">(%1$s)</string>
+    <string name="button_reorder">Réorganiser</string>
+    <string name="copying_files">Copie des fichiers…</string>
+    <string name="description_no_formats">Aucun format personnalisé trouvé dans la base de données.</string>
+    <string name="description_manage_formats_help">Vous pouvez gérer ici la liste des formats uniques de votre collection. Renommer, fusionner ou effacer des formats mettra instantanément à jour le champ de format de tous les livres associés.</string>
+    <string name="fragment_bracketed_string">(%s)</string>
+    <string name="fragment_selected_thing">sélectionné</string>
+    <string name="hint_tempus_locum"><![CDATA[
+        <p><b>Le développeur principal de Book Catalogue a développé une nouvelle application !</b></p><p>Gardez une trace des lieux, des images, des enregistrements et des notes ; et si vous vous intéressez à la science, gérez les échantillons et les étiquettes.</p><p>Découvrez-la sur le Play Store :</p><p><a href="market://details?id=info.philipwarner.fieldassistant">Tempus Locum</a></p><p>ou visitez le site web ici :</p><p><a href="http://www.tempuslocum.com/">http://www.tempuslocum.com/</a></p>
+    ]]></string>
+    <string name="alert_invalid_backup_file">Le fichier n\'est pas une sauvegarde valide</string>
+    <string name="loaned_to_2">\u2192</string>
+    <string name="new_in_424"><![CDATA[
+        <p><b>Nouveau dans la version 4.2.4</b>\n\n
+            * Affichage en lecture seule des détails du livre avec prise en charge du balayage (voir \"Autres préférences\") (Nick Silin)\n\n
+            * Prise en charge du scanner pic2shop (meilleur pour la mise au point fixe, faible luminosité et caméra frontale)\n\n
+            * Vérification de la connexion Internet plus tôt lors de la recherche de livres\n\n
+            * Mises à jour des traductions en allemand (Robert Wetzlmayr)\n\n
+            * Mises à jour des traductions en français (Djiko)\n\n
+            * Corrections de bogues\n\n
+        </p>
+    ]]></string>
+    <string name="new_in_522"><![CDATA[
+        <p><b>Nouveau dans la version 5.2.2</b>\n\n
+            * Corrections de bogues\n\n
+        </p>
+    ]]></string>
+    <string name="new_in_523"><![CDATA[
+        <p><b>Nouveau dans la version 5.2.3</b>\n\n
+            * Ajout d\'un bouton \'Accueil\' aux boîtes de dialogue de sauvegarde et d\'importation\n\n
+            * Compilation compatible avec Android 9\n\n
+            * Corrections de bogues\n\n
+        </p>
+    ]]></string>
+    <string name="new_in_530"><![CDATA[
+        <p><b>Nouveau dans la version 5.3.0</b>\n\n
+            * Utilisation des nouveaux services web de Book Catalogue pour la recherche\n\n
+            * Corrections de bogues\n\n
+        </p>
+    ]]></string>
+    <string name="new_in_600"><![CDATA[
+        <p><b>Nouveau dans la version 6.0.0</b>\n\n<ul><li> Scanner intégré ! Nous utilisons désormais la bibliothèque native Android pour lire les codes-barres. Les anciens scanners restent disponibles en cas de problème, mais seront retirés dans une prochaine version.</li>
+            <li> Réorganisation complète des fichiers. Google n\'autorise plus l\'écriture dans l\'ancien emplacement. Les couvertures sont désormais stockées dans les dossiers privés de l\'application, et nous utilisons l\'interface standard pour l\'importation et l\'exportation des sauvegardes et fichiers CSV.</li>
+            <li> Fin de la prise en charge de Goodreads (leur API a été fermée).</li>
+            <li> Fin de la prise en charge de LibraryThing (leur API a été fermée).</li>
+            <li> Nombreuses corrections de bogues.</li>
+        </ul></p>
+    ]]></string>
+    <string name="new_in_700"><![CDATA[
+        <p><b>Nouveau dans la version 7.0.0</b>\n\n<ul><li> Interface entièrement repensée et moderne basée sur Material Design.</li><li> Améliorations de la recherche par ISBN pour remplacer les sources qui ne sont plus disponibles (comme Amazon).</li><li> Fin de la prise en charge d\'Android Nougat (2016) et versions antérieures.</li><li> Nombreuses corrections de bogues.</li><li> La prochaine mise à jour intégrera la fonctionnalité la plus demandée : la sauvegarde et synchronisation en ligne.</li></ul></p>
+    ]]></string>
+    <string name="new_in_720"><![CDATA[
+        <p><b>Nouveau dans la version 7.2</b>\n\n<ul>
+            <li>Possibilité d\'ajouter plusieurs vignettes par livre (appui long sur la vignette pour accéder au menu contextuel)</li>
+            <li>Pincement pour zoomer sur la vignette</li>
+            <li>Les décimales du prix catalogue sont désormais enregistrées correctement</li>
+            <li>Le rappel pour sauvegarder la base de données a été réintégré</li>
+            <li>Plus d\'options de personnalisation (masquer la silhouette)</li>
+            <li>Correction de plantages (importation de grosses sauvegardes, navigation avec boîte de dialogue ouverte, recadrage de couvertures)</li>
+            <li>Correction d\'un problème empêchant l\'utilisation de styles personnalisés</li>
+        </ul></p>
+    ]]></string>
+    <string name="old_file_import_cancelled">Importation des anciens fichiers annulée.</string>
+    <string name="old_file_import_complete">Importation des anciens fichiers terminée.</string>
+    <string name="progress_old_file_import_stats">%1$d sur %2$d fichiers ont été traités. %3$s\n\nLes anciens fichiers ont été conservés à leur emplacement d\'origine et peuvent être déplacés ou supprimés après avoir vérifié le bon fonctionnement de l\'application.</string>
+    <string name="old_file_import_status_duplicates">%1$d n\'ont pas été copiés car il s\'agissait de doublons</string>
+    <string name="old_file_import_status_not_book">%1$d n\'ont pas été copiés car il s\'agissait de couvertures de livres inexistants</string>
+    <string name="old_file_import_status_of_those">Parmi ces fichiers, %s.</string>
+    <string name="option_builtin_scanner">Scanner intégré</string>
+    <string name="para_selected_archive_contains">Il contient %1$s.</string>
+    <string name="para_selected_archive_info">L\'archive sélectionnée a une taille de %1$s et a été créée le %2$s.</string>
+    <string name="perm_camera">Cette autorisation est requise pour photographier les couvertures de livres et scanner les codes-barres.</string>
+    <string name="perm_internet">Cette autorisation est requise pour rechercher les détails des livres et accéder aux services en ligne.</string>
+    <string name="perm_intro">Pour continuer, Book Catalogue a besoin des autorisations suivantes :\n\n</string>
+    <string name="perm_network_state">Cette autorisation est requise pour vérifier la disponibilité du réseau lors des accès à Internet (ex. lors d\'une recherche).</string>
+    <string name="perm_read_ext">Cette autorisation est requise pour importer les photos prises avec l\'appareil, restaurer les sauvegardes et exports, lire les vignettes de couvertures et lire les informations de diagnostic et de récupération.</string>
+    <string name="perm_required">Autorisation requise</string>
+    <string name="perm_write_ext">Cette autorisation est requise pour enregistrer les photos prises avec l\'appareil, restaurer les sauvegardes et exports, créer les vignettes de couvertures et enregistrer les informations de diagnostic et de récupération.</string>
+    <string name="option_orientation_portrait">Toujours portrait</string>
+    <string name="option_orientation_landscape">Toujours paysage</string>
+    <string name="really_delete_format">Voulez-vous vraiment supprimer le format \'%s\' ?\n\nLes livres eux-mêmes ne seront pas supprimés ; leur format sera simplement effacé.</string>
+    <string name="selected_dir_wrong_name">Le dossier sélectionné ne s\'appelle pas \'%1$s\' et ne semble pas contenir de dossier portant ce nom. Êtes-vous sûr qu\'il s\'agit du bon emplacement ?</string>
+    <string name="share_im_reading">\"Je lis %1$s de %2$s%3$s%4$s</string>
+    <string name="title_activity_scanner">ScannerActivity</string>
+    <string name="alert_sign_in_cancelled">Connexion annulée.</string>
+    <string name="alert_billing_service_not_ready_connecting">Service de facturation non disponible. Connexion en cours…</string>
+    <string name="alert_billing_no_active_offers_found">Aucune offre active trouvée pour cet abonnement.</string>
+    <string name="alert_billing_product_not_found">Identifiant de produit \'%1$s\' non trouvé.</string>
+    <string name="alert_api_login_failed">Échec de la connexion : contexte d\'activité requis.</string>
+    <string name="alert_api_login_failed_launcher_not_initialized">Échec de la connexion : lanceur d\'activité non initialisé.</string>
+    <string name="alert_api_unable_to_start_sign_in_process">Impossible de démarrer le processus de connexion.</string>
+    <string name="alert_api_unable_to_find_a_google_account">Impossible de trouver un compte Google (Code L1). Veuillez vérifier que vous êtes bien connecté à Google sur cet appareil et que la date et l\'heure sont définies sur Automatique.</string>
+    <string name="alert_api_google_play_services_are_not_available">Les services Google Play ne sont pas disponibles sur cet appareil.</string>
+    <string name="alert_api_login_config_error">Erreur de configuration de la connexion (Code 10). Veuillez vérifier que la date et l\'heure de votre appareil sont correctes et que l\'application est bien enregistrée dans Google Cloud.</string>
+    <string name="alert_api_login_failed_play_services">Échec de la connexion Google (Code 12500). Veuillez vérifier que les services Google Play sont activés et à jour.</string>
+    <string name="alert_api_login_failed_format">Échec de la connexion (Erreur %1$d). Veuillez vérifier les paramètres de votre compte Google.</string>
+    <string name="alert_api_unable_to_start_account_selection">Impossible de démarrer le processus de sélection de compte.</string>
+    <string name="alert_api_invalid_credential_data">Données d\'identification non valides reçues.</string>
+    <string name="alert_api_unexpected_credential_type">Type d\'identifiant inattendu : %1$s</string>
+    <string name="alert_crop_preparing_card">Préparation de la carte</string>
+    <string name="alert_crop_no_storage_card">Aucune carte de stockage</string>
+    <string name="alert_crop_not_enough_space">Espace insuffisant</string>
+    <string name="alert_can_not_find_image_crop_app">Impossible de trouver une application de recadrage d\'image</string>
+    <string name="alert_could_not_find_appropriate_list">Impossible de trouver la liste appropriée</string>
 </resources>

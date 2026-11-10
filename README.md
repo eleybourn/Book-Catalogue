@@ -40,6 +40,10 @@ Features include:
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
 * Fixed a defect that prevented custom styles from being used
 
+new in 7.2.1
+* French translations updated (huge thanks to Daniel Vachon)
+* 
+
 new in 7.2
 * Ability to add multiple thumbnails per book (long press on the thumbnail to access context menu)
 * Pinch to zoom thumbnail

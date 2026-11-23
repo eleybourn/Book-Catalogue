@@ -42,50 +42,6 @@ import java.util.ArrayList;
  */
 public class AlertDialogUtils {
     /**
-     * Utility routine to display an array of ContextDialogItems in an alert.
-     *
-     * @param title Title of Alert
-     * @param items Items to display
-     */
-    public static void showContextDialogue(Context context, String title, ArrayList<AlertDialogItem> items) {
-        if (!items.isEmpty()) {
-            final AlertDialogItem[] itemArray = new AlertDialogItem[items.size()];
-            items.toArray(itemArray);
-
-            ArrayAdapter<AlertDialogItem> adapter = new ArrayAdapter<>(context, R.layout.string_list_item, R.id.field_name, items) {
-                @NonNull
-                @Override
-                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                    View view = super.getView(position, convertView, parent);
-                    TextView text = view.findViewById(R.id.field_name);
-                    AlertDialogItem item = getItem(position);
-                    if (item != null) {
-                        text.setText(item.name);
-                        if (item.iconRes != 0) {
-                            text.setCompoundDrawablesWithIntrinsicBounds(item.iconRes, 0, 0, 0);
-                            int colorOnSurface = Utils.getThemeColor(context, com.google.android.material.R.attr.colorOnSurface);
-                            TextViewCompat.setCompoundDrawableTintList(text, ColorStateList.valueOf(colorOnSurface));
-                        } else {
-                            text.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                        }
-                    }
-                    // Hide the radio button and divider if they're there
-                    View selector = view.findViewById(R.id.selector);
-                    if (selector != null) selector.setVisibility(View.GONE);
-                    View divider = view.findViewById(R.id.divider);
-                    if (divider != null) divider.setVisibility(View.GONE);
-                    return view;
-                }
-            };
-
-            new MaterialAlertDialogBuilder(context)
-                    .setTitle(title)
-                    .setAdapter(adapter, (dialog, which) -> items.get(which).handler.run())
-                    .create().show();
-        }
-    }
-
-    /**
      * Utility routine to display the Add Book options in an alert with a toggle
      * for continuous book entry ("Add one" vs "Add many").
      *
@@ -159,10 +115,6 @@ public class AlertDialogUtils {
         public final String name;
         public final Runnable handler;
         public final int iconRes;
-
-        public AlertDialogItem(String name, Runnable handler) {
-            this(name, 0, handler);
-        }
 
         public AlertDialogItem(String name, int iconRes, Runnable handler) {
             this.name = name;

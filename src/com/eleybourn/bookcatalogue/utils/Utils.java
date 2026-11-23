@@ -444,8 +444,8 @@ public class Utils {
         try {
             URL u = new URL(urlText);
             conn = (HttpURLConnection) u.openConnection();
-            conn.setConnectTimeout(15000);
-            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
             conn.connect();
 
             if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -552,8 +552,8 @@ public class Utils {
         InputStream in;
         try {
             c = (HttpURLConnection) u.openConnection();
-            c.setConnectTimeout(30000);
-            c.setReadTimeout(30000);
+            c.setConnectTimeout(10000);
+            c.setReadTimeout(10000);
             c.setRequestMethod("GET");
             c.setDoInput(true);
             c.setUseCaches(false);
@@ -591,17 +591,13 @@ public class Utils {
      *
      * @param url URL to retrieve
      */
-    @SuppressWarnings("BusyWait")
     static public InputStream getInputStream(URL url) throws UnknownHostException {
         String urlString = url.toString();
         Object lock = urlLocks.computeIfAbsent(urlString, k -> new Object());
 
         synchronized (lock) {
-
-            int retries = 3;
-            while (true) {
-                try {
-                    final ConnectionInfo connInfo = new ConnectionInfo();
+            try {
+                final ConnectionInfo connInfo = new ConnectionInfo();
 
                     connInfo.conn = url.openConnection();
                     connInfo.conn.setUseCaches(false);
@@ -616,8 +612,8 @@ public class Utils {
                         c = null;
                     }
 
-                    connInfo.conn.setConnectTimeout(30000);
-                    connInfo.conn.setReadTimeout(30000);
+                    connInfo.conn.setConnectTimeout(10000);
+                    connInfo.conn.setReadTimeout(10000);
 
                     Terminator.enqueue(() -> {
                         if (connInfo.is != null) {
@@ -633,7 +629,7 @@ public class Utils {
                             ((HttpURLConnection) connInfo.conn).disconnect();
                         }
 
-                    }, 30000);
+                    }, 12000);
                     connInfo.is = new StatefulBufferedInputStream(connInfo.conn.getInputStream());
 
                     if (c != null && c.getResponseCode() >= 300) {
@@ -645,20 +641,16 @@ public class Utils {
 
                 } catch (java.net.UnknownHostException e) {
                     Logger.logError(e);
-                    retries--;
-                    if (retries <= 0)
-                        throw e;
-                    try {
-                        Thread.sleep(500);
-                    } catch (Exception ignored) {
-                    }
+                    throw e;
+                } catch (java.net.SocketTimeoutException e) {
+                    Logger.logError(e, "URL request timed out: " + url);
+                    return null;
                 } catch (java.io.FileNotFoundException e) {
                     return null;
                 } catch (Exception e) {
                     Logger.logError(e);
-                    throw new RuntimeException(e);
+                    return null;
                 }
-            }
         }
     }
 

@@ -58,7 +58,7 @@ public class BcService {
      * Sync object
      */
     private static final Object mApiSync = new Object();
-    private static final int API_TIMEOUT = 30000;
+    private static final int API_TIMEOUT = 10000;
     /**
      * Last time API was called; limit to 1 per second
      */
@@ -185,12 +185,12 @@ public class BcService {
         urlConnection.setRequestProperty("Accept-Language", String.valueOf(StandardCharsets.UTF_8));
         // Set a timeout
         urlConnection.setConnectTimeout(API_TIMEOUT);
+        urlConnection.setReadTimeout(API_TIMEOUT);
 
         //urlConnection.setRequestProperty("Authorization", "Basic " + getApiToken());
 
         if (method == Methods.Post) {
             urlConnection.setDoOutput(true);
-            urlConnection.setReadTimeout(API_TIMEOUT);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
             outputStreamWriter.write(args.toString());
             outputStreamWriter.flush();

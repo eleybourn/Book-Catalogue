@@ -21,6 +21,8 @@
  package com.eleybourn.bookcatalogue;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.eleybourn.bookcatalogue.SearchThread.BookSearchResults;
 import com.eleybourn.bookcatalogue.SearchThread.DataSource;
@@ -99,6 +101,27 @@ public class SearchManager implements TaskManagerListener {
 
 	// List of threads created by *this* object.
 	private final ArrayList<ManagedTask> mRunningTasks = new ArrayList<>();
+
+	private static final long SEARCH_WATCHDOG_TIMEOUT_MS = 15000;
+	private final Handler mWatchdogHandler = new Handler(Looper.getMainLooper());
+	private final Runnable mWatchdogRunnable = this::onWatchdogTimeout;
+
+	private void onWatchdogTimeout() {
+		synchronized (mRunningTasks) {
+			if (!mRunningTasks.isEmpty()) {
+				Logger.logError(new RuntimeException("Search task watchdog timed out after " + SEARCH_WATCHDOG_TIMEOUT_MS + " ms"));
+				mCancelledFlg = true;
+				for (ManagedTask task : mRunningTasks) {
+					try {
+						task.interrupt();
+					} catch (Exception ignored) {}
+				}
+				mRunningTasks.clear();
+				TaskManager.getMessageSwitch().removeListener(mTaskManager.getSenderId(), this);
+				sendResults();
+			}
+		}
+	}
 
     /**
 	 * Constructor.
@@ -232,6 +255,9 @@ public class SearchManager implements TaskManagerListener {
 		// List for task ends
 		TaskManager.getMessageSwitch().addListener(mTaskManager.getSenderId(), this, false);
 
+		mWatchdogHandler.removeCallbacks(mWatchdogRunnable);
+		mWatchdogHandler.postDelayed(mWatchdogRunnable, SEARCH_WATCHDOG_TIMEOUT_MS);
+
 		// We really want to ensure we get the same book from each, so if isbn is not present, do
 		// these in series.
 		boolean tasksStarted = false;
@@ -327,6 +353,7 @@ public class SearchManager implements TaskManagerListener {
 	 * Combine all the data and create a book or display an error.
 	 */
 	private void sendResults() {
+		mWatchdogHandler.removeCallbacks(mWatchdogRunnable);
 		//Logger.logError(new RuntimeException("BC_DEBUG: SearchManager.sendResults"));
 		// This list will be the actual order of the result we apply, based on the
 		// actual results and the default order.

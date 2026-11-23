@@ -497,7 +497,7 @@ public class BookCatalogueAPI implements SimpleTask {
         if (bookshelves != null) {
             for (Bookshelf bookshelf : bookshelves) {
                 fields.add(prefix + "bookshelves" + suffix + "[]");
-                values.add(bookshelf.id + ", " + bookshelf.name);
+                values.add(bookshelf.id + ", " + bookshelf.getUuid() + ", " + bookshelf.name);
             }
         }
 
@@ -1363,7 +1363,20 @@ public class BookCatalogueAPI implements SimpleTask {
                 for (int author_i = 0; author_i < authorsJson.length(); author_i++) {
                     try {
                         JSONObject authorJson = authorsJson.getJSONObject(author_i);
-                        Author author = new Author(authorJson.optLong("bcid", 0), getStringOrEmpty(authorJson, "family_name"), getStringOrEmpty(authorJson, "given_names"));
+                        String familyName = getStringOrEmpty(authorJson, "family_name");
+                        String givenNames = getStringOrEmpty(authorJson, "given_names");
+                        String aUuid = getStringOrEmpty(authorJson, "uuid");
+                        if (aUuid.isEmpty()) {
+                            aUuid = getStringOrEmpty(authorJson, "author_uuid");
+                        }
+                        Author author = new Author(0L, familyName, givenNames, aUuid);
+                        // Fix up ID locally by looking up the author name or uuid to ensure consistency across devices
+                        long localAuthorId = db.lookupAuthorId(author);
+                        if (localAuthorId > 0) {
+                            author.id = localAuthorId;
+                        } else {
+                            author.id = db.createAuthor(familyName, givenNames);
+                        }
                         authors.add(author);
                     } catch (Exception e) {
                         Log.e("BookCatalogueAPI", "Failed to parse or insert author for book " + title, e);
@@ -1377,7 +1390,20 @@ public class BookCatalogueAPI implements SimpleTask {
                     for (int series_i = 0; series_i < seriesJson.length(); series_i++) {
                         try {
                             JSONObject seriesEntryJson = seriesJson.getJSONObject(series_i);
-                            Series seriesEntry = new Series(seriesEntryJson.optLong("bcid", 0), getStringOrEmpty(seriesEntryJson, "series_name"), getStringOrEmpty(seriesEntryJson, "series_num"));
+                            String seriesName = getStringOrEmpty(seriesEntryJson, "series_name");
+                            String seriesNum = getStringOrEmpty(seriesEntryJson, "series_num");
+                            String sUuid = getStringOrEmpty(seriesEntryJson, "uuid");
+                            if (sUuid.isEmpty()) {
+                                sUuid = getStringOrEmpty(seriesEntryJson, "series_uuid");
+                            }
+                            Series seriesEntry = new Series(0L, seriesName, seriesNum, sUuid);
+                            // Fix up ID locally by looking up the series name/num to ensure consistency across devices
+                            long localSeriesId = db.lookupSeriesId(seriesEntry);
+                            if (localSeriesId > 0) {
+                                seriesEntry.id = localSeriesId;
+                            } else {
+                                seriesEntry.id = db.createSeries(seriesName);
+                            }
                             series.add(seriesEntry);
                         } catch (Exception e) {
                             Log.e("BookCatalogueAPI", "Failed to parse or insert series for book " + title, e);
@@ -1395,6 +1421,9 @@ public class BookCatalogueAPI implements SimpleTask {
                         try {
                             JSONObject bookshelfJson = bookshelvesJson.getJSONObject(bookshelf_i);
                             String name = getStringOrEmpty(bookshelfJson, "bookshelf");
+                            if (name.isEmpty()) {
+                                name = getStringOrEmpty(bookshelfJson, "name");
+                            }
                             String encoded_name = Utils.encodeListItem(name, BookAbstract.BOOKSHELF_SEPARATOR);
                             if (bookshelves_list.length() == 0) {
                                 bookshelves_list = new StringBuilder(encoded_name);

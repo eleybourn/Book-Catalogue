@@ -212,6 +212,18 @@ public class CsvImporter {
 
 					// Now build the array for authors
 					ArrayList<Author> aa = Utils.getAuthorUtils().decodeList(authorDetails, '|', false);
+					if (values.containsKey("author_uuids")) {
+						String authorUuids = values.getString("author_uuids");
+						if (authorUuids != null && !authorUuids.isEmpty()) {
+							ArrayList<String> uuids = Utils.decodeList(authorUuids, '|');
+							for (int aIdx = 0; aIdx < aa.size() && aIdx < uuids.size(); aIdx++) {
+								String u = uuids.get(aIdx).trim();
+								if (!u.isEmpty()) {
+									aa.get(aIdx).uuid = u;
+								}
+							}
+						}
+					}
 					Utils.pruneList(db, aa);
 					values.putSerializable(CatalogueDBAdapter.KEY_AUTHOR_ARRAY, aa);
 				}
@@ -236,6 +248,18 @@ public class CsvImporter {
 					}
 					// Handle the series
 					ArrayList<Series> sa = Utils.getSeriesUtils().decodeList(seriesDetails, '|', false);
+					if (values.containsKey("series_uuids")) {
+						String seriesUuids = values.getString("series_uuids");
+						if (seriesUuids != null && !seriesUuids.isEmpty()) {
+							ArrayList<String> uuids = Utils.decodeList(seriesUuids, '|');
+							for (int sIdx = 0; sIdx < sa.size() && sIdx < uuids.size(); sIdx++) {
+								String u = uuids.get(sIdx).trim();
+								if (!u.isEmpty()) {
+									sa.get(sIdx).uuid = u;
+								}
+							}
+						}
+					}
 					Utils.pruneSeriesList(sa);
 					Utils.pruneList(db, sa);
 					values.putSerializable(CatalogueDBAdapter.KEY_SERIES_ARRAY, sa);				
@@ -245,6 +269,9 @@ public class CsvImporter {
 				// Make sure we have bookshelf_text if we imported bookshelf
 				if (values.containsKey(CatalogueDBAdapter.KEY_BOOKSHELF) && !values.containsKey("bookshelf_text")) {
 					values.setBookshelfList(values.getString(CatalogueDBAdapter.KEY_BOOKSHELF));
+				}
+				if (values.containsKey("bookshelf_uuids")) {
+					values.putString("bookshelf_uuids", values.getString("bookshelf_uuids"));
 				}
 
 				try {

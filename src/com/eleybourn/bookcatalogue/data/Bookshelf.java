@@ -18,7 +18,21 @@ public class Bookshelf {
     @ColumnInfo(name = CatalogueDBAdapter.KEY_BOOKSHELF)
     public String name;
 
+    @androidx.room.Ignore
+    public String uuid = "";
+
     public Bookshelf() {
         name = "";
+    }
+
+    public String getUuid() {
+        if (uuid == null || uuid.isEmpty()) {
+            if (name != null && !name.isEmpty()) {
+                uuid = java.util.UUID.nameUUIDFromBytes(name.trim().toLowerCase().getBytes(java.nio.charset.StandardCharsets.UTF_8)).toString();
+            } else {
+                uuid = java.util.UUID.randomUUID().toString();
+            }
+        }
+        return uuid;
     }
 }

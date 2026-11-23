@@ -39,12 +39,14 @@ public class Author implements Serializable, Utils.ItemWithIdFixup {
 	public String 	familyName;
 	public String 	givenNames;
 	public long		id;
+	public String   uuid = "";
 
 	/**
 	 * Constructor that will attempt to parse a single string into an author name.
 	 */
 	public Author(String name) {
 		id = 0;
+		uuid = java.util.UUID.randomUUID().toString();
 		fromString(name);
 	}
 
@@ -66,9 +68,14 @@ public class Author implements Serializable, Utils.ItemWithIdFixup {
 	 * @param given		Given names
 	 */
     public Author(long id, String family, String given) {
+		this(id, family, given, java.util.UUID.randomUUID().toString());
+	}
+
+	public Author(long id, String family, String given, String uuid) {
 		this.id = id;
 		familyName = family.trim();
 		givenNames = given.trim();
+		this.uuid = (uuid != null && !uuid.isEmpty()) ? uuid : java.util.UUID.randomUUID().toString();
 	}
 
 	/**
@@ -108,7 +115,12 @@ public class Author implements Serializable, Utils.ItemWithIdFixup {
 	private void fromString(String s) {
 		ArrayList<String> sa = Utils.decodeList(s, ',');
 		if (!sa.isEmpty()) {
-			if (sa.size() < 2) {
+			// Check if first element is a UUID (length 36 with hyphens)
+			if (sa.size() >= 3 && sa.get(0).trim().length() == 36 && sa.get(0).contains("-")) {
+				uuid = sa.get(0).trim();
+				familyName = sa.get(1).trim();
+				givenNames = sa.get(2).trim();
+			} else if (sa.size() < 2) {
 				// We have a name with no comma. Parse it the usual way.
 				String[] names = CatalogueDBAdapter.processAuthorName(s);
 				familyName = names[0];

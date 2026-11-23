@@ -40,8 +40,16 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 	public long		id;
 	public String 	name;
 	public String	num;
+	public String   uuid = java.util.UUID.randomUUID().toString();
 
     public Series(String name) {
+		if (name != null && name.length() > 37 && name.charAt(36) == ',') {
+			String possibleUuid = name.substring(0, 36);
+			if (possibleUuid.contains("-")) {
+				this.uuid = possibleUuid;
+				name = name.substring(37).trim();
+			}
+		}
         Pattern mPattern = Pattern.compile("^(.*)\\s*\\((.*)\\)\\s*$");
         java.util.regex.Matcher m = mPattern.matcher(name);
 		if (m.find()) {
@@ -55,17 +63,22 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 	}
 
     public Series(long id, String name) {
-		this(id, name, "");
+		this(id, name, "", java.util.UUID.randomUUID().toString());
 	}
 
 	public Series(String name, String num) {
-		this(0L, name, num);
+		this(0L, name, num, java.util.UUID.randomUUID().toString());
 	}
 
     public Series(long id, String name, String num) {
+		this(id, name, num, java.util.UUID.randomUUID().toString());
+	}
+
+	public Series(long id, String name, String num, String uuid) {
 		this.id = id;
 		this.name = name.trim();
 		this.num = cleanupSeriesPosition(num);
+		this.uuid = (uuid != null && !uuid.isEmpty()) ? uuid : java.util.UUID.randomUUID().toString();
 	}
 
 	public String getDisplayName() {

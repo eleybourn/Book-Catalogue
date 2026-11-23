@@ -29,8 +29,11 @@ import com.eleybourn.bookcatalogue.BooksRowView;
 import com.eleybourn.bookcatalogue.CatalogueDBAdapter;
 import com.eleybourn.bookcatalogue.R;
 import com.eleybourn.bookcatalogue.booklist.DatabaseDefinitions;
+import com.eleybourn.bookcatalogue.data.Author;
+import com.eleybourn.bookcatalogue.data.Series;
 import com.eleybourn.bookcatalogue.utils.Logger;
 import com.eleybourn.bookcatalogue.utils.Utils;
+import java.util.ArrayList;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -100,7 +103,9 @@ public class CsvExporter implements Exporter {
                         '"' + CatalogueDBAdapter.KEY_DATE_ADDED + "\"," +        //28
                         '"' + DatabaseDefinitions.DOM_LAST_UPDATE_DATE + "\"," +        //29
                         '"' + DatabaseDefinitions.DOM_BOOK_UUID + "\"," +        //30
-                        "\n");
+                        "\"author_uuids\"," +                                    //31
+                        "\"series_uuids\"," +                                    //32
+                        "\"bookshelf_uuids\"\n");                                //33
 
         long lastUpdate = 0;
 
@@ -182,6 +187,7 @@ public class CsvExporter implements Exporter {
                         Cursor bookshelves = db.fetchAllBookshelvesByBook(id);
                         StringBuilder bookshelves_id_text = new StringBuilder();
                         StringBuilder bookshelves_name_text = new StringBuilder();
+                        StringBuilder bookshelves_uuid_text = new StringBuilder();
                         int idColIndex = bookshelves.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_ROW_ID);
                         int nameColIndex = bookshelves.getColumnIndexOrThrow(CatalogueDBAdapter.KEY_BOOKSHELF);
 
@@ -194,16 +200,31 @@ public class CsvExporter implements Exporter {
                             String bookshelfName = bookshelves.getString(nameColIndex);
                             if (bookshelfName != null && !bookshelfName.isEmpty()) {
                                 bookshelves_name_text.append(Utils.encodeListItem(bookshelfName, BookEditFields.BOOKSHELF_SEPARATOR)).append(BookEditFields.BOOKSHELF_SEPARATOR);
+                                String bUuid = java.util.UUID.nameUUIDFromBytes(bookshelfName.trim().toLowerCase().getBytes(StandardCharsets.UTF_8)).toString();
+                                bookshelves_uuid_text.append(bUuid).append(BookEditFields.BOOKSHELF_SEPARATOR);
                             }
                         }
                         bookshelves.close();
 
-                        String authorDetails = Utils.getAuthorUtils().encodeList(db.getBookAuthorList(id), '|');
+                        ArrayList<Author> bookAuthors = db.getBookAuthorList(id);
+                        String authorDetails = Utils.getAuthorUtils().encodeList(bookAuthors, '|');
                         // Sanity check: ensure author is non-blank. This HAPPENS. Probably due to constraint failures.
                         if (authorDetails == null || authorDetails.trim().isEmpty())
                             authorDetails = AUTHOR + ", " + UNKNOWN;
 
-                        String seriesDetails = Utils.getSeriesUtils().encodeList(db.getBookSeriesList(id), '|');
+                        StringBuilder authorUuids = new StringBuilder();
+                        for (Author a : bookAuthors) {
+                            if (authorUuids.length() > 0) authorUuids.append("|");
+                            authorUuids.append(a.uuid != null ? a.uuid : "");
+                        }
+
+                        ArrayList<Series> bookSeries = db.getBookSeriesList(id);
+                        String seriesDetails = Utils.getSeriesUtils().encodeList(bookSeries, '|');
+                        StringBuilder seriesUuids = new StringBuilder();
+                        for (Series s : bookSeries) {
+                            if (seriesUuids.length() > 0) seriesUuids.append("|");
+                            seriesUuids.append(s.uuid != null ? s.uuid : "");
+                        }
 
                         row.setLength(0);
                         row.append("\"").append(formatCell(id)).append("\",");
@@ -234,6 +255,9 @@ public class CsvExporter implements Exporter {
                         row.append("\"").append(formatCell(dateAddedString)).append("\",");
                         row.append("\"").append(formatCell(books.getString(books.getColumnIndexOrThrow(DatabaseDefinitions.DOM_LAST_UPDATE_DATE.name)))).append("\",");
                         row.append("\"").append(formatCell(rv.getBookUuid())).append("\",");
+                        row.append("\"").append(formatCell(authorUuids.toString())).append("\",");
+                        row.append("\"").append(formatCell(seriesUuids.toString())).append("\",");
+                        row.append("\"").append(formatCell(bookshelves_uuid_text.toString())).append("\"");
                         row.append("\n");
                         out.write(row.toString());
                         //export.append(row);

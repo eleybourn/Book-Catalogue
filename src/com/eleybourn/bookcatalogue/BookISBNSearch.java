@@ -97,6 +97,13 @@ public class BookISBNSearch extends ActivityWithTasks {
                             mLastBookIntent = intent;
                         }
 
+                        boolean keepActive = BookCatalogueApp.getAppPreferences().getBoolean(BookCataloguePreferences.PREF_KEEP_SEARCH_ACTIVE, true);
+                        if (!keepActive && mLastBookIntent != null) {
+                            this.setResult(RESULT_OK, mLastBookIntent);
+                            finish();
+                            return;
+                        }
+
                         // Created a book; save the intent and restart scanner if necessary.
                         if (mMode == MODE_SCAN) {
                             try {

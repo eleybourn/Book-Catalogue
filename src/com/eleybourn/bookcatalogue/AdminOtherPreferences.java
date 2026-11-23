@@ -160,6 +160,13 @@ public class AdminOtherPreferences extends PreferencesBase {
 		.setGlobal(true)
 		.setNameResourceId(R.string.preference_preferred_scanner)
 		.setGroup(PropertyGroup.GRP_SCANNER) )
+
+	.add(new BooleanProperty(BookCataloguePreferences.PREF_KEEP_SEARCH_ACTIVE)
+		.setDefaultValue(true)
+		.setPreferenceKey(BookCataloguePreferences.PREF_KEEP_SEARCH_ACTIVE)
+		.setGlobal(true)
+		.setNameResourceId(R.string.preference_keep_search_active)
+		.setGroup(PropertyGroup.GRP_SCANNER) )
 		
 	.add(new IntegerListProperty( mRotationListItems, BookCataloguePreferences.PREF_AUTOROTATE_CAMERA_IMAGES)
 		.setDefaultValue(0)

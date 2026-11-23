@@ -26,9 +26,11 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 
+import com.eleybourn.bookcatalogue.utils.AlertDialogUtils;
 import com.eleybourn.bookcatalogue.utils.Utils;
+
+import java.util.ArrayList;
 
 /**
  * Class to make building menus simpler. Implements some default menu items and allows
@@ -68,25 +70,11 @@ public class MenuHandler {
      * @param menu Root menu
      */
     public void addCreateBookItems(Menu menu) {
-        SubMenu addMenu = menu.addSubMenu(0, MENU_ADD_BOOK, mSort++, BookCatalogueApp.getRes().getString(R.string.title_add_book) + "...");
-        addMenu.setIcon(R.drawable.ic_menu_new);
+        MenuItem addBookItem = menu.add(0, MENU_ADD_BOOK, mSort++, BookCatalogueApp.getRes().getString(R.string.title_add_book));
+        addBookItem.setIcon(R.drawable.ic_menu_new);
         int colorOnPrimary = Utils.getThemeColor(mContext, com.google.android.material.R.attr.colorOnPrimary);
-        addMenu.getItem().setIconTintList(ColorStateList.valueOf(colorOnPrimary));
-        addMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        {
-            if (Utils.USE_BARCODE) {
-                MenuItem insertBC = addMenu.add(0, MENU_ITEM_ADD_BOOK_BARCODE, mSort++, R.string.label_scan_barcode_isbn);
-                insertBC.setIcon(R.drawable.ic_menu_scan);
-            }
-            MenuItem insertISBN = addMenu.add(0, MENU_ITEM_ADD_BOOK_ISBN, mSort++, R.string.label_enter_isbn);
-            insertISBN.setIcon(R.drawable.ic_menu_field_numbers);
-
-            MenuItem insertName = addMenu.add(0, MENU_ITEM_ADD_BOOK_NAMES, mSort++, R.string.label_search_internet);
-            insertName.setIcon(R.drawable.ic_menu_search_globe);
-
-            MenuItem insertBook = addMenu.add(0, MENU_ITEM_ADD_BOOK_MANUAL, mSort++, R.string.label_add_manually);
-            insertBook.setIcon(R.drawable.ic_menu_field_text);
-        }
+        addBookItem.setIconTintList(ColorStateList.valueOf(colorOnPrimary));
+        addBookItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
     }
 
     /**
@@ -162,6 +150,9 @@ public class MenuHandler {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean onMenuItemSelected(Activity a, MenuItem item) {
         switch (item.getItemId()) {
+            case MENU_ADD_BOOK:
+                showAddBookDialog(a);
+                return true;
             case MENU_ITEM_ADD_BOOK_MANUAL:
                 createBook(a);
                 return true;
@@ -195,6 +186,20 @@ public class MenuHandler {
         }
 
         return false;
+    }
+
+    /**
+     * Display Add Book dialog with toggle
+     */
+    private void showAddBookDialog(Activity a) {
+        ArrayList<AlertDialogUtils.AlertDialogItem> items = new ArrayList<>();
+        if (Utils.USE_BARCODE) {
+            items.add(new AlertDialogUtils.AlertDialogItem(mContext.getString(R.string.label_scan_barcode_isbn), R.drawable.ic_menu_scan, () -> createBookScan(a)));
+        }
+        items.add(new AlertDialogUtils.AlertDialogItem(mContext.getString(R.string.label_enter_isbn), R.drawable.ic_menu_field_numbers, () -> createBookISBN(a, "isbn")));
+        items.add(new AlertDialogUtils.AlertDialogItem(mContext.getString(R.string.label_search_internet), R.drawable.ic_menu_search_globe, () -> createBookISBN(a, "name")));
+        items.add(new AlertDialogUtils.AlertDialogItem(mContext.getString(R.string.label_add_manually), R.drawable.ic_menu_field_text, () -> createBook(a)));
+        AlertDialogUtils.showAddBookDialogue(a, mContext.getString(R.string.title_add_book), items);
     }
 
     /**

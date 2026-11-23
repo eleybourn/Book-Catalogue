@@ -119,7 +119,7 @@ public class MainMenu extends BookCatalogueActivity implements OnMessageDialogRe
             items.add(new AlertDialogItem(getString(R.string.label_enter_isbn), R.drawable.ic_menu_field_numbers, mCreateBookIsbn));
             items.add(new AlertDialogItem(getString(R.string.label_search_internet), R.drawable.ic_menu_search_globe, mCreateBookName));
             items.add(new AlertDialogItem(getString(R.string.label_add_manually), R.drawable.ic_menu_field_text, mCreateBookManually));
-            AlertDialogUtils.showContextDialogue(MainMenu.this, getString(R.string.title_add_book), items);
+            AlertDialogUtils.showAddBookDialogue(MainMenu.this, getString(R.string.title_add_book), items);
         }
     };
 

@@ -86,6 +86,69 @@ public class AlertDialogUtils {
     }
 
     /**
+     * Utility routine to display the Add Book options in an alert with a toggle
+     * for continuous book entry ("Add one" vs "Add many").
+     *
+     * @param context Context
+     * @param title Title of Alert
+     * @param items Items to display
+     */
+    public static void showAddBookDialogue(Context context, String title, ArrayList<AlertDialogItem> items) {
+        if (!items.isEmpty()) {
+            final AlertDialogItem[] itemArray = new AlertDialogItem[items.size()];
+            items.toArray(itemArray);
+
+            ArrayAdapter<AlertDialogItem> adapter = new ArrayAdapter<>(context, R.layout.string_list_item, R.id.field_name, items) {
+                @NonNull
+                @Override
+                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    TextView text = view.findViewById(R.id.field_name);
+                    AlertDialogItem item = getItem(position);
+                    if (item != null) {
+                        text.setText(item.name);
+                        if (item.iconRes != 0) {
+                            text.setCompoundDrawablesWithIntrinsicBounds(item.iconRes, 0, 0, 0);
+                            int colorOnSurface = Utils.getThemeColor(context, com.google.android.material.R.attr.colorOnSurface);
+                            TextViewCompat.setCompoundDrawableTintList(text, ColorStateList.valueOf(colorOnSurface));
+                        } else {
+                            text.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        }
+                    }
+                    View selector = view.findViewById(R.id.selector);
+                    if (selector != null) selector.setVisibility(View.GONE);
+                    View divider = view.findViewById(R.id.divider);
+                    if (divider != null) divider.setVisibility(View.GONE);
+                    return view;
+                }
+            };
+
+            android.view.LayoutInflater inflater = android.view.LayoutInflater.from(context);
+            View customView = inflater.inflate(R.layout.dialog_add_book_toggle, null);
+            com.google.android.material.button.MaterialButtonToggleGroup toggleGroup =
+                    customView.findViewById(R.id.toggle_group_add_mode);
+
+            boolean keepActive = com.eleybourn.bookcatalogue.BookCatalogueApp.getAppPreferences()
+                    .getBoolean(com.eleybourn.bookcatalogue.BookCataloguePreferences.PREF_KEEP_SEARCH_ACTIVE, true);
+            toggleGroup.check(keepActive ? R.id.button_add_many : R.id.button_add_one);
+
+            toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+                if (isChecked) {
+                    boolean isMany = (checkedId == R.id.button_add_many);
+                    com.eleybourn.bookcatalogue.BookCatalogueApp.getAppPreferences()
+                            .setBoolean(com.eleybourn.bookcatalogue.BookCataloguePreferences.PREF_KEEP_SEARCH_ACTIVE, isMany);
+                }
+            });
+
+            new MaterialAlertDialogBuilder(context)
+                    .setTitle(title)
+                    .setAdapter(adapter, (dialog, which) -> items.get(which).handler.run())
+                    .setView(customView)
+                    .create().show();
+        }
+    }
+
+    /**
      * Class to make building a 'context menu' from an AlertDialog a little easier.
      * Used in Event.buildDialogItems and related Activities.
      *

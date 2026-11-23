@@ -143,7 +143,7 @@ public class StorageUtils {
             dbCopy.flush();
             dbCopy.close();
             dbOrig.close();
-            return existing;
+            return new File(fullFilename);
         } catch (Exception e) {
             Logger.logError(e);
             return null;
@@ -175,7 +175,7 @@ public class StorageUtils {
             dbFile.deleteOnExit();
         }
         // set up the mail message
-        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         emailIntent.setType("plain/text");
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, context.getString(R.string.debug_email).split(";"));
         String subject = "[" + context.getString(R.string.app_name) + "] " + context.getString(R.string.debug_subject);
@@ -235,6 +235,14 @@ public class StorageUtils {
         }
         message.append("\n");
 
+        // Include recent change logs in the email body
+        try {
+            message.append("Recent Database Changes (Last 100):\n");
+            message.append(dbHelper.getRecentChangeLogs(100)).append("\n");
+        } catch (Exception e) {
+            message.append("Change log failure: ").append(e.getMessage()).append("\n");
+        }
+
         message.append("Details:\n\n").append(context.getString(R.string.debug_body).toUpperCase()).append("\n\n");
 
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message.toString());
@@ -246,22 +254,47 @@ public class StorageUtils {
             files.add(dbFile);
         }
 
-        for (File dir : new File[]{getBCShared(), getBCBackups(), getBCCache()}) {
+        // Export full change log file (last 1000 changes) as an attachment
+        try {
+            File changeLogFile = new File(getBCCache(), "change_log.txt");
+            if (dbHelper.writeChangeLogsToFile(changeLogFile, 1000)) {
+                files.add(changeLogFile);
+            }
+        } catch (Exception e) {
+            Logger.logError(e, "Failed to create change_log attachment");
+        }
+
+        File cacheDir = getBCCache();
+        for (File dir : new File[]{getBCShared(), getBCBackups(), cacheDir}) {
             try {
                 String[] list = dir.list();
                 if (list != null) {
                     for (String name : list) {
                         boolean send = false;
-                        for (String prefix : mDebugFilePrefixes)
-                            if (name.startsWith(prefix)) {
+                        for (String prefix : mDebugFilePrefixes) {
+                            if (name.startsWith(prefix) && !name.endsWith(".bak")) {
                                 send = true;
                                 break;
                             }
+                        }
                         if (send) {
                             File f = new File(dir, name);
-                            // Avoid duplicates
-                            if (f.exists() && f.length() > 0 && !files.contains(f))
-                                files.add(f);
+                            // Avoid duplicates and ensure it exists and has content
+                            if (f.exists() && f.length() > 0) {
+                                // If file is outside app cache, copy to app cache for reliable FileProvider access
+                                File attachmentFile = f;
+                                if (!dir.equals(cacheDir)) {
+                                    attachmentFile = new File(cacheDir, name);
+                                    try {
+                                        Utils.copyFile(f, attachmentFile);
+                                    } catch (Exception ignored) {
+                                        attachmentFile = f;
+                                    }
+                                }
+                                if (!files.contains(attachmentFile)) {
+                                    files.add(attachmentFile);
+                                }
+                            }
                         }
                     }
                 }
@@ -282,10 +315,30 @@ public class StorageUtils {
             }
         }
 
-        // We used to only send it if there are any files to send, but later versions added
-        // useful debugging info. So now we always send.
         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-        context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+
+        // Required by Android & Gmail: attach ClipData with all URIs so grant permissions propagate
+        if (!uris.isEmpty()) {
+            android.content.ClipData clipData = android.content.ClipData.newRawUri("Attachments", uris.get(0));
+            for (int i = 1; i < uris.size(); i++) {
+                clipData.addItem(new android.content.ClipData.Item(uris.get(i)));
+            }
+            emailIntent.setClipData(clipData);
+        }
+
+        Intent chooser = Intent.createChooser(emailIntent, "Send mail...");
+        chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        // Grant explicit read URI permissions to receiving apps
+        List<ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            for (Uri uri : uris) {
+                context.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+        }
+
+        context.startActivity(chooser);
     }
 
     /**

@@ -148,6 +148,11 @@ public class Utils {
     }
 
     static {
+        // SQL / ISO formats must be evaluated FIRST to avoid false matches against partial formats like "yyyy"
+        mParseDateFormats.add(mDateFullHMSSqlSdf);
+        mParseDateFormats.add(mDateFullHMSqlSdf);
+        mParseDateFormats.add(mDateSqlSdf);
+
         final boolean isEnglish = (Locale.getDefault().getLanguage().equals(Locale.ENGLISH.getLanguage()));
         addParseDateFormat(!isEnglish, "dd-MMM-yyyy HH:mm:ss");
         addParseDateFormat(!isEnglish, "dd-MMM-yyyy HH:mm");
@@ -186,10 +191,6 @@ public class Utils {
         addParseDateFormat(!isEnglish, "yyyy");
         addParseDateFormat(!isEnglish, "EEE, dd MMM yyyy HH:mm:ss Z");
         addParseDateFormat(!isEnglish, "EEE, dd MMM yyyy HH:mm:ss");
-
-        mParseDateFormats.add(mDateFullHMSSqlSdf);
-        mParseDateFormats.add(mDateFullHMSqlSdf);
-        mParseDateFormats.add(mDateSqlSdf);
     }
 
     // External DB for cover thumbnails
@@ -270,6 +271,10 @@ public class Utils {
      * @return Resulting date if parsed, otherwise null
      */
     private static Date parseDate(String s, boolean lenient, boolean forceUtc) {
+        if (s == null || s.trim().isEmpty()) {
+            return null;
+        }
+        String trimmed = s.trim();
         Date d;
         for (SimpleDateFormat sdf : mParseDateFormats) {
             try {
@@ -284,8 +289,11 @@ public class Utils {
                     // except for the explicit local one.
                     sdf.setTimeZone(tzUtc);
                 }
-                d = sdf.parse(s);
-                return d;
+                java.text.ParsePosition pos = new java.text.ParsePosition(0);
+                d = sdf.parse(trimmed, pos);
+                if (d != null && pos.getIndex() == trimmed.length()) {
+                    return d;
+                }
             } catch (Exception e) {
                 // Ignore
             }
@@ -296,8 +304,11 @@ public class Utils {
             try {
                 java.text.DateFormat df = java.text.DateFormat.getDateInstance(style);
                 df.setLenient(lenient);
-                d = df.parse(s);
-                return d;
+                java.text.ParsePosition pos = new java.text.ParsePosition(0);
+                d = df.parse(trimmed, pos);
+                if (d != null && pos.getIndex() == trimmed.length()) {
+                    return d;
+                }
             } catch (Exception e) {
                 // Ignore
             }

@@ -39,7 +39,7 @@ public class Author implements Serializable, Utils.ItemWithIdFixup {
 	public String 	familyName;
 	public String 	givenNames;
 	public long		id;
-	public String   uuid = "";
+	public String   uuid;
 
 	/**
 	 * Constructor that will attempt to parse a single string into an author name.

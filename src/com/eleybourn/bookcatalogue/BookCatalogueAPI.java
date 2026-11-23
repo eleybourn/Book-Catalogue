@@ -228,6 +228,14 @@ public class BookCatalogueAPI implements SimpleTask {
                 return "";
             }
 
+            // If already in standard SQL format YYYY-MM-DD or YYYY-MM-DD HH:mm:ss, return directly
+            if (dateStr.length() == 10 && dateStr.charAt(4) == '-' && dateStr.charAt(7) == '-') {
+                return dateStr;
+            }
+            if (dateStr.length() >= 19 && dateStr.charAt(4) == '-' && dateStr.charAt(7) == '-' && (dateStr.charAt(10) == ' ' || dateStr.charAt(10) == 'T')) {
+                return dateStr;
+            }
+
             // Special handling for 4-digit year only: convert to YYYY-01-01
             if (dateStr.length() == 4) {
                 try {
@@ -951,16 +959,8 @@ public class BookCatalogueAPI implements SimpleTask {
         return false;
     }
 
-    private boolean checkDiff(long bookId, String fieldName, String localValue, String serverValue) {
-        return checkDiff(bookId, "", fieldName, localValue, serverValue, false);
-    }
-
     private boolean checkDiff(long bookId, String title, String fieldName, String localValue, String serverValue) {
         return checkDiff(bookId, title, fieldName, localValue, serverValue, false);
-    }
-
-    private boolean checkDiff(long bookId, String fieldName, String localValue, String serverValue, boolean isDate) {
-        return checkDiff(bookId, "", fieldName, localValue, serverValue, isDate);
     }
 
     private boolean checkDiff(long bookId, String title, String fieldName, String localValue, String serverValue, boolean isDate) {
@@ -1153,10 +1153,6 @@ public class BookCatalogueAPI implements SimpleTask {
         connection("/books", METHOD_POST, fields, values);
     }
 
-    public void backupThumbnail(long bookId, File thumbFile) throws Exception {
-        backupThumbnail(bookId, 0, thumbFile);
-    }
-
     public void backupThumbnail(long bookId, int index, File thumbFile) throws Exception {
         String url = (index == 0) ? ("/book/" + bookId + "/thumb") : ("/book/" + bookId + "/thumb/" + index);
         Log.d("BC", "Backup thumbnail /book/" + bookId + "/thumb/" + index);
@@ -1169,10 +1165,6 @@ public class BookCatalogueAPI implements SimpleTask {
                 throw e;
             }
         }
-    }
-
-    public void deleteThumbnail(long bookId) throws Exception {
-        deleteThumbnail(bookId, 0);
     }
 
     public void deleteThumbnail(long bookId, int index) throws Exception {

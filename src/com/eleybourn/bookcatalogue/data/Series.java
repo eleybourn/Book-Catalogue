@@ -49,6 +49,8 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 				this.uuid = possibleUuid;
 				name = name.substring(37).trim();
 			}
+		} else {
+			name = "";
 		}
         Pattern mPattern = Pattern.compile("^(.*)\\s*\\((.*)\\)\\s*$");
         java.util.regex.Matcher m = mPattern.matcher(name);
@@ -160,7 +162,7 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 				details.startChar = last;
 				if (mSeriesPat == null) {
 					// NOTE: Changes to this pattern should be mirrored in cleanupSeriesPosition().
-					String seriesExp = "(.*?)(,|\\s)\\s*" + mSeriesNumberPrefixes + "\\s*([0-9\\.\\-]+|[ivxlcm\\.\\-]+)\\s*$";
+					String seriesExp = "(.*?)([,\\s])\\s*" + mSeriesNumberPrefixes + "\\s*([0-9.\\-]+|[ivxlcm.\\-]+)\\s*$";
 					// Compile and get a reference to a Pattern object. <br>  
 					mSeriesPat = Pattern.compile(seriesExp, Pattern.CASE_INSENSITIVE|Pattern.UNICODE_CASE);
 				}
@@ -190,7 +192,7 @@ public class Series implements Serializable, Utils.ItemWithIdFixup {
 
 		if (mSeriesPosCleanupPat == null) {
 			// NOTE: Changes to this pattern should be mirrored in findSeries().
-			String seriesExp = "^\\s*" + mSeriesNumberPrefixes + "\\s*([0-9\\.\\-]+|[ivxlcm\\.\\-]+)\\s*$";
+			String seriesExp = "^\\s*" + mSeriesNumberPrefixes + "\\s*([0-9.\\-]+|[ivxlcm.\\-]+)\\s*$";
 			// Compile and get a reference to a Pattern object. <br>
 			mSeriesPosCleanupPat = Pattern.compile(seriesExp, Pattern.CASE_INSENSITIVE|Pattern.UNICODE_CASE);
 		}

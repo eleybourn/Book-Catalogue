@@ -178,6 +178,7 @@ public class CatalogueDBAdapter {
     public static final String DB_TB_BOOKSHELF = "bookshelf";
     public static final String DB_TB_LOAN = "loan";
     public static final String DB_TB_SERIES = "series";
+    public static final String DB_TB_CHANGE_LOG = "change_log";
     public static final int ANTHOLOGY_NO = 0;
     public static final int ANTHOLOGY_IS_ANTHOLOGY = 1;
     public static final int ANTHOLOGY_MULTIPLE_AUTHORS = 2;
@@ -185,7 +186,7 @@ public class CatalogueDBAdapter {
     public static final String META_EMPTY_GENRE = "<Empty Genre>";
     public static final String META_EMPTY_DATE_PUBLISHED = "<No Valid Published Date>";
     //TODO: Update database version RELEASE: Update database version
-    public static final int DATABASE_VERSION = 82;
+    public static final int DATABASE_VERSION = 84;
     /**
      * Flag indicating the UPDATE_DATE field from the bundle should be trusted. If this flag is not set, the UPDATE_DATE will be set based on the current time
      */
@@ -221,6 +222,15 @@ public class CatalogueDBAdapter {
     private static final String DATABASE_CREATE_BOOKSHELF_DATA =
             "INSERT INTO " + DB_TB_BOOKSHELF +
                     " (" + KEY_BOOKSHELF + ") VALUES ('Default')";
+    private static final String DATABASE_CREATE_CHANGE_LOG =
+            "create table if not exists " + DB_TB_CHANGE_LOG + " (" +
+                    "_id integer primary key autoincrement, " +
+                    "timestamp datetime default current_timestamp, " +
+                    "table_name text not null, " +
+                    "operation text not null, " +
+                    "record_id text, " +
+                    "details text" +
+                    ")";
     // Renamed to the LAST version in which it was used
     private static final String DATABASE_CREATE_BOOKS_81 =
             "create table " + DB_TB_BOOKS +
@@ -1157,6 +1167,52 @@ public class CatalogueDBAdapter {
         } catch (Exception e) {
             Logger.logError(e);
             return null;
+        }
+    }
+
+    /**
+     * Retrieve the last N change log entries formatted for troubleshooting.
+     */
+    public String getRecentChangeLogs(int limit) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            open();
+            String sql = "SELECT timestamp, table_name, operation, record_id, details FROM " + DB_TB_CHANGE_LOG + " ORDER BY _id DESC LIMIT " + limit;
+            try (Cursor c = mDb.rawQuery(sql, new String[]{})) {
+                int count = 0;
+                while (c.moveToNext()) {
+                    count++;
+                    String ts = c.getString(0);
+                    String tbl = c.getString(1);
+                    String op = c.getString(2);
+                    String recId = c.getString(3);
+                    String det = c.getString(4);
+                    sb.append(count).append(". [").append(ts).append("] ")
+                            .append(tbl).append(" ").append(op)
+                            .append(" (ID: ").append(recId).append(") -> ")
+                            .append(det).append("\n");
+                }
+            }
+        } catch (Exception e) {
+            sb.append("No change log available: ").append(e.getMessage()).append("\n");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Write recent change logs to a file for troubleshooting attachments.
+     */
+    public boolean writeChangeLogsToFile(File destination, int limit) {
+        try {
+            String logs = getRecentChangeLogs(limit);
+            try (java.io.FileOutputStream fos = new java.io.FileOutputStream(destination);
+                 java.io.OutputStreamWriter osw = new java.io.OutputStreamWriter(fos, java.nio.charset.StandardCharsets.UTF_8)) {
+                osw.write(logs);
+            }
+            return true;
+        } catch (Exception e) {
+            Logger.logError(e, "Error writing change logs to file");
+            return false;
         }
     }
 
@@ -4800,6 +4856,7 @@ public class CatalogueDBAdapter {
             db.execSQL(DATABASE_CREATE_BOOK_AUTHOR);
             db.execSQL(DATABASE_CREATE_BOOK_BOOKSHELF_WEAK);
             db.execSQL(DATABASE_CREATE_BOOK_SERIES);
+            db.execSQL(DATABASE_CREATE_CHANGE_LOG);
             createIndices(db);
 
             SynchronizedDb sdb = new SynchronizedDb(db, mSynchronizer);
@@ -4813,7 +4870,7 @@ public class CatalogueDBAdapter {
 
 
         /**
-         * Create the database triggers. Currently only one, and the implementation needs refining!
+         * Create the database triggers, including change logging and goodreads reset.
          */
         private void createTriggers(SynchronizedDb db) {
             String name = "books_tg_reset_goodreads";
@@ -4828,6 +4885,213 @@ public class CatalogueDBAdapter {
                     "	End";
             db.execSQL("Drop Trigger if Exists " + name);
             db.execSQL("Create Trigger " + name + body);
+
+            createChangeLogTriggers(db);
+        }
+
+        private void createChangeLogTriggers(SynchronizedDb db) {
+            try {
+                db.execSQL(DATABASE_CREATE_CHANGE_LOG);
+
+                // Pruning trigger: automatically prune to keep last 1000 records
+                db.execSQL("Drop Trigger if Exists change_log_prune_tg");
+                db.execSQL("Create Trigger change_log_prune_tg After Insert On " + DB_TB_CHANGE_LOG + " " +
+                        "Begin " +
+                        "  Delete From " + DB_TB_CHANGE_LOG + " Where _id <= (New._id - 1000); " +
+                        "End");
+
+                // Books triggers
+                db.execSQL("Drop Trigger if Exists tg_log_books_insert");
+                db.execSQL("Create Trigger tg_log_books_insert After Insert On " + DB_TB_BOOKS + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('books', 'INSERT', Cast(New._id as Text), 'title=\"' || Coalesce(New.title, '') || '\", isbn=\"' || Coalesce(New.isbn, '') || '\", uuid=' || Coalesce(New.book_uuid, '')); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_books_update");
+                db.execSQL("Create Trigger tg_log_books_update After Update On " + DB_TB_BOOKS + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Select 'books', 'UPDATE', Cast(New._id as Text), " +
+                        "    'Book: \"' || Coalesce(New.title, Old.title, '') || '\" | Changes: ' || " +
+                        "    Trim( " +
+                        "      (Case When Old.title Is Not New.title Then '[title: \"' || Coalesce(Old.title, '') || '\" -> \"' || Coalesce(New.title, '') || '\"] ' Else '' End) || " +
+                        "      (Case When Old.description Is Not New.description Then '[description changed: \"' || Substr(Coalesce(Old.description, ''), 1, 80) || '\" -> \"' || Substr(Coalesce(New.description, ''), 1, 80) || '\"] ' Else '' End) || " +
+                        "      (Case When Old.notes Is Not New.notes Then '[notes changed: \"' || Substr(Coalesce(Old.notes, ''), 1, 80) || '\" -> \"' || Substr(Coalesce(New.notes, ''), 1, 80) || '\"] ' Else '' End) || " +
+                        "      (Case When Old.isbn Is Not New.isbn Then '[isbn: \"' || Coalesce(Old.isbn, '') || '\" -> \"' || Coalesce(New.isbn, '') || '\"] ' Else '' End) || " +
+                        "      (Case When Old.publisher Is Not New.publisher Then '[publisher: \"' || Coalesce(Old.publisher, '') || '\" -> \"' || Coalesce(New.publisher, '') || '\"] ' Else '' End) || " +
+                        "      (Case When Old.rating Is Not New.rating Then '[rating: ' || Coalesce(Old.rating, 0) || ' -> ' || Coalesce(New.rating, 0) || '] ' Else '' End) || " +
+                        "      (Case When Old.read Is Not New.read Then '[read: ' || Coalesce(Old.read, 0) || ' -> ' || Coalesce(New.read, 0) || '] ' Else '' End) || " +
+                        "      (Case When Old.pages Is Not New.pages Then '[pages: ' || Coalesce(Old.pages, '') || ' -> ' || Coalesce(New.pages, '') || '] ' Else '' End) || " +
+                        "      (Case When Old.format Is Not New.format Then '[format: \"' || Coalesce(Old.format, '') || '\" -> \"' || Coalesce(New.format, '') || '\"] ' Else '' End) || " +
+                        "      (Case When Old.genre Is Not New.genre Then '[genre: \"' || Coalesce(Old.genre, '') || '\" -> \"' || Coalesce(New.genre, '') || '\"] ' Else '' End) || " +
+                        "      (Case When Old.location Is Not New.location Then '[location: \"' || Coalesce(Old.location, '') || '\" -> \"' || Coalesce(New.location, '') || '\"] ' Else '' End) || " +
+                        "      (Case When Old.list_price Is Not New.list_price Then '[price: ' || Coalesce(Old.list_price, '') || ' -> ' || Coalesce(New.list_price, '') || '] ' Else '' End) || " +
+                        "      (Case When Old.date_published Is Not New.date_published Then '[published: ' || Coalesce(Old.date_published, '') || ' -> ' || Coalesce(New.date_published, '') || '] ' Else '' End) || " +
+                        "      (Case When Old.read_start Is Not New.read_start Then '[read_start: ' || Coalesce(Old.read_start, '') || ' -> ' || Coalesce(New.read_start, '') || '] ' Else '' End) || " +
+                        "      (Case When Old.read_end Is Not New.read_end Then '[read_end: ' || Coalesce(Old.read_end, '') || ' -> ' || Coalesce(New.read_end, '') || '] ' Else '' End) || " +
+                        "      (Case When Old.signed Is Not New.signed Then '[signed: ' || Coalesce(Old.signed, 0) || ' -> ' || Coalesce(New.signed, 0) || '] ' Else '' End) || " +
+                        "      (Case When Old.language Is Not New.language Then '[language: \"' || Coalesce(Old.language, '') || '\" -> \"' || Coalesce(New.language, '') || '\"] ' Else '' End) " +
+                        "    ); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_books_delete");
+                db.execSQL("Create Trigger tg_log_books_delete After Delete On " + DB_TB_BOOKS + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('books', 'DELETE', Cast(Old._id as Text), 'title=\"' || Coalesce(Old.title, '') || '\", uuid=' || Coalesce(Old.book_uuid, '')); " +
+                        "End");
+
+                // Authors triggers
+                db.execSQL("Drop Trigger if Exists tg_log_authors_insert");
+                db.execSQL("Create Trigger tg_log_authors_insert After Insert On " + DB_TB_AUTHORS + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('authors', 'INSERT', Cast(New._id as Text), Coalesce(New.family_name, '') || ', ' || Coalesce(New.given_names, '')); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_authors_update");
+                db.execSQL("Create Trigger tg_log_authors_update After Update On " + DB_TB_AUTHORS + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('authors', 'UPDATE', Cast(New._id as Text), 'OLD: ' || Coalesce(Old.family_name, '') || ', ' || Coalesce(Old.given_names, '') || ' -> NEW: ' || Coalesce(New.family_name, '') || ', ' || Coalesce(New.given_names, '')); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_authors_delete");
+                db.execSQL("Create Trigger tg_log_authors_delete After Delete On " + DB_TB_AUTHORS + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('authors', 'DELETE', Cast(Old._id as Text), Coalesce(Old.family_name, '') || ', ' || Coalesce(Old.given_names, '')); " +
+                        "End");
+
+                // Series triggers
+                db.execSQL("Drop Trigger if Exists tg_log_series_insert");
+                db.execSQL("Create Trigger tg_log_series_insert After Insert On " + DB_TB_SERIES + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('series', 'INSERT', Cast(New._id as Text), Coalesce(New.series_name, '')); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_series_update");
+                db.execSQL("Create Trigger tg_log_series_update After Update On " + DB_TB_SERIES + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('series', 'UPDATE', Cast(New._id as Text), 'OLD: ' || Coalesce(Old.series_name, '') || ' -> NEW: ' || Coalesce(New.series_name, '')); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_series_delete");
+                db.execSQL("Create Trigger tg_log_series_delete After Delete On " + DB_TB_SERIES + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('series', 'DELETE', Cast(Old._id as Text), Coalesce(Old.series_name, '')); " +
+                        "End");
+
+                // Bookshelf triggers
+                db.execSQL("Drop Trigger if Exists tg_log_bookshelf_insert");
+                db.execSQL("Create Trigger tg_log_bookshelf_insert After Insert On " + DB_TB_BOOKSHELF + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('bookshelf', 'INSERT', Cast(New._id as Text), Coalesce(New.bookshelf, '')); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_bookshelf_update");
+                db.execSQL("Create Trigger tg_log_bookshelf_update After Update On " + DB_TB_BOOKSHELF + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('bookshelf', 'UPDATE', Cast(New._id as Text), 'OLD: ' || Coalesce(Old.bookshelf, '') || ' -> NEW: ' || Coalesce(New.bookshelf, '')); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_bookshelf_delete");
+                db.execSQL("Create Trigger tg_log_bookshelf_delete After Delete On " + DB_TB_BOOKSHELF + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('bookshelf', 'DELETE', Cast(Old._id as Text), Coalesce(Old.bookshelf, '')); " +
+                        "End");
+
+                // Junction triggers: book_author
+                db.execSQL("Drop Trigger if Exists tg_log_book_author_insert");
+                db.execSQL("Create Trigger tg_log_book_author_insert After Insert On " + DB_TB_BOOK_AUTHOR + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('book_author', 'INSERT', 'book=' || Cast(New.book as Text), 'author_id=' || Cast(New.author as Text) || ', pos=' || Cast(New.author_position as Text)); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_book_author_delete");
+                db.execSQL("Create Trigger tg_log_book_author_delete After Delete On " + DB_TB_BOOK_AUTHOR + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('book_author', 'DELETE', 'book=' || Cast(Old.book as Text), 'author_id=' || Cast(Old.author as Text) || ', pos=' || Cast(Old.author_position as Text)); " +
+                        "End");
+
+                // Junction triggers: book_series
+                db.execSQL("Drop Trigger if Exists tg_log_book_series_insert");
+                db.execSQL("Create Trigger tg_log_book_series_insert After Insert On " + DB_TB_BOOK_SERIES + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('book_series', 'INSERT', 'book=' || Cast(New.book as Text), 'series_id=' || Cast(New.series_id as Text) || ', num=' || Coalesce(New.series_num, '')); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_book_series_delete");
+                db.execSQL("Create Trigger tg_log_book_series_delete After Delete On " + DB_TB_BOOK_SERIES + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('book_series', 'DELETE', 'book=' || Cast(Old.book as Text), 'series_id=' || Cast(Old.series_id as Text) || ', num=' || Coalesce(Old.series_num, '')); " +
+                        "End");
+
+                // Junction triggers: book_bookshelf_weak
+                db.execSQL("Drop Trigger if Exists tg_log_book_bookshelf_insert");
+                db.execSQL("Create Trigger tg_log_book_bookshelf_insert After Insert On " + DB_TB_BOOK_BOOKSHELF_WEAK + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('book_bookshelf', 'INSERT', 'book=' || Cast(New.book as Text), 'bookshelf_id=' || Cast(New.bookshelf as Text)); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_book_bookshelf_delete");
+                db.execSQL("Create Trigger tg_log_book_bookshelf_delete After Delete On " + DB_TB_BOOK_BOOKSHELF_WEAK + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('book_bookshelf', 'DELETE', 'book=' || Cast(Old.book as Text), 'bookshelf_id=' || Cast(Old.bookshelf as Text)); " +
+                        "End");
+
+                // Loan triggers
+                db.execSQL("Drop Trigger if Exists tg_log_loan_insert");
+                db.execSQL("Create Trigger tg_log_loan_insert After Insert On " + DB_TB_LOAN + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('loan', 'INSERT', 'book=' || Cast(New.book as Text), 'loaned_to=' || Coalesce(New.loaned_to, '')); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_loan_update");
+                db.execSQL("Create Trigger tg_log_loan_update After Update On " + DB_TB_LOAN + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('loan', 'UPDATE', 'book=' || Cast(New.book as Text), 'loaned_to=' || Coalesce(New.loaned_to, '')); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_loan_delete");
+                db.execSQL("Create Trigger tg_log_loan_delete After Delete On " + DB_TB_LOAN + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('loan', 'DELETE', 'book=' || Cast(Old.book as Text), 'loaned_to=' || Coalesce(Old.loaned_to, '')); " +
+                        "End");
+
+                // Anthology triggers
+                db.execSQL("Drop Trigger if Exists tg_log_anthology_insert");
+                db.execSQL("Create Trigger tg_log_anthology_insert After Insert On " + DB_TB_ANTHOLOGY + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('anthology', 'INSERT', Cast(New._id as Text), 'book=' || Cast(New.book as Text) || ', title=' || Coalesce(New.title, '')); " +
+                        "End");
+
+                db.execSQL("Drop Trigger if Exists tg_log_anthology_delete");
+                db.execSQL("Create Trigger tg_log_anthology_delete After Delete On " + DB_TB_ANTHOLOGY + " " +
+                        "Begin " +
+                        "  Insert Into " + DB_TB_CHANGE_LOG + " (table_name, operation, record_id, details) " +
+                        "  Values ('anthology', 'DELETE', Cast(Old._id as Text), 'book=' || Cast(Old.book as Text) || ', title=' || Coalesce(Old.title, '')); " +
+                        "End");
+            } catch (Exception e) {
+                Logger.logError(e, "Error creating change log triggers");
+            }
         }
 
         private void createIndices(SQLiteDatabase db) {
@@ -5767,6 +6031,14 @@ public class CatalogueDBAdapter {
             if (curVersion == 81) {
                 curVersion++;
                 recreateAndReloadTable(sdb, DB_TB_BOOKS, DATABASE_CREATE_BOOKS);
+            }
+            if (curVersion == 82) {
+                curVersion++;
+                db.execSQL(DATABASE_CREATE_CHANGE_LOG);
+            }
+            if (curVersion == 83) {
+                curVersion++;
+                db.execSQL(DATABASE_CREATE_CHANGE_LOG);
             }
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // NOTE: As of 4.2, DO NOT USE OnUpgrade TO DISPLAY UPGRADE MESSAGES. See header for details.

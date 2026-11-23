@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto"
-    android:versionCode="237"
+    android:versionCode="238"
     android:versionName="7.2.1">
 
     <uses-feature

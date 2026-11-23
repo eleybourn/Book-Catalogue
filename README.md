@@ -38,12 +38,15 @@ Features include:
 * When downloading book information, authors and titles are converted to proper
   case. e.g. "The murder on the links" becomes "Murder on the Links, The"
 * Using ISBN or Barcode scanning will also download a thumbnail (if available)
-* Fixed a defect that prevented custom styles from being used
 
 new in 7.2.1
 * French translations updated (huge thanks to Daniel Vachon)
+* New preference to reopen the search screen or scanner (add many books) or open the just added book (add one) 
 * Fixes ISBN search timeout and freeze issues 
+* Improvements to cloud synchronization between multiple devices
 * Fixes for Landscape ISBN scanning
+* Extended history of all changes to your catalogue (for better troubleshooting)
+* Fixed a defect that prevented custom styles from being used
 
 new in 7.2
 * Ability to add multiple thumbnails per book (long press on the thumbnail to access context menu)

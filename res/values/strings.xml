@@ -268,6 +268,8 @@
     <string name="label_about">About</string>
     <string name="label_add">Add</string>
     <string name="label_add_manually">Add Manually</string>
+    <string name="label_add_one">Add one</string>
+    <string name="label_add_many">Add many</string>
     <string name="label_added_day">Added Day</string>
     <string name="label_added_month">Added Month</string>
     <string name="label_added_year">Added Year</string>
@@ -605,6 +607,16 @@
 				<li>The prompt to back up the database has been added back</li>
 				<li>More UI design options (remove the silhouette)</li>
 				<li>Fixed crashes (importing large backups, navigating with away with an open dialogue, cropping covers)</li>
+			</ul></p>
+		]]></string>
+    <string name="new_in_721"><![CDATA[
+			<p><b>New in 7.2.1</b>\n\n<ul>
+			    <li>French translations updated (huge thanks to Daniel Vachon)</li>
+			    <li>New preference to reopen the search screen or scanner (add many books) or open the just added book (add one)</li>
+			    <li>Fixes ISBN search timeout and freeze issues </li>
+			    <li>Improvements to cloud synchronization between multiple devices</li>
+			    <li>Fixes for Landscape ISBN scanning</li>
+			    <li>Extended history of all changes to your catalogue (for better troubleshooting)</li>
 				<li>Fixed a defect that prevented custom styles from being used</li>
 			</ul></p>
 		]]></string>
@@ -728,6 +740,7 @@
     <string name="preference_prefer_large_thumbnails">Prefer large thumbnails</string>
     <string name="preference_preferred_interface_language">Preferred Interface Language</string>
     <string name="preference_preferred_scanner">Preferred Scanner</string>
+    <string name="preference_keep_search_active">Continuous book entry (keep scanner / search open)</string>
     <string name="preference_resizing_cover_thumbnails">Resizing cover thumbnails</string>
     <string name="preference_show_thumbnails">Show Thumbnails</string>
     <string name="preference_size_of_library_items">Size of library items</string>

@@ -42,7 +42,8 @@ Features include:
 
 new in 7.2.1
 * French translations updated (huge thanks to Daniel Vachon)
-* 
+* Fixes ISBN search timeout and freeze issues 
+* Fixes for Landscape ISBN scanning
 
 new in 7.2
 * Ability to add multiple thumbnails per book (long press on the thumbnail to access context menu)

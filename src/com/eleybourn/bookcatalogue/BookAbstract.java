@@ -862,6 +862,7 @@ public abstract class BookAbstract extends BookEditFragmentAbstract {
     /**
      * Get display metrics and set {@link #mMetrics} with it.
      */
+    @SuppressWarnings("deprecation")
     private void setDisplayMetrics() {
         mMetrics = new DisplayMetrics();
         assert getActivity() != null;

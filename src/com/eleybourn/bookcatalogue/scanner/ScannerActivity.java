@@ -25,21 +25,14 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 /**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
+ * Full-screen activity that displays a camera preview and scans for ISBN barcodes.
  */
-public class ScannerActivity
-		extends BookCatalogueActivity
-{
+public class ScannerActivity extends BookCatalogueActivity {
 	public static final String KEY_ISBN = "ISBN";
-	/**
-	 * Some older devices needs a small delay between UI widget updates
-	 * and a change of the status and navigation bar.
-	 */
+
+	private CameraSourcePreview mPreview;
 	private SurfaceView mCameraView;
-
 	private CameraSource mCameraSource;
-
 	private boolean mHasSurface = false;
 
 	@Override
@@ -55,18 +48,23 @@ public class ScannerActivity
 
 		setContentView(R.layout.activity_scanner);
 
+		mPreview = findViewById(R.id.preview);
 		mCameraView = findViewById(R.id.cameraView);
 
 		BarcodeDetector barcodeDetector =
 				new BarcodeDetector.Builder(this)
-						.setBarcodeFormats(Barcode.EAN_13)
+						.setBarcodeFormats(Barcode.EAN_13 | Barcode.EAN_8 | Barcode.UPC_A | Barcode.UPC_E)
 						.build();
 
 		mCameraSource = new CameraSource
 				.Builder(this, barcodeDetector)
 				.setFacing(CameraSource.CAMERA_FACING_BACK)
+				.setRequestedPreviewSize(1920, 1080)
+				.setRequestedFps(30.0f)
 				.setAutoFocusEnabled(true)
 				.build();
+
+		mPreview.setCameraSource(mCameraSource);
 
 		mCameraView.getHolder().addCallback(new SurfaceHolder.Callback() {
 			@Override
@@ -79,6 +77,7 @@ public class ScannerActivity
 						return;
 					}
 					mCameraSource.start(mCameraView.getHolder());
+					mPreview.post(() -> mPreview.requestLayout());
 				} catch (IOException ie) {
 					Logger.logError(ie, "CAMERA SOURCE");
 				}
@@ -90,10 +89,11 @@ public class ScannerActivity
 
 			@Override
 			public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-				mCameraSource.stop();
+				if (mCameraSource != null) {
+					mCameraSource.stop();
+				}
 			}
 		});
-
 
 		barcodeDetector.setProcessor(new Detector.Processor<>() {
             @Override
@@ -102,21 +102,25 @@ public class ScannerActivity
 
             @Override
             public void receiveDetections(@NonNull Detector.Detections<Barcode> detections) {
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
 
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 
                 if (barcodes.size() != 0) {
-                    // Use the post method of the TextView
                     mCameraView.post(() -> {
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
                         int sz = barcodes.size();
                         for (int i = 0; i < sz; i++) {
                             Barcode bc = barcodes.get(barcodes.keyAt(i));
-                            if (IsbnUtils.isValid(bc.displayValue)) {
+                            if (bc != null && IsbnUtils.isValid(bc.displayValue)) {
                                 Intent resultIntent = new Intent();
                                 resultIntent.putExtra(KEY_ISBN, bc.displayValue);
                                 setResult(Activity.RESULT_OK, resultIntent);
                                 finish();
-                                // Once we have a valid ISBN, we can stop processing.
                                 return;
                             }
                         }
@@ -126,18 +130,42 @@ public class ScannerActivity
         });
 	}
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-
-		// Trigger the initial hide() shortly after the activity has been
-		// created, to briefly hint to the user that UI controls
-		// are available.
-		//delayedHide(100);
-	}
-
 	public static String getIsbn(Intent i) {
 		return i.getStringExtra(KEY_ISBN);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (mHasSurface && mCameraSource != null) {
+			if (ActivityCompat.checkSelfPermission(this, permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+				try {
+					mCameraSource.start(mCameraView.getHolder());
+					if (mPreview != null) {
+						mPreview.post(() -> mPreview.requestLayout());
+					}
+				} catch (IOException e) {
+					Logger.logError(e, "Camera failed to start in onResume");
+				}
+			}
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (mCameraSource != null) {
+			mCameraSource.stop();
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (mCameraSource != null) {
+			mCameraSource.release();
+			mCameraSource = null;
+		}
 	}
 
 	@Override
@@ -147,7 +175,7 @@ public class ScannerActivity
 			@NonNull int[] grantResults)
 	{
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (mHasSurface) {
+		if (mHasSurface && mCameraSource != null) {
 			if (ActivityCompat.checkSelfPermission(ScannerActivity.this, permission.CAMERA)
 					!= PackageManager.PERMISSION_GRANTED)
 			{
@@ -155,6 +183,9 @@ public class ScannerActivity
 			}
 			try {
 				mCameraSource.start(mCameraView.getHolder());
+				if (mPreview != null) {
+					mPreview.post(() -> mPreview.requestLayout());
+				}
 			} catch (IOException e) {
 				Logger.logError(e, "Camera failed to start");
 			}
